@@ -10,11 +10,10 @@ gem 'coffee-rails', '~> 4.0.0'
 # gem 'therubyracer', platforms: :ruby
 
 gem 'jquery-rails'
-gem 'turbolinks'
 gem 'haml'
 gem 'haml-rails'
-gem 'devise'
 gem 'omniauth'
+gem 'omniauth-github'
 gem 'puma'
 
 group :test do
