@@ -1,5 +1,5 @@
 !!!
-%html{ "ng-app" => "CI" }
+%html
   %head
     %title CI
     = stylesheet_link_tag "application", media: "all"
@@ -7,11 +7,8 @@
     = stylesheet_link_tag "//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css"
     = csrf_meta_tags
 
-  %body
+  %body.login
 
-    .container
-      .ng-view
-
-    = javascript_include_tag "//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"
-    = javascript_include_tag "//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
-    = javascript_include_tag "application"
+    .signin
+      = link_to '/auth/github', class: "octosignin" do
+        %i.icon-github-sign

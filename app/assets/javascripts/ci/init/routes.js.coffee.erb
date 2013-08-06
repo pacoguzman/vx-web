@@ -1,0 +1,9 @@
+CI.config ['$routeProvider', ($routeProvider) ->
+
+  $routeProvider.
+    when('/',
+      templateUrl: "<%= asset_path 'assets/projects/index.html' %>",
+      controller: "ProjectsCtrl"
+    )
+
+]

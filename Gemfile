@@ -2,28 +2,33 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.0.0'
 gem 'sqlite3'
-gem 'sass-rails', '~> 4.0.0'
-gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.0.0'
 
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
-
-gem 'jquery-rails'
 gem 'haml'
 gem 'haml-rails'
 gem 'omniauth'
-gem 'omniauth-github'
 gem 'puma'
 
-group :test do
+gem 'omniauth-github'
+gem 'octokit'
+
+group :assets do
+  gem 'execjs'
+  gem 'sass-rails', '~> 4.0.0'
+  gem 'uglifier', '>= 1.3.0'
+  gem 'coffee-rails', '~> 4.0.0'
+end
+
+group :development, :test do
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'factory_girl'
+  gem 'factory_girl_rails'
+end
+
+group :test do
   gem 'rr'
   gem 'webmock'
   gem 'timecop'
-  gem 'factory_girl'
-  gem 'factory_girl_rails'
 end
 
 group :development do
