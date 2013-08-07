@@ -39,16 +39,16 @@ module Github::User
           email = auth.info.email || "github#{uid}@empty"
           login = auth.info.nickname
 
-          user = User.create(email: email, name: name) or
-            raise(ActiveRecord::Rollback)
+          user = User.create(email: email, name: name)
+          user.persisted? or raise(ActiveRecord::Rollback)
 
-          UserIdentity.create(provider: 'github',
-                              uid: uid,
-                              token: token,
-                              user: user,
-                              login: login) or
-            raise(ActiveRecord::Rollback)
-
+          UserIdentity.create(
+            provider: 'github',
+            uid:      uid,
+            token:    token,
+            user:     user,
+            login:    login
+          ).persisted? or raise(ActiveRecord::Rollback)
           user
         end
       end

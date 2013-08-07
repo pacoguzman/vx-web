@@ -6,5 +6,10 @@ FactoryGirl.define do
     provider   "MyString"
     token      "MyString"
     uid        "MyString"
+    login      "login"
+
+    trait :github do
+      provider :github
+    end
   end
 end
