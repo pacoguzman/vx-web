@@ -1,27 +1,31 @@
-CI.factory 'Navigation', () ->
+CI.factory 'appMenu', () ->
   items = [{ title: 'Dashboard', path: '/' }]
 
-  set: (values) ->
-    items = [{ title: 'Dashboard', path: '/' }]
-    if values
-      console.log values
-      $.each values, (idx,it) ->
-        items.push title: it[0], path: it[1]
+  obj = {}
 
-  list: () ->
+  obj.add = (title, path) ->
+    items.push title: title, path: path
+
+  obj.items = () ->
     items
 
-CI.controller 'NavCtrl', ['$scope', '$location', 'Navigation',
-  ($scope, $location, nav) ->
+  obj.define = (block) ->
+    items = [{ title: 'Dashboard', path: '/' }]
+    block() if block
 
-    $scope.navigation = nav
+  obj
 
-    console.log nav.list()
+CI.controller 'NavCtrl', ['$scope', '$location', 'appMenu',
+  ($scope, $location, appMenu) ->
+
+    $scope.menu  = appMenu
+    $scope.items = appMenu.items()
 
     $scope.isActive = (item) ->
       item.path == $location.path()
 
-    $scope.$watch 'navigation'
+    $scope.$watch 'menu.items()', (newVal, _) ->
+      $scope.items = newVal
 
 ]
 

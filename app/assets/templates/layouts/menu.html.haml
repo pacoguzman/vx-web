@@ -1,5 +1,12 @@
-.navigation
-  %ul.nav.nav-tabs{ 'ng-controller' => 'NavCtrl' }
-    %li{ 'ng-repeat' => "item in navigation.list()", 'ng-class' => '{active: isActive(item)}' }
-      %a{ 'href' => "{{item.path}}" }
-        {{ item.title }}
+.site-head
+
+  .site-title
+    %span CI
+
+  .navigation
+
+    %ul.nav.nav-tabs{ 'ng-controller' => 'NavCtrl' }
+
+      %li{ 'ng-repeat' => "item in items", 'ng-class' => '{active: isActive(item)}' }
+        %a{ 'href' => "{{item.path}}" }
+          {{ item.title }}
