@@ -1,9 +1,15 @@
-CI.config ['$routeProvider', ($routeProvider) ->
+CI.config ['$routeProvider', '$locationProvider', ($routeProvider, $locationProvider) ->
 
   $routeProvider.
     when('/',
       templateUrl: "<%= asset_path 'assets/projects/index.html' %>",
       controller: "ProjectsCtrl"
+    ).
+    when('/projects/new',
+      templateUrl: "<%= asset_path 'assets/projects/new.html' %>",
+      controller: "NewProjectCtrl"
     )
+
+  $locationProvider.html5Mode true
 
 ]

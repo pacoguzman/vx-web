@@ -1,0 +1,26 @@
+/*
+ *= require bootstrap
+ *= require_self
+ *= require_tree .
+ */
+
+body .navigation {
+  width: 100%;
+  padding: 3em 0 1em 0;
+
+  .navigation-menu {
+    border-bottom: 1px solid #aaa;
+    list-style: none;
+    padding: 0 0 0 1em;
+    margin: 0;
+    display: block;
+
+    .navigation-menu-item {
+      display: inline-block;
+      padding: 1em;
+
+      a {
+      }
+    }
+  }
+}

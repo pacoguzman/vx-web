@@ -1,5 +1,8 @@
 .projects
-  %input{ type: :search }
+
+  .pull-right
+    %a{ class: "btn btn-success", 'ng-href' => "/projects/new" }
+      Add new Project
 
   %ul{ 'ng-repeat' => "project in projects" }
 

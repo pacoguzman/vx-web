@@ -10,6 +10,9 @@
   %body
 
     .container
+
+      %ng-include{ 'src' => "\"#{asset_path 'assets/layouts/menu.html' }\"" }
+
       .ng-view
 
     = javascript_include_tag "//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"

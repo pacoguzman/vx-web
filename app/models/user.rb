@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  include GithubUser
+  include Github::User
 
   validates :name, :email, presence: true
   validates :email, uniqueness: true
