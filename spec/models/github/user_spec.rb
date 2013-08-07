@@ -1,8 +1,47 @@
 require 'spec_helper'
 
+shared_examples 'cannot create any of github users or identiries' do
+  it "cannot create any users" do
+    expect {
+      User.from_github auth
+    }.to_not change(User, :count)
+  end
+
+  it "cannot create any identities" do
+    expect {
+      User.from_github auth
+    }.to_not change(UserIdentity, :count)
+  end
+
+  it "should return nil" do
+    expect(User.from_github auth).to be_nil
+  end
+end
+
 describe Github::User do
   let(:user) { User.new }
   subject    { user     }
+
+  context "#sync_github_repos!" do
+    let(:user)      { create :user                            }
+    let(:org)       { OpenStruct.new repositories: [org_repo] }
+    let(:user_repo) { build :github_repo, user: user, full_name: "user" }
+    let(:org_repo)  { build :github_repo, user: user, full_name: "org"  }
+    subject { user.sync_github_repos! }
+
+    before do
+      mock(Github::Organization).fetch(user) { [org] }
+      mock(Github::Repo).fetch_for_user(user) { [user_repo] }
+    end
+
+    it { should eq 2 }
+
+    it "should destroy any not synced repos" do
+      repo = create :github_repo, user: user, full_name: "outdated"
+      user.sync_github_repos!
+      expect(Github::Repo.exists? repo.id).to be_false
+    end
+  end
 
   context "#github" do
     context "when user hasnt any github identties" do
@@ -85,34 +124,14 @@ describe Github::User do
         end
       end
 
-      shared_examples 'cannot create any' do
-        it "cannot create any users" do
-          expect {
-            User.from_github auth
-          }.to_not change(User, :count)
-        end
-
-        it "cannot create any identities" do
-          expect {
-            User.from_github auth
-          }.to_not change(UserIdentity, :count)
-        end
-
-        it "should return nil" do
-          expect(User.from_github auth).to be_nil
-        end
-      end
-
       context "when fail to create user" do
-        include_examples 'cannot create any' do
-          let(:name) { nil }
-        end
+        let(:name) { nil }
+        include_examples 'cannot create any of github users or identiries'
       end
 
       context "when fail to create identity" do
-        include_examples 'cannot create any' do
-          let(:uid)  { nil }
-        end
+        let(:uid)  { nil }
+        include_examples 'cannot create any of github users or identiries'
       end
 
     end

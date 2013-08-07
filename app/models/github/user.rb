@@ -3,6 +3,8 @@ module Github::User
   extend ActiveSupport::Concern
 
   included do
+    has_many :github_repos, dependent: :destroy,
+      class_name: "::Github::Repo"
   end
 
   def github
@@ -13,6 +15,21 @@ module Github::User
 
   def github?
     @is_github ||= identities.provider?(:github)
+  end
+
+  def sync_github_repos!
+    logger.tagged("SYNC:REPOS #{id}") do
+      repos = Github::Repo.fetch_for_user(self)
+      ids = Github::Organization.fetch(self).inject(repos) do |a, org|
+        a += org.repositories
+        a
+      end.map do |repo|
+        repo.save!
+        repo.id
+      end
+      github_repos.where("id NOT IN (?)", ids).destroy_all
+      Github::Repo.count
+    end
   end
 
   private

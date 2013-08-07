@@ -2,10 +2,15 @@
 
 FactoryGirl.define do
   factory :github_repo, :class => 'Github::Repo' do
-    organization_login "MyString"
+    user
+    organization_login nil
     full_name          "MyString"
     is_private          false
     ssh_url            "MyString"
-    http_url           "MyString"
+    html_url           "MyString"
+
+    trait :organization do
+      organization 'Org Name'
+    end
   end
 end
