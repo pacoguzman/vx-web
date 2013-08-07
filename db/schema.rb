@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130806224726) do
+ActiveRecord::Schema.define(version: 20130807114032) do
 
   create_table "github_organization_members", force: true do |t|
     t.integer  "organization_id", null: false
@@ -31,6 +31,19 @@ ActiveRecord::Schema.define(version: 20130806224726) do
   end
 
   add_index "github_organizations", ["login"], name: "index_github_organizations_on_login", unique: true
+
+  create_table "github_repos", force: true do |t|
+    t.integer  "user_id",            null: false
+    t.string   "organization_login"
+    t.string   "full_name",          null: false
+    t.boolean  "is_private",         null: false
+    t.string   "ssh_url",            null: false
+    t.string   "html_url",           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "github_repos", ["user_id", "full_name"], name: "index_github_repos_on_user_id_and_full_name", unique: true
 
   create_table "github_team_members", force: true do |t|
     t.integer  "user_id",    null: false

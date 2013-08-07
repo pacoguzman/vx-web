@@ -11,7 +11,7 @@ module Github
           Github::Organization.new(*org.slice("id", "login").values)
         end.map do |org|
           org.user = user
-          org.repositories = Github::Repository.fetch_for_organization(org)
+          org.repositories = Github::Repo.fetch_for_organization(org)
           org
         end.reject do |org|
           org.repositories.empty?
