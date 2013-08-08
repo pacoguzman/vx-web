@@ -4,7 +4,7 @@ class Github::Repo < ActiveRecord::Base
   validates :is_private, inclusion: { in: [true, false] }
   validates :full_name, uniqueness: { scope: [:user_id] }
 
-  belongs_to :user
+  belongs_to :user, class_name: "::User"
 
   default_scope ->{ order("github_repos.full_name ASC") }
 
@@ -23,12 +23,11 @@ class Github::Repo < ActiveRecord::Base
       update_attribute(:subscribed, true).or_rollback_transaction
 
       unless project?
-        create_project.then do |p|
-          user.add_deploy_key_to_github_project(p).then do |_|
-            user.add_hook_to_github_project(p)
-          end
-        end.or_rollback_transaction
+        create_project.or_rollback_transaction
       end
+
+      user.add_deploy_key_to_github_project(project).or_rollback_transaction
+      user.add_hook_to_github_project(project).or_rollback_transaction
 
       true
     end
@@ -40,9 +39,12 @@ class Github::Repo < ActiveRecord::Base
       update_attribute(:subscribed, false).or_rollback_transaction
 
       if project?
-        user.remove_hook_from_github_project(project).then do |p|
-          user.remove_deploy_key_from_github_project(project)
-        end.or_rollback_transaction
+        project.generate_deploy_key
+        project.generate_token
+        project.save.or_rollback_transaction
+
+        user.remove_hook_from_github_project(project).or_rollback_transaction
+        user.remove_deploy_key_from_github_project(project).or_rollback_transaction
       end
 
       true

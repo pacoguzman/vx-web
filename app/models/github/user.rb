@@ -114,7 +114,7 @@ module Github::User
           email = auth.info.email || "github#{uid}@empty"
           login = auth.info.nickname
 
-          user = User.create(email: email, name: name)
+          user = ::User.create(email: email, name: name)
           user.persisted?.or_rollback_transaction
 
           UserIdentity.create(

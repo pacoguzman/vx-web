@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   private
 
     def current_user
-      @current_user ||= User.find_by id: session[:user_id].to_i
+      @current_user ||=  User.first #::User.find_by id: session[:user_id].to_i
     end
 
     def user_logged_in?
