@@ -17,6 +17,16 @@ module Github::User
     @is_github ||= identities.provider?(:github)
   end
 
+  def add_github_hook!(project)
+    config = {
+      url:           hook_url,
+      secret:        token,
+      content_type: "json"
+    }
+    options = { events: %w{ push pull_request } }
+    session.create_hook(name, "web", config, options)
+  end
+
   def github_organizations
     github.then { organizations } || []
   end

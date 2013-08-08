@@ -6,7 +6,8 @@ class CreateProjects < ActiveRecord::Migration
       t.string   :clone_url,     null: false
       t.text     :description
       t.string   :provider
-      t.string   :deploy_key
+      t.string   :deploy_key,    null: false
+      t.string   :token,         null: false
 
       t.timestamps
     end

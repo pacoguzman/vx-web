@@ -5,4 +5,5 @@ module Github::Project
     scope :github, -> { where provider: :github }
   end
 
+
 end
