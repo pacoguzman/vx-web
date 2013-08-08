@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20130807114032) do
     t.string   "clone_url",   null: false
     t.text     "description"
     t.string   "provider"
+    t.string   "deploy_key"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -8,8 +8,10 @@ gem 'haml-rails'
 gem 'omniauth'
 gem 'puma'
 
+# github integration
 gem 'omniauth-github'
 gem 'octokit'
+gem 'sshkey'
 
 group :assets do
   gem 'execjs'

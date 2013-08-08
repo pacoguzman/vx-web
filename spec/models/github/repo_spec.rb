@@ -12,6 +12,20 @@ end
 describe Github::Repo do
   let(:repo) { create :github_repo }
 
+  context "#project" do
+    subject { repo.project }
+
+    context "when associated github project exists" do
+      let!(:project) { create :project, :github, name: repo.full_name }
+
+      it { should eq project }
+    end
+
+    context "when associated project does not exists" do
+      it { should be_nil }
+    end
+  end
+
   context "#unsubscribe" do
     before do
       repo.update_attribute :subscribed, true
