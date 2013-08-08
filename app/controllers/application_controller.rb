@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
     def access_denied
       respond_to do |want|
         want.html { render 'welcome/login', layout: false }
+        want.json { head 403 }
         want.all  { head 403 }
       end
       false

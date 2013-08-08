@@ -1,7 +1,9 @@
 class Api::ProjectsController < Api::BaseController
-  respond_to :json
 
   def index
-    respond_with(@projects = Project.all)
+    respond_to do |want|
+      want.json { render json: Project.all }
+    end
   end
+
 end
