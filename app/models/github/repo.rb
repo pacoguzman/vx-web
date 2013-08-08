@@ -9,12 +9,12 @@ class Github::Repo < ActiveRecord::Base
 
   class << self
 
-    def fetch_for_organization(organization)
-      organization.user.github.then do
+    def fetch_for_organization(user, organization)
+      user.github.then do
         organization_repositories(organization).reject do |repo|
           not repo.permissions.admin
         end.map do |repo|
-          Github::Repo.build_from_attributes repo, organization: organization
+          Github::Repo.build_from_attributes user, repo, organization: organization
         end
       end || []
     end
@@ -22,15 +22,13 @@ class Github::Repo < ActiveRecord::Base
     def fetch_for_user(user)
       user.github.then do
         repositories.map do |repo|
-          Github::Repo.build_from_attributes repo, user: user
+          Github::Repo.build_from_attributes user, repo
         end
       end || []
     end
 
-    def build_from_attributes(attrs, options = {})
+    def build_from_attributes(user, attrs, options = {})
       full_name = attrs['full_name']
-      user      = options[:user] || options[:organization].user
-
 
       user.github_repos.where(full_name: full_name).first_or_initialize.tap do |repo|
         ActionController::Parameters.new(

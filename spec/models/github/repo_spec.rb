@@ -19,11 +19,11 @@ describe Github::Repo do
       "ssh_url"     => "ssh url",
       "html_url"    => "html url"
     } }
-    let(:org) { Github::Organization.new 1, 'org login', user, nil }
+    let(:org) { OpenStruct.new id: 1, login: 'org login' }
 
     context "fetch_for_organization" do
       let(:proxy) { OpenStruct.new }
-      let(:repos) { described_class.fetch_for_organization org }
+      let(:repos) { described_class.fetch_for_organization user, org }
       let(:admin) { true }
       subject { repos }
 
@@ -73,7 +73,7 @@ describe Github::Repo do
     context "build_from_attributes" do
       let(:user)    { create :user }
       let(:options) { { } }
-      let(:repo)    { described_class.build_from_attributes attrs, options }
+      let(:repo)    { described_class.build_from_attributes user, attrs, options }
       subject       { repo }
 
       context "when repo exists" do

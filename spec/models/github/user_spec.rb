@@ -23,15 +23,16 @@ describe Github::User do
   subject    { user     }
 
   context "#sync_github_repos!" do
-    let(:user)      { create :user                            }
-    let(:org)       { OpenStruct.new repositories: [org_repo] }
+    let(:user)      { create :user                                      }
+    let(:org)       { OpenStruct.new login: 'login'                     }
     let(:user_repo) { build :github_repo, user: user, full_name: "user" }
     let(:org_repo)  { build :github_repo, user: user, full_name: "org"  }
     subject { user.sync_github_repos! }
 
     before do
-      mock(Github::Organization).fetch(user) { [org] }
-      mock(Github::Repo).fetch_for_user(user) { [user_repo] }
+      mock(user).github_organizations { [org] }
+      mock(Github::Repo).fetch_for_user(user) { [org_repo] }
+      mock(Github::Repo).fetch_for_organization(user, org.login) { [user_repo] }
     end
 
     it { should eq 2 }
@@ -41,6 +42,15 @@ describe Github::User do
       user.sync_github_repos!
       expect(Github::Repo.exists? repo.id).to be_false
     end
+  end
+
+  context "#github_organizations" do
+    subject { user.github_organizations }
+    before do
+      mock(user).github.mock!.organizations { 'organizations' }
+    end
+
+    it { should eq 'organizations' }
   end
 
   context "#github" do

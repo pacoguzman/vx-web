@@ -17,25 +17,34 @@ module Github::User
     @is_github ||= identities.provider?(:github)
   end
 
+  def github_organizations
+    github.then { organizations }
+  end
+
   def sync_github_repos!
     logger.tagged("SYNC:REPOS #{id}") do
-      th = Thread.new do
-        User.connection_pool.with_connection do
-          Github::Repo.fetch_for_user(self)
+
+      organizations = github_organizations.map(&:login)
+
+      (organizations + [nil]).map do |organization|
+        Thread.new do
+          User.connection_pool.with_connection do
+            if organization
+              Github::Repo.fetch_for_organization(self, organization)
+            else
+              Github::Repo.fetch_for_user(self)
+            end
+          end
+        end.tap do |th|
+          th.abort_on_exception = true
         end
-      end
-      th.abort_on_exception = true
-
-      repos = Github::Organization.fetch(self).map do |org|
-        org.repositories
-      end.flatten
-      repos += th.value
-
-      ids = repos.map do |repo|
+      end.map(&:value).flatten.map do |repo|
         repo.save!
         repo.id
+      end.tap do |ids|
+        github_repos.where("id NOT IN (?)", ids).destroy_all
       end
-      github_repos.where("id NOT IN (?)", ids).destroy_all
+
       Github::Repo.count
     end
   end
