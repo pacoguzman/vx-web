@@ -1,11 +1,14 @@
 CiWeb::Application.routes.draw do
 
+  namespace :api do
+    resources :projects
+    resources :github_repos
+  end
+
   get '/auth/github/callback', to: 'github/users_callbacks#create'
   get '/auth/failure', to: redirect('/')
 
-  namespace :api do
-    resources :projects
-  end
-
   root 'welcome#index'
+
+  get "*path", to: "welcome#index", constraints: ->(req) { req.format == Mime::HTML }
 end

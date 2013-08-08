@@ -1,0 +1,35 @@
+.github-repos-sync {
+}
+
+.github-repos {
+
+  list-style: none;
+
+  .github-repo {
+
+    margin: .1em 0;
+    padding: .2em 0;
+
+    label {
+      display: inline-block;
+    }
+
+    input[type=checkbox] {
+      display: inline-block;
+      margin-top: -0.1em;
+      margin-right: .4em;
+    }
+
+    span {
+      width: 30em;
+      display: inline-block;
+    }
+
+    .octocat {
+      opacity: .5;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}

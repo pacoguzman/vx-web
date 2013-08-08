@@ -6,6 +6,17 @@ class Github::Repo < ActiveRecord::Base
 
   belongs_to :user
 
+  default_scope ->{ order("github_repos.full_name ASC") }
+
+  def as_json(*args)
+    {
+      id: id,
+      full_name: full_name,
+      html_url: html_url,
+      subscribed: rand > 0.6
+    }
+  end
+
 
   class << self
 

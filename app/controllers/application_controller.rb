@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_filter :authorize_user
+  before_filter :intercept_html_requests
 
   helper_method :current_user,
                 :user_logged_in?
@@ -28,5 +29,9 @@ class ApplicationController < ActionController::Base
         want.all  { head 403 }
       end
       false
+    end
+
+    def intercept_html_requests
+      render('welcome/index') if request.format == Mime::HTML
     end
 end

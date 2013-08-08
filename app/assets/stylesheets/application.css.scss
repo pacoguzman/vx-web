@@ -5,13 +5,17 @@
  *= require_tree .
  */
 
-body, head {
-  color: #333;
+body, head, html {
+  color: #555 !important;
 }
 
 body > .container {
+  padding-bottom: 3em;
 }
 
+body > .container > .ng-view {
+  margin-left: 4em;
+}
 
 .site-head {
   width: 100%;
