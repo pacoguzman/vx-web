@@ -2,4 +2,7 @@ rvm:
 - 1.9.3
 - 2.0.0
 
+before_script:
+- mkdir -p log
+- mkdir -p tmp
 script: bundle exec rake db:create db:reset db:migrate spec
