@@ -5,4 +5,5 @@ rvm:
 before_script:
 - mkdir -p log
 - mkdir -p tmp
-script: bundle exec rake db:create db:reset db:migrate spec RAILS_ENV=test
+- bundle exec rake db:setup
+script: bundle exec rake db:migrate spec RAILS_ENV=test
