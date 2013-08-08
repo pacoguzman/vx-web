@@ -19,6 +19,16 @@ shared_examples 'cannot create any of github users or identiries' do
   end
 end
 
+shared_examples "cannot touch any projects on github when user is not githubber" do
+  context "when user is not githubber" do
+    before { mock(user).github{ nil } }
+
+    it "cannot touch any projects on github" do
+      expect(subject).to be_nil
+    end
+  end
+end
+
 describe Github::User do
   let(:user) { User.new }
   subject    { user     }
@@ -27,7 +37,52 @@ describe Github::User do
     let(:project) { build :project, :github }
     let(:github)  { 'proxy'                 }
 
-    context "add_deploy_key_to_github_project!" do
+    context "#remove_deploy_key_from_github_project!" do
+      let(:key_name) { project.deploy_key_name                             }
+      let(:key_id)   { 1                                                   }
+      let(:key)      { OpenStruct.new title: key_name, id: key_id          }
+      subject        { user.remove_deploy_key_from_github_project! project }
+
+      context "when user is githubber" do
+        before do
+          mock(user).github { github }
+          mock(github).deploy_keys(project.name) { [key] }
+          mock(github).remove_deploy_key(project.name, key_id) { 'success' }
+        end
+
+        it "should remove any project deploy keys from github" do
+          expect(subject).to eq ['success']
+        end
+      end
+
+      include_examples "cannot touch any projects on github when user is not githubber"
+
+    end
+
+    context "#remove_hook_from_github_project!" do
+      let(:url)     { project.hook_url                                              }
+      let(:hook_id) { 1                                                             }
+      let(:hook)    { OpenStruct.new(id: hook_id, config: OpenStruct.new(url: url)) }
+      subject       { user.remove_hook_from_github_project! project                 }
+
+      context "when user is githubber" do
+        before do
+          mock(user).github { github }
+          mock(github).hooks(project.name) { [hook] }
+          mock(github).remove_hook(project.name, hook_id) { 'success' }
+        end
+
+        it "should remove any project hooks from github" do
+          expect(subject).to eq ['success']
+        end
+      end
+
+      include_examples "cannot touch any projects on github when user is not githubber"
+
+    end
+
+    context "#add_deploy_key_to_github_project!" do
+      subject { user.add_deploy_key_to_github_project! project }
 
       context "when user is githubber" do
         before do
@@ -41,21 +96,16 @@ describe Github::User do
         end
 
         it "should add deploy key to project on github" do
-          expect(user.add_deploy_key_to_github_project! project).to eq 'success'
+          expect(subject).to eq 'success'
         end
       end
 
-      context "when user is not githubber" do
-        before { mock(user).github { nil } }
-
-        it "cannot touch any projects on github" do
-          expect(user.add_deploy_key_to_github_project! project).to be_nil
-        end
-      end
+      include_examples "cannot touch any projects on github when user is not githubber"
 
     end
 
     context "#add_hook_to_github_project!" do
+      subject { user.add_hook_to_github_project! project }
 
       context "when user is githubber" do
         before do
@@ -70,17 +120,11 @@ describe Github::User do
         end
 
         it "should create hook on github for project" do
-          expect(user.add_hook_to_github_project! project).to eq 'success'
+          expect(subject).to eq 'success'
         end
       end
 
-      context "when user is not githubber" do
-        before { mock(user).github { nil } }
-
-        it "cannot touch any projects on github" do
-          expect(user.add_hook_to_github_project! project ).to be_nil
-        end
-      end
+      include_examples "cannot touch any projects on github when user is not githubber"
 
     end
   end

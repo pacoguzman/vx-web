@@ -28,18 +28,22 @@ module Github::User
   end
 
   def remove_hook_from_github_project!(project)
-    github.hooks(project.name).select do |hook|
-      hook.config.url =~ /^#{Regexp.escape hook_url_prefix}/
-    end.map do |hook|
-      github.remove_hook(project.name, hook.id)
+    github.then do
+      hooks(project.name).select do |hook|
+        hook.config.url =~ /#{Regexp.escape Rails.configuration.x.hostname}\//
+      end.map do |hook|
+        remove_hook(project.name, hook.id)
+      end
     end
   end
 
   def remove_deploy_key_from_github_project!(project)
-    github.deploy_keys(project.name).select do |key|
-      key.title == project.deploy_key_name
-    end.map do |key|
-      github.remove_deploy_key(project.name, key.id)
+    github.then do
+      deploy_keys(project.name).select do |key|
+        key.title == project.deploy_key_name
+      end.map do |key|
+        remove_deploy_key(project.name, key.id)
+      end
     end
   end
 
