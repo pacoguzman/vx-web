@@ -8,19 +8,23 @@ module Github::User
   end
 
   def add_hook_to_github_project!(project)
-    config = {
-      url:           project.hook_url,
-      secret:        project.token,
-      content_type: "json"
-    }
-    options = { events: %w{ push pull_request } }
-    github.create_hook(name, "web", config, options)
+    github.then do
+      config = {
+        url:           project.hook_url,
+        secret:        project.token,
+        content_type: "json"
+      }
+      options = { events: %w{ push pull_request } }
+      create_hook(project.name, "web", config, options)
+    end
   end
 
   def add_deploy_key_to_github_project!(project)
-    github.add_deploy_key(project.name,
-                          project.deploy_key_name,
-                          project.public_deploy_key)
+    github.then do
+      add_deploy_key(project.name,
+                     project.deploy_key_name,
+                     project.public_deploy_key)
+    end
   end
 
   def remove_hook_from_github_project!(project)

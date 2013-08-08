@@ -13,9 +13,11 @@ class Project < ActiveRecord::Base
   before_validation :generate_token,      on: :create
   before_validation :generate_deploy_key, on: :create
 
+
   class << self
     def deploy_key_name ; 'evrone.ci' end
   end
+
 
   def deploy_key_name
     self.class.deploy_key_name
@@ -33,6 +35,12 @@ class Project < ActiveRecord::Base
 
   def hook_url
     "http://#{Socket.gethostname}/github/callback/#{token}"
+  end
+
+  def public_deploy_key
+    @public_deploy_key ||= SSHKey.new(deploy_key, comment: deploy_key_name).then do
+      ssh_public_key
+    end
   end
 
 end

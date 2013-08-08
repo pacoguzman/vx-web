@@ -22,6 +22,68 @@ describe Github::User do
   let(:user) { User.new }
   subject    { user     }
 
+  context "(projects on github)" do
+    let(:project) { build :project, :github }
+    let(:github)  { 'proxy'                 }
+
+    context "add_deploy_key_to_github_project!" do
+
+      context "when user is githubber" do
+        before do
+          project.generate_deploy_key
+          mock(user).github { github }
+          mock(github).add_deploy_key(project.name,
+                                      project.deploy_key_name,
+                                      project.public_deploy_key) {
+                                        'success'
+                                      }
+        end
+
+        it "should add deploy key to project on github" do
+          expect(user.add_deploy_key_to_github_project! project).to eq 'success'
+        end
+      end
+
+      context "when user is not githubber" do
+        before { mock(user).github { nil } }
+
+        it "cannot touch any projects on github" do
+          expect(user.add_deploy_key_to_github_project! project).to be_nil
+        end
+      end
+
+    end
+
+    context "#add_hook_to_github_project!" do
+
+      context "when user is githubber" do
+        before do
+          mock(user).github { github }
+          mock(github).create_hook(project.name, 'web', {
+            url:          project.hook_url,
+            secret:       project.token,
+            content_type: 'json'
+          }, {
+            events:       %w{ push pull_request }
+          }) { 'success' }
+        end
+
+        it "should create hook on github for project" do
+          expect(user.add_hook_to_github_project! project).to eq 'success'
+        end
+      end
+
+      context "when user is not githubber" do
+        before { mock(user).github { nil } }
+
+        it "cannot touch any projects on github" do
+          expect(user.add_hook_to_github_project! project ).to be_nil
+        end
+      end
+
+    end
+  end
+
   context "#sync_github_repos!" do
     let(:user)      { create :user                                      }
     let(:org)       { OpenStruct.new login: 'login'                     }
