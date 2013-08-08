@@ -38,8 +38,8 @@ class Project < ActiveRecord::Base
   end
 
   def public_deploy_key
-    @public_deploy_key ||= SSHKey.new(deploy_key, comment: deploy_key_name).then do
-      ssh_public_key
+    @public_deploy_key ||= SSHKey.new(deploy_key, comment: deploy_key_name).then do |s|
+      s.ssh_public_key
     end
   end
 

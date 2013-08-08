@@ -8,41 +8,41 @@ module Github::User
   end
 
   def add_hook_to_github_project!(project)
-    github.then do
+    github.then do |g|
       config = {
         url:           project.hook_url,
         secret:        project.token,
         content_type: "json"
       }
       options = { events: %w{ push pull_request } }
-      create_hook(project.name, "web", config, options)
+      g.create_hook(project.name, "web", config, options)
     end
   end
 
   def add_deploy_key_to_github_project!(project)
-    github.then do
-      add_deploy_key(project.name,
-                     project.deploy_key_name,
-                     project.public_deploy_key)
+    github.then do |g|
+      g.add_deploy_key(project.name,
+                       project.deploy_key_name,
+                       project.public_deploy_key)
     end
   end
 
   def remove_hook_from_github_project!(project)
-    github.then do
-      hooks(project.name).select do |hook|
+    github.then do |g|
+      g.hooks(project.name).select do |hook|
         hook.config.url =~ /#{Regexp.escape Rails.configuration.x.hostname}\//
       end.map do |hook|
-        remove_hook(project.name, hook.id)
+        g.remove_hook(project.name, hook.id)
       end
     end
   end
 
   def remove_deploy_key_from_github_project!(project)
-    github.then do
-      deploy_keys(project.name).select do |key|
+    github.then do |g|
+      g.deploy_keys(project.name).select do |key|
         key.title == project.deploy_key_name
       end.map do |key|
-        remove_deploy_key(project.name, key.id)
+        g.remove_deploy_key(project.name, key.id)
       end
     end
   end
@@ -58,7 +58,7 @@ module Github::User
   end
 
   def github_organizations
-    github.then { organizations } || []
+    github.then(&:organizations) || []
   end
 
   def sync_github_repos!
@@ -92,8 +92,8 @@ module Github::User
   private
 
     def create_github_session
-      identities.find_by_provider(:github).then do
-        Octokit::Client.new(login: login, oauth_token: token)
+      identities.find_by_provider(:github).then do |i|
+        Octokit::Client.new(login: i.login, oauth_token: i.token)
       end
     end
 
@@ -114,7 +114,7 @@ module Github::User
           login = auth.info.nickname
 
           user = User.create(email: email, name: name)
-          user.persisted? or raise(ActiveRecord::Rollback)
+          user.persisted?.or_rollback_transaction
 
           UserIdentity.create(
             provider: 'github',
@@ -122,7 +122,7 @@ module Github::User
             token:    token,
             user:     user,
             login:    login
-          ).persisted? or raise(ActiveRecord::Rollback)
+          ).persisted?.or_rollback_transaction
           user
         end
       end

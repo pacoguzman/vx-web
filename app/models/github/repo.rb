@@ -19,9 +19,9 @@ class Github::Repo < ActiveRecord::Base
 
   def subscribe
     transaction do
-      update_attributes(subscribed: true) or raise(ActiveRecord::Rollback)
+      update_attributes(subscribed: true).or_rollback_transaction
       unless project?
-        create_project! or raise(ActiveRecord::Rollback)
+        create_project!.or_rollback_transaction
       end
     end
   end
@@ -51,8 +51,8 @@ class Github::Repo < ActiveRecord::Base
   class << self
 
     def fetch_for_organization(user, organization)
-      user.github.then do
-        organization_repositories(organization).reject do |repo|
+      user.github.then do |g|
+        g.organization_repositories(organization).reject do |repo|
           not repo.permissions.admin
         end.map do |repo|
           Github::Repo.build_from_attributes user, repo, organization: organization
@@ -61,8 +61,8 @@ class Github::Repo < ActiveRecord::Base
     end
 
     def fetch_for_user(user)
-      user.github.then do
-        repositories.map do |repo|
+      user.github.then do |g|
+        g.repositories.map do |repo|
           Github::Repo.build_from_attributes user, repo
         end
       end || []
