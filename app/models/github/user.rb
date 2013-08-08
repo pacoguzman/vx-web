@@ -7,6 +7,38 @@ module Github::User
       class_name: "::Github::Repo"
   end
 
+  def add_hook_to_github_project!(project)
+    config = {
+      url:           project.hook_url,
+      secret:        project.token,
+      content_type: "json"
+    }
+    options = { events: %w{ push pull_request } }
+    github.create_hook(name, "web", config, options)
+  end
+
+  def add_deploy_key_to_github_project!(project)
+    github.add_deploy_key(project.name,
+                          project.deploy_key_name,
+                          project.public_deploy_key)
+  end
+
+  def remove_hook_from_github_project!(project)
+    github.hooks(project.name).select do |hook|
+      hook.config.url =~ /^#{Regexp.escape hook_url_prefix}/
+    end.map do |hook|
+      github.remove_hook(project.name, hook.id)
+    end
+  end
+
+  def remove_deploy_key_from_github_project!(project)
+    github.deploy_keys(project.name).select do |key|
+      key.title == project.deploy_key_name
+    end.map do |key|
+      github.remove_deploy_key(project.name, key.id)
+    end
+  end
+
   def github
     if github?
       @github ||= create_github_session
@@ -15,16 +47,6 @@ module Github::User
 
   def github?
     @is_github ||= identities.provider?(:github)
-  end
-
-  def add_github_hook!(project)
-    config = {
-      url:           hook_url,
-      secret:        token,
-      content_type: "json"
-    }
-    options = { events: %w{ push pull_request } }
-    session.create_hook(name, "web", config, options)
   end
 
   def github_organizations

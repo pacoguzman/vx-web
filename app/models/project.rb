@@ -1,4 +1,5 @@
 require 'securerandom'
+require 'socket'
 
 class Project < ActiveRecord::Base
 
@@ -28,6 +29,10 @@ class Project < ActiveRecord::Base
 
   def generate_token
     self.token = SecureRandom.uuid
+  end
+
+  def hook_url
+    "http://#{Socket.gethostname}/github/callback/#{token}"
   end
 
 end

@@ -13,6 +13,8 @@ CiWeb::Application.routes.draw do
     end
   end
 
+  get '/github/callback/:token', to: 'github/projects_callbacks#create'
+
   get '/auth/github/callback', to: 'github/users_callbacks#create'
   get '/auth/failure', to: redirect('/')
 
