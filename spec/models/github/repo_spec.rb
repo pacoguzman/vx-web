@@ -10,6 +10,16 @@ shared_examples 'github repo common attributes' do
   its(:description) { should eq 'description' }
 end
 
+shared_examples 'Github::Repo#(un)subscribe cannot touch any projects' do
+  it "should be return nil" do
+    expect( subject ).to be_nil
+  end
+
+  it "cannot touch any projects" do
+    expect{ subject }.to_not change(Project, :count)
+  end
+end
+
 describe Github::Repo do
   let(:repo) { create :github_repo }
 
@@ -28,52 +38,139 @@ describe Github::Repo do
   end
 
   context "#unsubscribe" do
+    subject { repo.unsubscribe }
     before do
-      repo.update_attribute :subscribed, true
+      repo.update_attributes! :subscribed => true
     end
 
-    it "should change 'subscribed' to false" do
-      expect{
-        repo.unsubscribe
-      }.to change(repo, :subscribed).to(false)
+    context "when asscociated project exists" do
+      let(:user)    { repo.user   }
+      let(:project) { Project.new }
+
+      before do
+        stub(repo).project  { project }
+        stub(repo).project? { true    }
+      end
+
+      context "successfully" do
+        before do
+          mock(user).remove_hook_from_github_project(project)       { true }
+          mock(user).remove_deploy_key_from_github_project(project) { true }
+        end
+
+        it "should change 'subscribed' to false" do
+          expect{ subject }.to change(repo, :subscribed).to(false)
+        end
+
+        it "should return true value" do
+          expect(subject).to be_true
+        end
+      end
+
+      context "fail" do
+        context "when unable to update attribute 'subscribed'" do
+          include_examples 'Github::Repo#(un)subscribe cannot touch any projects' do
+            before { mock(repo).update_attribute(:subscribed, false) { false } }
+          end
+        end
+
+        context "when unable to remove hook from github project" do
+          include_examples 'Github::Repo#(un)subscribe cannot touch any projects' do
+            before { mock(user).remove_hook_from_github_project(anything) { false } }
+          end
+        end
+
+        context "when unable to add hook to github project" do
+          include_examples 'Github::Repo#(un)subscribe cannot touch any projects' do
+            before do
+              mock(user).remove_hook_from_github_project(anything)       { true  }
+              mock(user).remove_deploy_key_from_github_project(anything) { false }
+            end
+          end
+        end
+      end
+
     end
   end
 
   context "#subscribe" do
-
-    it "should change 'subscribed' to true" do
-      expect{
-        repo.subscribe
-      }.to change(repo, :subscribed).to(true)
-    end
+    subject { repo.subscribe }
 
     context "when associated project exists" do
       let!(:project) { create :project, :github, name: repo.full_name }
 
       it "cannot touch any projects" do
-        expect{
-          repo.subscribe
-        }.to_not change(Project, :count)
+        expect{ subject }.to_not change(Project, :count)
+      end
+
+      it "should return true value" do
+        expect(subject).to be_true
+      end
+
+      it "should change 'subscribed' to true" do
+        expect{ subject }.to change(repo, :subscribed).to(true)
       end
     end
 
     context "when associated project does not exists" do
+      let(:user)    { repo.user           }
+      let(:project) { Project.github.last }
 
-      it "should create a new github project" do
-        expect{
-          repo.subscribe
-        }.to change(Project.github, :count).by(1)
+      context "successfuly" do
+        before do
+          mock(user).add_deploy_key_to_github_project(anything) { true }
+          mock(user).add_hook_to_github_project(anything)       { true }
+        end
+
+        it "should create a new github project" do
+          expect{ subject }.to change(Project.github, :count).by(1)
+        end
+
+        it "should change 'subscribed' to true" do
+          expect{ subject }.to change(repo, :subscribed).to(true)
+        end
+
+        context "created github project" do
+          subject { project        }
+          before  { repo.subscribe }
+          its(:name)        { should eq repo.full_name   }
+          its(:http_url)    { should eq repo.html_url    }
+          its(:clone_url)   { should eq repo.ssh_url     }
+          its(:description) { should eq repo.description }
+        end
       end
 
-      context "created github project" do
-        subject { Project.github.last }
-        before { repo.subscribe }
+      context "fail" do
 
-        its(:name)        { should eq repo.full_name   }
-        its(:http_url)    { should eq repo.html_url    }
-        its(:clone_url)   { should eq repo.ssh_url     }
-        its(:description) { should eq repo.description }
+        context "when unable to create project" do
+          include_examples 'Github::Repo#(un)subscribe cannot touch any projects' do
+            before { mock(repo).html_url { nil } }
+          end
+        end
+
+        context "when unable to update attribute 'subscribed'" do
+          include_examples 'Github::Repo#(un)subscribe cannot touch any projects' do
+            before { mock(repo).update_attribute(:subscribed, true) { false } }
+          end
+        end
+
+        context "when unable to add deploy key to github project" do
+          include_examples 'Github::Repo#(un)subscribe cannot touch any projects' do
+            before { mock(user).add_deploy_key_to_github_project(anything) { false } }
+          end
+        end
+
+        context "when unable to add hook to github project" do
+          include_examples 'Github::Repo#(un)subscribe cannot touch any projects' do
+            before do
+              mock(user).add_deploy_key_to_github_project(anything) { true  }
+              mock(user).add_hook_to_github_project(anything)       { false }
+            end
+          end
+        end
+
       end
+
     end
   end
 

@@ -7,7 +7,7 @@ module Github::User
       class_name: "::Github::Repo"
   end
 
-  def add_hook_to_github_project!(project)
+  def add_hook_to_github_project(project)
     github.then do |g|
       config = {
         url:           project.hook_url,
@@ -19,7 +19,7 @@ module Github::User
     end
   end
 
-  def add_deploy_key_to_github_project!(project)
+  def add_deploy_key_to_github_project(project)
     github.then do |g|
       g.add_deploy_key(project.name,
                        project.deploy_key_name,
@@ -27,7 +27,7 @@ module Github::User
     end
   end
 
-  def remove_hook_from_github_project!(project)
+  def remove_hook_from_github_project(project)
     github.then do |g|
       g.hooks(project.name).select do |hook|
         hook.config.url =~ /#{Regexp.escape Rails.configuration.x.hostname}\//
@@ -37,7 +37,7 @@ module Github::User
     end
   end
 
-  def remove_deploy_key_from_github_project!(project)
+  def remove_deploy_key_from_github_project(project)
     github.then do |g|
       g.deploy_keys(project.name).select do |key|
         key.title == project.deploy_key_name
@@ -107,6 +107,7 @@ module Github::User
 
       def create_from_github(auth)
         transaction do
+
           uid   = auth.uid
           name  = auth.info.name
           token = auth.credentials.token
@@ -124,6 +125,7 @@ module Github::User
             login:    login
           ).persisted?.or_rollback_transaction
           user
+
         end
       end
 

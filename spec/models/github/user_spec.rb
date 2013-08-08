@@ -37,11 +37,11 @@ describe Github::User do
     let(:project) { build :project, :github }
     let(:github)  { 'proxy'                 }
 
-    context "#remove_deploy_key_from_github_project!" do
+    context "#remove_deploy_key_from_github_project" do
       let(:key_name) { project.deploy_key_name                             }
       let(:key_id)   { 1                                                   }
       let(:key)      { OpenStruct.new title: key_name, id: key_id          }
-      subject        { user.remove_deploy_key_from_github_project! project }
+      subject        { user.remove_deploy_key_from_github_project project }
 
       context "when user is githubber" do
         before do
@@ -59,11 +59,11 @@ describe Github::User do
 
     end
 
-    context "#remove_hook_from_github_project!" do
+    context "#remove_hook_from_github_project" do
       let(:url)     { project.hook_url                                              }
       let(:hook_id) { 1                                                             }
       let(:hook)    { OpenStruct.new(id: hook_id, config: OpenStruct.new(url: url)) }
-      subject       { user.remove_hook_from_github_project! project                 }
+      subject       { user.remove_hook_from_github_project project                 }
 
       context "when user is githubber" do
         before do
@@ -81,8 +81,8 @@ describe Github::User do
 
     end
 
-    context "#add_deploy_key_to_github_project!" do
-      subject { user.add_deploy_key_to_github_project! project }
+    context "#add_deploy_key_to_github_project" do
+      subject { user.add_deploy_key_to_github_project project }
 
       context "when user is githubber" do
         before do
@@ -104,8 +104,8 @@ describe Github::User do
 
     end
 
-    context "#add_hook_to_github_project!" do
-      subject { user.add_hook_to_github_project! project }
+    context "#add_hook_to_github_project" do
+      subject { user.add_hook_to_github_project project }
 
       context "when user is githubber" do
         before do

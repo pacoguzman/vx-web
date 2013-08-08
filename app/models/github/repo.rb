@@ -19,25 +19,44 @@ class Github::Repo < ActiveRecord::Base
 
   def subscribe
     transaction do
-      update_attributes(subscribed: true).or_rollback_transaction
+
+      update_attribute(:subscribed, true).or_rollback_transaction
+
       unless project?
-        create_project!.or_rollback_transaction
+        create_project.then do |p|
+          user.add_deploy_key_to_github_project(p).then do |_|
+            user.add_hook_to_github_project(p)
+          end
+        end.or_rollback_transaction
       end
+
+      true
     end
   end
 
   def unsubscribe
-    update_attributes subscribed: false
+    transaction do
+
+      update_attribute(:subscribed, false).or_rollback_transaction
+
+      if project?
+        user.remove_hook_from_github_project(project).then do |p|
+          user.remove_deploy_key_from_github_project(project)
+        end.or_rollback_transaction
+      end
+
+      true
+    end
   end
 
   def project
-    @project ||= Project.github.find_by(name: full_name)
+    @project ||= ::Project.github.find_by(name: full_name)
   end
   alias :project? :project
 
   private
 
-    def create_project!
+    def create_project
       attrs = {
         name:        full_name,
         http_url:    html_url,
@@ -45,7 +64,8 @@ class Github::Repo < ActiveRecord::Base
         provider:    'github',
         description: description
       }
-      Project.create(attrs)
+      project = ::Project.create(attrs)
+      project.persisted? && project
     end
 
   class << self
