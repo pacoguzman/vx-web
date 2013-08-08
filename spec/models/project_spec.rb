@@ -39,7 +39,7 @@ describe Project do
   context "#hook_url" do
     it "should return secure hook url for project" do
       token = project.generate_token
-      expect(project.hook_url).to eq "http://#{Socket.gethostname}/github/callback/#{token}"
+      expect(project.hook_url).to eq "http://#{Rails.configuration.x.hostname}/github/callback/#{token}"
     end
   end
 end

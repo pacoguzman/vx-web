@@ -34,7 +34,7 @@ class Project < ActiveRecord::Base
   end
 
   def hook_url
-    "http://#{Socket.gethostname}/github/callback/#{token}"
+    "http://#{Rails.configuration.x.hostname}/github/callback/#{token}"
   end
 
   def public_deploy_key

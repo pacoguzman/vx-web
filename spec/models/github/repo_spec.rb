@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'ostruct'
 
 shared_examples 'github repo common attributes' do
   its(:full_name)   { should eq 'full name'   }

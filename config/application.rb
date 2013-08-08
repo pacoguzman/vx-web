@@ -1,6 +1,8 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'socket'
+require 'ostruct'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -20,5 +22,8 @@ module CiWeb
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.logger = ActiveSupport::TaggedLogging.new(Logger.new("log/#{Rails.env}.log"))
+
+    config.x = OpenStruct.new
+    config.x.hostname = ENV['CI_HOSTNAME'] || Socket.gethostname
   end
 end

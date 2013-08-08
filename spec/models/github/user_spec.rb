@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'ostruct'
 
 shared_examples 'cannot create any of github users or identiries' do
   it "cannot create any users" do
