@@ -31,6 +31,7 @@ class Github::Repo < ActiveRecord::Base
       full_name = attrs['full_name']
       user      = options[:user] || options[:organization].user
 
+
       user.github_repos.where(full_name: full_name).first_or_initialize.tap do |repo|
         ActionController::Parameters.new(
           attrs.slice('full_name', 'private', 'ssh_url', 'html_url')
@@ -42,6 +43,7 @@ class Github::Repo < ActiveRecord::Base
           repo.organization_login = options[:organization].try(:login)
         end
       end
+
     end
 
   end

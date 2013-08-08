@@ -12,7 +12,9 @@ module Github
         end.map do |org|
           Thread.new do
             org.user = user
-            org.repositories = Github::Repo.fetch_for_organization(org)
+            ::User.connection_pool.with_connection do
+              org.repositories = Github::Repo.fetch_for_organization(org)
+            end
             org
           end.tap do |th|
             th.abort_on_exception = true

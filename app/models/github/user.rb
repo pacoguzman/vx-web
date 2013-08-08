@@ -19,11 +19,19 @@ module Github::User
 
   def sync_github_repos!
     logger.tagged("SYNC:REPOS #{id}") do
-      repos = Github::Repo.fetch_for_user(self)
-      ids = Github::Organization.fetch(self).inject(repos) do |a, org|
-        a += org.repositories
-        a
-      end.map do |repo|
+      th = Thread.new do
+        User.connection_pool.with_connection do
+          Github::Repo.fetch_for_user(self)
+        end
+      end
+      th.abort_on_exception = true
+
+      repos = Github::Organization.fetch(self).map do |org|
+        org.repositories
+      end.flatten
+      repos += th.value
+
+      ids = repos.map do |repo|
         repo.save!
         repo.id
       end
