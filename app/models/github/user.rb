@@ -18,7 +18,7 @@ module Github::User
   end
 
   def github_organizations
-    github.then { organizations }
+    github.then { organizations } || []
   end
 
   def sync_github_repos!
@@ -28,11 +28,11 @@ module Github::User
 
       (organizations + [nil]).map do |organization|
         Thread.new do
-          User.connection_pool.with_connection do
+          ::User.connection_pool.with_connection do
             if organization
-              Github::Repo.fetch_for_organization(self, organization)
+              ::Github::Repo.fetch_for_organization(self, organization)
             else
-              Github::Repo.fetch_for_user(self)
+              ::Github::Repo.fetch_for_user(self)
             end
           end
         end.tap do |th|
@@ -45,7 +45,7 @@ module Github::User
         github_repos.where("id NOT IN (?)", ids).destroy_all
       end
 
-      Github::Repo.count
+      ::Github::Repo.count
     end
   end
 

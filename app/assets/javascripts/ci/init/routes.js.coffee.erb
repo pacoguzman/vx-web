@@ -5,9 +5,9 @@ CI.config ['$routeProvider', '$locationProvider', ($routeProvider, $locationProv
       templateUrl: "<%= asset_path 'assets/projects/index.html' %>",
       controller: "ProjectsCtrl"
     ).
-    when('/projects/new',
-      templateUrl: "<%= asset_path 'assets/projects/new.html' %>",
-      controller: "NewProjectCtrl"
+    when('/github_repos',
+      templateUrl: "<%= asset_path 'assets/github_repos/index.html' %>",
+      controller: "GithubReposCtrl"
     )
 
   $locationProvider.html5Mode true

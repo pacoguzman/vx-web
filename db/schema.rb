@@ -13,63 +13,32 @@
 
 ActiveRecord::Schema.define(version: 20130807114032) do
 
-  create_table "github_organization_members", force: true do |t|
-    t.integer  "organization_id", null: false
-    t.integer  "user_id",         null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "github_organization_members", ["organization_id", "user_id"], name: "index_github_organization_members_on_org_and_user", unique: true
-
-  create_table "github_organizations", force: true do |t|
-    t.string   "login",      null: false
-    t.string   "url",        null: false
-    t.string   "avatar_url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "github_organizations", ["login"], name: "index_github_organizations_on_login", unique: true
-
   create_table "github_repos", force: true do |t|
-    t.integer  "user_id",            null: false
+    t.integer  "user_id",                            null: false
     t.string   "organization_login"
-    t.string   "full_name",          null: false
-    t.boolean  "is_private",         null: false
-    t.string   "ssh_url",            null: false
-    t.string   "html_url",           null: false
+    t.string   "full_name",                          null: false
+    t.boolean  "is_private",                         null: false
+    t.string   "ssh_url",                            null: false
+    t.string   "html_url",                           null: false
+    t.boolean  "subscribed",         default: false, null: false
+    t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "github_repos", ["user_id", "full_name"], name: "index_github_repos_on_user_id_and_full_name", unique: true
 
-  create_table "github_team_members", force: true do |t|
-    t.integer  "user_id",    null: false
-    t.integer  "team_id",    null: false
-    t.string   "permission", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "github_team_members", ["user_id", "team_id"], name: "index_github_team_members_on_user_id_and_team_id", unique: true
-
-  create_table "github_teams", force: true do |t|
-    t.string   "name",            null: false
-    t.integer  "organization_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "projects", force: true do |t|
     t.string   "name",        null: false
-    t.string   "url",         null: false
-    t.text     "provider",    null: false
+    t.string   "http_url",    null: false
+    t.string   "clone_url",   null: false
     t.text     "description"
+    t.string   "provider"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "projects", ["name"], name: "index_projects_on_name", unique: true
 
   create_table "user_identities", force: true do |t|
     t.integer  "user_id",    null: false

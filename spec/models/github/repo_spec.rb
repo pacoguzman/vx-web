@@ -1,14 +1,76 @@
 require 'spec_helper'
 
 shared_examples 'github repo common attributes' do
-  its(:full_name)          { should eq 'full name' }
-  its(:is_private)         { should eq true        }
-  its(:ssh_url)            { should eq 'ssh url'   }
-  its(:html_url)           { should eq 'html url'  }
-  its(:user)               { should eq user        }
+  its(:full_name)   { should eq 'full name'   }
+  its(:is_private)  { should eq true          }
+  its(:ssh_url)     { should eq 'ssh url'     }
+  its(:html_url)    { should eq 'html url'    }
+  its(:user)        { should eq user          }
+  its(:description) { should eq 'description' }
 end
 
 describe Github::Repo do
+  let(:repo) { create :github_repo }
+
+  context "#unsubscribe" do
+    before do
+      repo.update_attribute :subscribed, true
+    end
+
+    it "should change 'subscribed' to false" do
+      expect{
+        repo.unsubscribe
+      }.to change(repo, :subscribed).to(false)
+    end
+  end
+
+  context "#subscribe" do
+
+    it "should change 'subscribed' to true" do
+      expect{
+        repo.subscribe
+      }.to change(repo, :subscribed).to(true)
+    end
+
+    context "when associated project exists" do
+      let!(:project) { create :project, :github, name: repo.full_name }
+
+      it "cannot touch any projects" do
+        expect{
+          repo.subscribe
+        }.to_not change(Project, :count)
+      end
+    end
+
+    context "when associated project does not exists" do
+
+      it "should create a new github project" do
+        expect{
+          repo.subscribe
+        }.to change(Project.github, :count).by(1)
+      end
+
+      context "created github project" do
+        subject { Project.github.last }
+        before { repo.subscribe }
+
+        its(:name)        { should eq repo.full_name   }
+        its(:http_url)    { should eq repo.html_url    }
+        its(:clone_url)   { should eq repo.ssh_url     }
+        its(:description) { should eq repo.description }
+      end
+    end
+  end
+
+  context "#as_json" do
+    subject { repo.as_json }
+    it { should eq({
+      id:          repo.id,
+      full_name:   repo.full_name,
+      html_url:    repo.html_url,
+      subscribed:  repo.subscribed
+    }) }
+  end
 
   context "(github api)" do
     let(:user)  { User.new }
@@ -17,7 +79,8 @@ describe Github::Repo do
       "full_name"   => "full name",
       "private"     => true,
       "ssh_url"     => "ssh url",
-      "html_url"    => "html url"
+      "html_url"    => "html url",
+      "description" => 'description'
     } }
     let(:org) { OpenStruct.new id: 1, login: 'org login' }
 

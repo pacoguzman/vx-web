@@ -12,7 +12,7 @@ Octokit.configure do |config|
 end
 
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET'], scope: "user,repo"
+  provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET'], scope: "user:email,repo"
 end
 
 OmniAuth.config.logger = Rails.logger

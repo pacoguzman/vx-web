@@ -46,11 +46,19 @@ describe Github::User do
 
   context "#github_organizations" do
     subject { user.github_organizations }
-    before do
-      mock(user).github.mock!.organizations { 'organizations' }
+
+    context "when user is githubber" do
+      before do
+        mock(user).github.mock!.organizations { 'organizations' }
+      end
+
+      it { should eq 'organizations' }
     end
 
-    it { should eq 'organizations' }
+    context "when user is not githubber" do
+      before { mock(user).github { nil } }
+      it { should eq ([]) }
+    end
   end
 
   context "#github" do

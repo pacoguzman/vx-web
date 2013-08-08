@@ -1,12 +1,17 @@
-.github-repos-sync {
-}
-
 .github-repos {
+  min-height: 40em;
 
-  list-style: none;
+  .github-repos-sync {
+    position: relative;
+  }
+
+  .github-repos-sync.disabled::after {
+    content: url(asset-path("assets/ajax-loader.gif"));
+    position: absolute;
+    left: -3em;
+  }
 
   .github-repo {
-
     margin: .1em 0;
     padding: .2em 0;
 
@@ -20,12 +25,10 @@
       margin-right: .4em;
     }
 
-    span {
-      width: 30em;
-      display: inline-block;
-    }
-
     .octocat {
+      display: inline-block;
+      margin-top: .1em;
+      margin-right: 2em;
       opacity: .5;
       &:hover {
         text-decoration: none;

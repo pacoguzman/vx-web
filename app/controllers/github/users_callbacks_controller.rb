@@ -1,6 +1,7 @@
 class Github::UsersCallbacksController < ApplicationController
 
   skip_before_filter :authorize_user
+  skip_before_filter :intercept_html_requests
 
   def create
     user = User.from_github env['omniauth.auth']

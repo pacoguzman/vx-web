@@ -2,7 +2,15 @@ CiWeb::Application.routes.draw do
 
   namespace :api do
     resources :projects
-    resources :github_repos
+    resources :github_repos, only: [:index] do
+      member do
+        post :subscribe
+        post :unsubscribe
+      end
+      collection do
+        post :sync
+      end
+    end
   end
 
   get '/auth/github/callback', to: 'github/users_callbacks#create'

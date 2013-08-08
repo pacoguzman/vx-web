@@ -1,6 +1,5 @@
 /*
  *= require fonts
- *= require bootstrap
  *= require_self
  *= require_tree .
  */
@@ -25,8 +24,8 @@ body > .container > .ng-view {
     position: absolute;
     width: 3em;
     height: 2.4em;
-    background: #f9f9f9;
-    border: 1px solid #34CCFF;
+    background: #0088cc;
+    color: white;
     font-size: 1.2em;
     line-height: 1.2em;
     margin-left: -1em;
@@ -35,6 +34,7 @@ body > .container > .ng-view {
       display: block;
       width: 1em;
       margin: 0.6em auto 0 auto;
+      font-weight: bold;
     }
   }
 

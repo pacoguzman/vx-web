@@ -7,6 +7,8 @@ class CreateGithubRepos < ActiveRecord::Migration
       t.boolean :is_private,   null: false
       t.string  :ssh_url,      null: false
       t.string  :html_url,     null: false
+      t.boolean :subscribed,   null: false, default: false
+      t.text    :description
 
       t.timestamps
     end

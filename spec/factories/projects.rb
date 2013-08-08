@@ -2,9 +2,14 @@
 
 FactoryGirl.define do
   factory :project do
-    name "MyString"
-    url "MyString"
-    description ""
-    provider "github"
+    name          "MyString"
+    http_url      "MyString"
+    clone_url     "MyString"
+    description   ""
+    provider      "github"
+
+    trait :github do
+      provider 'github'
+    end
   end
 end

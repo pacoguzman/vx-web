@@ -1,8 +1,7 @@
 .projects
 
-  .pull-right
-    %a{ class: "btn btn-success", 'ng-href' => "/projects/new" }
-      Add new Project
+  %a.pull-right{ class: "btn btn-small", 'ng-href' => "/github_repos" }
+    Add new Project
 
   %ul{ 'ng-repeat' => "project in projects" }
 

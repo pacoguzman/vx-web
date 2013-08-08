@@ -1,0 +1,15 @@
+.github-repos
+
+  %a.github-repos-sync.pull-right{ class: "btn btn-small", "ng-click" => "syncGithubRepos()" }
+    Sync Now
+
+  .github-repos-list
+
+    .github-repo{ 'ng-repeat' => "repo in repos" }
+
+      %a.octocat{ href: '{{repo.html_url}}', title: "View on Github" }
+        %i.icon-github-sign
+
+      %label
+        %input{ type: 'checkbox', 'ng-model' => 'repo.subscribed', 'ng-change' => "changeSubscription(repo)"}
+        %span {{repo.full_name}}

@@ -13,10 +13,40 @@ class Github::Repo < ActiveRecord::Base
       id: id,
       full_name: full_name,
       html_url: html_url,
-      subscribed: rand > 0.6
+      subscribed: subscribed
     }
   end
 
+  def subscribe
+    transaction do
+      update_attributes(subscribed: true) or raise(ActiveRecord::Rollback)
+      unless project?
+        create_project! or raise(ActiveRecord::Rollback)
+      end
+    end
+  end
+
+  def unsubscribe
+    update_attributes subscribed: false
+  end
+
+  def project
+    @project ||= Project.github.find_by(name: full_name)
+  end
+  alias :project? :project
+
+  private
+
+    def create_project!
+      attrs = {
+        name:        full_name,
+        http_url:    html_url,
+        clone_url:   ssh_url,
+        provider:    'github',
+        description: description
+      }
+      Project.create(attrs)
+    end
 
   class << self
 
@@ -43,7 +73,7 @@ class Github::Repo < ActiveRecord::Base
 
       user.github_repos.where(full_name: full_name).first_or_initialize.tap do |repo|
         ActionController::Parameters.new(
-          attrs.slice('full_name', 'private', 'ssh_url', 'html_url')
+          attrs.slice('full_name', 'private', 'ssh_url', 'html_url', 'description')
         ).tap do |a|
           a[:is_private] = a.delete(:private)
         end.permit!.tap do |attributes|
