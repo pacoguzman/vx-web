@@ -5,7 +5,7 @@
 
   .navigation
 
-    %ul.nav.nav-tabs.navbar-inner{ 'ng-controller' => 'NavCtrl' }
+    %ul.nav.nav-tabs{ 'ng-controller' => 'NavCtrl' }
 
       %li{ 'ng-repeat' => "item in items", 'ng-class' => '{active: isActive(item)}' }
         %a{ 'href' => "{{item.path}}" }

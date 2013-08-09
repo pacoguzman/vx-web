@@ -4,8 +4,8 @@
  */
 
 body, head, html {
-  font-family: 'PT Sans' !important;
-  color: #555 !important;
+  font-family: 'HelveticaNeueW01-55Roma' !important;
+  color: #666 !important;
 }
 
 body > .container {
@@ -14,7 +14,7 @@ body > .container {
 
 body > .container > .ng-view {
   margin-left: 5.1em;
-  margin-top: 1.2em;
+  margin-top: 2em;
 }
 
 .site-head {

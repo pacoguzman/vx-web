@@ -1,0 +1,38 @@
+.builds {
+  .builds-list {
+    margin-top: 2em;
+
+    th {
+      font-weight: normal;
+    }
+    td {
+      border-width: 0;
+    }
+
+    tr:first-child td {
+      border-width: 1px;
+    }
+
+    .build-success {
+      background-color: #fafffa;
+
+      &:hover {
+        background-color: #efe;
+      }
+
+      a {
+        color: #383;
+        text-decoration: none;
+      }
+
+      i {
+        font-size: .8em;
+      }
+
+      span {
+        text-decoration: underline;
+      }
+
+    }
+  }
+}

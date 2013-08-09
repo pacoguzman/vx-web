@@ -3,7 +3,29 @@
   %a.builds-add.pull-right{ class: "btn btn-small btn-primary", 'ng-show' => "project", "ng-click" => "createBuild()" }
     Create Build
 
-  %ul.builds-list
-    %li.build-item{ 'ng-repeat' => "build in builds | orderBy:'number':true" }
-      {{ build.number }}
+  %p
+    %a.octokat{ href: "{{project.url}}", title: "View on Github" }
+      %i.icon-github-sign
+      View on Github
 
+  %p
+    %small {{ project.description || "no description available" }}
+
+  %table.builds-list.table
+
+    %thead
+      %th No.
+      %th Commit
+      %th Branch
+      %th Duration
+      %th Fnished At
+
+    %tr.build-success.build-item{ 'ng-repeat' => "build in builds | orderBy:'number':true" }
+      %td
+        %a{ href: "" }
+          %i.icon-circle
+          %span {{ build.number }}
+      %td {{ build.sha }}
+      %td {{ build.branch }}
+      %td
+      %td
