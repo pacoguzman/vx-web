@@ -6,4 +6,7 @@ module Github::Project
     scope :github, -> { where provider: :github }
   end
 
+  def create_build_from_github_request
+  end
+
 end

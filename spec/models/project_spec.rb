@@ -17,7 +17,6 @@ describe Project do
       let(:token) { 'not exits' }
       it { should be_nil }
     end
-
   end
 
   context "#public_deploy_key" do
