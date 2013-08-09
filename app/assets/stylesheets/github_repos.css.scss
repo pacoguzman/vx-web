@@ -11,6 +11,15 @@
     left: -3em;
   }
 
+  .github-repos-search {
+    width: 30em;
+    border: 1px solid #eee;
+  }
+
+  .github-repos-list {
+    margin-top: 2em;
+  }
+
   .github-repo {
     margin: .1em 0;
     padding: .2em 0;
@@ -28,8 +37,7 @@
 
     .octocat {
       display: inline-block;
-      margin-top: .1em;
-      margin-right: 2em;
+      margin-right: 1em;
       opacity: .5;
       &:hover {
         text-decoration: none;

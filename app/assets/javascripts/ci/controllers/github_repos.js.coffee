@@ -18,6 +18,7 @@ CI.controller 'GithubReposCtrl', ['$scope', 'appMenu', 'GithubRepo'
     syncButton = $(".github-repos-sync")
 
     $scope.repos = GithubRepo.query()
+    $scope.query = null
 
     $scope.changeSubscription = (repo) ->
       if repo.subscribed

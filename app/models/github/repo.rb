@@ -13,8 +13,7 @@ class Github::Repo < ActiveRecord::Base
       id:           id,
       full_name:    full_name,
       html_url:     html_url,
-      subscribed:   subscribed,
-      description:  description
+      subscribed:   subscribed
     }
   end
 

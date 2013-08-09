@@ -4,9 +4,11 @@
   %a.github-repos-sync.pull-right{ class: "btn btn-small btn-primary", "ng-click" => "syncGithubRepos()" }
     Sync Now
 
+  %input.github-repos-search.form-control{ type: :search, placeholder: "Type to search...", 'ng-model' => 'query' }
+
   .github-repos-list
 
-    .github-repo{ 'ng-repeat' => "repo in repos" }
+    .github-repo{ 'ng-repeat' => "repo in repos | filter:query" }
 
       %a.octocat{ href: '{{repo.html_url}}', title: "View on Github" }
         %i.icon-github-sign
