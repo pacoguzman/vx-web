@@ -5,6 +5,5 @@ CI.controller 'ProjectBuildsCtrl', ['$scope', 'appMenu', 'Restangular', '$routeP
 
     $rest.one("api/projects", name).get().then (p) ->
       menu.define ->
-        console.log p
         menu.add p.name, "/projects/#{p.name}/builds"
 ]

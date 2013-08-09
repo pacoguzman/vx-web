@@ -43,3 +43,7 @@ body > .container > .ng-view {
     margin-left: 5em;
   }
 }
+
+.ajax-loader {
+  content: url(asset-path("assets/ajax-loader.gif"));
+}

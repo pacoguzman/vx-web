@@ -6,7 +6,7 @@ CI.controller 'GithubReposCtrl', ['$scope', 'appMenu', 'Restangular'
 
     syncButton = $(".github-repos-sync")
 
-    $scope.repos = $rest.one("api/github_repos").getList()
+    $scope.repos = $rest.all("api/github_repos").getList()
     $scope.query = null
 
     $scope.changeSubscription = (repo) ->
@@ -17,7 +17,7 @@ CI.controller 'GithubReposCtrl', ['$scope', 'appMenu', 'Restangular'
 
     $scope.syncGithubRepos = () ->
       syncButton.addClass("disabled")
-      $rest.one("api/github_repos").post("sync").then (repos) ->
+      $rest.all("api/github_repos/sync").post().then (repos) ->
         $scope.repos = repos
         syncButton.removeClass("disabled")
 ]

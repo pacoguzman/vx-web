@@ -4,9 +4,12 @@
   %a.github-repos-sync.pull-right{ class: "btn btn-small btn-primary", "ng-click" => "syncGithubRepos()" }
     Sync Now
 
-  %input.github-repos-search.form-control{ type: :search, placeholder: "Type to search...", 'ng-model' => 'query' }
+  .github-repos-search.form-control{ type: :search, placeholder: "Type to search...", 'ng-model' => 'query' }
 
   .github-repos-list
+
+    .gthub-repos-empty{ 'ng-hide' => 'repos.length' }
+      No repositories loaded
 
     .github-repo{ 'ng-repeat' => "repo in repos | filter:query" }
 
