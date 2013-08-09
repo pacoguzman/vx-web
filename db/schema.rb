@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 20130809105836) do
     t.datetime "updated_at"
   end
 
-  add_index "builds", ["number", "project_id"], name: "index_builds_on_number_and_project_id", unique: true
+  add_index "builds", ["project_id", "number"], name: "index_builds_on_project_id_and_number", unique: true
 
   create_table "github_repos", force: true do |t|
     t.integer  "user_id",                            null: false

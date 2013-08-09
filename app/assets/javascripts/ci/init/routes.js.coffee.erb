@@ -6,11 +6,11 @@ CI.config ['$routeProvider', '$locationProvider',
 
       when('/projects/:aname/:bname/builds',
         templateUrl: "<%= asset_path 'assets/builds/index.html' %>",
-        controller: "ProjectBuildsCtrl"
+        controller: "BuildsCtrl"
       ).
       when('/projects/:aname/builds',
         templateUrl: "<%= asset_path 'assets/builds/index.html' %>",
-        controller: "ProjectBuildsCtrl"
+        controller: "BuildsCtrl"
       ).
 
       when('/github_repos',

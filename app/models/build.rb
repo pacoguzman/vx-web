@@ -11,6 +11,9 @@ class Build < ActiveRecord::Base
   before_validation :assign_branch, on: :create
 
 
+  default_scope ->{ order 'builds.number DESC' }
+
+
   private
 
     def assign_number

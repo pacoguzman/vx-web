@@ -7,7 +7,7 @@ class Api::ProjectsController < Api::BaseController
   end
 
   def show
-    @project = Project.find_by_name params[:id]
+    @project = Project.find_by! name: params[:id]
     respond_to do |want|
       want.json { render json: @project }
     end

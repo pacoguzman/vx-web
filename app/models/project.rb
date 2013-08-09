@@ -25,6 +25,13 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def as_json(*args)
+    {
+      id:          name,
+      description: description,
+      http_url:    http_url
+    }
+  end
 
   def deploy_key_name
     self.class.deploy_key_name

@@ -20,4 +20,5 @@ CI.controller 'GithubReposCtrl', ['$scope', 'appMenu', 'Restangular'
       $rest.all("api/github_repos/sync").post().then (repos) ->
         $scope.repos = repos
         syncButton.removeClass("disabled")
+
 ]

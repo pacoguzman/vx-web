@@ -6,8 +6,8 @@
   %ul.projects-list.list-group
 
     %li.project.list-group-item{ 'ng-repeat' => "project in projects" }
-      %a{ 'href' => "/projects/{{project.name}}/builds" }
-        {{project.name}}
+      %a{ 'href' => "/projects/{{project.id}}/builds" }
+        {{project.id}}
 
       %br
       %small {{project.description}}

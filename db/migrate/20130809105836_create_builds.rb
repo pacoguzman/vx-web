@@ -14,6 +14,6 @@ class CreateBuilds < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :builds, [:number, :project_id], unique: true
+    add_index :builds, [:project_id, :number], unique: true
   end
 end
