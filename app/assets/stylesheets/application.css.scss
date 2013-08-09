@@ -1,10 +1,10 @@
 /*
- *= require fonts
  *= require_self
  *= require_tree .
  */
 
 body, head, html {
+  font-family: 'PT Sans' !important;
   color: #555 !important;
 }
 
@@ -13,7 +13,8 @@ body > .container {
 }
 
 body > .container > .ng-view {
-  margin-left: 4em;
+  margin-left: 5.1em;
+  margin-top: 1em;
 }
 
 .site-head {

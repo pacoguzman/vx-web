@@ -10,10 +10,11 @@ class Github::Repo < ActiveRecord::Base
 
   def as_json(*args)
     {
-      id: id,
-      full_name: full_name,
-      html_url: html_url,
-      subscribed: subscribed
+      id:           id,
+      full_name:    full_name,
+      html_url:     html_url,
+      subscribed:   subscribed,
+      description:  description
     }
   end
 
