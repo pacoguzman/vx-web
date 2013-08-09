@@ -1,34 +1,23 @@
-CI.factory "GithubRepo", ['$resource', 'apiPrefix', ($resource, apiPrefix) ->
-  $resource( apiPrefix + "/github_repos/:id/:action",
-    { id: '@id' },
-    {
-      subscribe:   { method: 'POST', params: { action: 'subscribe'   } },
-      unsubscribe: { method: 'POST', params: { action: 'unsubscribe' } },
-      'sync':      { method: "POST", isArray: true, params: {action: 'sync'} }
-    }
-  )
-]
-
-CI.controller 'GithubReposCtrl', ['$scope', 'appMenu', 'GithubRepo'
-  ($scope, menu, GithubRepo) ->
+CI.controller 'GithubReposCtrl', ['$scope', 'appMenu', 'Restangular'
+  ($scope, menu, $rest) ->
 
     menu.define ->
       menu.add 'You Github Repos', '/github_repos'
 
     syncButton = $(".github-repos-sync")
 
-    $scope.repos = GithubRepo.query()
+    $scope.repos = $rest.one("api/github_repos").getList()
     $scope.query = null
 
     $scope.changeSubscription = (repo) ->
       if repo.subscribed
-        repo.$subscribe()
+        $rest.one("api/github_repos", repo.id).post("subscribe")
       else
-        repo.$unsubscribe()
+        $rest.one("api/github_repos", repo.id).post("unsubscribe")
 
     $scope.syncGithubRepos = () ->
       syncButton.addClass("disabled")
-      GithubRepo.sync (repos)->
+      $rest.one("api/github_repos").post("sync").then (repos) ->
         $scope.repos = repos
         syncButton.removeClass("disabled")
 ]

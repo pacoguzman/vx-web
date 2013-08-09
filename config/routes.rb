@@ -1,7 +1,7 @@
 CiWeb::Application.routes.draw do
 
   namespace :api do
-    resources :projects
+    resources :projects, :constraints => { id: /.*/ }
     resources :github_repos, only: [:index] do
       member do
         post :subscribe
