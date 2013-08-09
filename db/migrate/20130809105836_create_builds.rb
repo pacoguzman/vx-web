@@ -3,8 +3,10 @@ class CreateBuilds < ActiveRecord::Migration
     create_table :builds do |t|
       t.integer :number,      null: false
       t.integer :project_id,  null: false
-      t.string  :ref,         null: false
+
+      t.string  :sha,         null: false
       t.string  :branch,      null: false
+
       t.integer :pull_request_id
       t.string  :author
       t.string  :message

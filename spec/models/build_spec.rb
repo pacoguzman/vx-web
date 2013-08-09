@@ -21,14 +21,14 @@ describe Build do
       end
     end
 
-    context "assign ref" do
+    context "assign sha" do
       it "by default should be 'HEAD'" do
-        expect(subject).to change(build, :ref).to("HEAD")
+        expect(subject).to change(build, :sha).to("HEAD")
       end
 
-      it "when exists dont touch ref" do
-        build.ref = '1234'
-        expect(subject).to_not change(build, :ref)
+      it "when exists dont touch sha" do
+        build.sha = '1234'
+        expect(subject).to_not change(build, :sha)
       end
     end
 

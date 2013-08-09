@@ -5,7 +5,7 @@ FactoryGirl.define do
     project
     number   1
     branch   "MyString"
-    ref      "MyString"
+    sha      "MyString"
     author   "MyString"
     message  "MyString"
   end

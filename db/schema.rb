@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20130809105836) do
   create_table "builds", force: true do |t|
     t.integer  "number",          null: false
     t.integer  "project_id",      null: false
-    t.string   "ref",             null: false
+    t.string   "sha",             null: false
     t.string   "branch",          null: false
     t.integer  "pull_request_id"
     t.string   "author"
