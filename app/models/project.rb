@@ -5,6 +5,9 @@ class Project < ActiveRecord::Base
 
   include Github::Project
 
+
+  has_many :builds, dependent: :destroy
+
   validates :name, :http_url, :clone_url, :provider, :token,
     :deploy_key, presence: true
   validates :provider, inclusion: { in: %w{ github } }
@@ -16,6 +19,10 @@ class Project < ActiveRecord::Base
 
   class << self
     def deploy_key_name ; 'evrone.ci' end
+
+    def find_by_token(token)
+      find_by token: token
+    end
   end
 
 

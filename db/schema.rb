@@ -11,7 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130807114032) do
+ActiveRecord::Schema.define(version: 20130809105836) do
+
+  create_table "builds", force: true do |t|
+    t.integer  "number",          null: false
+    t.integer  "project_id",      null: false
+    t.string   "ref",             null: false
+    t.string   "branch",          null: false
+    t.integer  "pull_request_id"
+    t.string   "author"
+    t.string   "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "builds", ["number", "project_id"], name: "index_builds_on_number_and_project_id", unique: true
 
   create_table "github_repos", force: true do |t|
     t.integer  "user_id",                            null: false

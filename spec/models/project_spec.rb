@@ -3,6 +3,23 @@ require 'spec_helper'
 describe Project do
   let(:project) { Project.new }
 
+  context ".find_by_token" do
+    let(:token)   { project.token   }
+    let(:project) { create :project }
+
+    subject { Project.find_by_token token }
+
+    context "successfuly" do
+      it { should eq project }
+    end
+
+    context "fail" do
+      let(:token) { 'not exits' }
+      it { should be_nil }
+    end
+
+  end
+
   context "#public_deploy_key" do
     subject { project.public_deploy_key }
     before { project.generate_deploy_key }
