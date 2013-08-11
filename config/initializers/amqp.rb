@@ -53,7 +53,6 @@ module Evrone
 end
 
 Evrone::Common::AMQP.configure do |c|
-  puts 'init'
   c.subscribing do
     use Evrone::CI::Web::AMQP::Subscribing
   end
