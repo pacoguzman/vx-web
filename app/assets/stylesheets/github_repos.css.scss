@@ -2,18 +2,22 @@
   min-height: 40em;
 
   .github-repos-sync {
-    position: relative;
-  }
+    a {
+      position: relative;
+    }
 
-  .github-repos-sync.disabled::after {
-    content: url(asset-path("assets/ajax-loader.gif"));
-    position: absolute;
-    left: -3em;
+    a.disabled::after {
+      content: url(asset-path("assets/ajax-loader.gif"));
+      position: absolute;
+      left: -3em;
+    }
   }
 
   .github-repos-search {
     width: 30em;
-    border: 1px solid #eee;
+    input {
+      border: 1px solid #eee;
+    }
   }
 
   .github-repos-list {

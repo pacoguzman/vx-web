@@ -28,5 +28,7 @@ module CiWeb
 
     config.x = OpenStruct.new
     config.x.hostname = ENV['CI_HOSTNAME'] || Socket.gethostname
+
+    config.middleware.delete "Rack::Lock"
   end
 end

@@ -1,12 +1,13 @@
 source 'https://rubygems.org'
 
 gem 'rails', '4.0.0'
-gem 'sqlite3'
+gem 'pg'
 
 gem 'haml'
 gem 'haml-rails'
 gem 'omniauth'
 gem 'puma'
+gem 'state_machine'
 
 # github integration
 gem 'omniauth-github'

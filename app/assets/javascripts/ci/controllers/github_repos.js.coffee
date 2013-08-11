@@ -4,7 +4,7 @@ CI.controller 'GithubReposCtrl', ['$scope', 'appMenu', 'Restangular'
     menu.define ->
       menu.add 'You Github Repos', '/github_repos'
 
-    syncButton = $(".github-repos-sync")
+    syncButton = $(".github-repos-sync a")
 
     $scope.repos = $rest.all("api/github_repos").getList()
     $scope.query = null

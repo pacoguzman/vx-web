@@ -10,7 +10,7 @@ class BuildStatusesConsumer
     puts payload.inspect
     msg = Evrone::CI::Message::BuildStatus.parse payload
     Rails.logger.tagged("BUILD #{msg.build_id}") do
-      Rails.logger.info msg.inspect
+      BuildUpdater.new(msg).perform
     end
     ack!
   end

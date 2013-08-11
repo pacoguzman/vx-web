@@ -9,7 +9,7 @@ class JobStatusesConsumer
   def perform(payload)
     msg = Evrone::CI::Message::JobStatus.parse payload
     Rails.logger.tagged("JOB #{msg.build_id}.#{msg.job_id}") do
-      Rails.logger.info msg.inspect
+      JobUpdater.new(msg).perform
     end
     ack!
   end

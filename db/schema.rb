@@ -14,18 +14,21 @@
 ActiveRecord::Schema.define(version: 20130809105836) do
 
   create_table "builds", force: true do |t|
-    t.integer  "number",          null: false
-    t.integer  "project_id",      null: false
-    t.string   "sha",             null: false
-    t.string   "branch",          null: false
+    t.integer  "number",                      null: false
+    t.integer  "project_id",                  null: false
+    t.string   "sha",                         null: false
+    t.string   "branch",                      null: false
     t.integer  "pull_request_id"
     t.string   "author"
     t.string   "message"
+    t.integer  "status",          default: 0, null: false
+    t.datetime "started_at"
+    t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "builds", ["project_id", "number"], name: "index_builds_on_project_id_and_number", unique: true
+  add_index "builds", ["project_id", "number"], name: "index_builds_on_project_id_and_number", unique: true, using: :btree
 
   create_table "github_repos", force: true do |t|
     t.integer  "user_id",                            null: false
@@ -40,7 +43,7 @@ ActiveRecord::Schema.define(version: 20130809105836) do
     t.datetime "updated_at"
   end
 
-  add_index "github_repos", ["user_id", "full_name"], name: "index_github_repos_on_user_id_and_full_name", unique: true
+  add_index "github_repos", ["user_id", "full_name"], name: "index_github_repos_on_user_id_and_full_name", unique: true, using: :btree
 
   create_table "projects", force: true do |t|
     t.string   "name",        null: false
@@ -48,13 +51,13 @@ ActiveRecord::Schema.define(version: 20130809105836) do
     t.string   "clone_url",   null: false
     t.text     "description"
     t.string   "provider"
-    t.string   "deploy_key",  null: false
+    t.text     "deploy_key",  null: false
     t.string   "token",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "projects", ["name"], name: "index_projects_on_name", unique: true
+  add_index "projects", ["name"], name: "index_projects_on_name", unique: true, using: :btree
 
   create_table "user_identities", force: true do |t|
     t.integer  "user_id",    null: false
@@ -66,7 +69,7 @@ ActiveRecord::Schema.define(version: 20130809105836) do
     t.datetime "updated_at"
   end
 
-  add_index "user_identities", ["user_id", "provider"], name: "index_user_identities_on_user_id_and_provider", unique: true
+  add_index "user_identities", ["user_id", "provider"], name: "index_user_identities_on_user_id_and_provider", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",      null: false
@@ -75,6 +78,6 @@ ActiveRecord::Schema.define(version: 20130809105836) do
     t.datetime "updated_at"
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
 
 end

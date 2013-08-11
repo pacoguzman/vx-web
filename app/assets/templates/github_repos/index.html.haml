@@ -1,10 +1,12 @@
 .github-repos
 
 
-  %a.github-repos-sync.pull-right{ class: "btn btn-small btn-primary", "ng-click" => "syncGithubRepos()" }
-    Sync Now
+  .github-repos-sync.pull-right
+    %a{ class: "btn btn-small btn-primary", "ng-click" => "syncGithubRepos()" }
+      Sync Now
 
-  %input.github-repos-search.form-control{ type: :search, placeholder: "Type to search...", 'ng-model' => 'query' }
+  .github-repos-search
+    %input.form-control{ autofocus: true, type: :search, placeholder: "Type to search...", 'ng-model' => 'query' }
 
   .github-repos-list
 

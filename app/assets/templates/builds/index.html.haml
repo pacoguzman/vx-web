@@ -25,7 +25,8 @@
         %a{ href: "" }
           %i.icon-circle
           %span {{ build.number }}
+          {{ build.status }}
       %td {{ build.sha }}
       %td {{ build.branch }}
-      %td
-      %td
+      %td {{ build.started_at  | timeDiff: build.finished_at }}
+      %td {{ build.finished_at | fromNow }}
