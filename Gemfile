@@ -13,6 +13,9 @@ gem 'omniauth-github'
 gem 'octokit'
 gem 'sshkey'
 
+gem 'evrone-common-amqp', github: 'evrone/evrone-common-amqp'
+gem 'evrone-ci-message',  github: 'evrone/evrone-ci-message'
+
 group :assets do
   gem 'execjs'
   gem 'sass-rails', '~> 4.0.0'

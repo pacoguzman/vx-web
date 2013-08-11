@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require File.expand_path("../../config/environment", __FILE__)
+
+trap('INT') {
+  Thread.new do
+    Evrone::Common::AMQP.shutdown
+    Evrone::Common::AMQP::Supervisor::Threaded.shutdown
+  end
+}
+
+Evrone::Common::AMQP::Supervisor::Threaded.build(
+  BuildStatusesConsumer => 1,
+  JobStatusesConsumer => 1
+).run

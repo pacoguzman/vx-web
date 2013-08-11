@@ -1,3 +1,18 @@
+GIT
+  remote: git://github.com/evrone/evrone-ci-message.git
+  revision: 481279a710a44b0d1f2f65177718706123011db3
+  specs:
+    evrone-ci-message (0.0.1)
+      ruby-protocol-buffers (~> 1.4)
+
+GIT
+  remote: git://github.com/evrone/evrone-common-amqp.git
+  revision: aa261788204e54d2ce9b4f77a4309b599b92072b
+  specs:
+    evrone-common-amqp (0.0.1)
+      bunny (>= 1.0.0.pre3)
+      evrone-common-rack-builder
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -26,9 +41,12 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
     addressable (2.3.5)
+    amq-protocol (1.7.0)
     arel (4.0.0)
     atomic (1.1.12)
     builder (3.1.4)
+    bunny (1.0.0.pre3)
+      amq-protocol (>= 1.6.0)
     coderay (1.0.9)
     coffee-rails (4.0.0)
       coffee-script (>= 2.2.0)
@@ -41,6 +59,7 @@ GEM
       safe_yaml (~> 0.9.0)
     diff-lcs (1.2.4)
     erubis (2.7.0)
+    evrone-common-rack-builder (0.0.2)
     execjs (1.4.0)
       multi_json (~> 1.0)
     factory_girl (4.2.0)
@@ -138,6 +157,7 @@ GEM
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
       rspec-mocks (~> 2.14.0)
+    ruby-protocol-buffers (1.4.1)
     safe_yaml (0.9.5)
     sass (3.2.10)
     sass-rails (4.0.0)
@@ -177,6 +197,8 @@ PLATFORMS
 
 DEPENDENCIES
   coffee-rails (~> 4.0.0)
+  evrone-ci-message!
+  evrone-common-amqp!
   execjs
   factory_girl
   factory_girl_rails
