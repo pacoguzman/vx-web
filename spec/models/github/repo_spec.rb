@@ -313,3 +313,21 @@ describe Github::Repo do
   end
 
 end
+
+# == Schema Information
+#
+# Table name: github_repos
+#
+#  id                 :integer          not null, primary key
+#  user_id            :integer          not null
+#  organization_login :string(255)
+#  full_name          :string(255)      not null
+#  is_private         :boolean          not null
+#  ssh_url            :string(255)      not null
+#  html_url           :string(255)      not null
+#  subscribed         :boolean          default(FALSE), not null
+#  description        :text
+#  created_at         :datetime
+#  updated_at         :datetime
+#
+

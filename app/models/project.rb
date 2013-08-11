@@ -1,12 +1,12 @@
 require 'securerandom'
-require 'socket'
 
 class Project < ActiveRecord::Base
 
+  include ProjectSerializable
   include Github::Project
 
 
-  has_many :builds, dependent: :destroy
+  has_many :builds, dependent: :destroy, class_name: "::Build"
 
   validates :name, :http_url, :clone_url, :provider, :token,
     :deploy_key, presence: true
@@ -23,14 +23,6 @@ class Project < ActiveRecord::Base
     def find_by_token(token)
       find_by token: token
     end
-  end
-
-  def as_json(*args)
-    {
-      id:          name,
-      description: description,
-      http_url:    http_url
-    }
   end
 
   def deploy_key_name
@@ -58,3 +50,20 @@ class Project < ActiveRecord::Base
   end
 
 end
+
+# == Schema Information
+#
+# Table name: projects
+#
+#  id          :integer          not null, primary key
+#  name        :string(255)      not null
+#  http_url    :string(255)      not null
+#  clone_url   :string(255)      not null
+#  description :text
+#  provider    :string(255)
+#  deploy_key  :text             not null
+#  token       :string(255)      not null
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+

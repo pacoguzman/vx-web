@@ -4,15 +4,14 @@ CI.config ['$routeProvider', '$locationProvider',
 
     $routeProvider.
 
-      when('/projects/:aname/:bname/builds',
+      when('/builds/:buildId',
+        templateUrl: "<%= asset_path 'assets/builds/show.html' %>",
+        controller: "BuildCtrl"
+      ).
+      when('/projects/:projectId/builds',
         templateUrl: "<%= asset_path 'assets/builds/index.html' %>",
         controller: "BuildsCtrl"
       ).
-      when('/projects/:aname/builds',
-        templateUrl: "<%= asset_path 'assets/builds/index.html' %>",
-        controller: "BuildsCtrl"
-      ).
-
       when('/github_repos',
         templateUrl: "<%= asset_path 'assets/github_repos/index.html' %>",
         controller: "GithubReposCtrl"

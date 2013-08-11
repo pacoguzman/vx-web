@@ -47,3 +47,23 @@ describe Build do
 
 
 end
+
+# == Schema Information
+#
+# Table name: builds
+#
+#  id              :integer          not null, primary key
+#  number          :integer          not null
+#  project_id      :integer          not null
+#  sha             :string(255)      not null
+#  branch          :string(255)      not null
+#  pull_request_id :integer
+#  author          :string(255)
+#  message         :string(255)
+#  status          :integer          default(0), not null
+#  started_at      :datetime
+#  finished_at     :datetime
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+

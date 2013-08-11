@@ -1,16 +1,13 @@
 class Api::ProjectsController < Api::BaseController
 
+  respond_to :json
+
   def index
-    respond_to do |want|
-      want.json { render json: Project.all }
-    end
+    respond_with(@projects = Project.all)
   end
 
   def show
-    @project = Project.find_by! name: params[:id]
-    respond_to do |want|
-      want.json { render json: @project }
-    end
+    respond_with(@project = Project.find(params[:id]))
   end
 
 end

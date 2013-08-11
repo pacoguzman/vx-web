@@ -22,7 +22,7 @@
 
     %tr.build-success.build-item{ 'ng-repeat' => "build in builds | orderBy:'number':true" }
       %td
-        %a{ href: "" }
+        %a{ href: "/builds/{{build.id}}" }
           %i.icon-circle
           %span {{ build.number }}
           {{ build.status }}

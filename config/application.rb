@@ -32,3 +32,4 @@ module CiWeb
     config.middleware.delete "Rack::Lock"
   end
 end
+

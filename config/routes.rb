@@ -1,9 +1,12 @@
 CiWeb::Application.routes.draw do
 
   namespace :api do
-    resources :projects, :constraints => { id: /.*/ } do
-      resources :builds
+
+    resources :projects do
+      resources :builds, except: [:show]
     end
+    resources :builds, only: [:show]
+
     resources :github_repos, only: [:index] do
       member do
         post :subscribe
@@ -13,6 +16,7 @@ CiWeb::Application.routes.draw do
         post :sync
       end
     end
+
   end
 
   resources :events, only: [:show]

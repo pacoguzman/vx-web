@@ -1,6 +1,10 @@
 class Build < ActiveRecord::Base
 
-  belongs_to :project
+  include BuildSerializable
+  include BuildMessages
+
+
+  belongs_to :project, class_name: "::Project"
 
   validates :project_id, :number, :sha, :branch, presence: true
   validates :number, uniqueness: { scope: [:project_id] }
@@ -44,32 +48,6 @@ class Build < ActiveRecord::Base
     end
   end
 
-  def as_json(*args)
-    {
-      id:          id,
-      number:      number,
-      sha:         sha,
-      finished_at: finished_at,
-      started_at:  started_at,
-      status:      status_name,
-      branch:      branch
-    }
-  end
-
-  def to_perform_build_message
-    Evrone::CI::Message::PerformBuild.new(
-      id:         id,
-      name:       project.name,
-      src:        project.clone_url,
-      sha:        sha,
-      deploy_key: project.deploy_key,
-    )
-  end
-
-  def publish_perform_build_message
-    BuildsConsumer.publish to_perform_build_message.to_serialized_string
-  end
-
   private
 
     def assign_number
@@ -85,3 +63,23 @@ class Build < ActiveRecord::Base
     end
 
 end
+
+# == Schema Information
+#
+# Table name: builds
+#
+#  id              :integer          not null, primary key
+#  number          :integer          not null
+#  project_id      :integer          not null
+#  sha             :string(255)      not null
+#  branch          :string(255)      not null
+#  pull_request_id :integer
+#  author          :string(255)
+#  message         :string(255)
+#  status          :integer          default(0), not null
+#  started_at      :datetime
+#  finished_at     :datetime
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+

@@ -1,8 +1,7 @@
 CI.controller 'BuildsCtrl', ['$scope', 'appMenu', 'Restangular', '$routeParams',
   ($scope, menu, $rest, $routeParams) ->
 
-    name = _.compact([$routeParams.aname, $routeParams.bname]).join("/")
-    $scope.eventSource = new EventSource("/events/projects_1")
+    #$scope.eventSource = new EventSource("/events/projects_1")
 
     callback = (e) ->
       b = JSON.parse(e.data)
@@ -11,19 +10,17 @@ CI.controller 'BuildsCtrl', ['$scope', 'appMenu', 'Restangular', '$routeParams',
           $scope.builds[idx] = angular.copy b
 
 
-    base = $rest.one("api/projects", name)
+    project = $rest.one("api/projects", $routeParams.projectId)
 
-    $scope.project = base.get()
-    $scope.builds  = base.all("builds").getList()
+    $scope.project = project.get()
+    $scope.builds  = project.all("builds").getList()
 
     $scope.project.then (project) ->
       menu.define ->
-        menu.add project.id, "/projects/#{project.id}/builds"
+        menu.add project.name, "/projects/#{project.id}/builds"
 
     $scope.createBuild = () ->
-      base.all("builds").post().then (build) ->
+      project.all("builds").post().then (build) ->
         $scope.builds.push build
-
-    console.log $scope.eventSource
 
 ]
