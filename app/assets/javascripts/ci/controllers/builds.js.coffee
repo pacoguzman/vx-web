@@ -1,5 +1,5 @@
-CI.controller 'BuildsCtrl', ['$scope', 'appMenu', 'Restangular', '$routeParams',
-  ($scope, menu, $rest, $routeParams) ->
+CI.controller 'BuildsCtrl', ['$scope', 'appMenu', 'buildsService', 'projectsService', '$routeParams',
+  ($scope, menu, builds, projects, $routeParams) ->
 
     #$scope.eventSource = new EventSource("/events/projects_1")
 
@@ -9,18 +9,14 @@ CI.controller 'BuildsCtrl', ['$scope', 'appMenu', 'Restangular', '$routeParams',
         if it.id == b.id
           $scope.builds[idx] = angular.copy b
 
-
-    project = $rest.one("api/projects", $routeParams.projectId)
-
-    $scope.project = project.get()
-    $scope.builds  = project.all("builds").getList()
+    $scope.project = projects.find $routeParams.projectId
+    $scope.builds  = builds.all $routeParams.projectId
 
     $scope.project.then (project) ->
       menu.define ->
         menu.add project.name, "/projects/#{project.id}/builds"
 
     $scope.createBuild = () ->
-      project.all("builds").post().then (build) ->
-        $scope.builds.push build
+      builds.create $routeParams.projectId
 
 ]

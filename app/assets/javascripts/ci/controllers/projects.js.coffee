@@ -1,8 +1,9 @@
-CI.controller 'ProjectsCtrl', ['$scope', 'Restangular', 'appMenu',
-  ($scope, $rest, appMenu) ->
+CI.controller 'ProjectsCtrl', ['$scope', 'projectsService', 'appMenu',
+
+  ($scope, projects, appMenu) ->
 
     appMenu.define()
 
-    $scope.projects = $rest.all("api/projects").getList()
+    $scope.projects = projects.all()
 
 ]
