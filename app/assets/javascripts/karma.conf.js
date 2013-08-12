@@ -90,7 +90,7 @@ module.exports = function(config) {
       transformPath: function(path) {
         return path.replace(/\.js$/, '.coffee');
       }
-    }
+    },
 
   });
 };

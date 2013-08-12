@@ -26,11 +26,19 @@ CI.service 'buildStore', ['$http', "$q", "extendedDefer", 'eventSource',
       object.item = extendedDefer d
       re.data
 
+    onlySameProject = (build, f) ->
+      if build.project_id == collection.projectId
+        f()
+
     subscribe = (e) ->
       switch e.action
         when 'created'
-          if collection.projectId == e.data.project_id
+          onlySameProject e.data, ->
             collection.items.add e.data
+        when 'updated'
+          onlySameProject e.data, ->
+            console.log e
+            collection.items.update e.id, e.data
 
     eventSource.subscribe "events.builds", subscribe
 

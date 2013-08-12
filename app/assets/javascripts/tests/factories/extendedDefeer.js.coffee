@@ -108,6 +108,54 @@ describe "extendedDefer", ->
       expect(expected).toEqual [testObj]
 
 
+  describe "flatMap()", ->
+
+    it "should be defined", ->
+      expect(ext.flatMap).toBeDefined()
+
+    it "should return value if new promise resolved", ->
+      d     = $q.defer()
+      p     = d.promise
+      value = null
+      ret   = null
+
+      $scope.$apply ->
+        ret = ext.flatMap (i) ->
+          expected = i
+          d.resolve 'success'
+          d.promise
+
+      $scope.$apply ->
+        ret.then (val) ->
+          value = val
+
+      expect(expected).toEqual [testObj, testObj2]
+      expect(value).toEqual 'success'
+
+    it "should reject if new promise rejected", ->
+      d       = $q.defer()
+      p       = d.promise
+      succVal = null
+      failVal = null
+      ret     = null
+
+      $scope.$apply ->
+        ret = ext.flatMap (i) ->
+          d.reject 'fail'
+          d.promise
+
+      succ = (val) ->
+        succVal = val
+      fail = (val) ->
+        failVal = val
+
+      $scope.$apply ->
+        ret.then succ, fail
+
+      expect(succVal).toBe null
+      expect(failVal).toBe 'fail'
+
+
   describe "index()", ->
 
     it "should be defined", ->
@@ -123,7 +171,7 @@ describe "extendedDefer", ->
           expected.push v
       expect(expected).toEqual [0,1,-1]
 
-    it "should reject unless index", ->
+    it "should reject unless id", ->
       $scope.$apply ->
         ext.index(undefined).then (v) ->
           expected.push v

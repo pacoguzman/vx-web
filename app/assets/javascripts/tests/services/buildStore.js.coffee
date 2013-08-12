@@ -136,6 +136,7 @@ describe "buildStore", ->
           expect(expected).toNotBe before
           expect(expected).toEqual testObj2
 
+
   describe "with eventSource", ->
 
     f = null
@@ -186,4 +187,51 @@ describe "buildStore", ->
             expected = its
         expect(expected.length).toBe 2
         expect(expected).toEqual [testObj, testObj2]
+
+
+    describe "updated build from event", ->
+      before = null
+
+      beforeEach ->
+        $scope.$apply ->
+          builds.all(1).then (its) ->
+            before = its
+        $http.flush()
+        expect(before.length).toBe 2
+
+      describe "if build in same project", ->
+
+        describe "and build found in collection", ->
+
+          xit "should update", ->
+            e =
+              action: 'updated',
+              id: 12
+              data:
+                project_id: 1
+                name: "Updated"
+            f(e)
+            $scope.$apply ->
+              builds.all(1).then (its) ->
+                expected = its
+            expect(expected.length).toBe 2
+            expect(expected[0].name).toEqual 'Updated'
+            expect(expected[1].name).toEqual 'MyName'
+
+        describe "and build not found in collection", ->
+
+          xit "should skip update", ->
+            e =
+              action: 'updated',
+              id: 99
+              data:
+                project_id: 1
+                name: "Updated"
+            f(e)
+            $scope.$apply ->
+              builds.all(1).then (its) ->
+                expected = its
+            expect(expected.length).toBe 2
+            expect(expected[0].name).toEqual 'MyName'
+            expect(expected[1].name).toEqual 'MyName'
 
