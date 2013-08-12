@@ -1,4 +1,4 @@
-CI.service 'projectsStore', ['$http', "$q", 'extendedDefer', 'eventSource',
+CI.service 'projectStore', ['$http', "$q", 'extendedDefer', 'eventSource',
     ($http, $q, extendedDefer, eventSource) ->
 
       projects = $q.defer()

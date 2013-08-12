@@ -1,4 +1,4 @@
-describe "projectsStore", ->
+describe "projectStore", ->
 
   $scope   = null
   projects = null
@@ -37,7 +37,7 @@ describe "projectsStore", ->
         $http    = $injector.get("$httpBackend")
         $http.expectGET("/api/projects").respond([testObj,testObj2])
 
-        projects = $injector.get("projectsStore")
+        projects = $injector.get("projectStore")
         $http.flush()
     ]
     expected = []

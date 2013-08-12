@@ -4,6 +4,8 @@ angular.module('CI').
 
       (deferred) ->
 
+        throw "is not a defer object: #{deferred.toString()}" unless deferred.promise
+
         _all = () ->
           deferred.promise
 
