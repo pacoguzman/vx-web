@@ -36,7 +36,6 @@ angular.module('CI').
           $q.all([_index(id), _all()]).then ([i,its]) ->
             angular.extend its[i], newVal
 
-
         _delete = (id) ->
           $q.all([_index(id), _all()]).then ([i,its]) ->
             its.splice(i,1)

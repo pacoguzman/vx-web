@@ -43,7 +43,7 @@ describe "buildStore", ->
   describe "all()", ->
 
     beforeEach ->
-      $http.expectGET('/api/projects/1/builds').respond([testObj, testObj2])
+      $http.expectGET('/api/projects/1/builds').respond(angular.copy [testObj, testObj2])
 
     it "should return all builds for project", ->
       $scope.$apply ->
@@ -81,7 +81,7 @@ describe "buildStore", ->
           $http.flush()
           expect(before.length).toBe 2
 
-          $http.expectGET('/api/projects/2/builds').respond([testObj3])
+          $http.expectGET('/api/projects/2/builds').respond(angular.copy [testObj3])
           $scope.$apply ->
             builds.all(2).then (its) ->
               expected = its
@@ -139,21 +139,23 @@ describe "buildStore", ->
 
   describe "with eventSource", ->
 
-    f = null
+    f      = null
+    before = null
 
     beforeEach ->
       [[_, f]] = evSource.subscriptions()
-      $http.expectGET('/api/projects/1/builds').respond([testObj, testObj2])
 
     it "should subscribe to 'events.projects'", ->
       [[name, _]] = evSource.subscriptions()
       expect(name).toEqual 'events.builds'
       expect(f).toBeDefined()
 
+
     describe "new build from event", ->
-      before = null
 
       beforeEach ->
+        before = null
+        $http.expectGET('/api/projects/1/builds').respond(angular.copy [testObj, testObj2])
         $scope.$apply ->
           builds.all(1).then (its) ->
             before = its
@@ -188,50 +190,134 @@ describe "buildStore", ->
         expect(expected.length).toBe 2
         expect(expected).toEqual [testObj, testObj2]
 
-
-    describe "updated build from event", ->
-      before = null
+    describe "destroy build from event", ->
 
       beforeEach ->
+        before = null
+        $http.expectGET('/api/projects/1/builds').respond(angular.copy [testObj, testObj2])
         $scope.$apply ->
           builds.all(1).then (its) ->
             before = its
         $http.flush()
         expect(before.length).toBe 2
 
-      describe "if build in same project", ->
+      it "should delete from collection if in same project", ->
+        e =
+          action: 'destroyed',
+          id: 12
+          data:
+            project_id: 1
+        f(e)
+        $scope.$apply ->
+          builds.all(1).then (its) ->
+            expected = its
+        expect(expected.length).toBe 1
+        expect(expected[0].id).toEqual 14
 
-        describe "and build found in collection", ->
+      it "should skip if build in other project", ->
+        e =
+          action: 'destroyed',
+          id: 12
+          data:
+            project_id: 2
+        f(e)
+        $scope.$apply ->
+          builds.all(1).then (its) ->
+            expected = its
+        expect(expected.length).toBe 2
+        expect(expected).toEqual [testObj, testObj2]
 
-          xit "should update", ->
-            e =
-              action: 'updated',
-              id: 12
-              data:
-                project_id: 1
-                name: "Updated"
-            f(e)
-            $scope.$apply ->
-              builds.all(1).then (its) ->
-                expected = its
-            expect(expected.length).toBe 2
-            expect(expected[0].name).toEqual 'Updated'
-            expect(expected[1].name).toEqual 'MyName'
 
-        describe "and build not found in collection", ->
+    describe "updated build from event", ->
 
-          xit "should skip update", ->
-            e =
-              action: 'updated',
-              id: 99
-              data:
-                project_id: 1
-                name: "Updated"
-            f(e)
-            $scope.$apply ->
-              builds.all(1).then (its) ->
-                expected = its
-            expect(expected.length).toBe 2
-            expect(expected[0].name).toEqual 'MyName'
-            expect(expected[1].name).toEqual 'MyName'
+      describe "(model)", ->
+        beforeEach ->
+          before = null
+          $http.expectGET('/api/builds/12').respond(angular.copy testObj)
+          $scope.$apply ->
+            builds.one(12).then (its) ->
+              before = its
+          $http.flush()
+          expect(before).toEqual testObj
+
+        it "should update if found", ->
+          e =
+            action: 'updated',
+            id: 12
+            data:
+              project_id: 1
+              name: "xUpdated"
+          f(e)
+          $scope.$apply ->
+            builds.one(12).then (its) ->
+              expected = its
+          expect(expected.name).toEqual 'xUpdated'
+
+        it "should skip if not found", ->
+          e =
+            action: 'updated',
+            id: 99
+            data:
+              project_id: 1
+              name: "xUpdated"
+          f(e)
+          $scope.$apply ->
+            builds.one(12).then (its) ->
+              expected = its
+          expect(expected.name).toEqual 'MyName'
+
+      describe "(collection)", ->
+        beforeEach ->
+          before = null
+          $http.expectGET('/api/projects/1/builds').respond(angular.copy [testObj, testObj2])
+          $scope.$apply ->
+            builds.all(1).then (its) ->
+              before = its
+          $http.flush()
+          expect(before.length).toBe 2
+
+        it "should update if build found in collection", ->
+          e =
+            action: 'updated',
+            id: 12
+            data:
+              project_id: 1
+              name: "sUpdated"
+          f(e)
+          $scope.$apply ->
+            builds.all(1).then (its) ->
+              expected = its
+          expect(expected.length).toBe 2
+          expect(expected[0].name).toEqual 'sUpdated'
+          expect(expected[1].name).toEqual 'MyName'
+
+        it "should skip if build not found in collection", ->
+          e =
+            action: 'updated',
+            id: 99
+            data:
+              project_id: 1
+              name: "fUpdated"
+          f(e)
+          $scope.$apply ->
+            builds.all(1).then (its) ->
+              expected = its
+          expect(expected.length).toBe 2
+          expect(expected[0].name).toEqual 'MyName'
+          expect(expected[1].name).toEqual 'MyName'
+
+        it "should skip if build not in same project", ->
+          e =
+            action: 'updated',
+            id: 12
+            data:
+              project_id: 2
+              name: "fUpdated"
+          f(e)
+          $scope.$apply ->
+            builds.all(1).then (its) ->
+              expected = its
+          expect(expected.length).toBe 2
+          expect(expected[0].name).toEqual 'MyName'
+          expect(expected[1].name).toEqual 'MyName'
 

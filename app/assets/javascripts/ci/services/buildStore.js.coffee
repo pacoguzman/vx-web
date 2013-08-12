@@ -30,6 +30,10 @@ CI.service 'buildStore', ['$http', "$q", "extendedDefer", 'eventSource',
       if build.project_id == collection.projectId
         f()
 
+    onlySameModel = (buildId, f) ->
+      if buildId == object.id
+        f()
+
     subscribe = (e) ->
       switch e.action
         when 'created'
@@ -37,8 +41,13 @@ CI.service 'buildStore', ['$http', "$q", "extendedDefer", 'eventSource',
             collection.items.add e.data
         when 'updated'
           onlySameProject e.data, ->
-            console.log e
             collection.items.update e.id, e.data
+          onlySameModel e.id, ->
+            object.item.all().then (its) ->
+              angular.extend its, e.data
+        when 'destroyed'
+          onlySameProject e.data, ->
+            collection.items.delete e.id
 
     eventSource.subscribe "events.builds", subscribe
 

@@ -35,7 +35,7 @@ describe "projectStore", ->
     inject ['$injector',
       ($injector) ->
         $http    = $injector.get("$httpBackend")
-        $http.expectGET("/api/projects").respond([testObj,testObj2])
+        $http.expectGET("/api/projects").respond(angular.copy [testObj,testObj2])
 
         projects = $injector.get("projectStore")
         $http.flush()
@@ -91,12 +91,12 @@ describe "projectStore", ->
         id: 12
         data:
           id: 12
-          name: "Updated"
+          name: "sUpdated"
       f(e)
       $scope.$apply ->
         projects.all().then (its) ->
           expected = its[0]
-      expect(expected.name).toEqual 'Updated'
+      expect(expected.name).toEqual 'sUpdated'
 
     it "should destroy project from event", ->
       e =
