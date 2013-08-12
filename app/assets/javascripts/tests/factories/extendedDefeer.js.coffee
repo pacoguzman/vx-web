@@ -169,13 +169,36 @@ describe "extendedDefer", ->
           expected.push v
         ext.index(99).then (v) ->
           expected.push v
-      expect(expected).toEqual [0,1,-1]
+      expect(expected).toEqual [0,1]
 
     it "should reject unless id", ->
+      succVal = null
+      failVal = null
+
+      succ = (val) ->
+        succVal = val
+      fail = (val) ->
+        failVal = val
+
       $scope.$apply ->
-        ext.index(undefined).then (v) ->
-          expected.push v
-      expect(expected).toEqual []
+        ext.index(NaN).then succ, fail
+
+      expect(succVal).toBe null
+      expect(failVal).toBeNaN()
+
+    it "should reject unless index", ->
+      succVal = null
+      failVal = null
+
+      succ = (val) ->
+        succVal = val
+      fail = (val) ->
+        failVal = val
+
+      $scope.$apply ->
+        ext.index(199).then succ, fail
+      expect(succVal).toBe null
+      expect(failVal).toBe -1
 
     describe "when defer rejected", ->
 

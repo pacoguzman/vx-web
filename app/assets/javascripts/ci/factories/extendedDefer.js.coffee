@@ -12,12 +12,18 @@ angular.module('CI').
 
         _index = (id) ->
           id = parseInt(id)
+          d  = $q.defer()
+
           if id
-            _all().then (its) ->
+            _flatMap (its) ->
               i = its.map((it) -> it.id).indexOf(id)
+              if i >= 0
+                d.resolve i
+              else
+                d.reject i
+              d.promise
           else
-            d = $q.defer()
-            d.reject()
+            d.reject(id)
             d.promise
 
 
