@@ -1,1 +1,1 @@
-window.CI = angular.module("CI", ['restangular'])
+window.CI = angular.module("CI", ['restangular', 'ngResource'])

@@ -1,27 +1,17 @@
-CI.service 'projectsService', ['Restangular', "$q"
-  ($rest, $q) ->
+CI.service 'projectsService', ['$resource', "$q", '$rootScope', 'extendedDefer'
+  ($resource, $q, $scope, extendedDefer) ->
 
-    projects = null;
+    Project = $resource("/api/projects/:id.json")
 
-    loadProjects = () ->
-      unless projects
-        projects = $rest.all("api/projects").getList()
+    projects = $q.defer()
+    ext      = extendedDefer(projects)
+
+    Project.query (its) ->
+      projects.resolve(its)
 
     {
-      all: () ->
-        loadProjects()
-        projects
-
-      find: (id) ->
-        id = parseInt(id)
-        deferred = $q.defer()
-        loadProjects()
-        projects.then (its) ->
-          project = _.find its, (it) ->
-            it.id == id
-          deferred.resolve project
-
-        deferred.promise
+      all:  ext.all
+      find: ext.find
     }
 
 ]

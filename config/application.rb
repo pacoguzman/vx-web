@@ -30,6 +30,7 @@ module CiWeb
     config.x.hostname = ENV['CI_HOSTNAME'] || Socket.gethostname
 
     config.middleware.delete "Rack::Lock"
+    config.assets.precompile += %w( lib.js )
   end
 end
 

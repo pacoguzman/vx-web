@@ -19,7 +19,7 @@ CiWeb::Application.routes.draw do
 
   end
 
-  resources :events, only: [:show]
+  resources :events, only: [:index]
 
   get '/github/callback/:token', to: 'github/projects_callbacks#create'
 
