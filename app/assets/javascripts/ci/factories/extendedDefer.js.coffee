@@ -9,8 +9,13 @@ angular.module('CI').
 
         _index = (id) ->
           id = parseInt(id)
-          _all().then (its) ->
-            its.map((it) -> it.id).indexOf(id)
+          if id
+            _all().then (its) ->
+              its.map((it) -> it.id).indexOf(id)
+          else
+            d = $q.defer()
+            d.reject
+            d.promise
 
         _find = (id) ->
           $q.all([_index(id), _all()]).then ([i,its]) ->

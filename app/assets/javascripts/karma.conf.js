@@ -19,12 +19,13 @@ module.exports = function(config) {
       "lib/moment-2.1.0.js",
       "lib/angular-1.1.5.js",
       "lib/angular-resource-1.1.5.js",
-      "lib/restangular.js",
       "lib/angular-mocks-1.1.5.js",
 
       "ci/init/*.js.coffee",
       "ci/factories/*.js.coffee",
+      "ci/services/*.js.coffee",
 
+      "tests/support/*.js.coffee",
       "tests/**/*.js.coffee",
     ],
 

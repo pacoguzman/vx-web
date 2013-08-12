@@ -123,6 +123,12 @@ describe "extendedDefer", ->
           expected.push v
       expect(expected).toEqual [0,1,-1]
 
+    it "should reject unless index", ->
+      $scope.$apply ->
+        ext.index(undefined).then (v) ->
+          expected.push v
+      expect(expected).toEqual []
+
     describe "when defer rejected", ->
 
       beforeEach ->
