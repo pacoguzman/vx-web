@@ -52,11 +52,11 @@ describe "projectStore", ->
       expect(expected).toEqual [testObj, testObj2]
 
 
-  describe "find()", ->
+  describe "one()", ->
 
     it "should find project by id", ->
       $scope.$apply ->
-        projects.find(12).then (it) ->
+        projects.one(12).then (it) ->
           expected = it
       expect(expected).toEqual testObj
 
@@ -66,11 +66,14 @@ describe "projectStore", ->
     f = null
 
     beforeEach ->
-      [[_, f]] = evSource.subscriptions()
+      found = _.find evSource.subscriptions(), (it) ->
+        it[0] == 'events.projects'
+      f = found[1]
 
     it "should subscribe to 'events.projects'", ->
-      [[name, _]] = evSource.subscriptions()
-      expect(name).toEqual 'events.projects'
+      names = evSource.subscriptions().map (it) ->
+        it[0]
+      expect(names).toContain 'events.projects'
       expect(f).toBeDefined()
 
     it "should add new project from event", ->

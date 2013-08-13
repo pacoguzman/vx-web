@@ -1,5 +1,5 @@
-CI.service 'projectStore', ['$http', "$q", 'extendedDefer', 'eventSource',
-    ($http, $q, extendedDefer, eventSource) ->
+CI.service 'projectStore', ['$http', "$q", 'extendedDefer', 'eventSource', 'buildStore',
+    ($http, $q, extendedDefer, eventSource, buildStore) ->
 
       projects = $q.defer()
       ext      = extendedDefer(projects)
@@ -18,5 +18,5 @@ CI.service 'projectStore', ['$http', "$q", 'extendedDefer', 'eventSource',
         eventSource.subscribe "events.projects", subscribe
 
       all:  ext.all
-      find: ext.find
+      one: ext.find
 ]

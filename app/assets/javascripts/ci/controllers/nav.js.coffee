@@ -1,4 +1,4 @@
-CI.factory 'appMenu', () ->
+CI.factory 'appMenu', ($q) ->
   items = [{ title: 'Dashboard', path: '/' }]
 
   obj = {}
@@ -9,9 +9,13 @@ CI.factory 'appMenu', () ->
   obj.items = () ->
     items
 
-  obj.define = (block) ->
+  obj.define = (args...) ->
+    promises = _.initial(args)
+    f = _.last(args)
     items = [{ title: 'Dashboard', path: '/' }]
-    block() if block
+    if f
+      $q.all(promises).then (its) ->
+        f.apply(null, its)
 
   obj
 

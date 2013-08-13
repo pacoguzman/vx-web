@@ -10,7 +10,7 @@ module Evrone
             id:     id,
             name:   self.class.table_name,
             action: action,
-            body:   as_json
+            data:   as_json
           }
 
           Rails.logger.debug "publish payload #{payload.inspect}"

@@ -35,15 +35,53 @@ body > .container > .ng-view {
       display: block;
       width: 1em;
       margin: 0.65em auto 0 auto;
-      font-weight: bold;
+      font-family: 'HelveticaNeueW01-65Medi' !important;
     }
   }
 
   .navigation {
     margin-left: 5em;
+
+    ul li {
+      margin-right: 1em;
+    }
+
+    ul li.active a {
+      border-bottom-color: #0088cc;
+      border-bottom-width: 2px;
+
+      &:hover {
+        border-bottom-color: #0088cc;
+        color: #666;
+      }
+    }
+
+    ul li a {
+      border-color: white;
+      border-bottom-color: white;
+      font-family: 'HelveticaNeueW01-65Medi' !important;
+
+      &:hover {
+        border-color: white;
+        border-bottom-color: white;
+        background: none;
+        color: #0088cc;
+      }
+    }
   }
 }
 
 .ajax-loader {
   content: url(asset-path("assets/ajax-loader.gif"));
+}
+
+
+.animate-enter {
+	-webkit-transition: .6s linear all; /* Chrome */
+	transition: .6s linear all;
+	opacity: 0;
+}
+
+.animate-enter.animate-enter-active {
+	opacity: 1;
 }

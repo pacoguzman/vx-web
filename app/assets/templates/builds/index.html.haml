@@ -20,12 +20,11 @@
       %th Duration
       %th Fnished At
 
-    %tr.build-success.build-item{ 'ng-repeat' => "build in builds | orderBy:'number':true" }
+    %tr.build-item{ 'ng-repeat' => "build in builds | orderBy:'number':true", 'class' => "build-item-{{build.status}}" }
       %td
-        %a{ href: "/builds/{{build.id}}" }
+        %a{ 'ng-href' => "/builds/{{build.id}}" }
           %i.icon-circle
           %span {{ build.number }}
-          {{ build.status }}
       %td {{ build.sha }}
       %td {{ build.branch }}
       %td {{ build.started_at  | timeDiff: build.finished_at }}

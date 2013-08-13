@@ -1,13 +1,13 @@
 .projects
 
   .projects-add-new.pull-right
-    %a{ class: "btn btn-small btn-primary", 'href' => "/github_repos" }
+    %a{ class: "btn btn-small btn-primary", 'ng-href' => "/github_repos" }
       Add new Project
 
   %ul.projects-list.list-group
 
     %li.project.list-group-item{ 'ng-repeat' => "project in projects" }
-      %a{ 'href' => "/projects/{{project.id}}/builds" }
+      %a{ 'ng-href' => "/projects/{{project.id}}/builds" }
         {{project.name}}
 
       %br

@@ -1,12 +1,12 @@
-CI.controller 'BuildCtrl', ['$scope', 'appMenu', 'projectsService', 'buildsService', '$routeParams',
+CI.controller 'BuildCtrl', ['$scope', 'appMenu', 'projectStore', 'buildStore', '$routeParams',
   ($scope, menu, projects, builds, $routeParams) ->
 
-    $scope.build = builds.find $routeParams.buildId
+    $scope.build = builds.one $routeParams.buildId
 
     $scope.build.then (build) ->
-      $scope.project = projects.find(build.project_id).then (project) ->
-        menu.define ->
-          menu.add project.name, "/projects/#{project.id}/builds"
-          menu.add "Build ##{build.number}", "/builds/#{build.id}"
+      $scope.project = projects.one(build.project_id)
+      menu.define $scope.build, $scope.project, (b,p) ->
+        menu.add p.name, "/projects/#{p.id}/builds"
+        menu.add "Build ##{b.number}", "/builds/#{b.id}"
 
 ]

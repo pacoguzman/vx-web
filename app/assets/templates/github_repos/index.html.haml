@@ -2,7 +2,7 @@
 
 
   .github-repos-sync.pull-right
-    %a{ class: "btn btn-small btn-primary", "ng-click" => "syncGithubRepos()" }
+    %a{ class: "btn btn-small btn-primary", "ng-class" => "(inSync() ? 'disabled' : '')", "ng-click" => "syncGithubRepos()" }
       Sync Now
 
   .github-repos-search
@@ -13,11 +13,11 @@
     .gthub-repos-empty{ 'ng-hide' => 'repos.length' }
       No repositories loaded
 
-    .github-repo{ 'ng-repeat' => "repo in repos | filter:query" }
+    .github-repo{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30" }
 
       %a.octocat{ href: '{{repo.html_url}}', title: "View on Github" }
         %i.icon-github-sign
 
       %label
         %input{ type: 'checkbox', 'ng-model' => 'repo.subscribed', 'ng-change' => "changeSubscription(repo)"}
-        %span {{repo.full_name}}
+          %span {{repo.full_name}}

@@ -11,7 +11,7 @@ class BuildUpdater
     if build
       update_status
       build.save!
-      build.project.pg_notify nil, build.to_json
+      build.project.publish
     end
   end
 

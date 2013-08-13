@@ -3,7 +3,6 @@ CI.config ['$routeProvider', '$locationProvider',
   ($routeProvider, $locationProvider) ->
 
     $routeProvider.
-
       when('/builds/:buildId',
         templateUrl: "<%= asset_path 'assets/builds/show.html' %>",
         controller: "BuildCtrl"
@@ -22,5 +21,4 @@ CI.config ['$routeProvider', '$locationProvider',
       )
 
     $locationProvider.html5Mode true
-
 ]

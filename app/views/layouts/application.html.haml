@@ -14,7 +14,7 @@
 
       %ng-include{ 'src' => "\"#{asset_path 'assets/layouts/menu.html' }\"" }
 
-      .ng-view
+      .ng-view{'ng-animate' => "{enter: 'animate-enter', leave: 'animate-leave'}"}
 
     = javascript_include_tag 'lib'
     = javascript_include_tag 'application'

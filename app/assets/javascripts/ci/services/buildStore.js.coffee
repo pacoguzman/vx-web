@@ -67,6 +67,10 @@ CI.service 'buildStore', ['$http', "$q", "extendedDefer", 'eventSource',
         $http.get("/api/builds/#{buildId}").then (re) ->
           applyObject buildId, re
 
+    _create = (projectId) ->
+      $http.post("/api/projects/#{projectId}/builds")
+
     all: _all
     one: _one
+    create: _create
 ]
