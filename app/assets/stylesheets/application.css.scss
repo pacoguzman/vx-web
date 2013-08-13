@@ -77,8 +77,8 @@ body > .container > .ng-view {
 
 
 .animate-enter {
-	-webkit-transition: .6s linear all; /* Chrome */
-	transition: .6s linear all;
+	-webkit-transition: .3s linear all; /* Chrome */
+	transition: .3s linear all;
 	opacity: 0;
 }
 
