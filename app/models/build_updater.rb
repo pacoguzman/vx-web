@@ -25,7 +25,7 @@ class BuildUpdater
       when 3 # finished
         nil  # ignored
       when 4 # failed
-        build.fail
+        build.decline
         build.finished_at = tm
       when 5 # errored
         build.error

@@ -6,7 +6,7 @@ class JobUpdater
     @message = job_status_message
     @build   = ::Build.find_by id: @message.build_id
     if @build
-      @job = @build.jobs.find_by number: @message.job_id
+      @job = Job.find_or_create_by_status_message(job_status_message)
     end
   end
 
@@ -15,10 +15,33 @@ class JobUpdater
       update_statuses
       build.save!
       build.publish
+
+      update_job_status
+      job.save!
+      job.publish
     end
   end
 
   private
+
+    def update_job_status
+
+      case message.status
+      when 2 # started
+        job.start
+        job.started_at = tm
+      when 3 # finished
+        job.finish
+        job.finished_at = tm
+      when 4 # failed
+        job.decline
+        job.finished_at = tm
+      when 5 # errored
+        job.error
+        job.finished_at = tm
+      end
+
+    end
 
     def update_statuses
 
@@ -31,7 +54,7 @@ class JobUpdater
         build.finish
         build.finished_at = tm
       when 4 # failed
-        build.fail
+        build.decline
         build.finished_at = tm
       when 5 # errored
         build.error
