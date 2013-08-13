@@ -7,7 +7,6 @@ module.exports = function(config) {
     // base path, that will be used to resolve files and exclude
     basePath: '',
 
-
     // frameworks to use
     frameworks: ["jasmine"],
 
@@ -34,7 +33,6 @@ module.exports = function(config) {
     exclude: [
 
     ],
-
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'

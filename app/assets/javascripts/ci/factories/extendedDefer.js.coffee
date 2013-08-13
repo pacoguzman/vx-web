@@ -59,6 +59,7 @@ angular.module('CI').
         d.promise
 
       {
+        then:       deferred.promise.then
         all:        _all
         index:      _index
         find:       _find
