@@ -96,6 +96,28 @@ describe "extendedDefer", ->
       expect(expected[1].name).toEqual "MyName"
 
 
+  describe "updateOne()", ->
+
+    beforeEach ->
+      defer    = $q.defer()
+      ext      = factory(defer)
+
+    beforeEach ->
+      $scope.$apply ->
+        defer.resolve testObj
+
+    it "should be defined", ->
+      expect(ext.updateOne).toBeDefined()
+
+    it "should update object", ->
+      $scope.$apply ->
+        ext.updateOne(name: "changed")
+        defer.promise.then (its) ->
+          expected = its
+      expect(expected.id).toEqual 12
+      expect(expected.name).toEqual "changed"
+
+
   describe "find()", ->
 
     it "should be defined", ->

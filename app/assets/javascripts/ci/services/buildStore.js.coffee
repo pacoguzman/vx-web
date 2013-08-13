@@ -46,8 +46,7 @@ CI.service 'buildStore', ['$http', "$q", "extendedDefer", 'eventSource',
           onlySameProject e.data, ->
             collection.items.update e.id, e.data
           onlySameModel e.id, ->
-            object.item.all().then (its) ->
-              angular.extend its, e.data
+            object.item.updateOne e.data
         when 'destroyed'
           onlySameProject e.data, ->
             collection.items.delete e.id
