@@ -17,6 +17,6 @@ CI.service 'projectStore', ['$http', "$q", 'extendedDefer', 'eventSource', 'buil
         projects.resolve(re.data)
         eventSource.subscribe "events.projects", subscribe
 
-      all:  ext.all
+      all: ext.all
       one: ext.find
 ]

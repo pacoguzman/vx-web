@@ -40,6 +40,19 @@ describe "buildStore", ->
     expected = []
 
 
+  describe "create()", ->
+
+    beforeEach ->
+      $http.expectPOST('/api/projects/1/builds').respond([])
+
+    it "should send POST request", ->
+      $scope.$apply ->
+        builds.create(1).then (its) ->
+          expected = 'success'
+      $http.flush()
+      expect(expected).toEqual 'success'
+
+
   describe "all()", ->
 
     beforeEach ->

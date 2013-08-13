@@ -11,20 +11,23 @@ CI.service 'buildStore', ['$http', "$q", "extendedDefer", 'eventSource',
       item:      null
       ext:       null
 
-    applyCollection = (projectId, re) ->
+    assignCollection = (projectId, re) ->
       d = $q.defer()
-      d.resolve re.data
-
+      d.resolve re
       collection.projectId = projectId
       collection.items     = extendedDefer d
-      re.data
+      re
 
-    applyObject = (buildId, re) ->
+    assignCollection null, []
+
+    assignObject = (buildId, re) ->
       d = $q.defer()
-      d.resolve re.data
+      d.resolve re
       object.id   = buildId
       object.item = extendedDefer d
-      re.data
+      re
+
+    assignObject null, null
 
     onlySameProject = (build, f) ->
       if build.project_id == collection.projectId
@@ -51,26 +54,26 @@ CI.service 'buildStore', ['$http', "$q", "extendedDefer", 'eventSource',
 
     eventSource.subscribe "events.builds", subscribe
 
-    _all = (projectId) ->
+    all = (projectId) ->
       projectId = parseInt(projectId)
       if projectId == collection.projectId
         collection.items.all()
       else
         $http.get("/api/projects/#{projectId}/builds").then (re) ->
-          applyCollection projectId, re
+          assignCollection projectId, re.data
 
-    _one = (buildId) ->
+    one = (buildId) ->
       buildId = parseInt(buildId)
       if buildId == object.id
         object.item.all()
       else
         $http.get("/api/builds/#{buildId}").then (re) ->
-          applyObject buildId, re
+          assignObject buildId, re.data
 
-    _create = (projectId) ->
+    create = (projectId) ->
       $http.post("/api/projects/#{projectId}/builds")
 
-    all: _all
-    one: _one
-    create: _create
+    all:    all
+    one:    one
+    create: create
 ]
