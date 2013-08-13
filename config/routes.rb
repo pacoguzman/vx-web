@@ -3,9 +3,14 @@ CiWeb::Application.routes.draw do
   namespace :api do
 
     resources :projects do
-      resources :builds, except: [:show]
+      resources :builds, only: [:index, :create]
     end
-    resources :builds, only: [:show]
+
+    resources :builds, only: [:show] do
+      resources :jobs, only: [:index]
+    end
+
+    resources :jobs, only: [:show]
 
     resources :github_repos, only: [:index] do
       member do

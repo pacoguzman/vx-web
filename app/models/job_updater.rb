@@ -5,6 +5,9 @@ class JobUpdater
   def initialize(job_status_message)
     @message = job_status_message
     @build   = ::Build.find_by id: @message.build_id
+    if @build
+      @job = @build.jobs.find_by number: @message.job_id
+    end
   end
 
   def perform

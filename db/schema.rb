@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130809105836) do
+ActiveRecord::Schema.define(version: 20130813191114) do
+
+  enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "builds", force: true do |t|
     t.integer  "number",                      null: false
@@ -44,6 +47,19 @@ ActiveRecord::Schema.define(version: 20130809105836) do
   end
 
   add_index "github_repos", ["user_id", "full_name"], name: "index_github_repos_on_user_id_and_full_name", unique: true, using: :btree
+
+  create_table "jobs", force: true do |t|
+    t.integer  "build_id",    null: false
+    t.integer  "number",      null: false
+    t.integer  "status",      null: false
+    t.hstore   "matrix"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "jobs", ["build_id", "number"], name: "index_jobs_on_build_id_and_number", unique: true, using: :btree
 
   create_table "projects", force: true do |t|
     t.string   "name",        null: false
