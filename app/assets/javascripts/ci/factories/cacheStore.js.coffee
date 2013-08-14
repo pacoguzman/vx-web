@@ -68,12 +68,6 @@ angular.module('CI').
         findInCollections id, (idx, its) ->
           angular.extend its[idx], newVal
 
-      getItem = (id, f = null) ->
-        succ = (idx, its) ->
-          its[idx]
-        fail = () ->
-          getFrom(id, f, itemsCache)
-        findInCollections succ, fail
 
       collection = (id) ->
 
@@ -91,7 +85,7 @@ angular.module('CI').
           addTo(id, value, itemsCache)
 
         get: (f = null) ->
-          getItem(id, f)
+          getFrom(id, f, itemsCache)
 
         update: (newVal) ->
           updateItem(id, newVal)
