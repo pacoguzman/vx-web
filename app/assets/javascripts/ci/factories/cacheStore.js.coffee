@@ -1,5 +1,5 @@
 angular.module('CI').
-  factory "identityMap", ($q, $cacheFactory) ->
+  factory "cacheStore", ($q, $cacheFactory) ->
 
     (collectionLimit = 2, itemsLimit = 2) ->
 
@@ -8,25 +8,42 @@ angular.module('CI').
 
       addTo = (id, values, cache) ->
         id = id.toString()
-        cache.put id, values
-        values
+        if values.then
+          values.then (its) ->
+            cache.put id, its
+            its
+        else
+          d = $q.defer()
+          cache.put id, values
+          d.resolve values
+          d.promise
 
       getFrom = (id, f, cache) ->
         id = id.toString()
         value = cache.get(id)
-        if !value
+        if value
+          d = $q.defer()
+          d.resolve value
+          d.promise
+        else
           if f
-            value = addTo id, f(), cache
+            addTo id, f(), cache
           else
             d = $q.defer()
             d.reject id
-            value = d.promise
-        value
+            d.promise
 
       addItemToCollection = (id, value) ->
         getFrom(id, null, collectionsCache).then (its) ->
-          its.push value
-          value
+          if value.then
+            value.then (it) ->
+              its.push it
+              it
+          else
+            d = $q.defer()
+            its.push value
+            d.resolve value
+            d.promise
 
       findInCollections = (id, f) ->
         ival = parseInt(id)
@@ -51,6 +68,13 @@ angular.module('CI').
         findInCollections id, (idx, its) ->
           angular.extend its[idx], newVal
 
+      getItem = (id, f = null) ->
+        succ = (idx, its) ->
+          its[idx]
+        fail = () ->
+          getFrom(id, f, itemsCache)
+        findInCollections succ, fail
+
       collection = (id) ->
 
         put: (values) ->
@@ -59,7 +83,7 @@ angular.module('CI').
         get: (f = null) ->
           getFrom(id, f, collectionsCache)
 
-        add: (value) ->
+        addItem: (value) ->
           addItemToCollection(id, value)
 
       item = (id) ->
@@ -67,7 +91,7 @@ angular.module('CI').
           addTo(id, value, itemsCache)
 
         get: (f = null) ->
-          getFrom(id, f, itemsCache)
+          getItem(id, f)
 
         update: (newVal) ->
           updateItem(id, newVal)
