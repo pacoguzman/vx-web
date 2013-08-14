@@ -45,29 +45,50 @@ angular.module('CI').
             d.resolve value
             d.promise
 
-      findInCollections = (id, f) ->
-        ival = parseInt(id)
-        info = collectionsCache.info()
-        keys = _.keys info
-        for key in keys
-          info[key].then (its) ->
-            ids = its.map((it) -> it.id)
-            idx = ids.indexOf ival
+      findInCollections = (id, collectionId, f) ->
+        if collectionId
+          ival         = parseInt(id)
+          collectionId = collectionId.toString()
+          collection   = collectionsCache.get(collectionId)
+          if collection
+            ids = collection.map((it) -> it.id)
+            idx = ids.indexOf(ival)
             if idx >= 0
-              f idx, its
+              f(idx, collection)
 
-      removeItem = (id) ->
-        getFrom(id, null, itemsCache).then (it) ->
+      removeItem = (id, collectionId) ->
+        it = itemsCache.get(id.toString())
+        removed = null
+        if it
           itemsCache.remove(id.toString())
-        findInCollections id, (idx, its) ->
-          its.splice(idx, 1)
+          removed = it
+        if collectionId
+          findInCollections id, collectionId, (idx, its) ->
+            removed = its[idx]
+            its.splice(idx, 1)
+        d = $q.defer()
+        if removed
+          d.resolve removed
+        else
+          d.reject id.toString()
+        d.promise
 
-      updateItem = (id, newVal) ->
-        getFrom(id, null, itemsCache).then (it) ->
+      updateItem = (id, collectionId, newVal) ->
+        it = itemsCache.get(id.toString())
+        updated = null
+        if it
           angular.extend it, newVal
-        findInCollections id, (idx, its) ->
-          angular.extend its[idx], newVal
-
+          updated = it
+        if collectionId
+          findInCollections id, collectionId, (idx, its) ->
+            angular.extend its[idx], newVal
+            updated = its[idx]
+        d = $q.defer()
+        if updated
+          d.resolve updated
+        else
+          d.reject id.toString()
+        d.promise
 
       collection = (id) ->
 
@@ -87,11 +108,11 @@ angular.module('CI').
         get: (f = null) ->
           getFrom(id, f, itemsCache)
 
-        update: (newVal) ->
-          updateItem(id, newVal)
+        update: (newVal, collectionId) ->
+          updateItem(id, collectionId, newVal)
 
-        remove: () ->
-          removeItem(id)
+        remove: (collectionId) ->
+          removeItem(id, collectionId)
 
 
       collection:  collection

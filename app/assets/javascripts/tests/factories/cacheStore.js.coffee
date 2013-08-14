@@ -53,7 +53,7 @@ describe "cacheStore", ->
         context = f()
         cacheName = context.cacheName
         cacheItem = context.cacheItem
-        item      = context.item
+        item      = angular.copy context.item
         defer     = $q.defer()
 
       beforeEach ->
@@ -93,7 +93,7 @@ describe "cacheStore", ->
         context = f()
         cacheName = context.cacheName
         cacheItem = context.cacheItem
-        item      = context.item
+        item      = angular.copy context.item
         defer     = $q.defer()
 
       beforeEach ->
@@ -152,7 +152,7 @@ describe "cacheStore", ->
 
     beforeEach ->
       $scope.$apply ->
-        items = [testObj]
+        items = angular.copy [testObj]
         defer = $q.defer()
 
 
@@ -218,13 +218,14 @@ describe "cacheStore", ->
                 cache.collection(1).addItem r.promise
               expect(cache.cache.collections.get(1)[1]).toBe undefined
 
+
   describe '(item)', ->
     item  = null
     defer = null
 
     beforeEach ->
       $scope.$apply ->
-        item  = testObj
+        item  = angular.copy testObj
         defer = $q.defer()
 
 
@@ -238,3 +239,104 @@ describe "cacheStore", ->
       cacheName: 'items',
       cacheItem: cache.item,
       item:      item
+
+
+    describe "update()", ->
+
+      beforeEach ->
+        $apply ->
+          defer.resolve item
+          cache.item(1).put defer.promise
+
+      describe "when item found in items cache", ->
+        it "should update it", ->
+          cache.item(1).update name: 'updated'
+          expect(cache.cache.items.get(1).name).toBe 'updated'
+
+        it "should return resolved promise with", ->
+          $apply ->
+            cache.item(1).update(name: "updated").then succ, fail
+          expect(succVal).toBe item
+
+      describe "when item found in collection", ->
+        items = null
+
+        beforeEach ->
+          items = angular.copy [testObj, testObj2]
+          cache.cache.items.remove('1')
+          cache.collection(1).put items
+
+        it "should update it", ->
+          cache.item(testObj.id).update name: "updated", 1
+          expect(cache.cache.collections.get('1')[0].name).toBe 'updated'
+          expect(cache.cache.collections.get('1')[0]).toBe items[0]
+          expect(cache.cache.collections.get('1')[1].name).toBe 'MyName2'
+
+        it "should return resolved pormise with it", ->
+          $apply ->
+            cache.item(testObj.id).update(name: "updated", 1).then succ, fail
+          expect(succVal).toBe items[0]
+
+      describe "when item not found in caches", ->
+        it "cannot touch any items", ->
+          cache.item(2).update name: "updated"
+          expect(cache.cache.items.get(2)).toBe undefined
+          expect(cache.cache.items.get(1).name).toBe 'MyName'
+
+        it "should return rejected promise", ->
+          $apply ->
+            cache.item(2).update(name: "updated").then succ, fail
+          expect(failVal).toBe '2'
+
+
+    describe "remove()", ->
+
+      beforeEach ->
+        $apply ->
+          defer.resolve item
+          cache.item(1).put defer.promise
+
+      describe "when item found in items cache", ->
+        it "should remove it", ->
+          cache.item(1).remove()
+          expect(cache.cache.items.get(1)).toBe undefined
+
+        it "should return resolved promise with it", ->
+          $apply ->
+            cache.item(1).remove().then succ, fail
+          expect(succVal).toBe item
+
+      describe "when item found in collection", ->
+        items = null
+
+        beforeEach ->
+          items = angular.copy [testObj, testObj2]
+          cache.cache.items.remove('1')
+          cache.collection(1).put items
+
+        it "should update it", ->
+          cache.item(testObj.id).remove(1)
+          expect(cache.cache.collections.get('1').length).toBe 1
+          expect(cache.cache.collections.get('1')[0]).toEqual testObj2
+          expect(cache.cache.collections.get('1')).toBe items
+
+        it "should return resolved pormise with it", ->
+          $apply ->
+            cache.item(testObj.id).remove(1).then succ, fail
+          expect(succVal).toEqual testObj
+
+      describe "when item not found in caches", ->
+        beforeEach ->
+          items = angular.copy [testObj, testObj2]
+          cache.collection(1).put items
+
+        it "cannot touch any items", ->
+          cache.item(3).remove(1)
+          expect(cache.cache.items.get(1)).toEqual testObj
+          expect(cache.cache.collections.get(1).length).toBe 2
+
+        it "should return rejected promise", ->
+          $apply ->
+            cache.item(3).remove(1).then succ, fail
+          expect(failVal).toBe '3'
+
