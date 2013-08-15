@@ -1,0 +1,19 @@
+.build {
+
+  .build-info {
+    font-size: 90%;
+  }
+
+  .build-info-line {
+    margin-bottom: .6em;
+
+    span:first-child {
+      display: inline-block;
+      width: 6em;
+    }
+  }
+
+  h5 {
+    margin-top: 2em;
+  }
+}

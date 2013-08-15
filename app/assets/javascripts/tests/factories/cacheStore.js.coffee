@@ -146,6 +146,12 @@ describe "cacheStore", ->
               expect(cache.cache[cacheName].get(2)).toBe undefined
 
 
+  it "should be create twice", ->
+    inject ['cacheStore',
+      (cacheStore) ->
+        cacheStore()
+    ]
+
   describe '(collection)', ->
     items = null
     defer = null

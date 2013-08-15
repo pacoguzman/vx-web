@@ -14,7 +14,7 @@ class Api::JobsController < Api::BaseController
   private
 
     def build
-      @build ||= ::Build.find params[:id]
+      @build ||= ::Build.find params[:build_id]
     end
 
 end

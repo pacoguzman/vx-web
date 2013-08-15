@@ -1,6 +1,6 @@
 class JobUpdater
 
-  attr_reader :message, :build
+  attr_reader :message, :build, :job
 
   def initialize(job_status_message)
     @message = job_status_message
@@ -28,6 +28,7 @@ class JobUpdater
 
       case message.status
       when 2 # started
+        job.publish :created
         job.start
         job.started_at = tm
       when 3 # finished

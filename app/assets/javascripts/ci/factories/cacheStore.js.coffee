@@ -1,10 +1,14 @@
 angular.module('CI').
   factory "cacheStore", ($q, $cacheFactory) ->
 
+    _id = -1
+
     (collectionLimit = 2, itemsLimit = 2) ->
 
-      collectionsCache = $cacheFactory('collections', capacity: collectionLimit)
-      itemsCache       = $cacheFactory('items', capacity: itemsLimit)
+      _id++
+
+      collectionsCache = $cacheFactory("collections.#{_id}", capacity: collectionLimit)
+      itemsCache       = $cacheFactory("items.#{_id}", capacity: itemsLimit)
 
       addTo = (id, values, cache) ->
         id = id.toString()

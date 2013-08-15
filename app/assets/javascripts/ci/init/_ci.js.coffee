@@ -1,1 +1,1 @@
-window.CI = angular.module("CI", [])
+window.CI = angular.module("CI", ['ngRoute'])

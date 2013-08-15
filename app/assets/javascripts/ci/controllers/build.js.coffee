@@ -1,12 +1,19 @@
-CI.controller 'BuildCtrl', ['$scope', 'appMenu', 'projectStore', 'buildStore', '$routeParams',
-  ($scope, menu, projects, builds, $routeParams) ->
+CI.controller 'BuildCtrl', ($scope, appMenu, projectStore, buildStore, jobStore, $routeParams) ->
 
-    $scope.build = builds.one $routeParams.buildId
+    $scope.build  = buildStore.one $routeParams.buildId
+    $scope.jobs   = jobStore.all $routeParams.buildId
+    $scope.matrix = []
 
     $scope.build.then (build) ->
-      $scope.project = projects.one(build.project_id)
-      menu.define $scope.build, $scope.project, (b,p) ->
-        menu.add p.name, "/projects/#{p.id}/builds"
-        menu.add "Build ##{b.number}", "/builds/#{b.id}"
+      $scope.project = projectStore.one(build.project_id)
+      appMenu.define $scope.build, $scope.project, (b,p) ->
+        appMenu.add p.name, "/projects/#{p.id}/builds"
+        appMenu.add "Build ##{b.number}", "/builds/#{b.id}"
 
-]
+    $scope.$watch 'jobs', (newVal, oldVal) ->
+      its =  newVal || oldVal || []
+      $scope.matrix = if its[0] && its[0].matrix
+        _.keys its[0].matrix
+      else
+        []
+    , true
