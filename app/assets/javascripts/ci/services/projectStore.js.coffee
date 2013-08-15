@@ -1,22 +1,30 @@
-CI.service 'projectStore', ['$http', "$q", 'extendedDefer', 'eventSource', 'buildStore',
-    ($http, $q, extendedDefer, eventSource, buildStore) ->
+CI.service 'projectStore',
+  ($http, $q,  eventSource, cacheStore) ->
 
-      projects = $q.defer()
-      ext      = extendedDefer(projects)
+    cache    = cacheStore()
+    projects = cache.collection("projects")
 
-      subscribe = (e) ->
-        switch e.action
-          when 'created'
-            ext.add e.data
-          when 'updated'
-            ext.update e.id, e.data
-          when 'destroyed'
-            ext.delete e.id
+    subscribe = (e) ->
+      switch e.action
+        when 'created'
+          projects.addItem e.data
+        when 'updated'
+          cache.item(e.id).update e.data, 'projects'
+        when 'destroyed'
+          cache.item(e.id).remove 'projects'
 
-      $http.get("/api/projects").then (re) ->
-        projects.resolve(re.data)
-        eventSource.subscribe "events.projects", subscribe
+    eventSource.subscribe "events.projects", subscribe
 
-      all: ext.all
-      one: ext.find
-]
+    all = () ->
+      projects.get () ->
+        $http.get("/api/projects").then (re) ->
+          re.data
+
+    one = (id) ->
+      id = parseInt(id)
+      all().then (its) ->
+        _.find its, (it) ->
+          it.id == id
+
+    all: all
+    one: one

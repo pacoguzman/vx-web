@@ -16,7 +16,7 @@ class Api::BuildsController < Api::BaseController
   end
 
   def show
-    @build = Build.find params[:id]
+    @build = ::Build.find params[:id]
     respond_with @build
   end
 

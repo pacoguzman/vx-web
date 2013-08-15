@@ -14,8 +14,11 @@ CI.factory 'appMenu', ($q) ->
     f = _.last(args)
     items = [{ title: 'Dashboard', path: '/' }]
     if f
-      $q.all(promises).then (its) ->
-        f.apply(null, its)
+      if promises && !_.isEmpty(promises) && promises[0].then
+        $q.all(promises).then (its) ->
+          f.apply(null, its)
+      else
+        f.apply null, promises
 
   obj
 

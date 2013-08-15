@@ -1,6 +1,6 @@
 class JobUpdater
 
-  attr_reader :message, :build
+  attr_reader :message, :build, :job
 
   def initialize(job_status_message)
     @message = job_status_message
@@ -14,7 +14,7 @@ class JobUpdater
     if build
       update_statuses
       build.save!
-      build.publish
+      build.publish only: [:status, :started_at, :finished_at, :project_id, :number]
 
       update_job_status
       job.save!
@@ -28,6 +28,7 @@ class JobUpdater
 
       case message.status
       when 2 # started
+        job.publish :created
         job.start
         job.started_at = tm
       when 3 # finished
@@ -47,8 +48,6 @@ class JobUpdater
 
       case message.status
       when 2 # started
-        build.start
-        build.started_at = tm
         nil  # ignored
       when 3 # finished
         build.finish

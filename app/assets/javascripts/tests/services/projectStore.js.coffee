@@ -38,7 +38,6 @@ describe "projectStore", ->
         $http.expectGET("/api/projects").respond(angular.copy [testObj,testObj2])
 
         projects = $injector.get("projectStore")
-        $http.flush()
     ]
     expected = []
 
@@ -49,6 +48,7 @@ describe "projectStore", ->
       $scope.$apply ->
         projects.all().then (its) ->
           expected = its
+      $http.flush()
       expect(expected).toEqual [testObj, testObj2]
 
 
@@ -58,6 +58,7 @@ describe "projectStore", ->
       $scope.$apply ->
         projects.one(12).then (it) ->
           expected = it
+      $http.flush()
       expect(expected).toEqual testObj
 
 
@@ -69,6 +70,10 @@ describe "projectStore", ->
       found = _.find evSource.subscriptions(), (it) ->
         it[0] == 'events.projects'
       f = found[1]
+
+    beforeEach ->
+      projects.all()
+      $http.flush()
 
     it "should subscribe to 'events.projects'", ->
       names = evSource.subscriptions().map (it) ->

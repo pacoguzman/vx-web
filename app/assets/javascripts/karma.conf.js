@@ -7,7 +7,6 @@ module.exports = function(config) {
     // base path, that will be used to resolve files and exclude
     basePath: '',
 
-
     // frameworks to use
     frameworks: ["jasmine"],
 
@@ -17,8 +16,8 @@ module.exports = function(config) {
       "lib/jquery-2.0.3.js",
       "lib/underscore-1.4.4.js",
       "lib/moment-2.1.0.js",
-      "lib/angular-1.1.5.js",
-      "lib/angular-resource-1.1.5.js",
+      "lib/angular-1.2.0rc1.js",
+      "lib/angular-route-1.2.0rc1.js",
       "lib/angular-mocks-1.1.5.js",
 
       "ci/init/*.js.coffee",
@@ -34,7 +33,6 @@ module.exports = function(config) {
     exclude: [
 
     ],
-
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'

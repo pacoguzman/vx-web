@@ -25,7 +25,7 @@
         %a{ 'ng-href' => "/builds/{{build.id}}" }
           %i.icon-circle
           %span {{ build.number }}
-      %td {{ build.sha }}
+      %td {{ build.sha | truncate:8:"" }}
       %td {{ build.branch }}
       %td {{ build.started_at  | timeDiff: build.finished_at }}
       %td {{ build.finished_at | fromNow }}

@@ -72,4 +72,32 @@ class Job < ActiveRecord::Base
 
   end
 
+  def as_json(*args)
+    {
+      id:           id,
+      build_id:     build_id,
+      number:       number,
+      started_at:   started_at,
+      finished_at:  finished_at,
+      status:       status_name,
+      matrix:       matrix
+    }
+  end
+
 end
+
+# == Schema Information
+#
+# Table name: jobs
+#
+#  id          :integer          not null, primary key
+#  build_id    :integer          not null
+#  number      :integer          not null
+#  status      :integer          not null
+#  matrix      :hstore
+#  started_at  :datetime
+#  finished_at :datetime
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+

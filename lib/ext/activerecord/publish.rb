@@ -3,14 +3,17 @@ module Evrone
     module Web
       module RedisPublish
 
-        def publish(action = nil)
+        def publish(*args)
 
-          action ||= :updated
+          options = args.extract_options!
+          action  = args.first || :updated
+          data    = as_json(only: options[:only])
+
           payload = {
             id:     id,
             name:   self.class.table_name,
             action: action,
-            data:   as_json
+            data:   data
           }
 
           Rails.logger.debug "publish payload #{payload.inspect}"

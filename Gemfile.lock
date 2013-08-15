@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/evrone/evrone-ci-message.git
-  revision: 6e935b98884c10cb437edc7cf8b16cbed948bbf0
+  revision: 56b2548ad460b520a54d6e0fcce8feb7ef23793f
   specs:
     evrone-ci-message (0.0.1)
       ruby-protocol-buffers (~> 1.4)
