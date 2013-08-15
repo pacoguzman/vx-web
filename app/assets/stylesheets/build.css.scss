@@ -11,9 +11,18 @@
       display: inline-block;
       width: 6em;
     }
+
+    a {
+      color: #666;
+      text-decoration: underline;
+    }
   }
 
-  h5 {
+  .build-jobs {
     margin-top: 2em;
+
+    .build-list {
+      margin-top: 1em;
+    }
   }
 }

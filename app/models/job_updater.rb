@@ -14,7 +14,7 @@ class JobUpdater
     if build
       update_statuses
       build.save!
-      build.publish
+      build.publish only: [:status, :started_at, :finished_at, :project_id, :number]
 
       update_job_status
       job.save!

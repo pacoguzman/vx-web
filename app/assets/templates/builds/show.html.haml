@@ -27,33 +27,38 @@
       .build-info
         .build-info-line
           %span Commit
-          %span {{ build.sha }} ({{build.branch}})
+          %span {{ build.sha | truncate:8:"" }} ({{build.branch}})
 
         .build-info-line
           %span Author
-          %span {{ build.author }}
+          %span
+            %a{'ng-href' => "mailto:{{build.author_email}}"}
+              {{ build.author }}
 
         .build-info-line
           %span Message
           %span {{ build.message }}
 
-  %h5 Jobs
 
-  %table.builds-list.table
+  .build-jobs{ 'ng-show' => "jobs.length > 0" }
 
-    %thead
-      %th No.
-      %th Duration
-      %th Finished At
-      %th{ 'ng-repeat' => "m in build.matrix" }
-        {{m}}
+    %h5 Jobs
 
-    %tr.build-item{ 'ng-repeat' => "job in jobs | orderBy:'number'", 'class' => "build-item-{{job.status}}" }
-      %td
-        %a{ 'ng-href' => "/jobs/{{job.id}}" }
-          %i.icon-circle
-          %span {{build.number}}.{{ job.number }}
-      %td {{ job.started_at  | timeDiff: job.finished_at }}
-      %td {{ job.finished_at | fromNow }}
-      %td{ 'ng-repeat' => "m in job.matrix" }
-        {{ m }}
+    %table.builds-list.table
+
+      %thead
+        %th No.
+        %th Duration
+        %th Finished At
+        %th{ 'ng-repeat' => "m in build.matrix" }
+          {{m}}
+
+      %tr.build-item{ 'ng-repeat' => "job in jobs | orderBy:'number'", 'class' => "build-item-{{job.status}}" }
+        %td
+          %a{ 'ng-href' => "/jobs/{{job.id}}" }
+            %i.icon-circle
+            %span {{build.number}}.{{ job.number }}
+        %td {{ job.started_at  | timeDiff: job.finished_at }}
+        %td {{ job.finished_at | fromNow }}
+        %td{ 'ng-repeat' => "m in job.matrix" }
+          {{ m }}
