@@ -10,7 +10,9 @@ class BuildUpdater
   def perform
     if build
       update_status
+      update_build
       build.save!
+      build.publish
       build.project.publish
     end
   end
@@ -21,7 +23,8 @@ class BuildUpdater
 
       case message.status
       when 2 # started
-        build.in_queue
+        build.start
+        build.started_at = tm
       when 3 # finished
         nil  # ignored
       when 4 # failed
@@ -32,6 +35,11 @@ class BuildUpdater
         build.finished_at = tm
       end
 
+    end
+
+    def update_build
+      build.assign_attributes jobs_count: message.jobs_count,
+                              matrix:     message.matrix
     end
 
     def tm

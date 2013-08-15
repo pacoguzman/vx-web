@@ -47,3 +47,19 @@ describe Job do
     end
   end
 end
+
+# == Schema Information
+#
+# Table name: jobs
+#
+#  id          :integer          not null, primary key
+#  build_id    :integer          not null
+#  number      :integer          not null
+#  status      :integer          not null
+#  matrix      :hstore
+#  started_at  :datetime
+#  finished_at :datetime
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+

@@ -48,8 +48,6 @@ class JobUpdater
 
       case message.status
       when 2 # started
-        build.start
-        build.started_at = tm
         nil  # ignored
       when 3 # finished
         build.finish

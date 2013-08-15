@@ -22,18 +22,13 @@ class Build < ActiveRecord::Base
   state_machine :status, initial: :initialized do
 
     state :initialized,   value: 0
-    state :queued,        value: 1
     state :started,       value: 2
     state :finished,      value: 3
     state :failed,        value: 4
     state :errored,       value: 5
 
-    event :in_queue do
-      transition :initialized => :queued
-    end
-
     event :start do
-      transition :queued => :started
+      transition :initialized => :started
     end
 
     event :finish do

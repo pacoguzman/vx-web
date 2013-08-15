@@ -45,7 +45,7 @@
       %th No.
       %th Duration
       %th Finished At
-      %th{ 'ng-repeat' => "m in matrix" }
+      %th{ 'ng-repeat' => "m in build.matrix" }
         {{m}}
 
     %tr.build-item{ 'ng-repeat' => "job in jobs | orderBy:'number'", 'class' => "build-item-{{job.status}}" }

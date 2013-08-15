@@ -9,7 +9,9 @@ module BuildSerializable
       finished_at: finished_at,
       started_at:  started_at,
       status:      status_name,
-      branch:      branch
+      branch:      branch,
+      matrix:      matrix,
+      jobs_count:  jobs_count
     }
   end
 
