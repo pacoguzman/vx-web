@@ -4,24 +4,23 @@ class BuildUpdater
 
   def initialize(build_status_message)
     @message = build_status_message
-    @build   = ::Build.find_by id: @message.build_id
+    @build   = Build.find_by id: @message.build_id
   end
 
   def perform
     if build
-      update_status
-      update_build
-      update_commit_info
+      add_commit_info_to_build
+      add_jobs_info_to_build
+      update_build_status
 
       build.save!
       build.publish
-      build.project.publish
     end
   end
 
   private
 
-    def update_status
+    def update_build_status
 
       case message.status
       when 2 # started
@@ -39,12 +38,12 @@ class BuildUpdater
 
     end
 
-    def update_build
+    def add_jobs_info_to_build
       build.assign_attributes jobs_count: message.jobs_count,
                               matrix:     message.matrix
     end
 
-    def update_commit_info
+    def add_commit_info_to_build
       %w{ commit_sha commit_author commit_author_email
         commit_message }.inject({}) do |a, key|
         unless message.public_send(key).empty?
