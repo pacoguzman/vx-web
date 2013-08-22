@@ -77,5 +77,8 @@ end
 #  finished_at     :datetime
 #  created_at      :datetime
 #  updated_at      :datetime
+#  jobs_count      :integer          default(0), not null
+#  matrix          :string(255)      default([])
+#  author_email    :string(255)
 #
 
