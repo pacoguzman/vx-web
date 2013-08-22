@@ -80,7 +80,8 @@ class Job < ActiveRecord::Base
       started_at:   started_at,
       finished_at:  finished_at,
       status:       status_name,
-      matrix:       matrix
+      matrix:       matrix,
+      project_id:   build.project_id
     }
   end
 
