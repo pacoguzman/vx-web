@@ -3,7 +3,7 @@ class JobStatusesConsumer
   include Evrone::Common::AMQP::Consumer
 
   exchange 'ci.jobs.status'
-  queue    'ci.web.jobs.status.generic'
+  queue    'ci.web.jobs.status'
   ack      true
 
   def perform(payload)

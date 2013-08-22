@@ -10,7 +10,9 @@ CiWeb::Application.routes.draw do
       resources :jobs, only: [:index]
     end
 
-    resources :jobs, only: [:show]
+    resources :jobs, only: [:show] do
+      resources :logs, only: [:index], controller: "job_logs"
+    end
 
     resources :github_repos, only: [:index] do
       member do
