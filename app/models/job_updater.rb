@@ -12,23 +12,44 @@ class JobUpdater
 
   def perform
     if build
-      update_statuses
-      build.save!
-      build.publish only: [:status, :started_at, :finished_at, :project_id, :number]
-
       update_job_status
-      job.save!
-      job.publish
+      update_build_status
+
+      publish_job
+      publish_build if update_build?
     end
+  end
+
+  def update_build?
+    statuses = [3,4,5]
+    build.jobs.where(status: statuses).count == build.jobs_count
+  end
+
+  def new_build_status
+    build.jobs.maximum(:status)
   end
 
   private
 
-    def update_job_status
+    def publish_job
+      if message.status == 2
+        job.publish :created
+      else
+        job.publish
+      end
+    end
 
+    def publish_build
+      build.publish only: [:status,
+                           :started_at,
+                           :finished_at,
+                           :project_id,
+                           :number]
+    end
+
+    def update_job_status
       case message.status
       when 2 # started
-        job.publish :created
         job.start
         job.started_at = tm
       when 3 # finished
@@ -41,25 +62,22 @@ class JobUpdater
         job.error
         job.finished_at = tm
       end
-
+      job.save!
     end
 
-    def update_statuses
-
-      case message.status
-      when 2 # started
-        nil  # ignored
-      when 3 # finished
-        build.finish
+    def update_build_status
+      if update_build?
+        case new_build_status
+        when 3
+          build.finish
+        when 4
+          build.decline
+        when 5
+          build.error
+        end
         build.finished_at = tm
-      when 4 # failed
-        build.decline
-        build.finished_at = tm
-      when 5 # errored
-        build.error
-        build.finished_at = tm
+        build.save!
       end
-
     end
 
     def tm

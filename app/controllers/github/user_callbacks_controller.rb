@@ -1,7 +1,6 @@
-class Github::UsersCallbacksController < ApplicationController
+class Github::UserCallbacksController < ApplicationController
 
   skip_before_filter :authorize_user
-  skip_before_filter :intercept_html_requests
 
   def create
     user = User.from_github env['omniauth.auth']
@@ -9,7 +8,8 @@ class Github::UsersCallbacksController < ApplicationController
       session[:user_id] = user.id
       redirect_to root_path
     else
-      redirect_to fail_path
+      redirect_to '/auth/failure'
     end
   end
+
 end

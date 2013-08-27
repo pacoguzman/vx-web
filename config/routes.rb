@@ -10,7 +10,9 @@ CiWeb::Application.routes.draw do
       resources :jobs, only: [:index]
     end
 
-    resources :jobs, only: [:show]
+    resources :jobs, only: [:show] do
+      resources :logs, only: [:index], controller: "job_logs"
+    end
 
     resources :github_repos, only: [:index] do
       member do
@@ -26,9 +28,9 @@ CiWeb::Application.routes.draw do
 
   resources :events, only: [:index]
 
-  get '/github/callback/:token', to: 'github/projects_callbacks#create'
+  get '/github/callback/:token', to: 'github/repo_callbacks#create'
 
-  get '/auth/github/callback', to: 'github/users_callbacks#create'
+  get '/auth/github/callback', to: 'github/user_callbacks#create'
   get '/auth/failure', to: redirect('/')
 
   root 'welcome#index'

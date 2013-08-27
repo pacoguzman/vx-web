@@ -1,1 +1,49 @@
-1
+.job
+
+  .row
+
+    .col-5
+
+      .job-info
+
+        .job-info-line
+          %span Job
+          %span {{ build.number }}.{{ job.number }}
+
+        .job-info-line
+          %span Status
+          %span {{ job.status }}
+
+        .job-info-line
+          %span Finished
+          %span {{ job.finished_at | fromNow }}
+
+        .job-info-line
+          %span Duration
+          %span {{ job.started_at | timeDiff: job.finished_at }}
+
+        .job-info-line
+          %span Config
+          %span{ 'ng-repeat' => "(key, value) in job.matrix" }
+            {{ key }} {{ value }}
+
+    .col-5
+
+      .job-info
+        .job-info-line
+          %span Commit
+          %span {{ build.sha | truncate:8:"" }} ({{ build.branch }})
+
+        .job-info-line
+          %span Author
+          %span
+            %a{'ng-href' => "mailto:{{build.author_email}}"}
+              {{ build.author }}
+
+        .job-info-line
+          %span Message
+          %span {{ build.message }}
+
+  .job_logs
+    .job-log{ 'ng-repeat' => "log in logs" }
+      {{ log.data }}

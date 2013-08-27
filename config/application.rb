@@ -24,7 +24,10 @@ module CiWeb
     logger = ENV['STDOUT_LOGGER'] ? Logger.new(STDOUT) : Logger.new("log/#{Rails.env}.log")
     config.logger = ActiveSupport::TaggedLogging.new(logger)
 
-    config.autoload_paths += [Rails.root.join("app/consumers").to_s]
+    config.autoload_paths += [
+      Rails.root.join("app/consumers").to_s,
+      Rails.root.join("app/models/github").to_s
+    ]
 
     config.x = OpenStruct.new
     config.x.hostname = ENV['CI_HOSTNAME'] || Socket.gethostname

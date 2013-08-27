@@ -1,6 +1,7 @@
 class Job < ActiveRecord::Base
 
   belongs_to :build, class_name: "::Build"
+  has_many :logs, class_name: "::JobLog", dependent: :destroy
 
   validates :build_id, :number, :status, presence: true
   validates :number, uniqueness: { scope: [:build_id] }
@@ -80,7 +81,8 @@ class Job < ActiveRecord::Base
       started_at:   started_at,
       finished_at:  finished_at,
       status:       status_name,
-      matrix:       matrix
+      matrix:       matrix,
+      project_id:   build.project_id
     }
   end
 

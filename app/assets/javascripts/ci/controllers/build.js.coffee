@@ -8,4 +8,4 @@ CI.controller 'BuildCtrl', ($scope, appMenu, projectStore, buildStore, jobStore,
 
     appMenu.define $scope.build, $scope.project, (b,p) ->
       appMenu.add p.name, "/projects/#{p.id}/builds"
-      appMenu.add "Build ##{b.number}", "/builds/#{b.id}"
+      appMenu.add "Build #{b.number}", "/builds/#{b.id}"
