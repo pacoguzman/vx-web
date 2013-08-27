@@ -11,7 +11,7 @@ module BuildMessages
   end
 
   def publish_perform_build_message
-    BuildsConsumer.publish to_perform_build_message.to_serialized_string
+    BuildsConsumer.publish to_perform_build_message
   end
 
 end

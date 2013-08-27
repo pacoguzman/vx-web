@@ -6,10 +6,11 @@ class BuildStatusesConsumer
   queue    'ci.web.builds.status'
   ack      true
 
-  def perform(payload)
-    msg = Evrone::CI::Message::BuildStatus.parse payload
-    Rails.logger.tagged("BUILD #{msg.build_id}") do
-      BuildUpdater.new(msg).perform
+  model Evrone::CI::Message::BuildStatus
+
+  def perform(message)
+    Rails.logger.tagged("BUILD #{message.build_id}") do
+      BuildUpdater.new(message).perform
     end
     ack!
   end

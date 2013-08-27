@@ -6,11 +6,11 @@ class JobLogsConsumer
   queue    'ci.web.jobs.log'
   ack      true
 
-  def perform(payload)
-    msg = Evrone::CI::Message::JobLog.parse payload
-    puts msg.inspect
-    Rails.logger.tagged("JOB LOG #{msg.build_id}.#{msg.job_id}") do
-      JobLogsUpdater.new(msg).perform
+  model Evrone::CI::Message::BuildStatus
+
+  def perform(message)
+    Rails.logger.tagged("JOB LOG #{message.build_id}.#{message.job_id}") do
+      JobLogsUpdater.new(message).perform
     end
     ack!
   end

@@ -65,6 +65,6 @@ Evrone::Common::AMQP.configure do |c|
     use Evrone::CI::Web::AMQP::Publishing
   end
 
-  #c.logger = Logger.new(STDOUT).tap{|i| i.level = 0 }
   c.logger = nil
+  c.content_type = 'application/x-protobuf'
 end
