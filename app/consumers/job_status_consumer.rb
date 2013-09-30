@@ -1,4 +1,4 @@
-class JobStatusesConsumer
+class JobStatusConsumer
 
   include Evrone::Common::AMQP::Consumer
 
@@ -6,7 +6,7 @@ class JobStatusesConsumer
   queue    'ci.web.jobs.status'
   ack      true
 
-  model    Evrone::CI::Message::BuildStatus
+  model    Evrone::CI::Message::JobStatus
 
   def perform(message)
     Rails.logger.tagged("JOB #{message.build_id}.#{message.job_id}") do

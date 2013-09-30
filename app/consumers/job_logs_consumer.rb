@@ -6,7 +6,7 @@ class JobLogsConsumer
   queue    'ci.web.jobs.log'
   ack      true
 
-  model Evrone::CI::Message::BuildStatus
+  model Evrone::CI::Message::JobLog
 
   def perform(message)
     Rails.logger.tagged("JOB LOG #{message.build_id}.#{message.job_id}") do

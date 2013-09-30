@@ -12,8 +12,19 @@ class JobLogsUpdater
 
   def perform
     if job
-      log = job.logs.create! tm: tm, tm_usec: tm_usec, data: data
-      log.publish :created
+      lines = data.split(/(?<=\n)/) # keep new line
+      last_log = job.logs.last
+
+      if last_log && last_log.data.index("\n").nil?
+        first_line = lines.shift
+        last_log.update_attribute :data, "#{last_log.data}#{first_line}"
+        last_log.publish :updated
+      end
+
+      lines.each do |line|
+        log = job.logs.create! tm: tm, tm_usec: tm_usec, data: line
+        log.publish :created
+      end
     end
   end
 

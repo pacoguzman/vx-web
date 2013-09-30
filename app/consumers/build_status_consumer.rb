@@ -1,4 +1,4 @@
-class BuildStatusesConsumer
+class BuildStatusConsumer
 
   include Evrone::Common::AMQP::Consumer
 

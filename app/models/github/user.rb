@@ -93,7 +93,7 @@ module Github::User
 
     def create_github_session
       identities.find_by_provider(:github).then do |i|
-        Octokit::Client.new(login: i.login, oauth_token: i.token)
+        Octokit::Client.new(login: i.login, access_token: i.token)
       end
     end
 

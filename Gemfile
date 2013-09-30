@@ -15,8 +15,8 @@ gem 'omniauth-github'
 gem 'octokit'
 gem 'sshkey'
 
-gem 'evrone-common-amqp', github: 'evrone/evrone-common-amqp'
-gem 'evrone-ci-message',  github: 'evrone/evrone-ci-message'
+gem 'evrone-common-amqp'
+gem 'evrone-ci-message', '0.2.0.pre0'
 
 group :assets do
   gem 'execjs'

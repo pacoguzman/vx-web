@@ -45,5 +45,5 @@
           %span {{ build.message }}
 
   .job_logs
-    .job-log{ 'ng-repeat' => "log in logs" }
+    %pre.job-log{ 'ng-repeat' => "log in logs" }
       {{ log.data }}

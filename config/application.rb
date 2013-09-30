@@ -34,6 +34,9 @@ module CiWeb
 
     config.middleware.delete "Rack::Lock"
     config.assets.precompile += %w( lib.js )
+
+    config.preload_frameworks = true
+    config.allow_concurrency = true
   end
 end
 

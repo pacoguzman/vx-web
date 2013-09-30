@@ -91,13 +91,15 @@ class Github::Repo < ActiveRecord::Base
     end
 
     def build_from_attributes(user, attrs, options = {})
-      full_name = attrs['full_name']
+      full_name = attrs[:full_name]
 
       user.github_repos.where(full_name: full_name).first_or_initialize.tap do |repo|
         ActionController::Parameters.new(
-          attrs.slice('full_name', 'private', 'ssh_url', 'html_url', 'description')
+          attrs.to_hash.slice(:full_name, :private, :description)
         ).tap do |a|
-          a[:is_private] = a.delete(:private)
+          a[:is_private]  = a.delete(:private)
+          a[:ssh_url]     = attrs.rels[:ssh].href
+          a[:html_url]    = attrs.rels[:html].href
         end.permit!.tap do |attributes|
           repo.assign_attributes attributes
           repo.user               = user

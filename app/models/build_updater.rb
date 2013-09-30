@@ -46,7 +46,7 @@ class BuildUpdater
     def add_commit_info_to_build
       %w{ commit_sha commit_author commit_author_email
         commit_message }.inject({}) do |a, key|
-        unless message.public_send(key).empty?
+        unless message.public_send(key).blank?
           a[key.to_sym] = message.public_send(key)
         end
         a
