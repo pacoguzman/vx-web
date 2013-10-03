@@ -9,6 +9,7 @@ namespace :travis do
 
   task :backend => ["db:migrate", :spec]
   task :frontend do
-    exec "sh -c 'cd app/assets/javascripts && karma start --single-run --color' "
+    karma = File.expand_path("node_modules/karma/bin/karma")
+    exec "sh -c 'cd app/assets/javascripts && #{karma} start --single-run --color' "
   end
 end
