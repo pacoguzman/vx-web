@@ -9,7 +9,7 @@ CI.service 'jobStore',
       buildId = e.data.build_id
       jobId   = e.id
       value   = e.data
-      switch e.action
+      switch e.event
         when 'created'
           collection(buildId).addItem value
         when 'updated'
@@ -17,7 +17,7 @@ CI.service 'jobStore',
         when 'destroyed'
           item(jobId).remove buildId
 
-    eventSource.subscribe "events.jobs", subscribe
+    eventSource.subscribe "jobs", subscribe
 
     all = (buildId) ->
       collection(buildId).get () ->

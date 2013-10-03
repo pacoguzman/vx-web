@@ -7,11 +7,11 @@ CI.service 'jobLogStore',
     subscribe = (e) ->
       jobId   = e.data.job_id
       value   = e.data
-      switch e.action
+      switch e.event
         when 'created'
           collection(jobId).addItem value
 
-    eventSource.subscribe "events.job_logs", subscribe
+    eventSource.subscribe "job_logs", subscribe
 
     all = (jobId) ->
       collection(jobId).get () ->

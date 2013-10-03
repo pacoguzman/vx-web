@@ -9,7 +9,8 @@ CI.service 'buildStore',
       projectId = e.data.project_id
       buildId   = e.id
       value     = e.data
-      switch e.action
+
+      switch e.event
         when 'created'
           collection(projectId).addItem value
         when 'updated'
@@ -17,7 +18,7 @@ CI.service 'buildStore',
         when 'destroyed'
           item(buildId).remove projectId
 
-    eventSource.subscribe "events.builds", subscribe
+    eventSource.subscribe "builds", subscribe
 
     all = (projectId) ->
       collection(projectId).get () ->

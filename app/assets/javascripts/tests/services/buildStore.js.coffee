@@ -91,9 +91,9 @@ describe "buildStore", ->
     beforeEach ->
       [[_, f]] = evSource.subscriptions()
 
-    it "should subscribe to 'events.projects'", ->
+    it "should subscribe to 'builds'", ->
       [[name, _]] = evSource.subscriptions()
-      expect(name).toEqual 'events.builds'
+      expect(name).toEqual 'builds'
       expect(f).toBeDefined()
 
 
@@ -108,7 +108,7 @@ describe "buildStore", ->
 
       it "should add to collection if in same project", ->
         e =
-          action: 'created',
+          event: 'created',
           data:
             id: 1
             project_id: 1
@@ -131,7 +131,7 @@ describe "buildStore", ->
 
       it "should delete from collection if in same project", ->
         e =
-          action: 'destroyed',
+          event: 'destroyed',
           id: 12
           data:
             project_id: 1
@@ -153,7 +153,7 @@ describe "buildStore", ->
 
         it "should update if found", ->
           e =
-            action: 'updated',
+            event: 'updated',
             id: 12
             data:
               project_id: 1
@@ -173,7 +173,7 @@ describe "buildStore", ->
 
         it "should update if build found in collection", ->
           e =
-            action: 'updated',
+            event: 'updated',
             id: 12
             data:
               project_id: 1

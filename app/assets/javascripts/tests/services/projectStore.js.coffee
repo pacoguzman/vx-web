@@ -68,22 +68,22 @@ describe "projectStore", ->
 
     beforeEach ->
       found = _.find evSource.subscriptions(), (it) ->
-        it[0] == 'events.projects'
+        it[0] == 'projects'
       f = found[1]
 
     beforeEach ->
       projects.all()
       $http.flush()
 
-    it "should subscribe to 'events.projects'", ->
+    it "should subscribe to 'projects'", ->
       names = evSource.subscriptions().map (it) ->
         it[0]
-      expect(names).toContain 'events.projects'
+      expect(names).toContain 'projects'
       expect(f).toBeDefined()
 
     it "should add new project from event", ->
       e =
-        action: 'created',
+        event: 'created',
         data:
           id: 1
           name: "Created"
@@ -95,7 +95,7 @@ describe "projectStore", ->
 
     it "should update project from event", ->
       e =
-        action: 'updated',
+        event: 'updated',
         id: 12
         data:
           id: 12
@@ -108,7 +108,7 @@ describe "projectStore", ->
 
     it "should destroy project from event", ->
       e =
-        action: 'destroyed',
+        event: 'destroyed',
         id: 12
       f(e)
       $scope.$apply ->
