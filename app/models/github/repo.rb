@@ -8,22 +8,14 @@ class Github::Repo < ActiveRecord::Base
 
   default_scope ->{ order("github_repos.full_name ASC") }
 
-  def as_json(*args)
-    {
-      id:           id,
-      full_name:    full_name,
-      html_url:     html_url,
-      subscribed:   subscribed
-    }
-  end
-
   def subscribe
     transaction do
 
       update_attribute(:subscribed, true).or_rollback_transaction
 
       unless project?
-        create_project.or_rollback_transaction
+        project = create_project.or_rollback_transaction
+        yield project if block_given?
       end
 
       user.add_deploy_key_to_github_project(project).or_rollback_transaction
