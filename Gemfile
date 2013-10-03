@@ -9,6 +9,7 @@ gem 'haml-rails'
 gem 'omniauth'
 gem 'puma'
 gem 'state_machine'
+gem 'active_model_serializers'
 
 # github integration
 gem 'omniauth-github'
