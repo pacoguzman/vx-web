@@ -40,11 +40,7 @@ class JobUpdater
     end
 
     def publish_build
-      build.publish only: [:status,
-                           :started_at,
-                           :finished_at,
-                           :project_id,
-                           :number]
+      build.publish serializer: :build_status
     end
 
     def update_job_status

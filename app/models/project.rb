@@ -2,9 +2,7 @@ require 'securerandom'
 
 class Project < ActiveRecord::Base
 
-  include ProjectSerializable
   include Github::Project
-
 
   has_many :builds, dependent: :destroy, class_name: "::Build"
 

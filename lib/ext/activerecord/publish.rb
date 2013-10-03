@@ -7,7 +7,14 @@ module Evrone
 
           options = args.extract_options!
           action  = args.first || :updated
-          data    = as_json(only: options[:only])
+
+          serializer = options[:serializer]
+          serializer ||= begin
+            self.class.to_s.underscore
+          end
+
+          serializer_class = "#{serializer.to_s.camelize}Serializer".constantize
+          data = serializer_class.new(self).as_json
 
           payload = {
             id:     id,

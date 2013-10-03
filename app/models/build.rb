@@ -1,8 +1,6 @@
 class Build < ActiveRecord::Base
 
-  include BuildSerializable
   include BuildMessages
-
 
   belongs_to :project, class_name: "::Project"
   has_many :jobs, class_name: "::Job", dependent: :destroy
