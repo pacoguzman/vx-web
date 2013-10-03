@@ -2,8 +2,22 @@ rvm:
 - 1.9.3
 - 2.0.0
 
+env:
+  global:
+    - RAILS_ENV=test
+  matrix:
+    - PROJECT=backend
+    - PROJECT=frontend
+
+matrix:
+  exclude:
+    - env: PROJECT=frontend
+      rvm: 1.9.3
+
 before_script:
 - mkdir -p log
 - mkdir -p tmp
 - bundle exec rake db:setup
-script: bundle exec rake db:migrate spec RAILS_ENV=test
+- npm install karma
+
+script: bundle exec rake travis:${PROJECT}
