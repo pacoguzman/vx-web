@@ -199,16 +199,6 @@ describe Github::Repo do
     end
   end
 
-  context "#as_json" do
-    subject { repo.as_json }
-    it { should eq({
-      id:          repo.id,
-      full_name:   repo.full_name,
-      html_url:    repo.html_url,
-      subscribed:  repo.subscribed
-    }) }
-  end
-
   context "(github api)" do
     let(:user)  { User.new }
     let(:attrs) { {

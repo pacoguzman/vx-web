@@ -14,8 +14,8 @@ class Github::Repo < ActiveRecord::Base
       update_attribute(:subscribed, true).or_rollback_transaction
 
       unless project?
-        project = create_project.or_rollback_transaction
-        yield project if block_given?
+        new_project = create_project.or_rollback_transaction
+        yield new_project if block_given?
       end
 
       user.add_deploy_key_to_github_project(project).or_rollback_transaction
