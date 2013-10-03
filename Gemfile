@@ -16,6 +16,8 @@ gem 'omniauth-github'
 gem 'octokit'
 gem 'sshkey'
 
+gem 'pusher'
+
 gem 'evrone-common-amqp'
 gem 'evrone-ci-message', '0.2.0.pre0'
 

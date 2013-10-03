@@ -2,6 +2,7 @@
 
 FactoryGirl.define do
   factory :job do
+    build
     number 1
     status 0
     started_at "2013-08-13 23:11:14"

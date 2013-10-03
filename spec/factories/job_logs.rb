@@ -2,8 +2,9 @@
 
 FactoryGirl.define do
   factory :job_log do
-    job_id 1
-    tm "2013-08-22 17:05:31"
-    data "MyText"
+    job
+    tm Time.new(2012, 11, 10, 9, 45).to_i
+    tm_usec 12345
+    data "MyText\n"
   end
 end
