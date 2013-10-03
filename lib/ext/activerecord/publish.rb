@@ -1,10 +1,9 @@
 module Evrone
   module CI
     module Web
-      module RedisPublish
+      module Publish
 
         def publish(*args)
-
           options = args.extract_options!
           event   = args.first || :updated
 
@@ -24,9 +23,16 @@ module Evrone
             data:   data
           }
 
-          Rails.logger.debug "publish payload #{payload.inspect}"
+          message = {
+            channel: channel,
+            event:   event,
+            payload: payload
+          }
 
-          Pusher[channel].trigger event, payload
+          Rails.logger.debug "publish payload #{payload.inspect}"
+          WsPublishConsumer.publish message, content_type: "application/json"
+
+          true
         end
 
       end
@@ -35,4 +41,4 @@ module Evrone
 end
 
 
-ActiveRecord::Base.send :include, Evrone::CI::Web::RedisPublish
+ActiveRecord::Base.send :include, Evrone::CI::Web::Publish
