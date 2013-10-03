@@ -180,8 +180,8 @@ describe Github::User do
       subject { identity.user.github }
 
       it { should be_an_instance_of Octokit::Client }
-      its(:login)       { should eq identity.login  }
-      its(:oauth_token) { should eq identity.token  }
+      its(:login)        { should eq identity.login  }
+      its(:access_token) { should eq identity.token  }
     end
   end
 

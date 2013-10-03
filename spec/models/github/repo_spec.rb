@@ -212,14 +212,20 @@ describe Github::Repo do
   context "(github api)" do
     let(:user)  { User.new }
     let(:attrs) { {
-      "id"          => 123456,
-      "full_name"   => "full name",
-      "private"     => true,
-      "ssh_url"     => "ssh url",
-      "html_url"    => "html url",
-      "description" => 'description'
+      id:          123456,
+      full_name:   "full name",
+      private:     true,
+      description: 'description'
+    } }
+    let(:rels) { {
+      ssh: OpenStruct.new(href: "ssh url"),
+      html: OpenStruct.new(href: "html url"),
     } }
     let(:org) { OpenStruct.new id: 1, login: 'org login' }
+
+    before do
+      stub(attrs).rels { rels }
+    end
 
     context "fetch_for_organization" do
       let(:proxy) { OpenStruct.new }
@@ -281,7 +287,7 @@ describe Github::Repo do
         let(:options)  { { user: user } }
         let!(:existed) {
           create :github_repo,
-                 full_name: attrs['full_name'],
+                 full_name: attrs[:full_name],
                  html_url: 'changed',
                  user: user
         }
