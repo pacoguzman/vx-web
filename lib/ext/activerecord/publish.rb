@@ -6,7 +6,7 @@ module Evrone
         def publish(*args)
 
           options = args.extract_options!
-          action  = args.first || :updated
+          event   = args.first || :updated
 
           serializer = options[:serializer]
           serializer ||= begin
@@ -15,17 +15,18 @@ module Evrone
 
           serializer_class = "#{serializer.to_s.camelize}Serializer".constantize
           data = serializer_class.new(self).as_json
+          channel = self.class.table_name
 
           payload = {
             id:     id,
-            name:   self.class.table_name,
-            action: action,
+            name:   channel,
+            event:  event,
             data:   data
           }
 
           Rails.logger.debug "publish payload #{payload.inspect}"
-          Rails.redis.publish "events.#{self.class.table_name}", payload.to_json
 
+          Pusher[channel].trigger event, payload
         end
 
       end

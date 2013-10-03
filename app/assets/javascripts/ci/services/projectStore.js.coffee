@@ -5,7 +5,7 @@ CI.service 'projectStore',
     projects = cache.collection("projects")
 
     subscribe = (e) ->
-      switch e.action
+      switch e.event
         when 'created'
           projects.addItem e.data
         when 'updated'
@@ -13,7 +13,7 @@ CI.service 'projectStore',
         when 'destroyed'
           cache.item(e.id).remove 'projects'
 
-    eventSource.subscribe "events.projects", subscribe
+    eventSource.subscribe "projects", subscribe
 
     all = () ->
       projects.get () ->
