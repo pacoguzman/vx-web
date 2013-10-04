@@ -2,6 +2,12 @@ CiWeb::Application.routes.draw do
 
   namespace :api do
 
+    resources :users do
+      collection do
+        get :me
+      end
+    end
+
     resources :projects do
       resources :builds, only: [:index, :create]
     end
