@@ -41,11 +41,13 @@ angular.module('CI').
         getFrom(id, null, collectionsCache).then (its) ->
           if value.then
             value.then (it) ->
-              its.push it
+              if _.pluck(its, "id").indexOf(it.id) == -1
+                its.push it
               it
           else
             d = $q.defer()
-            its.push value
+            if _.pluck(its, "id").indexOf(value.id) == -1
+              its.push value
             d.resolve value
             d.promise
 
