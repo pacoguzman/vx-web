@@ -15,12 +15,6 @@ describe JobLogsUpdater do
 
   context "perform" do
     subject { updater.perform }
-    before do
-      mock(Build).find_by(anything) { build }
-      mock(build.jobs).find_by(anything) { job }
-      mock(job.logs).append_log_message(message) { [[], []] }
-    end
-
     it { should be }
   end
 end
