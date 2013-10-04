@@ -57,7 +57,7 @@
         %td
           %a{ 'ng-href' => "/jobs/{{job.id}}" }
             %i.icon-circle
-            %span {{build.number}}.{{ job.number }}
+            %span {{ build.number }}.{{ job.number }}
         %td {{ job.started_at  | timeDiff: job.finished_at }}
         %td {{ job.finished_at | fromNow }}
         %td{ 'ng-repeat' => "m in job.matrix" }
