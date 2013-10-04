@@ -4,6 +4,11 @@ require 'ostruct'
 describe Job do
   let(:job) { Job.new }
 
+  it_should_behave_like "AppendLogMessage" do
+    let(:job)        { create :job }
+    let(:collection) { job.logs }
+  end
+
   context ".extract_matrix" do
     let(:msg) { OpenStruct.new matrix: ["env:FOO = 1", "rvm:1.9.3"] }
     let(:expected) { {

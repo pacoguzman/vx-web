@@ -13,10 +13,8 @@ class JobLogsUpdater
 
   def perform
     if job
-      created, updated = job.logs.append_log_message message
-
-      created.each {|l| l.publish :created }
-      updated.each {|l| l.publish :updated }
+      log = job.logs.append_log_message message
+      log.publish :created
     end
   end
 end

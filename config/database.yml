@@ -2,7 +2,7 @@ development:
   adapter: postgresql
   database: ci_web_development
   user: postgres
-  pool: 20
+  pool: 50
   timeout: 5000
   host: localhost
 
@@ -10,6 +10,6 @@ test:
   adapter: postgresql
   database: ci_web_test
   user: postgres
-  pool: 20
+  pool: 50
   timeout: 5000
   host: localhost

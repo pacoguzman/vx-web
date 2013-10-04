@@ -1,23 +1,18 @@
 module AppendLogMessage
 
   def append_log_message(log_message)
-    last_log     = self.last
-    lines        = log_message.log.split(/(?<=\n)/) # keep new line
-    created_logs = []
-    updated_logs = []
+    pa         = self.proxy_association
+    fkey       = pa.reflection.foreign_key
+    fkey_value = pa.owner.id
 
-    if last_log && last_log.data.index("\n").nil?
-      first_line = lines.shift
-      last_log.update_attribute :data, "#{last_log.data}#{first_line}"
-      updated_logs << last_log
-    end
+    sql = "INSERT INTO #{self.table_name}"
+    sql << " (tm, tm_usec, data, #{fkey})"
+    sql << " VALUES(?, 0, ?, ?)"
 
-    lines.each do |line|
-      log = self.create! tm: log_message.tm, tm_usec: log_message.tm_usec, data: line
-      created_logs << log
-    end
+    sql = pa.reflection.klass.send(:sanitize_sql, [sql, log_message.tm, log_message.log, fkey_value])
+    connection.execute sql
 
-    [created_logs, updated_logs]
+    self.new tm: log_message.tm, tm_usec: 0, data: log_message.log
   end
 
 end
