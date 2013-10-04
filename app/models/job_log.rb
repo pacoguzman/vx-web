@@ -6,7 +6,7 @@ class JobLog < ActiveRecord::Base
 
   default_scope ->{ order("job_logs.tm ASC, job_logs.tm_usec ASC") }
 
-  def log_id
+  def id
     [job_id, tm, tm_usec].join('.')
   end
 

@@ -19,17 +19,26 @@ angular.module('CI').
 
       updateLines = (newVal, oldVal) ->
         unsorted = []
+        container = document.createElement("div")
+
         _.each newVal, (it) ->
           unsorted.push it
+
         scope.lines = _.sortBy unsorted, (it) ->
           it.tm
 
-        container = document.createElement("div")
-
+        output = ""
         _.each scope.lines, (it) ->
-          line = it.data.replace(/\ /g, '\u00A0') # escape(it.data).replace(/%20/g, '&nbsp;')
+          output += it.data
+
+        console.log output
+
+        _.each output.split("\n"), (it) ->
+          nbsp = '\u00A0'
+          line = if it == "" then nbsp else it.replace(/\ /g, nbsp)
           log = document.createElement("div")
           log.className = "log_line"
+          log.style = "min-height:1em"
           logLine = document.createTextNode(line)
           log.appendChild(logLine)
           container.appendChild(log)
