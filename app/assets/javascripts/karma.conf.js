@@ -21,6 +21,7 @@ module.exports = function(config) {
       "lib/angular-mocks-1.1.5.js",
 
       "ci/init/*.js.coffee",
+      "ci/directives/*.js.coffee",
       "ci/factories/*.js.coffee",
       "ci/services/*.js.coffee",
 

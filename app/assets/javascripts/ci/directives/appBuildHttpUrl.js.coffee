@@ -10,7 +10,6 @@ angular.module('CI').
 
     link: (scope, elem, attrs) ->
       scope.matrix = []
-      console.log scope.branch
 
       updateUrl = (newVal, _) ->
         if newVal
