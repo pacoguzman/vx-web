@@ -68,6 +68,13 @@
   }
 }
 
+.app-task-unknown {
+  background-color: white;
+  i {
+    display: none
+  }
+}
+
 .app-task-initialized, .app-task-queued, .app-task-started {
   background-color: #fffefa;
 

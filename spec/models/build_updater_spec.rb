@@ -32,6 +32,11 @@ describe BuildUpdater do
       subject
     end
 
+    it "should publish build.project" do
+      mock(build.project).publish
+      subject
+    end
+
     context "update build status" do
       let(:tm)                 { Time.now }
       let(:message_attributes) { {

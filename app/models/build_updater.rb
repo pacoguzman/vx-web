@@ -15,6 +15,7 @@ class BuildUpdater
 
       build.save!
       build.publish
+      build.project.publish
     end
   end
 
