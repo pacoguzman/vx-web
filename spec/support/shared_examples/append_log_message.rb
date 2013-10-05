@@ -11,7 +11,6 @@ shared_examples "AppendLogMessage" do
   it { should be }
 
   its(:tm)      { should eq 1 }
-  its(:tm_usec) { should eq 0 }
   its(:data)    { should eq 'log' }
   it "should have foreign object" do
     expect(subject.public_send fkey).to eq fkey_val

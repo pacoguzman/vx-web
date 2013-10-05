@@ -2,12 +2,12 @@ class JobLog < ActiveRecord::Base
 
   belongs_to :job
 
-  validates :job_id, :tm, :tm_usec, presence: true
+  validates :job_id, :tm, presence: true
 
-  default_scope ->{ order("job_logs.tm ASC, job_logs.tm_usec ASC") }
+  default_scope ->{ order("job_logs.tm ASC") }
 
   def id
-    [job_id, tm, tm_usec].join('.')
+    [job_id, tm].join('.')
   end
 
 end
@@ -16,10 +16,9 @@ end
 #
 # Table name: job_logs
 #
-#  id      :integer          not null, primary key
-#  job_id  :integer
-#  tm      :integer
-#  tm_usec :integer
-#  data    :text
+#  id     :integer          not null, primary key
+#  job_id :integer
+#  tm     :integer
+#  data   :text
 #
 

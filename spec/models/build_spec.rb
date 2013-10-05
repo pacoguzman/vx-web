@@ -67,5 +67,6 @@ end
 #  updated_at      :datetime
 #  author_email    :string(255)
 #  jobs_count      :integer          default(0), not null
+#  http_url        :string(255)
 #
 

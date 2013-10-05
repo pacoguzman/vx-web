@@ -74,19 +74,6 @@ class Job < ActiveRecord::Base
 
   end
 
-  def as_json(*args)
-    {
-      id:           id,
-      build_id:     build_id,
-      number:       number,
-      started_at:   started_at,
-      finished_at:  finished_at,
-      status:       status_name,
-      matrix:       matrix,
-      project_id:   build.project_id
-    }
-  end
-
 end
 
 # == Schema Information
