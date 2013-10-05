@@ -50,7 +50,7 @@ GEM
     diff-lcs (1.2.4)
     dotenv (0.9.0)
     erubis (2.7.0)
-    evrone-ci-message (0.2.0.pre0)
+    evrone-ci-message (0.2.0.pre3)
       beefcake (= 0.3.7)
     evrone-common-amqp (0.1.1)
       bunny (>= 1.0.0.pre6)
@@ -199,7 +199,7 @@ DEPENDENCIES
   active_model_serializers
   annotate
   coffee-rails (~> 4.0.0)
-  evrone-ci-message (= 0.2.0.pre0)
+  evrone-ci-message (= 0.2.0.pre3)
   evrone-common-amqp
   execjs
   factory_girl

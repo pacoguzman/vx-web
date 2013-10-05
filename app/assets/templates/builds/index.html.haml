@@ -11,7 +11,7 @@
   %p
     %small {{ project.description || "no description available" }}
 
-  %table.builds-list.table
+  %table.app-tasks-table.table
 
     %thead
       %th No.
@@ -20,7 +20,7 @@
       %th Duration
       %th Fnished At
 
-    %tr.build-item{ 'ng-repeat' => "build in builds | orderBy:'number':true", 'class' => "build-item-{{build.status}}" }
+    %tr.app-tasks-table-item{ 'ng-repeat' => "build in builds | orderBy:'number':true", 'class' => "app-task-{{build.status}}" }
       %td
         %a{ 'ng-href' => "/builds/{{build.id}}" }
           %i.icon-circle

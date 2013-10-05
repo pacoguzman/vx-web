@@ -1,4 +1,4 @@
-%table.builds-list.table
+%table.table.app-tasks-table
 
   %thead
     %th No.
@@ -7,7 +7,7 @@
     %th{ 'ng-repeat' => "m in matrix" }
       {{m}}
 
-  %tr.build-item{ 'ng-repeat' => "job in jobs | orderBy:'number'", 'class' => "build-item-{{job.status}}" }
+  %tr.app-build-jobs-job.app-tasks-table-item{ 'ng-repeat' => "job in jobs | orderBy:'number'", 'class' => "app-task-{{job.status}}" }
     %td
       %a{ 'ng-href' => "/jobs/{{job.id}}" }
         %i.icon-circle

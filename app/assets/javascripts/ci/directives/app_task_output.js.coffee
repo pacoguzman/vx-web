@@ -8,7 +8,7 @@ angular.module('CI').
     }
 
     template:
-      '<div class="job_logs"></div>'
+      '<div></div>'
 
     link: (scope, elem, attrs) ->
       scope.lines = []
@@ -30,7 +30,7 @@ angular.module('CI').
           nbsp = '\u00A0'
           line = if it == "" then nbsp else it.replace(/\ /g, nbsp)
           log = document.createElement("div")
-          log.className = "log_line"
+          log.className = "app-task-output-line"
           logLine = document.createTextNode(line)
           log.appendChild(logLine)
           container.appendChild(log)

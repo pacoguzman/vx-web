@@ -1,119 +1,24 @@
-@-webkit-keyframes blinker {
-  from { opacity: 1.0; }
-  to { opacity: 0.0; }
-}
+.build {
 
+  .build-info {
+    font-size: 90%;
+  }
+
+  .build-info-line {
+    margin-bottom: .6em;
+
+    span:first-child {
+      display: inline-block;
+      width: 6em;
+    }
+
+    a {
+      color: #666;
+      text-decoration: underline;
+    }
+  }
+}
 
 .builds {
 }
 
-.builds-list {
-  margin-top: 2em;
-  font-size: 1em;
-  font-size: 90%;
-
-
-  th {
-    font-weight: normal;
-  }
-  td {
-    border-width: 0;
-  }
-
-  th:nth-child(1) {
-    width: 8em;
-  }
-  th:nth-child(2) {
-    width: 15em;
-  }
-  th:nth-child(4), th:nth-child(5) {
-    width: 15em;
-  }
-
-
-  tr:first-child td {
-    border-width: 1px;
-  }
-
-  .build-item {
-
-    i {
-      font-size: .8em;
-    }
-
-    span {
-      text-decoration: underline;
-      display: inline-block;
-      width: 2em;
-      text-align: center;
-    }
-
-    a {
-      text-decoration: none;
-    }
-  }
-
-  .build-item-errored {
-    background-color: #fdfdfd;
-    a {
-      color: #666;
-    }
-    i {
-      color: #666;
-    }
-  }
-
-  .build-item-failed {
-    background-color: snow;
-    a {
-      color: #c00;
-    }
-    i {
-      color: #c00;
-    }
-  }
-
-  .build-item-initialized, .build-item-queued, .build-item-started {
-    background-color: #fffefa;
-
-    a {
-      color: #666;
-    }
-    i {
-      color: Khaki;
-    }
-  }
-
-  .build-item-started {
-    i {
-      -webkit-animation-name: blinker;
-      -webkit-animation-iteration-count: infinite;
-      -webkit-animation-timing-function: ease-in-out;
-      -webkit-animation-duration: 1s;
-    }
-  }
-
-  .build-item-finished {
-    background-color: #fafffa;
-
-    a {
-      color: #038035;
-    }
-    i {
-      color: #038035;
-    }
-
-  }
-
-  .build-item-success {
-    background-color: #fafffa;
-
-    &:hover {
-      background-color: #efe;
-    }
-
-    a {
-      color: #383;
-    }
-  }
-}
