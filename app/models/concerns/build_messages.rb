@@ -1,7 +1,7 @@
 module BuildMessages
 
   def to_perform_build_message
-    Evrone::CI::Message::PerformBuild.new(
+    ::Evrone::CI::Message::PerformBuild.new(
       id:         id,
       name:       project.name,
       src:        project.clone_url,
@@ -11,7 +11,7 @@ module BuildMessages
   end
 
   def publish_perform_build_message
-    BuildsConsumer.publish to_perform_build_message
+    ::BuildsConsumer.publish to_perform_build_message
   end
 
 end

@@ -13,6 +13,10 @@
     }
   }
 
+  .github-repos-show {
+    margin-top: 1em;
+  }
+
   .github-repos-search {
     width: 30em;
     input {
@@ -21,12 +25,14 @@
   }
 
   .github-repos-list {
-    margin-top: 2em;
+    margin-top: 1em;
   }
 
   .github-repo {
-    margin: .1em 0;
-    padding: .2em 0;
+    border: 1px solid white;
+    margin: .1em 0 .1em -4em;
+    padding: .2em 0 .2em 4em;
+    max-width: 40em;
 
     label {
       display: inline-block;
@@ -40,11 +46,23 @@
     }
 
     .octocat {
-      display: inline-block;
-      margin-right: 1em;
-      opacity: .5;
+      display: none;
+      margin-right: 0;
+      color: #333;
       &:hover {
         text-decoration: none;
+      }
+    }
+
+    &:hover {
+      background-color: #fffefa;
+      border: 1px solid #ddd;
+
+      .octocat {
+        display: block;
+        position: absolute;
+        margin-left: -2em;
+        margin-top: .1em;
       }
     }
   }

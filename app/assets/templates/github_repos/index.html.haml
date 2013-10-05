@@ -8,15 +8,19 @@
   .github-repos-search
     %input.form-control{ autofocus: true, type: :search, placeholder: "Type to search...", 'ng-model' => 'query' }
 
+  .github-repos-show{ 'ng-show' => 'repos.length' }
+    %small
+      Show 30 of {{ repos.length }} repositories
+
   .github-repos-list
 
-    .gthub-repos-empty{ 'ng-hide' => 'repos.length' }
+    .github-repos-empty{ 'ng-hide' => 'repos.length' }
       No repositories loaded
 
     .github-repo{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30" }
 
-      %a.octocat{ href: '{{repo.html_url}}', title: "View on Github" }
-        %i.icon-github-sign
+      %a.octocat{ href: '{{repo.html_url}}/settings/hooks', title: "View on Github", "target" => "blank" }
+        %i.icon-wrench
 
       %label
         %input{ type: 'checkbox', 'ng-model' => 'repo.subscribed', 'ng-change' => "changeSubscription(repo)"}

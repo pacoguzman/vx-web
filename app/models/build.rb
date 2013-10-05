@@ -8,14 +8,11 @@ class Build < ActiveRecord::Base
   validates :project_id, :number, :sha, :branch, presence: true
   validates :number, uniqueness: { scope: [:project_id] }
 
-
   before_validation :assign_number, on: :create
   before_validation :assign_sha,    on: :create
   before_validation :assign_branch, on: :create
 
-
   default_scope ->{ order 'builds.number DESC' }
-
 
   state_machine :status, initial: :initialized do
 

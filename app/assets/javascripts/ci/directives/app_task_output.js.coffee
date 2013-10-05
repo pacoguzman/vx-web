@@ -13,6 +13,7 @@ angular.module('CI').
     link: (scope, elem, attrs) ->
       scope.lines = []
       scope.output = ""
+      nbsp = '\u00A0'
 
       updateLines = (newVal, oldVal) ->
         unsorted = []
@@ -27,13 +28,22 @@ angular.module('CI').
         output = _.map(scope.lines, (it) -> it.data).join("").split("\n")
 
         _.each output, (it, idx) ->
-          nbsp = '\u00A0'
-          line = if it == "" then nbsp else it.replace(/\ /g, nbsp)
-          log = document.createElement("div")
-          log.className = "app-task-output-line"
-          logLine = document.createTextNode(line)
-          log.appendChild(logLine)
-          container.appendChild(log)
+          line = if it == "" then nbsp else it
+
+          numEl = document.createElement("a")
+          numEl.className = 'app-tack-output-line-number'
+          numEl.href = "#L#{idx + 1}"
+
+          txtEl = document.createElement("span")
+          txtEl.appendChild document.createTextNode(line)
+
+          lineEl = document.createElement("div")
+          lineEl.className = "app-task-output-line"
+
+          lineEl.appendChild numEl
+          lineEl.appendChild txtEl
+
+          container.appendChild(lineEl)
 
         elem.html container.innerHTML
 
