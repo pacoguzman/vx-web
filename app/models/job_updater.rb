@@ -22,7 +22,7 @@ class JobUpdater
 
   def update_build?
     statuses = [3,4,5]
-    build.jobs.where.not(status: statuses).empty?
+    build.jobs.where(status: statuses).count == build.jobs_count
   end
 
   def new_build_status

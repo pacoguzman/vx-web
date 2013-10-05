@@ -38,6 +38,7 @@ describe JobUpdater do
     context "when all jobs exists" do
       subject { updater.update_build? }
       before do
+        b.update_attribute :jobs_count, 2
         create :job, build: b, status: 3, number: 1
         create :job, build: b, status: 3, number: 2
       end
@@ -47,6 +48,7 @@ describe JobUpdater do
     context "when job missing" do
       subject { updater.update_build? }
       before do
+        b.update_attribute :jobs_count, 2
         create :job, build: b, status: 3, number: 1
       end
       it { should be_false }

@@ -76,6 +76,17 @@ describe BuildUpdater do
       end
     end
 
+    context "add jobs info to build" do
+      let(:message_attributes) { {
+        jobs_count: 99,
+      } }
+
+      subject { build }
+      before  { updater.perform }
+
+      its(:jobs_count) { should eq 99 }
+    end
+
     context "add commit info to build" do
       subject { build }
       before  { updater.perform }
