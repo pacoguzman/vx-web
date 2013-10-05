@@ -18,16 +18,9 @@ angular.module('CI').
       updateLines = (newVal) ->
         return unless newVal
 
-        unsorted = []
         container = document.createElement("div")
 
-        _.each newVal, (it) ->
-          unsorted.push it
-
-        scope.lines = _.sortBy unsorted, (it) ->
-          it.tm
-
-        output = _.map(scope.lines, (it) -> it.data).join("").split("\n")
+        output = _.map(newVal, (it) -> it.data).join("").split("\n")
 
         _.each output, (it, idx) ->
           line = if it == "" then nbsp else it

@@ -37,19 +37,19 @@ describe "appTaskDuration", ->
 
   describe "with collection", ->
     beforeEach ->
-      $scope.collection.push item2
+      $scope.collection.push item1
       $scope.$digest()
 
     it "should display log line", ->
       expected = '<div class="app-task-output-line">'
       expected += '<a class="app-tack-output-line-number" href="#L1"></a>'
-      expected += '<span>log2</span>'
+      expected += '<span>log1</span>'
       expected += '</div>'
       expect(elem.html()).toEqual expected
 
     describe "and add line without '\\n'", ->
-      it "should display sorted and merged log line", ->
-        $scope.collection.push item1
+      it "should display merged log line", ->
+        $scope.collection.push item2
         $scope.$digest()
 
         expected = '<div class="app-task-output-line">'
@@ -59,10 +59,10 @@ describe "appTaskDuration", ->
         expect(elem.html()).toEqual expected
 
     describe "and add line with '\\n'", ->
-      it "should display sorted and merged log lines", ->
+      it "should display merged log lines", ->
         item2.data = "log2\n"
         item1.data = "log1\n"
-        $scope.collection.push item1
+        $scope.collection.push item2
         $scope.$digest()
 
         expected = '<div class="app-task-output-line">'
