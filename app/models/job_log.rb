@@ -11,3 +11,15 @@ class JobLog < ActiveRecord::Base
   end
 
 end
+
+# == Schema Information
+#
+# Table name: job_logs
+#
+#  id      :integer          not null, primary key
+#  job_id  :integer
+#  tm      :integer
+#  tm_usec :integer
+#  data    :text
+#
+

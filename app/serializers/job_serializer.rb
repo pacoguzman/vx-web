@@ -9,4 +9,8 @@ class JobSerializer < ActiveModel::Serializer
   def status
     object.status_name
   end
+
+  def number
+    [object.build.number, object.number].join('.')
+  end
 end

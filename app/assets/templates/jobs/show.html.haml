@@ -8,7 +8,7 @@
 
         .job-info-line
           %span Job
-          %span {{ build.number }}.{{ job.number }}
+          %span {{ job.number }}
 
         .job-info-line
           %span Status
@@ -20,7 +20,7 @@
 
         .job-info-line
           %span Duration
-          %span {{ job.started_at | timeDiff: job.finished_at }}
+          %span.app-task-duration{ task: 'job' }
 
         .job-info-line
           %span Config
@@ -44,4 +44,4 @@
           %span Message
           %span {{ build.message }}
 
-  %app-log-output{ 'object' => "logs" }
+  .app-task-output{ collection: "logs" }

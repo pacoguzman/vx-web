@@ -20,7 +20,7 @@
 
         .build-info-line
           %span Duration
-          %span {{ build.started_at | timeDiff: build.finished_at }}
+          %span.app-task-duration{ task: "build" }
 
     .col-5
 
@@ -44,21 +44,4 @@
 
     %h5 Jobs
 
-    %table.builds-list.table
-
-      %thead
-        %th No.
-        %th Duration
-        %th Finished At
-        %th{ 'ng-repeat' => "m in build.matrix" }
-          {{m}}
-
-      %tr.build-item{ 'ng-repeat' => "job in jobs | orderBy:'number'", 'class' => "build-item-{{job.status}}" }
-        %td
-          %a{ 'ng-href' => "/jobs/{{job.id}}" }
-            %i.icon-circle
-            %span {{ build.number }}.{{ job.number }}
-        %td {{ job.started_at  | timeDiff: job.finished_at }}
-        %td {{ job.finished_at | fromNow }}
-        %td{ 'ng-repeat' => "m in job.matrix" }
-          {{ m }}
+    .app-build-jobs{ jobs: 'jobs' }

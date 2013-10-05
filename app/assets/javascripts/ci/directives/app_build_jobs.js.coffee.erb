@@ -1,0 +1,21 @@
+angular.module('CI').
+  directive "appBuildJobs", () ->
+
+    restrict: 'EC'
+    replace: true
+    scope: {
+      jobs: "=jobs",
+    }
+
+    templateUrl: "<%= asset_path 'assets/services/build_jobs.html' %>"
+
+    link: (scope, elem, attrs) ->
+      scope.matrix = []
+
+      updateMatrix = (newVal, oldVal) ->
+        if newVal
+          values = _.pluck(newVal, 'matrix')
+          values = _.map(values, (it) -> _.keys(it))
+          scope.matrix = _.uniq _.flatten(values).sort()
+
+      scope.$watch("jobs", updateMatrix, true)

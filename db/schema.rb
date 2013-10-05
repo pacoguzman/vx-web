@@ -11,27 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130822130531) do
+ActiveRecord::Schema.define(version: 20131004235151) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
 
   create_table "builds", force: true do |t|
-    t.integer  "number",                       null: false
-    t.integer  "project_id",                   null: false
-    t.string   "sha",                          null: false
-    t.string   "branch",                       null: false
+    t.integer  "number",                      null: false
+    t.integer  "project_id",                  null: false
+    t.string   "sha",                         null: false
+    t.string   "branch",                      null: false
     t.integer  "pull_request_id"
     t.string   "author"
     t.string   "message"
-    t.integer  "status",          default: 0,  null: false
+    t.integer  "status",          default: 0, null: false
     t.datetime "started_at"
     t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "jobs_count",      default: 0,  null: false
-    t.string   "matrix",          default: [],              array: true
     t.string   "author_email"
   end
 
