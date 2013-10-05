@@ -7,7 +7,7 @@
       "diff_url":"https://github.com/evrone/cybergifts/pull/177.diff",
       "patch_url":"https://github.com/evrone/cybergifts/pull/177.patch",
       "issue_url":"https://github.com/evrone/cybergifts/issues/177",
-      "number":177,
+      "number":4,
       "state":"open",
       "title":"fix test for feedback",
       "user":{
@@ -41,9 +41,9 @@
       "review_comment_url":"/repos/evrone/cybergifts/pulls/comments/{number}",
       "comments_url":"https://api.github.com/repos/evrone/cybergifts/issues/177/comments",
       "head":{
-         "label":"evrone:260-feedback-test",
-         "ref":"260-feedback-test",
-         "sha":"ca0bf451814a7ff90bc9694153189c6fa3bad112",
+         "label":"dima-exe:master",
+         "ref":"master",
+         "sha":"84158c732ff1af3db9775a37a74ddc39f5c4078f",
          "user":{
             "login":"evrone",
             "id":431569,

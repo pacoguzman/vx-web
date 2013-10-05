@@ -8,9 +8,10 @@ module Github::Project
 
   def create_build_from_github_payload(payload)
     attrs = {
-      pull_request_id: payload.pull_request_number,
-      branch: payload.branch,
-      sha: payload.head,
+      pull_request_id:  payload.pull_request_number,
+      branch:           payload.branch,
+      sha:              payload.head,
+      http_url:         payload.url
     }
 
     build = builds.build(attrs)

@@ -27,7 +27,7 @@
       .build-info
         .build-info-line
           %span Commit
-          %span {{ build.sha | truncate:8:"" }} ({{build.branch}})
+          %span.app-build-http-url{ build: 'build', branch: 'true' }
 
         .build-info-line
           %span Author

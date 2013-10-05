@@ -4,7 +4,7 @@
     Create Build
 
   %p
-    %a.octokat{ href: "{{project.url}}", title: "View on Github" }
+    %a.octokat{ href: "{{project.http_url}}", title: "View on Github" }
       %i.icon-github-sign
       View on Github
 
@@ -25,7 +25,7 @@
         %a{ 'ng-href' => "/builds/{{build.id}}" }
           %i.icon-circle
           %span {{ build.number }}
-      %td {{ build.sha | truncate:8:"" }}
+      %td.app-build-http-url{ build: 'build' }
       %td {{ build.branch }}
       %td.app-task-duration{ task: 'build' }
       %td {{ build.finished_at | fromNow }}
