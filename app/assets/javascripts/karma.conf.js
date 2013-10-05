@@ -22,6 +22,7 @@ module.exports = function(config) {
 
       "ci/init/*.js.coffee",
       "ci/directives/*.js.coffee",
+      "ci/filters/*.js",
       "ci/factories/*.js.coffee",
       "ci/services/*.js.coffee",
 

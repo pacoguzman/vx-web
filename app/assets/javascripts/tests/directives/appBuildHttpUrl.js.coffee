@@ -10,9 +10,8 @@ describe "appBuildHttpUrl", ->
 
   beforeEach ->
     module("CI")
-    inject ["$q", '$rootScope', '$compile',
-      (_$q_, _$scope_, _$compile_) ->
-        $q       = _$q_
+    inject ['$rootScope', '$compile',
+      (_$scope_, _$compile_) ->
         $scope   = _$scope_.$new()
         $compile = _$compile_
     ]
