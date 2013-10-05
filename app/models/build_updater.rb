@@ -10,11 +10,12 @@ class BuildUpdater
   def perform
     if build
       add_commit_info_to_build
-      add_jobs_info_to_build
+      add_jobs_count_to_build
       update_build_status
 
       build.save!
       build.publish
+      build.project.publish
     end
   end
 
@@ -38,9 +39,8 @@ class BuildUpdater
 
     end
 
-    def add_jobs_info_to_build
-      build.assign_attributes jobs_count: message.jobs_count,
-                              matrix:     message.matrix
+    def add_jobs_count_to_build
+      build.assign_attributes jobs_count: message.jobs_count
     end
 
     def add_commit_info_to_build

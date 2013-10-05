@@ -32,6 +32,11 @@ describe BuildUpdater do
       subject
     end
 
+    it "should publish build.project" do
+      mock(build.project).publish
+      subject
+    end
+
     context "update build status" do
       let(:tm)                 { Time.now }
       let(:message_attributes) { {
@@ -79,14 +84,12 @@ describe BuildUpdater do
     context "add jobs info to build" do
       let(:message_attributes) { {
         jobs_count: 99,
-        matrix:     %w{ matrix }
       } }
 
       subject { build }
       before  { updater.perform }
 
-      its(:jobs_count) { should eq 99           }
-      its(:matrix)     { should eq %w{ matrix } }
+      its(:jobs_count) { should eq 99 }
     end
 
     context "add commit info to build" do

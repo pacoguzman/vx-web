@@ -15,12 +15,14 @@ module.exports = function(config) {
     files: [
       "lib/jquery-2.0.3.js",
       "lib/underscore-1.4.4.js",
-      "lib/moment-2.1.0.js",
+      "lib/moment-2.2.1.js",
       "lib/angular-1.2.0rc1.js",
       "lib/angular-route-1.2.0rc1.js",
       "lib/angular-mocks-1.1.5.js",
 
       "ci/init/*.js.coffee",
+      "ci/directives/*.js.coffee",
+      "ci/filters/*.js",
       "ci/factories/*.js.coffee",
       "ci/services/*.js.coffee",
 

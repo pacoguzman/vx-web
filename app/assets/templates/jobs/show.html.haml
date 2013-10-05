@@ -8,7 +8,7 @@
 
         .job-info-line
           %span Job
-          %span {{ build.number }}.{{ job.number }}
+          %span {{ job.number }}
 
         .job-info-line
           %span Status
@@ -20,7 +20,7 @@
 
         .job-info-line
           %span Duration
-          %span {{ job.started_at | timeDiff: job.finished_at }}
+          %span.app-task-duration{ task: 'job' }
 
         .job-info-line
           %span Config
@@ -32,7 +32,7 @@
       .job-info
         .job-info-line
           %span Commit
-          %span {{ build.sha | truncate:8:"" }} ({{ build.branch }})
+          %span.app-build-http-url{ build: 'build', branch: 'true' }
 
         .job-info-line
           %span Author
@@ -44,6 +44,4 @@
           %span Message
           %span {{ build.message }}
 
-  .job_logs
-    %pre.job-log{ 'ng-repeat' => "log in logs" }
-      {{ log.data }}
+  .app-task-output{ collection: "logs" }

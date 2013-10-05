@@ -12,20 +12,23 @@ describe Github::Project do
 
   context "#create_build_from_github_payload" do
     let(:project)         { create :project }
-    let(:pull_request_id) { 1               }
-    let(:branch)          { 'branch'        }
-    let(:head)            { 'head'          }
+    let(:pull_request_id) { 1 }
+    let(:branch)          { 'branch' }
+    let(:head)            { 'head' }
+    let(:url)             { 'url' }
     let(:payload)         {
       OpenStruct.new pull_request_number: pull_request_id,
                      branch: branch,
-                     head: head
+                     head: head,
+                     url: url
     }
     subject { project.create_build_from_github_payload payload }
 
     context "successfuly created build" do
       its(:pull_request_id) { should eq pull_request_id }
-      its(:branch)          { should eq branch          }
-      its(:sha)             { should eq head            }
+      its(:branch)          { should eq branch }
+      its(:sha)             { should eq head }
+      its(:http_url)        { should eq url }
     end
 
     context "fail" do

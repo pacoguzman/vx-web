@@ -47,6 +47,14 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def last_build_status
+    if build = builds.where.not(status: [0,1]).select(:id, :status).first
+      build.status_name
+    else
+      :unknown
+    end
+  end
+
 end
 
 # == Schema Information

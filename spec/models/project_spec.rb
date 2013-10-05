@@ -58,4 +58,24 @@ describe Project do
       expect(project.hook_url).to eq "http://#{Rails.configuration.x.hostname}/github/callback/#{token}"
     end
   end
+
+  context "#last_build_status" do
+    let(:project) { create :project }
+    subject { project.last_build_status }
+
+    context "with builds" do
+      before do
+        create :build, status: 0, project: project
+        create :build, status: 2, project: project
+        create :build, status: 3, project: project
+        create :build, status: 4, project: project
+      end
+      it { should eq :failed }
+    end
+
+    context "without builds" do
+      it { should eq :unknown }
+    end
+  end
+
 end

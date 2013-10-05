@@ -16,7 +16,7 @@ class JobUpdater
       update_build_status
 
       publish_job
-      publish_build if update_build?
+      publish_build_and_project if update_build?
     end
   end
 
@@ -39,8 +39,9 @@ class JobUpdater
       end
     end
 
-    def publish_build
+    def publish_build_and_project
       build.publish serializer: :build_status
+      build.project.publish
     end
 
     def update_job_status

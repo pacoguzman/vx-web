@@ -4,14 +4,14 @@
     Create Build
 
   %p
-    %a.octokat{ href: "{{project.url}}", title: "View on Github" }
+    %a.octokat{ href: "{{project.http_url}}", title: "View on Github" }
       %i.icon-github-sign
       View on Github
 
   %p
     %small {{ project.description || "no description available" }}
 
-  %table.builds-list.table
+  %table.app-tasks-table.table
 
     %thead
       %th No.
@@ -20,12 +20,12 @@
       %th Duration
       %th Fnished At
 
-    %tr.build-item{ 'ng-repeat' => "build in builds | orderBy:'number':true", 'class' => "build-item-{{build.status}}" }
+    %tr.app-tasks-table-item{ 'ng-repeat' => "build in builds | orderBy:'number':true", 'class' => "app-task-{{build.status}}" }
       %td
         %a{ 'ng-href' => "/builds/{{build.id}}" }
           %i.icon-circle
           %span {{ build.number }}
-      %td {{ build.sha | truncate:8:"" }}
+      %td.app-build-http-url{ build: 'build' }
       %td {{ build.branch }}
-      %td {{ build.started_at  | timeDiff: build.finished_at }}
+      %td.app-task-duration{ task: 'build' }
       %td {{ build.finished_at | fromNow }}

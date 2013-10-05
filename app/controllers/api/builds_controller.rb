@@ -1,4 +1,4 @@
-class Api::BuildsController < Api::BaseController
+class Api::BuildsController < ::Api::BaseController
 
   respond_to :json
 

@@ -195,6 +195,17 @@ describe "cacheStore", ->
               rs.then succ, fail
             expect(succVal).toBe testObj2
 
+          describe "and item already in collection", ->
+            it "cannot add", ->
+              $apply ->
+                cache.collection(1).addItem testObj2
+              expect(cache.cache.collections.get(1).length).toBe 2
+              $apply ->
+                rs = cache.collection(1).addItem testObj2
+                rs.then succ, fail
+              expect(cache.cache.collections.get(1).length).toBe 2
+              expect(succVal).toBe testObj2
+
         describe "when value is promise", ->
           d = null
           beforeEach ->
@@ -212,6 +223,17 @@ describe "cacheStore", ->
               rs = cache.collection(1).addItem d.promise
               rs.then succ, fail
             expect(succVal).toBe testObj2
+
+          describe "and item already in collection", ->
+            it "cannot add", ->
+              $apply ->
+                cache.collection(1).addItem d.promise
+              expect(cache.cache.collections.get(1).length).toBe 2
+              $apply ->
+                rs = cache.collection(1).addItem d.promise
+                rs.then succ, fail
+              expect(cache.cache.collections.get(1).length).toBe 2
+              expect(succVal).toBe testObj2
 
           describe "and was rejected", ->
             r = null

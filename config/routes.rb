@@ -32,7 +32,7 @@ CiWeb::Application.routes.draw do
 
   end
 
-  get '/github/callback/:token', to: 'github/repo_callbacks#create'
+  post '/github/callback/:token', to: 'github/repo_callbacks#create'
 
   get '/auth/github/callback', to: 'github/user_callbacks#create'
   get '/auth/failure', to: redirect('/')

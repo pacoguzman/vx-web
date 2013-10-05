@@ -5,6 +5,7 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'webmock/rspec'
 require 'evrone/ci/message/testing'
+require 'evrone/common/amqp/testing'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -27,6 +28,10 @@ RSpec.configure do |config|
   config.infer_base_class_for_anonymous_controllers = false
 
   config.order = "random"
+
+  config.before(:each) do
+    Evrone::Common::AMQP::Testing.clear
+  end
 
   config.before(:suite) do
   end

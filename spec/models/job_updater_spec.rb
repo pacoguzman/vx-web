@@ -58,6 +58,27 @@ describe JobUpdater do
 
   context "perform" do
 
+    context "publish job" do
+      subject { updater.perform }
+      before do
+        mock(job).publish { true }
+      end
+      it { should be }
+    end
+
+    context "publish build and project" do
+      subject { updater.perform }
+
+      context "when build updated" do
+        before do
+          mock(updater).update_build?.twice { true }
+          mock(b).publish(serializer: :build_status) { true }
+          mock(b.project).publish { true }
+        end
+        it { should be }
+      end
+    end
+
     context "update job status" do
       let(:tm)                 { Time.now }
       let(:message_attributes) { {
@@ -100,7 +121,7 @@ describe JobUpdater do
     context "update build status" do
       let(:tm)                 { Time.now }
       let(:message_attributes) { {
-        tm:     tm.to_i,
+        tm: tm.to_i,
       } }
       subject {
         updater.perform

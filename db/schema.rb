@@ -11,28 +11,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130822130531) do
+ActiveRecord::Schema.define(version: 20131005121309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
 
   create_table "builds", force: true do |t|
-    t.integer  "number",                       null: false
-    t.integer  "project_id",                   null: false
-    t.string   "sha",                          null: false
-    t.string   "branch",                       null: false
+    t.integer  "number",                      null: false
+    t.integer  "project_id",                  null: false
+    t.string   "sha",                         null: false
+    t.string   "branch",                      null: false
     t.integer  "pull_request_id"
     t.string   "author"
     t.string   "message"
-    t.integer  "status",          default: 0,  null: false
+    t.integer  "status",          default: 0, null: false
     t.datetime "started_at"
     t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "jobs_count",      default: 0,  null: false
-    t.string   "matrix",          default: [],              array: true
     t.string   "author_email"
+    t.integer  "jobs_count",      default: 0, null: false
+    t.string   "http_url"
   end
 
   add_index "builds", ["project_id", "number"], name: "index_builds_on_project_id_and_number", unique: true, using: :btree
@@ -55,11 +55,9 @@ ActiveRecord::Schema.define(version: 20130822130531) do
   create_table "job_logs", force: true do |t|
     t.integer "job_id"
     t.integer "tm"
-    t.integer "tm_usec"
     t.text    "data"
   end
 
-  add_index "job_logs", ["job_id", "tm", "tm_usec"], name: "index_job_logs_on_job_id_and_tm_and_tm_usec", using: :btree
   add_index "job_logs", ["job_id"], name: "index_job_logs_on_job_id", using: :btree
 
   create_table "jobs", force: true do |t|

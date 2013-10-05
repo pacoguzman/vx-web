@@ -1,7 +1,8 @@
 class Job < ActiveRecord::Base
 
   belongs_to :build, class_name: "::Build"
-  has_many :logs, class_name: "::JobLog", dependent: :destroy
+  has_many :logs, class_name: "::JobLog", dependent: :destroy,
+    extend: AppendLogMessage
 
   validates :build_id, :number, :status, presence: true
   validates :number, uniqueness: { scope: [:build_id] }
@@ -71,19 +72,6 @@ class Job < ActiveRecord::Base
         job.save ? job : nil
       end
 
-  end
-
-  def as_json(*args)
-    {
-      id:           id,
-      build_id:     build_id,
-      number:       number,
-      started_at:   started_at,
-      finished_at:  finished_at,
-      status:       status_name,
-      matrix:       matrix,
-      project_id:   build.project_id
-    }
   end
 
 end
