@@ -15,7 +15,9 @@ angular.module('CI').
       scope.output = ""
       nbsp = '\u00A0'
 
-      updateLines = (newVal, oldVal) ->
+      updateLines = (newVal) ->
+        return unless newVal
+
         unsorted = []
         container = document.createElement("div")
 
