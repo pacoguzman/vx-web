@@ -1,6 +1,5 @@
 describe "appBuildHttpUrl", ->
 
-  $q       = null
   $scope   = null
   $compile = null
   elem     = null
@@ -8,7 +7,6 @@ describe "appBuildHttpUrl", ->
     http_url: "http://example.com",
     sha: "HEAD",
   }
-
 
   beforeEach ->
     module("CI")
