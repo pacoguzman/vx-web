@@ -2,46 +2,46 @@
 
   .row
 
-    .col-5
+    .col-5.small-text
 
-      .job-info
+      .task-attribute
+        %span Job
+        %span{ 'class' => "task-status-{{ job.status }}" }
+          %i.icon-circle
+          {{ job.number }}
 
-        .job-info-line
-          %span Job
-          %span {{ job.number }}
+      .task-attribute
+        %span Status
+        %span {{ job.status }}
 
-        .job-info-line
-          %span Status
-          %span {{ job.status }}
+      .task-attribute
+        %span Finished At
+        %span {{ job.finished_at | fromNow }}
 
-        .job-info-line
-          %span Finished
-          %span {{ job.finished_at | fromNow }}
+      .task-attribute
+        %span Duration
+        %span.app-task-duration{ task: 'job' }
 
-        .job-info-line
-          %span Duration
-          %span.app-task-duration{ task: 'job' }
+      .task-attribute
+        %span Config
+        %span{ 'ng-repeat' => "(key, value) in job.matrix" }
+          {{ key }} {{ value }}
 
-        .job-info-line
-          %span Config
-          %span{ 'ng-repeat' => "(key, value) in job.matrix" }
-            {{ key }} {{ value }}
+    .col-5.small-text
 
-    .col-5
+      .task-attribute
+        %span Commit
+        %span.app-build-http-url{ build: 'build', branch: 'true' }
 
-      .job-info
-        .job-info-line
-          %span Commit
-          %span.app-build-http-url{ build: 'build', branch: 'true' }
+      .task-attribute
+        %span Author
+        %span
+          %a{'ng-href' => "mailto:{{build.author_email}}"}
+            {{ build.author }}
 
-        .job-info-line
-          %span Author
-          %span
-            %a{'ng-href' => "mailto:{{build.author_email}}"}
-              {{ build.author }}
-
-        .job-info-line
-          %span Message
-          %span {{ build.message }}
+      .task-attribute
+        %span Message
+        %span {{ build.message }}
 
   .app-task-output{ collection: "logs" }
+

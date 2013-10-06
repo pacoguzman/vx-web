@@ -3,52 +3,7 @@
   to { opacity: 0.0; }
 }
 
-.app-tasks-table {
-  margin-top: 2em;
-  font-size: 1em;
-  font-size: 90%;
-
-  th {
-    font-weight: normal;
-  }
-  td {
-    border-width: 0;
-  }
-
-  th:nth-child(1) {
-    width: 8em;
-  }
-  th:nth-child(2) {
-    width: 15em;
-  }
-  th:nth-child(4), th:nth-child(5) {
-    width: 15em;
-  }
-
-  tr:first-child td {
-    border-width: 1px;
-  }
-}
-
-.app-tasks-table-item {
-
-  i {
-    font-size: .8em;
-  }
-
-  span {
-    text-decoration: underline;
-    display: inline-block;
-    width: 2em;
-    text-align: center;
-  }
-
-  a {
-    text-decoration: none;
-  }
-}
-
-.app-task-errored {
+.task-status-errored {
   background-color: #fbfbfb;
   a {
     color: #666;
@@ -58,7 +13,7 @@
   }
 }
 
-.app-task-failed {
+.task-status-failed {
   background-color: snow;
   a {
     color: #c00;
@@ -68,14 +23,14 @@
   }
 }
 
-.app-task-unknown {
+.task-status-unknown {
   background-color: white;
   i {
     display: none
   }
 }
 
-.app-task-initialized, .app-task-queued, .app-task-started {
+.task-status-initialized, .task-status-queued, .task-status-started {
   background-color: #fffefa;
 
   a {
@@ -86,7 +41,7 @@
   }
 }
 
-.app-task-started {
+.task-status-started {
   i {
     -webkit-animation-name: blinker;
     -webkit-animation-iteration-count: infinite;
@@ -95,7 +50,7 @@
   }
 }
 
-.app-task-finished {
+.task-status-finished {
   background-color: #fafffa;
 
   a {
@@ -106,7 +61,7 @@
   }
 }
 
-.app-task-success {
+.task-status-success {
   background-color: #fafffa;
 
   &:hover {

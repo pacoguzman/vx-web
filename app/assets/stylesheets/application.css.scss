@@ -4,7 +4,7 @@
  */
 
 body, head, html {
-  font-family: 'Open Sans', 'Helvetica' !important;
+  font-family: 'Helvetica Neue', 'Helvetica' !important;
   color: #666 !important;
 }
 
@@ -35,7 +35,6 @@ body > .container > .ng-view {
       display: block;
       width: 1em;
       margin: 0.65em auto 0 auto;
-      font-family: 'Open Sans', 'Helvetica' !important;
     }
   }
 
@@ -44,6 +43,7 @@ body > .container > .ng-view {
 
     ul li {
       margin-right: 1em;
+      font-weight: 500;
     }
 
     ul li.active a {
@@ -59,7 +59,6 @@ body > .container > .ng-view {
     ul li a {
       border-color: white;
       border-bottom-color: white;
-      font-family: 'Open Sans', 'Helvetica' !important;
 
       &:hover {
         border-color: white;
@@ -73,6 +72,10 @@ body > .container > .ng-view {
 
 .ajax-loader {
   content: url(asset-path("assets/ajax-loader.gif"));
+}
+
+.small-text {
+  font-size: 13px;
 }
 
 

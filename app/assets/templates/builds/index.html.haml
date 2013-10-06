@@ -5,22 +5,24 @@
 
   %p
     %a.octokat{ href: "{{project.http_url}}", title: "View on Github" }
-      %i.icon-github-sign
-      View on Github
+      View on github.com
 
   %p
     %small {{ project.description || "no description available" }}
 
-  %table.app-tasks-table.table
+  .bs-callout.bs-callout-info{ 'ng-hide' => "builds.length" }
+    No builds available
+
+  %table.tasks-table.table.small-text{ 'ng-show' => 'builds.length' }
 
     %thead
       %th No.
       %th Commit
       %th Branch
       %th Duration
-      %th Fnished At
+      %th Finished At
 
-    %tr.app-tasks-table-item{ 'ng-repeat' => "build in builds | orderBy:'number':true", 'class' => "app-task-{{build.status}}" }
+    %tr.tasks-table-item{ 'ng-repeat' => "build in builds | orderBy:'number':true", 'class' => "task-status-{{build.status}}" }
       %td
         %a{ 'ng-href' => "/builds/{{build.id}}" }
           %i.icon-circle

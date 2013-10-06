@@ -1,47 +1,42 @@
 .build
-
   .row
+    .col-5.small-text
 
-    .col-5
+      .task-attribute
+        %span  Build
+        %span{ 'class' => "task-status-{{ build.status }}" }
+          %i.icon-circle
+          {{ build.number }}
 
-      .build-info
+      .task-attribute
+        %span Status
+        %span
+          {{ build.status }}
 
-        .build-info-line
-          %span  Build
-          %span {{ build.number }}
+      .task-attribute
+        %span Finished At
+        %span {{ build.finished_at | fromNow }}
 
-        .build-info-line
-          %span Status
-          %span {{ build.status }}
+      .task-attribute
+        %span Duration
+        %span.app-task-duration{ task: "build" }
 
-        .build-info-line
-          %span Finished
-          %span {{ build.finished_at | fromNow }}
+    .col-5.small-text
 
-        .build-info-line
-          %span Duration
-          %span.app-task-duration{ task: "build" }
+      .task-attribute
+        %span Commit
+        %span.app-build-http-url{ build: 'build', branch: 'true' }
 
-    .col-5
+      .task-attribute
+        %span Author
+        %span
+          %a{'ng-href' => "mailto:{{ build.author_email }}"}
+            {{ build.author }}
 
-      .build-info
-        .build-info-line
-          %span Commit
-          %span.app-build-http-url{ build: 'build', branch: 'true' }
-
-        .build-info-line
-          %span Author
-          %span
-            %a{'ng-href' => "mailto:{{build.author_email}}"}
-              {{ build.author }}
-
-        .build-info-line
-          %span Message
-          %span {{ build.message }}
-
+      .task-attribute
+        %span Message
+        %span {{ build.message }}
 
   .build-jobs{ 'ng-show' => "jobs.length > 0" }
 
-    %h5 Jobs
-
-    %pre.app-build-jobs{ jobs: 'jobs' }
+    %pre.app-build-jobs.small-text{ jobs: 'jobs' }

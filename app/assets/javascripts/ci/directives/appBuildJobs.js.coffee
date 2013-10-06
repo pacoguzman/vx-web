@@ -8,16 +8,16 @@ angular.module('CI').
     }
 
     template: """
-    <table class='table app-tasks-table'>
+    <table class='table tasks-table'>
       <thead>
-        <th>No.</th>
+        <th>Job</th>
         <th>Duration</th>
         <th>Finished At</th>
         <th ng-repeat='m in matrix'>
           {{m}}
         </th>
       </thead>
-      <tr class='app-build-jobs-job app-task-{{job.status}} app-tasks-table-item'
+      <tr class='app-build-jobs-job task-status-{{job.status}} tasks-table-item'
           ng-repeat="job in jobs | orderBy:'number'">
         <td>
           <a ng-href='/jobs/{{job.id}}'>
