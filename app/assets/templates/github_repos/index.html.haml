@@ -8,8 +8,9 @@
   .github-repos-search
     %input.form-control{ autofocus: true, type: :search, placeholder: "Type to search...", 'ng-model' => 'query' }
 
-  .github-repos-show{ 'ng-show' => 'repos.length' }
+  .github-repos-show{ 'ng-show' => 'repos.length > 0' }
     %small
+      {{ repos.length }}
       Show 30 of {{ repos.length }} repositories
 
   .github-repos-list
