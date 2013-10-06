@@ -19,6 +19,20 @@
   &:hover {
     background-color: #333;
   }
+
+  &.ansi {
+    .green {
+      color: #a8ff60;
+    }
+
+    .yellow {
+      color: #ffffb6;
+    }
+
+    .red {
+      color: #ff6c60;
+    }
+  }
 }
 
 .app-tack-output-line-number {
