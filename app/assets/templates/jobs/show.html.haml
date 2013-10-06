@@ -6,7 +6,7 @@
 
       .task-attribute
         %span Job
-        %span.app-task-status{ 'task' => "job" }
+        %span.app-task-status{ task: "job" }
           {{ task.number }}
 
       .task-attribute
@@ -15,7 +15,7 @@
 
       .task-attribute
         %span Finished At
-        %span {{ job.finished_at | fromNow }}
+        %span.app-task-finished{ task: "job" }
 
       .task-attribute
         %span Duration

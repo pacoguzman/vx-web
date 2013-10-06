@@ -29,7 +29,7 @@ describe "appBuildHttpUrl", ->
 
     it "should have correct url", ->
       $scope.$digest()
-      expect(elem.html()).toEqual '<a href="http://example.com">HEAD</a>'
+      expect(elem.html()).toEqual '<a href="http://example.com" target="_blank">HEAD</a>'
 
     describe "and branch", ->
 
@@ -40,5 +40,5 @@ describe "appBuildHttpUrl", ->
 
       it "should have correct url", ->
         $scope.$digest()
-        expect(elem.html()).toEqual '<a href="http://example.com">HEAD</a> (master)'
+        expect(elem.html()).toEqual '<a href="http://example.com" target="_blank">HEAD</a> (master)'
 

@@ -38,6 +38,14 @@ class Github::Payload
     end
   end
 
+  def branch_label
+    if pull_request?
+      pull_request["head"]["label"]
+    else
+      branch
+    end
+  end
+
   def url
     if pull_request?
       pull_request["url"]

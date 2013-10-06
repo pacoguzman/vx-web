@@ -25,8 +25,8 @@ angular.module('CI').
             <span>{{ job.number }}</span>
           </a>
         </td>
-        <td class='app-task-duration' task='job'></td>
-        <td>{{ job.finished_at | fromNow }}</td>
+        <td class="app-task-duration" task="job"></td>
+        <td class="app-task-finished" tash="job"></td>
         <td ng-repeat='m in job.matrix'>
           {{ m }}
         </td>

@@ -16,7 +16,7 @@ angular.module('CI').
           sha  = newVal.sha.substring(0,8)
           html = ""
           if newVal.http_url
-            html = "<a href=\"#{newVal.http_url}\">#{sha}</a>"
+            html = "<a href=\"#{newVal.http_url}\" target=\"_blank\">#{sha}</a>"
           else
             html = sha
           if scope.branch

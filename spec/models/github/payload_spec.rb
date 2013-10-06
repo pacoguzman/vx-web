@@ -12,6 +12,7 @@ describe Github::Payload do
     its(:head)                { should eq '84158c732ff1af3db9775a37a74ddc39f5c4078f' }
     its(:base)                { should eq 'b665f90239563c030f1b280a434b3d84daeda1bd' }
     its(:branch)              { should eq 'master'                                   }
+    its(:branch_label)        { should eq 'master' }
     its(:url)                 { should eq url                                        }
   end
 
@@ -23,7 +24,8 @@ describe Github::Payload do
     its(:pull_request_number) { should eq 177 }
     its(:head)                { should eq '84158c732ff1af3db9775a37a74ddc39f5c4078f' }
     its(:base)                { should eq 'a1ea1a6807ab8de87e0d685b7d5dcad0c081254e' }
-    its(:branch)              { should eq 'master' }
+    its(:branch)              { should eq 'test' }
+    its(:branch_label)        { should eq 'dima-exe:test' }
     its(:url)                 { should eq url }
   end
 

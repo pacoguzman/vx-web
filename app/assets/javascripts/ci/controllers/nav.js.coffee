@@ -1,5 +1,5 @@
 CI.factory 'appMenu', ($q) ->
-  items = [{ title: 'Dashboard', path: '/' }]
+  items = []
 
   obj = {}
 
@@ -33,6 +33,5 @@ CI.controller 'NavCtrl', ['$scope', '$location', 'appMenu',
 
     $scope.$watch 'menu.items()', (newVal, _) ->
       $scope.items = newVal
-
 ]
 
