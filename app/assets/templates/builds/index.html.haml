@@ -22,7 +22,7 @@
       %th Duration
       %th Finished At
 
-    %tr.tasks-table-item{ 'ng-repeat' => "build in builds | orderBy:'number':true", 'class' => "task-status-{{build.status}}" }
+    %tr.tasks-table-item.app-task-status-class{ 'ng-repeat' => "build in builds | orderBy:'number':true", 'status' => "build.status" }
       %td
         %a{ 'ng-href' => "/builds/{{build.id}}" }
           %i.icon-circle

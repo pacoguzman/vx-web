@@ -17,8 +17,8 @@ angular.module('CI').
           {{m}}
         </th>
       </thead>
-      <tr class='app-build-jobs-job task-status-{{job.status}} tasks-table-item'
-          ng-repeat="job in jobs | orderBy:'number'">
+      <tr class='app-build-jobs-job app-task-status-class tasks-table-item'
+          ng-repeat="job in jobs | orderBy:'number'" status="job.status">
         <td>
           <a ng-href='/jobs/{{job.id}}'>
             <i class='icon-circle'></i>

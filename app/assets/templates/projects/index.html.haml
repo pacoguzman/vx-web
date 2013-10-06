@@ -7,8 +7,7 @@
   %ul.projects-list.list-group
 
     %li.project.list-group-item{ 'ng-repeat' => "project in projects" }
-      .pull-right{ 'class' => "task-status-{{project.last_build_status}}" }
-        %i.icon-circle
+      .pull-right.app-task-status{ 'task' => 'project'}
 
       %a{ 'ng-href' => "/projects/{{project.id}}/builds" }
         {{project.name}}

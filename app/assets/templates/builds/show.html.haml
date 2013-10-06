@@ -4,9 +4,8 @@
 
       .task-attribute
         %span  Build
-        %span{ 'class' => "task-status-{{ build.status }}" }
-          %i.icon-circle
-          {{ build.number }}
+        %span.app-task-status{ 'task' => "build" }
+          {{ task.number }}
 
       .task-attribute
         %span Status

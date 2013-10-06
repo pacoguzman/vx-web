@@ -7,12 +7,12 @@
   .github-repos-search
     %input.form-control{ autofocus: true, type: :search, placeholder: "Type to search...", 'ng-model' => 'query' }
 
-  .github-repos-show{ 'ng-show' => 'repos.length' }
+  .github-repos-show{ 'ng-show' => 'repos.length > 0' }
     Show 30 of {{ repos.length }} repositories
 
   .github-repos-list
 
-    .github-repos-empty{ 'ng-hide' => 'repos.length' }
+    .github-repos-empty{ 'ng-hide' => 'repos.length > 0' }
       No repositories loaded
 
     .github-repo.small-text{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30" }
