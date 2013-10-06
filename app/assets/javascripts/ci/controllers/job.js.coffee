@@ -15,4 +15,4 @@ CI.controller 'JobCtrl',
     appMenu.define $scope.job, $scope.build, $scope.project, (j,b,p) ->
       appMenu.add p.name, "/projects/#{p.id}/builds"
       appMenu.add "Build #{b.number}", "/builds/#{b.id}"
-      appMenu.add "Job #{b.number}.#{j.number}", "/jobs/#{j.id}"
+      appMenu.add "Job #{j.number}", "/jobs/#{j.id}"

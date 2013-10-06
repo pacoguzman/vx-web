@@ -43,12 +43,13 @@ body > .container > .ng-view {
 
     ul li {
       margin-right: 1em;
-      font-weight: 500;
+      font-weight: 400;
     }
 
     ul li.active a {
       border-bottom-color: #0088cc;
       border-bottom-width: 2px;
+      font-weight: 500;
 
       &:hover {
         border-bottom-color: #0088cc;
