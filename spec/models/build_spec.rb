@@ -45,6 +45,40 @@ describe Build do
 
   end
 
+  context "(messages)" do
+    let(:build)   { create :build }
+
+    context "#to_perform_build_message" do
+      let(:travis)  { 'travis' }
+      let(:project) { build.project }
+      subject { build.to_perform_build_message travis }
+
+      context "should create PerformBuild message with" do
+        its(:id)         { should eq build.id }
+        its(:name)       { should eq project.name }
+        its(:src)        { should eq project.clone_url }
+        its(:sha)        { should eq build.sha }
+        its(:deploy_key) { should eq project.deploy_key }
+        its(:travis)     { should eq travis }
+      end
+    end
+
+    context "#delivery_to_fetcher" do
+      it "should be success" do
+        expect{
+          build.delivery_to_fetcher
+        }.to change(FetchBuildConsumer.messages, :count).by(1)
+      end
+    end
+
+    context "#delivery_perform_build_message" do
+      it "should be success" do
+        expect{
+          build.delivery_perform_build_message 'travis'
+        }.to change(BuildsConsumer.messages, :count).by(1)
+      end
+    end
+  end
 
 end
 

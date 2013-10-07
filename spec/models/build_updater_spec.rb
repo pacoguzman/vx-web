@@ -92,40 +92,6 @@ describe BuildUpdater do
       its(:jobs_count) { should eq 99 }
     end
 
-    context "add commit info to build" do
-      subject { build }
-      before  { updater.perform }
-
-      context "when fields exist in message" do
-        let(:message_attributes) { {
-          commit_sha:           'sha',
-          commit_author:        'author',
-          commit_author_email:  "email",
-          commit_message:       'message'
-        } }
-
-        its(:sha)          { should eq 'sha'     }
-        its(:author)       { should eq 'author'  }
-        its(:author_email) { should eq 'email'   }
-        its(:message)      { should eq 'message' }
-      end
-
-      context "when fields does not exists in message" do
-        let(:message_attributes) { {
-          commit_sha:           '',
-          commit_author:        '',
-          commit_author_email:  '',
-          commit_message:       ''
-        } }
-
-        its(:sha)          { should eq 'HEAD' }
-        its(:author)       { should be_nil }
-        its(:author_email) { should be_nil }
-        its(:message)      { should be_nil }
-      end
-
-    end
-
   end
 
 end

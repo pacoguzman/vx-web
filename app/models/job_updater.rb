@@ -13,10 +13,12 @@ class JobUpdater
   def perform
     if build
       update_job_status
-      update_build_status
-
       publish_job
-      publish_build_and_project if update_build?
+
+      if update_build?
+        update_build_status
+        publish_build_and_project
+      end
     end
   end
 
@@ -39,11 +41,6 @@ class JobUpdater
       end
     end
 
-    def publish_build_and_project
-      build.publish serializer: :build_status
-      build.project.publish
-    end
-
     def update_job_status
       case message.status
       when 2 # started
@@ -63,18 +60,21 @@ class JobUpdater
     end
 
     def update_build_status
-      if update_build?
-        case new_build_status
-        when 3
-          build.finish
-        when 4
-          build.decline
-        when 5
-          build.error
-        end
-        build.finished_at = tm
-        build.save!
+      case new_build_status
+      when 3
+        build.finish
+      when 4
+        build.decline
+      when 5
+        build.error
       end
+      build.finished_at = tm
+      build.save!
+    end
+
+    def publish_build_and_project
+      build.publish serializer: :build_status
+      build.project.publish
     end
 
     def tm
