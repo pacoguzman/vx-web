@@ -43,8 +43,8 @@ module Evrone
 
         class Publishing < Base
           def call(env)
+            logger.warn "message delivered #{env[:message].inspect[0...60]}..."
             app.call env
-            #logger.warn "published #{env[:message].body}"
           end
         end
       end

@@ -59,6 +59,12 @@ describe BuildFetcher do
           expect{ subject }.to change{ build.reload.public_send(m) }
         end
       end
+
+      it "should delivery PerformBuild message" do
+        expect {
+          subject
+        }.to change(BuildsConsumer.messages, :count).by(1)
+      end
     end
 
     def mock_commit_request

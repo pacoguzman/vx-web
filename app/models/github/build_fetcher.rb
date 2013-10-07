@@ -15,7 +15,7 @@ module Github
       build.update! commit.to_h
 
       travis = fetch_travis_from_github
-      travis
+      build.delivery_perform_build_message(travis)
     end
 
     def fetch_travis_from_github

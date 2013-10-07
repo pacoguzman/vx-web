@@ -12,7 +12,7 @@ class FetchBuildConsumer
     ::Rails.logger.tagged("FETCH BUILD #{build_id}") do
       build = ::Build.find_by id: build_id.to_i
       if build
-        ::BuildFetcher.new(build)
+        ::BuildFetcher.new(build).process
       end
     end
     ack!

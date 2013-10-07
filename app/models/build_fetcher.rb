@@ -12,7 +12,7 @@ class BuildFetcher
     build.project
   end
 
-  def create_perform_build_message
+  def process
     create_perform_build_message_using_github
   end
 
