@@ -1,3 +1,5 @@
+require 'base64'
+
 module Github
   module BuildFetcher
 
@@ -11,7 +13,14 @@ module Github
     def create_perform_build_message_using_github
       commit = fetch_commit_from_github
       build.update! commit.to_h
-      
+
+      travis = fetch_travis_from_github
+      travis
+    end
+
+    def fetch_travis_from_github
+      travis = github.contents project.name, ref: build.sha, path: ".travis.yml"
+      Base64.decode64 travis.content
     end
 
     def fetch_commit_from_github
