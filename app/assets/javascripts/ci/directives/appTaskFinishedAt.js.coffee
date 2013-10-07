@@ -14,6 +14,6 @@ angular.module('CI').
           val = moment(newVal).fromNow()
           elem.text(val)
         else
-          elem.text("- ; -")
+          elem.text("- : -")
 
       scope.$watch('task.finished_at', updateFinishedAt)

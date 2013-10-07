@@ -31,6 +31,8 @@ angular.module('CI').
         else
           if newVal.started_at
             progressDuration()
+          else
+            elem.text "- : -"
 
       scope.$watch('task', updateDuration, true)
 

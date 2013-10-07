@@ -18,6 +18,8 @@ angular.module('CI').
       updateLines = (newVal) ->
         return unless newVal
 
+        elem.removeClass("hidden")
+
         container = document.createElement("div")
 
         output = _.map(newVal, (it) -> it.data).join("").split("\n")
@@ -39,5 +41,7 @@ angular.module('CI').
           container.appendChild(lineEl)
 
         elem.html container.innerHTML
+
+      elem.addClass("hidden")
 
       scope.$watch('collection', updateLines, true)
