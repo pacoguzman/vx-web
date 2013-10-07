@@ -17,7 +17,9 @@ class Project < ActiveRecord::Base
 
 
   class << self
-    def deploy_key_name ; 'evrone.ci' end
+    def deploy_key_name
+      'evrone.ci'
+    end
 
     def find_by_token(token)
       find_by token: token

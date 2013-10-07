@@ -30,7 +30,7 @@ module Github::User
   def remove_hook_from_github_project(project)
     github.then do |g|
       g.hooks(project.name).select do |hook|
-        hook.config.url =~ /#{Regexp.escape Rails.configuration.x.hostname}\//
+        hook.config.rels[:self].href =~ /#{Regexp.escape Rails.configuration.x.hostname}\//
       end.map do |hook|
         g.remove_hook(project.name, hook.id)
       end
