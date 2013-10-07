@@ -61,7 +61,6 @@ describe Github::Repo do
         before do
           stub(repo).project  { project }
           stub(repo).project? { true    }
-          mock(project).save  { true    }
           mock(user).remove_hook_from_github_project(project)       { true }
           mock(user).remove_deploy_key_from_github_project(project) { true }
         end
@@ -88,16 +87,9 @@ describe Github::Repo do
         end
       end
 
-      context "when unable to save project" do
-        include_examples 'Github::Repo#(un)subscribe cannot touch any projects' do
-          before { mock(project).save { false } }
-        end
-      end
-
       context "when unable to remove hook from github project" do
         include_examples 'Github::Repo#(un)subscribe cannot touch any projects' do
           before do
-            mock(project).save                                   { true  }
             mock(user).remove_hook_from_github_project(anything) { false }
           end
         end
@@ -106,7 +98,6 @@ describe Github::Repo do
       context "when unable to remove deploy key from github project" do
         include_examples 'Github::Repo#(un)subscribe cannot touch any projects' do
           before do
-            mock(project).save                                         { true  }
             mock(user).remove_hook_from_github_project(anything)       { true  }
             mock(user).remove_deploy_key_from_github_project(anything) { false }
           end
@@ -117,8 +108,13 @@ describe Github::Repo do
   end
 
   context "#subscribe" do
-    let(:user)    { repo.user }
+    let(:user) { repo.user }
+    let(:identity) { create :user_identity, :github, user: user }
     subject { repo.subscribe }
+
+    before do
+      user.identities << identity
+    end
 
     context "successfuly" do
 
@@ -163,6 +159,7 @@ describe Github::Repo do
           its(:http_url)    { should eq repo.html_url    }
           its(:clone_url)   { should eq repo.ssh_url     }
           its(:description) { should eq repo.description }
+          its(:identity)    { should eq identity }
         end
       end
     end

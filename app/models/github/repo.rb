@@ -31,10 +31,6 @@ class Github::Repo < ActiveRecord::Base
       update_attribute(:subscribed, false).or_rollback_transaction
 
       if project?
-        project.generate_deploy_key
-        project.generate_token
-        project.save.or_rollback_transaction
-
         user.remove_hook_from_github_project(project).or_rollback_transaction
         user.remove_deploy_key_from_github_project(project).or_rollback_transaction
       end
@@ -56,7 +52,8 @@ class Github::Repo < ActiveRecord::Base
         http_url:    html_url,
         clone_url:   ssh_url,
         provider:    'github',
-        description: description
+        description: description,
+        identity:    user.identities.github
       }
       project = ::Project.create(attrs)
       project.persisted? && project

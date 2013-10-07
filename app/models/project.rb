@@ -2,8 +2,9 @@ require 'securerandom'
 
 class Project < ActiveRecord::Base
 
-  include Github::Project
+  include ::Github::Project
 
+  belongs_to :identity, class_name: "::UserIdentity"
   has_many :builds, dependent: :destroy, class_name: "::Build"
 
   validates :name, :http_url, :clone_url, :provider, :token,
@@ -71,5 +72,6 @@ end
 #  token       :string(255)      not null
 #  created_at  :datetime
 #  updated_at  :datetime
+#  identity_id :integer
 #
 

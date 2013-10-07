@@ -1,20 +1,27 @@
 class UserIdentity < ActiveRecord::Base
 
+  belongs_to :user
+  has_many :projects, dependent: :nullify, foreign_key: :identity_id,
+    class_name: "::Project"
+
   validates :user_id, :provider, :uid, :token, presence: true
   validates :user_id, uniqueness: { scope: [:provider] }
 
-  belongs_to :user
-
   scope :provider, ->(provider) { where provider: provider }
 
-  def self.find_by_provider(p)
-    provider(p).first
-  end
+  class << self
+    def find_by_provider(p)
+      provider(p).first
+    end
 
-  def self.provider?(p)
-    provider(p).exists?
-  end
+    def github
+      find_by_provider "github"
+    end
 
+    def provider?(p)
+      provider(p).exists?
+    end
+  end
 end
 
 # == Schema Information

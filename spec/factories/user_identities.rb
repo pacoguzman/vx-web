@@ -1,9 +1,9 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :user_identity do
+  factory :user_identity, aliases: [:identity] do
     user
-    provider   "MyString"
+    provider   "github"
     token      "MyString"
     uid        "MyString"
     login      "login"
