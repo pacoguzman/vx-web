@@ -38,47 +38,90 @@ describe Github::User do
     let(:github)  { 'proxy'                 }
 
     context "#remove_deploy_key_from_github_project" do
-      let(:key_name) { project.deploy_key_name                             }
-      let(:key_id)   { 1                                                   }
-      let(:key)      { OpenStruct.new title: key_name, id: key_id          }
-      subject        { user.remove_deploy_key_from_github_project project }
+      let(:identity) { create :user_identity, :github, user: user }
+      let(:user)     { create :user }
+      subject { user.remove_deploy_key_from_github_project project }
 
-      context "when user is githubber" do
+      before do
+        user.identities << identity
+        mock_keys_request
+        mock_delete_key_request
+        stub(project).deploy_key_name { 'octocat@octomac' }
+      end
+
+      it "should be success" do
+        expect(subject).to be
+        expect(@keys).to have_been_requested
+        expect(@delete_key).to have_been_requested
+      end
+
+      context "when key not found" do
         before do
-          mock(user).github { github }
-          mock(github).deploy_keys(project.name) { [key] }
-          mock(github).remove_deploy_key(project.name, key_id) { 'success' }
+          mock(project).deploy_key_name { 'not found' }
         end
 
-        it "should remove any project deploy keys from github" do
-          expect(subject).to eq ['success']
+        it "cannot delete any keys" do
+          expect(subject).to be
+          expect(@keys).to have_been_requested
+          expect(@delete_key).to_not have_been_requested
         end
       end
 
-      include_examples "cannot touch any projects on github when user is not githubber"
+      def mock_keys_request
+        @keys = stub_request(:get, "https://api.github.com/repos/ci-worker-test-repo/keys?per_page=100").
+          with(:headers => {'Authorization'=>'token MyString'}).
+          to_return(:status => 200, :body => read_fixture("github/keys.json"), :headers => {'Content-Type'=>"application/json"})
+      end
 
+      def mock_delete_key_request
+        @delete_key = stub_request(:delete, "https://api.github.com/repos/ci-worker-test-repo/keys/1").
+          with(:headers => {'Authorization'=>'token MyString'}).
+          to_return(:status => 204)
+      end
     end
 
     context "#remove_hook_from_github_project" do
-      let(:url)     { project.hook_url                                              }
-      let(:hook_id) { 1                                                             }
-      let(:hook)    { OpenStruct.new(id: hook_id, config: OpenStruct.new(url: url)) }
-      subject       { user.remove_hook_from_github_project project                 }
+      let(:identity) { create :user_identity, :github, user: user }
+      let(:user)     { create :user }
+      subject { user.remove_hook_from_github_project project }
 
-      context "when user is githubber" do
+      before do
+        user.identities << identity
+        mock_hooks_request
+        mock_delete_hook_request
+        stub(Rails.configuration.x).hostname { 'ci.evrone.dev' }
+      end
+
+      it "should be success" do
+        expect(subject).to be
+        expect(@hooks).to have_been_requested
+        expect(@delete_hook).to have_been_requested
+      end
+
+      context "when hook not found" do
         before do
-          mock(user).github { github }
-          mock(github).hooks(project.name) { [hook] }
-          mock(github).remove_hook(project.name, hook_id) { 'success' }
+          stub(Rails.configuration.x).hostname { 'not found' }
         end
 
-        it "should remove any project hooks from github" do
-          expect(subject).to eq ['success']
+        it "cannot delete any hooks" do
+          expect(subject).to be
+          expect(@hooks).to have_been_requested
+          expect(@delete_hook).to_not have_been_requested
         end
       end
 
-      include_examples "cannot touch any projects on github when user is not githubber"
+      def mock_hooks_request
+        @hooks = stub_request(:get, "https://api.github.com/repos/ci-worker-test-repo/hooks?per_page=100").
+          with(:headers => {'Authorization'=>'token MyString'}).
+          to_return(:status => 200, :body => read_fixture("github/hooks.json"),
+                    :headers => {'Content-Type' => "application/json"})
+      end
 
+      def mock_delete_hook_request
+        @delete_hook = stub_request(:delete, "https://api.github.com/repos/ci-worker-test-repo/hooks/1347091").
+          with(:headers => {'Authorization'=>'token MyString'}).
+          to_return(:status => 204)
+      end
     end
 
     context "#add_deploy_key_to_github_project" do

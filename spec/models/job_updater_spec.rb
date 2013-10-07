@@ -71,7 +71,7 @@ describe JobUpdater do
 
       context "when build updated" do
         before do
-          mock(updater).update_build?.twice { true }
+          mock(updater).update_build? { true }
           mock(b).publish(serializer: :build_status) { true }
           mock(b.project).publish { true }
         end
@@ -128,7 +128,7 @@ describe JobUpdater do
         b
       }
       before do
-        mock(updater).update_build?.twice { true }
+        mock(updater).update_build? { true }
         mock(updater).new_build_status { status }
       end
 

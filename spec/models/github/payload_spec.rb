@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 describe Github::Payload do
-  subject { described_class.new content }
+  let(:content) { read_json_fixture("github/push.json") }
+  let(:payload) { described_class.new content }
+  subject { payload }
 
   context "push" do
-    let(:content) { read_json_fixture("github/push.json") }
     let(:url)     { "https://github.com/evrone/ci-worker-test-repo/compare/b665f9023956...687753389908"  }
 
     its(:pull_request?)       { should be_false                                      }
@@ -27,6 +28,12 @@ describe Github::Payload do
     its(:branch)              { should eq 'test' }
     its(:branch_label)        { should eq 'dima-exe:test' }
     its(:url)                 { should eq url }
+  end
+
+  context "to_hash" do
+    subject { payload.to_hash.keys }
+    it { should eq [:pull_request, :pull_request_number, :head,
+                    :base, :branch, :branch_label, :url] }
   end
 
 end

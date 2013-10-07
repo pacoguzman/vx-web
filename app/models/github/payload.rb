@@ -54,6 +54,18 @@ class Github::Payload
     end
   end
 
+  def to_hash
+    {
+      pull_request:        !!pull_request?,
+      pull_request_number: pull_request_number,
+      head:                head,
+      base:                base,
+      branch:              branch,
+      branch_label:        branch_label,
+      url:                 url
+    }
+  end
+
   private
 
     def pull_request

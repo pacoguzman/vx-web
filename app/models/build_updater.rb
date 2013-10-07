@@ -9,7 +9,6 @@ class BuildUpdater
 
   def perform
     if build
-      add_commit_info_to_build
       add_jobs_count_to_build
       update_build_status
 
@@ -41,21 +40,6 @@ class BuildUpdater
 
     def add_jobs_count_to_build
       build.assign_attributes jobs_count: message.jobs_count
-    end
-
-    def add_commit_info_to_build
-      %w{ commit_sha commit_author commit_author_email
-        commit_message }.inject({}) do |a, key|
-        unless message.public_send(key).blank?
-          a[key.to_sym] = message.public_send(key)
-        end
-        a
-      end.tap do |h|
-        build.sha          = h[:commit_sha]          if h[:commit_sha]
-        build.author       = h[:commit_author]       if h[:commit_author]
-        build.author_email = h[:commit_author_email] if h[:commit_author_email]
-        build.message      = h[:commit_message]      if h[:commit_message]
-      end
     end
 
     def tm
