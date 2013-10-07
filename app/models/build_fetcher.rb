@@ -2,14 +2,24 @@ class BuildFetcher
 
   include Github::BuildFetcher
 
-  attr_reader :params
+  attr_reader :build
 
-  def initialize(payload_hash = {})
-    @params = payload_hash
+  def initialize(build)
+    @build = build
+  end
+
+  def project
+    build.project
   end
 
   def create_perform_build_message
     create_perform_build_message_using_github
   end
 
+
+  private
+
+    def identity_not_found
+      raise RuntimeError, "identity on project ID=#{project.id} is not exists"
+    end
 end

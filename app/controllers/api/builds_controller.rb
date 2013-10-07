@@ -10,7 +10,7 @@ class Api::BuildsController < ::Api::BaseController
     @build = project.builds.build params[:build]
     if @build.save
       @build.publish :created
-      @build.publish_perform_build_message
+      @build.delivery_to_fetcher
     end
     respond_with @build, location: [:api, @build]
   end

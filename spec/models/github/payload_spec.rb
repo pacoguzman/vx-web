@@ -36,14 +36,4 @@ describe Github::Payload do
                     :base, :branch, :branch_label, :url] }
   end
 
-  context "publish" do
-    let(:messages) { PerformBuildConsumer.messages }
-    it "should be success" do
-      expect {
-        payload.publish
-      }.to change(messages, :count).by(1)
-      expect(messages.last).to eq payload.to_hash
-    end
-  end
-
 end

@@ -56,18 +56,14 @@ class Github::Payload
 
   def to_hash
     {
-      pull_request: pull_request?,
+      pull_request:        !!pull_request?,
       pull_request_number: pull_request_number,
-      head: head,
-      base: base,
-      branch: branch,
-      branch_label: branch_label,
-      url: url
+      head:                head,
+      base:                base,
+      branch:              branch,
+      branch_label:        branch_label,
+      url:                 url
     }
-  end
-
-  def publish
-    PerformBuildConsumer.publish to_hash
   end
 
   private

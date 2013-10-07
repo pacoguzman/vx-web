@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :project do
-    name          "MyString"
+    name          "ci-worker-test-repo"
     http_url      "MyString"
     clone_url     "MyString"
     description   ""

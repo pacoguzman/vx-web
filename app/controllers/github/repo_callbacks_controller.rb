@@ -9,7 +9,7 @@ class Github::RepoCallbacksController < ApplicationController
     @build   = @project.create_build_from_github_payload(@payload)
 
     @build.publish :created
-    @build.publish_perform_build_message
+    @build.delivery_to_fetcher
 
     head :ok
   end

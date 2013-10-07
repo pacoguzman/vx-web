@@ -10,6 +10,10 @@ module BuildMessages
     )
   end
 
+  def delivery_to_fetcher
+    ::FetchBuildConsumer.publish self.id
+  end
+
   def publish_perform_build_message
     ::BuildsConsumer.publish to_perform_build_message
   end

@@ -5,21 +5,22 @@ describe Github::RepoCallbacksController do
   subject { response }
 
   describe "GET /create" do
-    let(:token)   { 'token'     }
-    let(:project) { Project.new }
-    let(:payload) { 'payload' }
-    let(:build)   { 'build' }
-    before do
-      mock(Project).find_by_token(token) { project }
-      mock(Github::Payload).new(hash_including(token: token)) { payload }
-      mock(project).create_build_from_github_payload(payload) { build }
-      mock(build).publish(:created)
-      mock(build).publish_perform_build_message
+    let(:project) { create :project }
+    let(:params)  { read_json_fixture("github/push.json") }
 
-      get :create, token: token
+    before do
+      get :create, params.merge(token: project.token)
     end
 
     it { should be_success }
+
+    it "should create build" do
+      expect(project.builds.last).to be
+    end
+
+    it "should delivery build to FetchBuildConsumer" do
+      expect(FetchBuildConsumer.messages.last).to eq Build.last.id
+    end
 
   end
 
