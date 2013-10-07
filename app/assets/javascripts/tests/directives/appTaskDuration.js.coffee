@@ -31,7 +31,7 @@ describe "appTaskDuration", ->
 
     describe 'and without started_at', ->
       it "should have empty content", ->
-        expect(elem.html()).toEqual ''
+        expect(elem.html()).toEqual '- : -'
 
     describe "and started_at", ->
       beforeEach ->
