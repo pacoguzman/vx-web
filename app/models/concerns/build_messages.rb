@@ -7,7 +7,8 @@ module BuildMessages
       src:        project.clone_url,
       sha:        sha,
       deploy_key: project.deploy_key,
-      travis:     travis
+      travis:     travis,
+      branch:     branch
     )
   end
 

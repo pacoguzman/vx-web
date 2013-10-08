@@ -60,6 +60,7 @@ describe Build do
         its(:sha)        { should eq build.sha }
         its(:deploy_key) { should eq project.deploy_key }
         its(:travis)     { should eq travis }
+        its(:branch)     { should eq build.branch }
       end
     end
 
