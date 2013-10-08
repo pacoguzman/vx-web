@@ -32,6 +32,7 @@ describe BuildFetcher do
         expect(subject.message).to eq "Update Rakefile"
         expect(subject.author).to  eq "Dmitry Galinsky"
         expect(subject.author_email).to_not be_blank
+        expect(subject.http_url).to_not be_blank
       end
     end
 
@@ -54,7 +55,7 @@ describe BuildFetcher do
         mock_contents_request
       end
 
-      %w{ sha message author author_email }.each do |m|
+      %w{ sha message author author_email http_url }.each do |m|
         it "should update build #{m}" do
           expect{ subject }.to change{ build.reload.public_send(m) }
         end

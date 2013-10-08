@@ -1,20 +1,19 @@
 .builds
 
-  %a.builds-add.pull-right{ class: "btn btn-small btn-primary", 'ng-show' => "project", "ng-click" => "createBuild()" }
-    Create Build
+  .row
 
-  .build-info
-    %p.small-text
-      %span {{ project.description || "no description available" }} -
-      %a{ href: '{{project.http_url}}', target: "_blank" }
-        view on github
+    .col-10
+      .build-info
+        %p.small-text
+          %span {{ project.description || "no description available" }}
+          %a{ href: '{{project.http_url}}', target: "_blank" }
+            <nobr>view on github</nobr>
 
-    .clearfix
+    .col-2
+      %a.builds-add.pull-right{ class: "btn btn-small btn-primary", 'ng-show' => "project", "ng-click" => "createBuild()" }
+        Create Build
 
-  .bs-callout.bs-callout-info{ 'ng-hide' => "builds.length" }
-    No builds available
-
-  %table.tasks-table.table.small-text{ 'ng-show' => 'builds.length' }
+  %table.tasks-table.table.small-text
 
     %thead
       %th No.

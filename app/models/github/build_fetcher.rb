@@ -3,7 +3,7 @@ require 'base64'
 module Github
   module BuildFetcher
 
-    GithubCommit = Struct.new(:sha, :message, :author, :author_email)
+    GithubCommit = Struct.new(:sha, :message, :author, :author_email, :http_url)
 
     def github
       project.identity || identity_not_found
@@ -25,10 +25,14 @@ module Github
 
     def fetch_commit_from_github
       re = github.commit project.name, build.sha
-      GithubCommit.new(re.sha,
-                       re.commit.message,
-                       re.commit.author.name,
-                       re.commit.author.email)
+      url = re.rels[:html]
+      GithubCommit.new(
+        re.sha,
+        re.commit.message,
+        re.commit.author.name,
+        re.commit.author.email,
+        url && url.href
+      )
     end
 
   end

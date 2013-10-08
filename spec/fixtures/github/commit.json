@@ -1,1 +1,89 @@
-{"sha":"84158c732ff1af3db9775a37a74ddc39f5c4078f","commit":{"author":{"name":"Dmitry Galinsky","email":"dima.exe@gmail.com","date":"2013-08-09T11:55:52Z"},"committer":{"name":"Dmitry Galinsky","email":"dima.exe@gmail.com","date":"2013-08-09T11:55:52Z"},"message":"Update Rakefile","tree":{"sha":"6e596b454d6c96c8200be0904a7924adfb5bf151"},"comment_count":0},"author":{"login":"dima-exe","id":38505,"gravatar_id":"b155fd1e7432c77594588c79f49d2168","type":"User","site_admin":false},"committer":{"login":"dima-exe","id":38505,"gravatar_id":"b155fd1e7432c77594588c79f49d2168","type":"User","site_admin":false},"parents":[{"sha":"b665f90239563c030f1b280a434b3d84daeda1bd"}],"stats":{"total":2,"additions":2,"deletions":0},"files":[{"sha":"df37bb92bace7d229c6770ad96b27b4c6556e9b0","filename":"Rakefile","status":"modified","additions":2,"deletions":0,"changes":2,"patch":"@@ -6,3 +6,5 @@ task :fail do\n   puts \"FAIL!\"\n   exit 1\n end\n+\n+# test"}]}
+{
+  "sha": "84158c732ff1af3db9775a37a74ddc39f5c4078f",
+  "commit": {
+    "author": {
+      "name": "Dmitry Galinsky",
+      "email": "dima.exe@gmail.com",
+      "date": "2013-08-09T11:55:52Z"
+    },
+    "committer": {
+      "name": "Dmitry Galinsky",
+      "email": "dima.exe@gmail.com",
+      "date": "2013-08-09T11:55:52Z"
+    },
+    "message": "Update Rakefile",
+    "tree": {
+      "sha": "6e596b454d6c96c8200be0904a7924adfb5bf151",
+      "url": "https://api.github.com/repos/dima-exe/ci-worker-test-repo/git/trees/6e596b454d6c96c8200be0904a7924adfb5bf151"
+    },
+    "url": "https://api.github.com/repos/dima-exe/ci-worker-test-repo/git/commits/84158c732ff1af3db9775a37a74ddc39f5c4078f",
+    "comment_count": 0
+  },
+  "url": "https://api.github.com/repos/dima-exe/ci-worker-test-repo/commits/84158c732ff1af3db9775a37a74ddc39f5c4078f",
+  "html_url": "https://github.com/dima-exe/ci-worker-test-repo/commit/84158c732ff1af3db9775a37a74ddc39f5c4078f",
+  "comments_url": "https://api.github.com/repos/dima-exe/ci-worker-test-repo/commits/84158c732ff1af3db9775a37a74ddc39f5c4078f/comments",
+  "author": {
+    "login": "dima-exe",
+    "id": 38505,
+    "avatar_url": "https://2.gravatar.com/avatar/b155fd1e7432c77594588c79f49d2168?d=https%3A%2F%2Fidenticons.github.com%2F6b5a92b852f6c19dd5933cd7df67c241.png",
+    "gravatar_id": "b155fd1e7432c77594588c79f49d2168",
+    "url": "https://api.github.com/users/dima-exe",
+    "html_url": "https://github.com/dima-exe",
+    "followers_url": "https://api.github.com/users/dima-exe/followers",
+    "following_url": "https://api.github.com/users/dima-exe/following{/other_user}",
+    "gists_url": "https://api.github.com/users/dima-exe/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/dima-exe/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/dima-exe/subscriptions",
+    "organizations_url": "https://api.github.com/users/dima-exe/orgs",
+    "repos_url": "https://api.github.com/users/dima-exe/repos",
+    "events_url": "https://api.github.com/users/dima-exe/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/dima-exe/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "dima-exe",
+    "id": 38505,
+    "avatar_url": "https://2.gravatar.com/avatar/b155fd1e7432c77594588c79f49d2168?d=https%3A%2F%2Fidenticons.github.com%2F6b5a92b852f6c19dd5933cd7df67c241.png",
+    "gravatar_id": "b155fd1e7432c77594588c79f49d2168",
+    "url": "https://api.github.com/users/dima-exe",
+    "html_url": "https://github.com/dima-exe",
+    "followers_url": "https://api.github.com/users/dima-exe/followers",
+    "following_url": "https://api.github.com/users/dima-exe/following{/other_user}",
+    "gists_url": "https://api.github.com/users/dima-exe/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/dima-exe/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/dima-exe/subscriptions",
+    "organizations_url": "https://api.github.com/users/dima-exe/orgs",
+    "repos_url": "https://api.github.com/users/dima-exe/repos",
+    "events_url": "https://api.github.com/users/dima-exe/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/dima-exe/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "b665f90239563c030f1b280a434b3d84daeda1bd",
+      "url": "https://api.github.com/repos/dima-exe/ci-worker-test-repo/commits/b665f90239563c030f1b280a434b3d84daeda1bd",
+      "html_url": "https://github.com/dima-exe/ci-worker-test-repo/commit/b665f90239563c030f1b280a434b3d84daeda1bd"
+    }
+  ],
+  "stats": {
+    "total": 2,
+    "additions": 2,
+    "deletions": 0
+  },
+  "files": [
+    {
+      "sha": "df37bb92bace7d229c6770ad96b27b4c6556e9b0",
+      "filename": "Rakefile",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/dima-exe/ci-worker-test-repo/blob/84158c732ff1af3db9775a37a74ddc39f5c4078f/Rakefile",
+      "raw_url": "https://github.com/dima-exe/ci-worker-test-repo/raw/84158c732ff1af3db9775a37a74ddc39f5c4078f/Rakefile",
+      "contents_url": "https://api.github.com/repos/dima-exe/ci-worker-test-repo/contents/Rakefile?ref=84158c732ff1af3db9775a37a74ddc39f5c4078f",
+      "patch": "@@ -6,3 +6,5 @@ task :fail do\n   puts \"FAIL!\"\n   exit 1\n end\n+\n+# test"
+    }
+  ]
+}
