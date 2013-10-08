@@ -8,7 +8,7 @@
     %input.form-control{ autofocus: true, type: :search, placeholder: "Type to search...", 'ng-model' => 'query' }
 
   .github-repos-show{ 'ng-show' => 'repos.length > 0' }
-    Show 30 of {{ repos.length }} repositories
+    %small Show 30 of {{ repos.length }} repositories
 
   .github-repos-list
 

@@ -1,40 +1,40 @@
 .build
-  .row
-    .col-5.small-text
+  .row.task-attributes
+    .col-5
 
-      .task-attribute
-        %span  Build
-        %span.app-task-status{ 'task' => "build" }
+      %dl.task-attribute.dl-horizontal
+        %dt  Build
+        %dd.app-task-status{ 'task' => "build" }
           {{ task.number }}
 
-      .task-attribute
-        %span Status
-        %span
+      %dl.task-attribute.dl-horizontal
+        %dt Status
+        %dd
           {{ build.status }}
 
-      .task-attribute
-        %span Finished At
-        %span.app-task-finished{ task: 'build' }
+      %dl.task-attribute.dl-horizontal
+        %dt Finished At
+        %dd.app-task-finished{ task: 'build' }
 
-      .task-attribute
-        %span Duration
-        %span.app-task-duration{ task: "build" }
+      %dl.task-attribute.dl-horizontal
+        %dt Duration
+        %dd.app-task-duration{ task: "build" }
 
-    .col-5.small-text
+    .col-5
 
-      .task-attribute
-        %span Commit
-        %span.app-build-http-url{ build: 'build', branch: 'true' }
+      %dl.task-attribute.dl-horizontal
+        %dt Commit
+        %dd.app-build-http-url{ build: 'build', branch: 'true' }
 
-      .task-attribute
-        %span Author
-        %span
+      %dl.task-attribute.dl-horizontal
+        %dt Author
+        %dd
           %a{'ng-href' => "mailto:{{ build.author_email }}"}
             {{ build.author }}
 
-      .task-attribute
-        %span Message
-        %span {{ build.message }}
+      %dl.task-attribute.dl-horizontal
+        %dt Message
+        %dd {{ build.message }}
 
   .build-jobs{ 'ng-show' => "jobs.length > 0" }
 

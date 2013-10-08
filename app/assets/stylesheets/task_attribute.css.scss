@@ -1,6 +1,24 @@
+.task-attributes {
+  margin-left: -.6em;
+
+  dt, dd {
+    font-size: 13px;
+  }
+
+  dt {
+    font-weight: normal;
+    width: 6em;
+    text-align: left;
+  }
+
+  dd {
+    margin-left: 8em;
+  }
+}
+
 .task-attribute {
   margin-bottom: .6em;
-  padding-left: .5em;
+  margin-top: 0;
 
   span:first-child {
     display: inline-block;

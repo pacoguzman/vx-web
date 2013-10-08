@@ -13,7 +13,7 @@ angular.module('CI').
         <th>Job</th>
         <th>Duration</th>
         <th>Finished At</th>
-        <th ng-repeat='m in matrix'>
+        <th ng-repeat='m in matrix' class="hidden-xs hidden-sm">
           {{m}}
         </th>
       </thead>
@@ -27,7 +27,7 @@ angular.module('CI').
         </td>
         <td class="app-task-duration" task="job"></td>
         <td class="app-task-finished" task="job"></td>
-        <td ng-repeat='m in job.matrix'>
+        <td ng-repeat='m in job.matrix' class="hidden-xs hidden-sm">
           {{ m }}
         </td>
       </tr>

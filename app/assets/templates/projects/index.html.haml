@@ -1,17 +1,22 @@
 .projects
+  .row
 
-  .projects-add-new.pull-right
-    %a{ class: "btn btn-small btn-primary", 'ng-href' => "/github_repos" }
-      Add new Project
+    .col-8
+      %ul.projects-list.list-group
 
-  %ul.projects-list.list-group
+        %li.project.list-group-item{ 'ng-repeat' => "project in projects" }
+          .pull-right.app-task-status{ 'task' => 'project'}
 
-    %li.project.list-group-item{ 'ng-repeat' => "project in projects" }
-      .pull-right.app-task-status{ 'task' => 'project'}
+          %a{ 'ng-href' => "/projects/{{project.id}}/builds" }
+            {{project.name}}
 
-      %a{ 'ng-href' => "/projects/{{project.id}}/builds" }
-        {{project.name}}
+          %br
+          %small {{project.description || "[no description available]"}}
 
-      %br
-      %small {{project.description || "[no description available]"}}
+    .col-4
+      .projects-add-new.pull-right
+        %a{ class: "btn btn-small btn-primary", 'ng-href' => "/github_repos" }
+          Add new Project
+
+
 

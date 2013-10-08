@@ -15,6 +15,11 @@ body > .container {
 body > .container > .ng-view {
   margin-left: 5.1em;
   margin-top: 2em;
+
+  &> div {
+    margin-left: .4em;
+    margin-right: .4em;
+  }
 }
 
 .site-head {

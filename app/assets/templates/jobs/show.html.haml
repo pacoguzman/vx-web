@@ -1,46 +1,44 @@
 .job
-
-  .row
-
+  .row.task-attributes
     .col-5.small-text
 
-      .task-attribute
-        %span Job
-        %span.app-task-status{ task: "job" }
+      %dl.task-attribute.dl-horizontal
+        %dt Job
+        %dd.app-task-status{ task: "job" }
           {{ task.number }}
 
-      .task-attribute
-        %span Status
-        %span {{ job.status }}
+      %dl.task-attribute.dl-horizontal
+        %dt Status
+        %dd {{ job.status }}
 
-      .task-attribute
-        %span Finished At
-        %span.app-task-finished{ task: "job" }
+      %dl.task-attribute.dl-horizontal
+        %dt Finished At
+        %dd.app-task-finished{ task: "job" }
 
-      .task-attribute
-        %span Duration
-        %span.app-task-duration{ task: 'job' }
+      %dl.task-attribute.dl-horizontal
+        %dt Duration
+        %dd.app-task-duration{ task: 'job' }
 
-      .task-attribute
-        %span Config
-        %span{ 'ng-repeat' => "(key, value) in job.matrix" }
+      %dl.task-attribute.dl-horizontal
+        %dt Config
+        %dd{ 'ng-repeat' => "(key, value) in job.matrix" }
           {{ key }} {{ value }}
 
     .col-5.small-text
 
-      .task-attribute
-        %span Commit
-        %span.app-build-http-url{ build: 'build', branch: 'true' }
+      %dl.task-attribute.dl-horizontal
+        %dt Commit
+        %dd.app-build-http-url{ build: 'build', branch: 'true' }
 
-      .task-attribute
-        %span Author
-        %span
+      %dl.task-attribute.dl-horizontal
+        %dt Author
+        %dd
           %a{'ng-href' => "mailto:{{build.author_email}}"}
             {{ build.author }}
 
-      .task-attribute
-        %span Message
-        %span {{ build.message }}
+      %dl.task-attribute.dl-horizontal
+        %dt Message
+        %dd {{ build.message }}
 
   .app-task-output{ collection: "logs" }
 
