@@ -29,7 +29,6 @@
   }
 
   .github-repo {
-    border: 1px solid white;
     margin: .1em 0 .1em -4em;
     padding: .2em 0 .2em 4em;
     max-width: 40em;
@@ -55,9 +54,6 @@
     }
 
     &:hover {
-      background-color: #fffefa;
-      border: 1px solid #ddd;
-
       .octocat {
         display: block;
         position: absolute;

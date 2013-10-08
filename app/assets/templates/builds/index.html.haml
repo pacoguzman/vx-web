@@ -3,12 +3,13 @@
   %a.builds-add.pull-right{ class: "btn btn-small btn-primary", 'ng-show' => "project", "ng-click" => "createBuild()" }
     Create Build
 
-  %p
-    %a.octokat{ href: "{{project.http_url}}", target: "_blank", title: "View on Github" }
-      View on github.com
+  .build-info
+    %p.small-text
+      %span {{ project.description || "no description available" }} -
+      %a{ href: '{{project.http_url}}', target: "_blank" }
+        view on github
 
-  %p
-    %small {{ project.description || "no description available" }}
+    .clearfix
 
   .bs-callout.bs-callout-info{ 'ng-hide' => "builds.length" }
     No builds available
