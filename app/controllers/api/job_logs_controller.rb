@@ -1,9 +1,12 @@
 class Api::JobLogsController < Api::BaseController
 
-  respond_to :json
-
   def index
-    respond_with(@job_logs = job.logs)
+    @job_logs = job.logs
+
+    respond_to do |want|
+      want.json { render json: @job_logs }
+      want.txt  { render text: @job_logs.map(&:data).join("\n") }
+    end
   end
 
   private
