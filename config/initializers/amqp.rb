@@ -1,70 +1,29 @@
 require 'evrone/common/amqp'
 
-module Evrone
-  module CI
-    module Web
-      module AMQP
-
-        Base = Struct.new("Subscribing", :app) do
-          def consumer_name
-            Thread.current[:consumer_name]
-          end
-
-          def consumer_id
-            Thread.current[:consumer_id]
-          end
-
-          def consumer_tag
-            consumer_id ? "#{consumer_name.split('::').last} #{consumer_id}" : consumer_name
-          end
-
-          def logger
-            Rails.logger
-          end
-        end
-
-        class Subscribing < Base
-          def call(env)
-            logger.tagged(consumer_tag) do
-              logger.warn "subsribing #{env[:exchange].name}"
-              app.call env
-              logger.warn "shutdown"
-            end
-          end
-        end
-
-        class Recieving < Base
-          def call(env)
-            logger.warn "payload recieved #{env[:payload].inspect[0...60]}..."
-            app.call env
-            logger.warn "commit message"
-          end
-        end
-
-        class Publishing < Base
-          def call(env)
-            logger.warn "message delivered #{env[:message].inspect[0...60]}..."
-            app.call env
-          end
-        end
-      end
-    end
-  end
-end
-
 Evrone::Common::AMQP.configure do |c|
-  c.subscribing do
-    use Evrone::CI::Web::AMQP::Subscribing
+
+  logger = Rails.logger
+
+  c.before_subscribe do |e|
+    logger.warn "[#{e[:name]}] subsribing #{e[:exchange].name}"
   end
 
-  c.recieving do
-    use Evrone::CI::Web::AMQP::Recieving
+  c.after_subscribe do |e|
+    logger.warn "[#{e[:name]}] shutdown"
   end
 
-  c.publishing do
-    use Evrone::CI::Web::AMQP::Publishing
+  c.before_recieve do |e|
+    logger.warn "[#{e[:name]}] payload recieved #{e[:payload].inspect[0..60]}..."
   end
 
-  c.logger = nil
+  c.after_recieve do |e|
+    logger.warn "[#{e[:name]}] commit message"
+  end
+
+  c.before_publish do |e|
+    logger.warn "message delivered #{e[:message].inspect[0...60]}..."
+  end
+
   c.content_type = 'application/x-protobuf'
+  c.logger       = nil
 end
