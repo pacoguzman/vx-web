@@ -52,8 +52,8 @@ GEM
     erubis (2.7.0)
     evrone-ci-message (0.2.0.pre6)
       beefcake (= 0.3.7)
-    evrone-common-amqp (0.2.1)
-      bunny (>= 1.0.0.pre6)
+    evrone-common-amqp (0.2.3)
+      bunny (>= 1.0.0.rc2)
       evrone-common-rack-builder
     evrone-common-rack-builder (0.0.2)
     execjs (2.0.2)
@@ -200,7 +200,7 @@ DEPENDENCIES
   annotate
   coffee-rails (~> 4.0.0)
   evrone-ci-message (= 0.2.0.pre6)
-  evrone-common-amqp (~> 0.2.1)
+  evrone-common-amqp (~> 0.2.3)
   execjs
   factory_girl
   factory_girl_rails

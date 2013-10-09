@@ -9,7 +9,7 @@ class JobStatusConsumer
   model    Evrone::CI::Message::JobStatus
 
   def perform(message)
-    Rails.logger.tagged("JOB #{message.build_id}.#{message.job_id}") do
+    Rails.logger.tagged("job #{message.build_id}.#{message.job_id}") do
       JobUpdater.new(message).perform
     end
     ack!

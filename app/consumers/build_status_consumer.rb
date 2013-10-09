@@ -9,7 +9,7 @@ class BuildStatusConsumer
   model Evrone::CI::Message::BuildStatus
 
   def perform(message)
-    Rails.logger.tagged("BUILD #{message.build_id}") do
+    Rails.logger.tagged("build #{message.build_id}") do
       BuildUpdater.new(message).perform
     end
     ack!

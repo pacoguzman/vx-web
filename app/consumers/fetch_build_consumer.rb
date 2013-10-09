@@ -9,7 +9,7 @@ class FetchBuildConsumer
   content_type "text/plain"
 
   def perform(build_id)
-    ::Rails.logger.tagged("FETCH BUILD #{build_id}") do
+    ::Rails.logger.tagged("fetch build #{build_id}") do
       build = ::Build.find_by id: build_id.to_i
       if build
         ::BuildFetcher.new(build).process
