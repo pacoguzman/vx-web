@@ -86,7 +86,7 @@ describe BuildUpdater do
         end
       end
 
-      context "add jobs info to build" do
+      context "add jobs count to build" do
         let(:message_attributes) { { jobs_count: 99 } }
 
         it "should be success" do

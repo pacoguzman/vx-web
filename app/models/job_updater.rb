@@ -4,37 +4,44 @@ class JobUpdater
 
   def initialize(job_status_message)
     @message = job_status_message
-    @build   = ::Build.find_by id: @message.build_id
-    if @build
-      @job = Job.find_or_create_by_status_message(job_status_message)
-    end
   end
 
   def perform
-    if build
-      update_job_status
-      publish_job
+    Job.transaction do
+      @build = Build.lock(true).find_by(id: message.build_id)
+      if build
+        @job = build.find_or_create_job_by_status_message(message)
 
-      if update_build?
-        update_build_status
-        publish_build_and_project
+        update_job_status
+        publish_job
+
+        if all_jobs_finished? || build_need_start?
+          start_build
+          finalize_build
+          build.save!
+          publish_build_and_project
+        end
       end
     end
-  end
-
-  def update_build?
-    statuses = [3,4,5]
-    build.jobs.where(status: statuses).count == build.jobs_count
   end
 
   def new_build_status
     build.jobs.maximum(:status)
   end
 
+  def all_jobs_finished?
+    statuses = [3,4,5]
+    build.jobs.where(status: statuses).count == build.jobs_count
+  end
+
+  def build_need_start?
+    message.status == 2 && build.status_name == :initialized
+  end
+
   private
 
     def publish_job
-      if message.status == 2
+      if message.status == 0
         job.publish :created
       else
         job.publish
@@ -43,9 +50,11 @@ class JobUpdater
 
     def update_job_status
       case message.status
+      when 0 # initialized
+        nil
       when 2 # started
         job.start
-        job.started_at = tm
+        job.started_at  = tm
       when 3 # finished
         job.finish
         job.finished_at = tm
@@ -59,17 +68,23 @@ class JobUpdater
       job.save!
     end
 
-    def update_build_status
+    def start_build
+      build.start
+      build.started_at = tm
+    end
+
+    def finalize_build
       case new_build_status
       when 3
         build.finish
+        build.finished_at = tm
       when 4
         build.decline
+        build.finished_at = tm
       when 5
         build.error
+        build.finished_at = tm
       end
-      build.finished_at = tm
-      build.save!
     end
 
     def publish_build_and_project

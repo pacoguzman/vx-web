@@ -12,7 +12,6 @@ class BuildUpdater
       if @build
         add_jobs_count_to_build
         update_build_status
-
         build.save!
         build.publish
         build.project.publish
@@ -26,8 +25,7 @@ class BuildUpdater
     def update_build_status
       case message.status
       when 2 # started
-        build.start
-        build.started_at = tm
+        nil
       when 3 # finished
         nil  # ignored
       when 4 # failed
@@ -40,7 +38,7 @@ class BuildUpdater
     end
 
     def add_jobs_count_to_build
-      build.assign_attributes jobs_count: message.jobs_count
+      build.jobs_count = message.jobs_count
     end
 
     def tm

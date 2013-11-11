@@ -11,8 +11,8 @@ trap('INT') {
 
 Evrone::Common::AMQP::Supervisor::Threaded.build(
   FetchBuildConsumer  => 2,
-  BuildStatusConsumer => 2,
-  JobStatusConsumer   => 2,
+  BuildStatusConsumer => 1,
+  JobStatusConsumer   => 1,
   JobLogsConsumer     => 4,
   WsPublishConsumer   => 4,
 ).run

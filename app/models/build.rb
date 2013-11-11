@@ -39,6 +39,11 @@ class Build < ActiveRecord::Base
     end
   end
 
+  def find_or_create_job_by_status_message(job_status_message)
+    Job.find_job_for_status_message(self, job_status_message) ||
+      Job.create_job_for_status_message(self, job_status_message)
+  end
+
   private
 
     def assign_number
