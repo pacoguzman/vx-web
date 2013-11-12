@@ -20,36 +20,30 @@ describe Job do
     it { should eq expected }
   end
 
-  context ".find_or_create_by_status_message" do
-    let(:msg) { Evrone::CI::Message::JobStatus.test_message }
-    subject { described_class.find_or_create_by_status_message msg }
-
-    context "when build does not exists" do
-      it { should be_nil }
-    end
-
-    context "successfuly created job" do
-      let(:tm) { Time.parse 'Sat, 10 Aug 2013 12:26:44 UTC +00:00'  }
-      let!(:build)      { create :build, id: msg.build_id         }
-      its(:number)      { should eq 2                             }
-      its(:started_at)  { should eq tm                            }
-      its(:matrix)      { should eq(env: "FOO = 1", rvm: "1.9.3") }
-    end
-
-    context "when unable to crete job" do
-      let!(:build) { create :build, id: msg.build_id }
-      before do
-        mock(msg).job_id.twice { nil }
-      end
-      it {  should be_nil }
-    end
+  context ".find_job_for_status_message" do
+    let(:msg) { Evrone::CI::Message::JobStatus.test_message job_id: job_id }
+    let(:job) { create :job }
+    subject { described_class.find_job_for_status_message job.build, msg }
 
     context "when job exists" do
-      let(:build) { create :build, id: msg.build_id }
-      let(:job)   { create :job, build: build, number: msg.job_id }
-
+      let(:job_id) { job.number }
       it { should eq job }
     end
+
+    context "when job does not exists" do
+      let(:job_id) { job.number + 1 }
+      it { should be_nil }
+    end
+  end
+
+  context "create_job_for_status_message" do
+    let(:b) { create :build }
+    let(:msg) { Evrone::CI::Message::JobStatus.test_message }
+    subject { described_class.create_job_for_status_message b, msg }
+
+    it { should be }
+    its(:number) { should eq 2 }
+    its(:matrix) { should eq(:env=>"FOO = 1", :rvm=>"1.9.3") }
   end
 end
 

@@ -25,20 +25,22 @@ class JobUpdater
     end
   end
 
-  def new_build_status
-    build.jobs.maximum(:status)
-  end
-
-  def all_jobs_finished?
-    statuses = [3,4,5]
-    build.jobs.where(status: statuses).count == build.jobs_count
-  end
-
-  def build_need_start?
-    message.status == 2 && build.status_name == :initialized
-  end
-
   private
+
+    def new_build_status
+      if all_jobs_finished?
+        build.jobs.maximum(:status)
+      end
+    end
+
+    def all_jobs_finished?
+      statuses = [3,4,5]
+      build.jobs.where(status: statuses).count == build.jobs_count
+    end
+
+    def build_need_start?
+      message.status == 2 && build.status_name == :initialized
+    end
 
     def publish_job
       if message.status == 0
@@ -69,8 +71,10 @@ class JobUpdater
     end
 
     def start_build
-      build.start
-      build.started_at = tm
+      if build_need_start?
+        build.start
+        build.started_at = tm
+      end
     end
 
     def finalize_build

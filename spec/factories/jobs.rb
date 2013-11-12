@@ -5,7 +5,5 @@ FactoryGirl.define do
     build
     number 1
     status 0
-    started_at "2013-08-13 23:11:14"
-    finished_at "2013-08-13 23:11:14"
   end
 end

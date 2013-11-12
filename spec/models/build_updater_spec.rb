@@ -57,8 +57,8 @@ describe BuildUpdater do
         context "when status 2 (STARTED)" do
           let(:status) { 2 }
 
-          its(:status_name)      { should eq :started }
-          its("started_at.to_i") { should eq tm.to_i  }
+          its(:status_name) { should eq :initialized }
+          its("started_at") { should be_nil  }
         end
 
         context "when status 3 (FINISHED)" do

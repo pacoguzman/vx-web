@@ -81,6 +81,19 @@ describe Build do
     end
   end
 
+  context "find_or_create_job_by_status_message" do
+    let(:msg) { Evrone::CI::Message::JobStatus.test_message }
+    subject { build.find_or_create_job_by_status_message msg }
+
+    context "when job does not exists" do
+      it "should create job" do
+        expect {
+          subject
+        }.to change(build.jobs, :size).by(1)
+      end
+    end
+  end
+
 end
 
 # == Schema Information
