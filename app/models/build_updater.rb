@@ -4,28 +4,28 @@ class BuildUpdater
 
   def initialize(build_status_message)
     @message = build_status_message
-    @build   = Build.find_by id: @message.build_id
   end
 
   def perform
-    if build
-      add_jobs_count_to_build
-      update_build_status
-
-      build.save!
-      build.publish
-      build.project.publish
+    Build.transaction do
+      @build = Build.lock(true).find_by(id: @message.build_id)
+      if @build
+        add_jobs_count_to_build
+        update_build_status
+        build.save!
+        build.publish
+        build.project.publish
+      end
+      @build
     end
   end
 
   private
 
     def update_build_status
-
       case message.status
       when 2 # started
-        build.start
-        build.started_at = tm
+        nil
       when 3 # finished
         nil  # ignored
       when 4 # failed
@@ -35,11 +35,10 @@ class BuildUpdater
         build.error
         build.finished_at = tm
       end
-
     end
 
     def add_jobs_count_to_build
-      build.assign_attributes jobs_count: message.jobs_count
+      build.jobs_count = message.jobs_count
     end
 
     def tm

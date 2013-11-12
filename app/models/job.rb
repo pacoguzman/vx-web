@@ -37,14 +37,6 @@ class Job < ActiveRecord::Base
 
   class << self
 
-    def find_or_create_by_status_message(job_status_message)
-      build = Build.find_by id: job_status_message.build_id
-      if build
-        find_job_for_status_message(build, job_status_message) ||
-          create_job_for_status_message(build, job_status_message)
-      end
-    end
-
     def extract_matrix(job_status_message)
       if job_status_message.matrix
         job_status_message.matrix.inject({}) do |a,m|
@@ -57,20 +49,17 @@ class Job < ActiveRecord::Base
       end
     end
 
-    private
 
-      def find_job_for_status_message(build, job_status_message)
-        build.jobs.find_by(number: job_status_message.job_id)
-      end
+    def find_job_for_status_message(build, job_status_message)
+      build.jobs.find_by(number: job_status_message.job_id)
+    end
 
-      def create_job_for_status_message(build, job_status_message)
-        tm  = Time.at job_status_message.tm
-        job = build.jobs.build number:     job_status_message.job_id,
-                               started_at: tm,
-                               matrix:     extract_matrix(job_status_message)
+    def create_job_for_status_message(build, job_status_message)
+      job = build.jobs.build number:     job_status_message.job_id,
+                             matrix:     extract_matrix(job_status_message)
 
-        job.save ? job : nil
-      end
+      job.save ? job : nil
+    end
 
   end
 

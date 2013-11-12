@@ -7,157 +7,172 @@ describe JobUpdater do
       message_attributes
     )
   }
-  let(:job)     { build :job, build: b        }
-  let(:b)       { create :build               }
   let(:updater) { described_class.new message }
   subject { updater }
 
-  before do
-    mock(Build).find_by(id: message.build_id) { b }
-    mock(Job).find_or_create_by_status_message(message) { job }
-  end
-
   context "just created" do
     its(:message) { should eq message }
-    its(:job)     { should eq job     }
-    its(:build)   { should eq b       }
-  end
-
-  context "new build status" do
-    subject { updater.new_build_status }
-    before do
-      create :job, build: b, status: 3, number: 1
-      create :job, build: b, status: 4, number: 2
-      create :job, build: b, status: 5, number: 3
-    end
-    it { should eq 5 }
-  end
-
-  context "update_build?" do
-
-    context "when all jobs exists" do
-      subject { updater.update_build? }
-      before do
-        b.update_attribute :jobs_count, 2
-        create :job, build: b, status: 3, number: 1
-        create :job, build: b, status: 3, number: 2
-      end
-      it { should be_true }
-    end
-
-    context "when job missing" do
-      subject { updater.update_build? }
-      before do
-        b.update_attribute :jobs_count, 2
-        create :job, build: b, status: 3, number: 1
-      end
-      it { should be_false }
-    end
-
   end
 
   context "perform" do
+    let(:b) { create :build }
+    let(:message_attributes) { { build_id: b.id } }
+    subject { updater.perform ; updater }
 
-    context "publish job" do
-      subject { updater.perform }
-      before do
-        mock(job).publish { true }
-      end
-      it { should be }
+    it "should find and assign build" do
+      expect(subject.build).to eq b
     end
 
-    context "publish build and project" do
-      subject { updater.perform }
+    it "should create job if it does not exists" do
+      expect{
+        subject
+      }.to change(b.jobs, :count).by(1)
+      expect(subject.job).to be
+    end
 
-      context "when build updated" do
-        before do
-          mock(updater).update_build? { true }
-          mock(b).publish(serializer: :build_status) { true }
-          mock(b.project).publish { true }
+    it "should reuse job if it exists" do
+      job = create :job, build: b, number: message.job_id
+      expect{
+        subject
+      }.to_not change(b.jobs, :count)
+      expect(subject.job).to eq job
+    end
+
+    context "finalize build" do
+      let(:job1_status) { 2 }
+      let(:job2_status) { 2 }
+      let(:job1) { create :job, build: b, number: 1, status: 2 }
+      let(:job2) { create :job, build: b, number: 2, status: job2_status }
+      let(:message_attributes) { {
+        build_id:   b.id,
+        job_id:     job1.number,
+        status:     job1_status,
+      } }
+      before do
+        [job1, job2]
+        b.update_attributes jobs_count: 2, status: 2
+        subject; b.reload
+      end
+
+      context "when all jobs finished" do
+        let(:job1_status) { 3 }
+        let(:job2_status) { 3 }
+        it "should finish build" do
+          expect(b.status_name).to eq :finished
+          expect(b.finished_at).to be
         end
-        it { should be }
+      end
+
+      context "when all jobs complete and any job failed" do
+        let(:job1_status) { 3 }
+        let(:job2_status) { 4 }
+        it "should finish build" do
+          expect(b.status_name).to eq :failed
+          expect(b.finished_at).to be
+        end
+      end
+
+      context "when all jobs complete and any job errored" do
+        let(:job1_status) { 3 }
+        let(:job2_status) { 5 }
+        it "should finish build" do
+          expect(b.status_name).to eq :errored
+          expect(b.finished_at).to be
+        end
+      end
+
+      context "when any of jobs incomplete" do
+        let(:job1_status) { 2 }
+        let(:job2_status) { 3 }
+        it "cannot touch build" do
+          expect(b.status_name).to eq :started
+          expect(b.finished_at).to be_nil
+        end
+      end
+    end
+
+    context "start build" do
+      let(:message_attributes) { {
+        build_id: b.id,
+        status: status
+      } }
+      before { subject; b.reload }
+
+      context "if message status is STARTED and build is initialized" do
+        let(:status) { 2 }
+        it "should start build" do
+          expect(b.status_name).to eq :started
+          expect(b.started_at).to be
+        end
+      end
+
+      context "when message status is not STARTED" do
+        let(:status) { 0 }
+        it "cannot start build" do
+          expect(b.status_name).to eq :initialized
+        end
+      end
+
+      context "when build finished" do
+        let(:status) { 0 }
+        before do
+          b.start!
+          b.finish!
+          b.reload
+        end
+        it "cannot start build" do
+          expect(b.status_name).to eq :finished
+        end
       end
     end
 
     context "update job status" do
-      let(:tm)                 { Time.now }
+      let(:job) { create :job, build: b }
       let(:message_attributes) { {
         status: status,
-        tm:     tm.to_i,
+        build_id: b.id,
+        job_id: job.number
       } }
-      subject {
-        updater.perform
-        job
-      }
 
-      context "when status 2 (STARTED)" do
-        let(:status) { 2 }
-        its(:status_name)      { should eq :started }
-        its("started_at.to_i") { should eq tm.to_i }
-      end
-
-      context "when status 3 (FINISHED)" do
-        let(:status) { 3 }
-        before { job.start }
-        its(:status_name)       { should eq :finished }
-        its("finished_at.to_i") { should eq tm.to_i }
-      end
-
-      context "when status 4 (FAILED)" do
-        let(:status) { 4 }
-        before { job.start }
-        its(:status_name)       { should eq :failed }
-        its("finished_at.to_i") { should eq tm.to_i }
-      end
-
-      context "when status 4 (ERRORED)" do
-        let(:status) { 5 }
-        before { job.start }
-        its(:status_name)       { should eq :errored }
-        its("finished_at.to_i") { should eq tm.to_i }
-      end
-    end
-
-    context "update build status" do
-      let(:tm)                 { Time.now }
-      let(:message_attributes) { {
-        tm: tm.to_i,
-      } }
-      subject {
-        updater.perform
-        b
-      }
       before do
-        mock(updater).update_build? { true }
-        mock(updater).new_build_status { status }
+        subject
+        job.reload
       end
 
-      context "when new status 2 (STARTED)" do
-        let(:status) { 2 }
-        it "cannot touch build" do
-          expect{ subject }.to_not change(b, :status)
+      context "when status INITIALIZED" do
+        let(:status) { 0 }
+        it "should do nothing" do
+          expect(job.status_name).to eq :initialized
+          expect(job.started_at).to be_nil
+          expect(job.finished_at).to be_nil
         end
       end
 
-      context "when new status 3 (FINISHED)" do
-        let(:status) { 3 }
-        before { b.start }
-        its(:status_name)       { should eq :finished }
-        its("finished_at.to_i") { should eq tm.to_i   }
+      context "when status STARTED" do
+        let(:status) { 2 }
+        it "should start job" do
+          expect(job.status_name).to eq :started
+          expect(job.started_at).to be
+          expect(job.finished_at).to be_nil
+        end
       end
 
-      context "when new status 4 (FAILED)" do
+      context "when status FAILED" do
+        let(:job) { create :job, build: b, status: 2 }
         let(:status) { 4 }
-        before { b.start }
-        its(:status_name)       { should eq :failed }
-        its("finished_at.to_i") { should eq tm.to_i }
+        it "should decline job" do
+          expect(job.status_name).to eq :failed
+          expect(job.finished_at).to be
+        end
       end
 
-      context "when new status 4 (ERRORED)" do
+      context "when status ERRORED" do
+        let(:job) { create :job, build: b, status: 2 }
         let(:status) { 5 }
-        before { b.start }
-        its(:status_name)       { should eq :errored }
-        its("finished_at.to_i") { should eq tm.to_i }
+        it "should error job" do
+          expect(job.status_name).to eq :errored
+          expect(job.finished_at).to be
+        end
       end
     end
 
