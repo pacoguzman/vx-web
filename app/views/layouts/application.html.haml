@@ -8,11 +8,11 @@
     = stylesheet_link_tag "application", media: "all"
     = csrf_meta_tags
 
-  %body{ data: { "pusher-key" => "8dc76e2e40347d5f7e21" } }
+  %body{ data: { "pusher-key" => ENV['CI_WEB_PUSHER_KEY'] } }
 
     .container
 
-      %ng-include{ 'src' => "\"#{asset_path 'assets/layouts/menu.html' }\"" }
+      %ng-include{ 'src' => "\"#{asset_path 'layouts/menu.html' }\"" }
 
       .ng-view{'ng-animate' => "{enter: 'animate-enter', leave: 'animate-leave'}"}
 
