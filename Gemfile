@@ -21,6 +21,8 @@ gem 'pusher'
 gem 'evrone-common-amqp', '~> 0.2.3'
 gem 'evrone-ci-message', '0.2.0.pre6'
 
+gem 'capistrano_evrone_recipes'
+
 group :assets do
   gem 'execjs'
   gem 'sass-rails', '~> 4.0.0'
