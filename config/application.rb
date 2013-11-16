@@ -37,6 +37,8 @@ module CiWeb
 
     config.preload_frameworks = true
     config.allow_concurrency = true
+
+    config.assets.js_compressor = Uglifier.new(mangle: false)
   end
 end
 
