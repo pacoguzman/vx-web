@@ -30,7 +30,7 @@ module CiWeb
     ]
 
     config.x = OpenStruct.new
-    config.x.hostname = ENV['CI_HOSTNAME'] || Socket.gethostname
+    config.x.hostname = ENV['CI_WEB_HOSTNAME'] || Socket.gethostname
 
     config.middleware.delete "Rack::Lock"
     config.assets.precompile += %w( lib.js )
