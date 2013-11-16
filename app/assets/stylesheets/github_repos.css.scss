@@ -7,7 +7,7 @@
     }
 
     a.disabled::after {
-      content: url(asset-path("assets/ajax-loader.gif"));
+      content: url(asset-path("ajax-loader.gif"));
       position: absolute;
       left: -3em;
     }
