@@ -126,13 +126,20 @@ module Github::User
             user:     user,
             login:    login
           ).persisted?.or_rollback_transaction
-          user
 
+          if org = Rails.configuration.x.github_restriction
+            user.github_organizations.map(&:login).include?(org).or_rollback_transaction
+          end
+
+          user
         end
       end
 
       def find_from_github(auth)
-        UserIdentity.where(uid: auth.uid, provider: 'github').map(&:user).first
+        identity = UserIdentity.where(uid: auth.uid, provider: 'github').first
+        if identity
+          identity.user
+        end
       end
 
   end

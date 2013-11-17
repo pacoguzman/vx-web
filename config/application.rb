@@ -31,6 +31,7 @@ module CiWeb
 
     config.x = OpenStruct.new
     config.x.hostname = ENV['CI_WEB_HOSTNAME'] || Socket.gethostname
+    config.x.github_restriction = ENV['CI_WEB_GITHUB_RESTRICTION']
 
     config.middleware.delete "Rack::Lock"
     config.assets.precompile += %w( lib.js )

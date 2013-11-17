@@ -265,7 +265,7 @@ describe Github::User do
         }.to_not change{ User.count + UserIdentity.count }
       end
 
-      it {  should eq identity.user }
+      it { should eq identity.user }
     end
 
     context "when user does not exists" do
