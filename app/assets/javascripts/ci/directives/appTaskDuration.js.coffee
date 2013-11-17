@@ -24,7 +24,7 @@ angular.module('CI').
       updateDuration = (newVal, _) ->
         return unless newVal
 
-        if newVal.finished_at
+        if newVal.finished_at && newVal.started_at
           st = moment(newVal.started_at)
           fn = moment(newVal.finished_at)
           displayDuration st, fn
