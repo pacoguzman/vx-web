@@ -60,7 +60,7 @@ class Github::Payload
 
   def ignore?
     if pull_request?
-      !closed_pull_request?
+      closed_pull_request?
     else
       head == '0000000000000000000000000000000000000000'
     end

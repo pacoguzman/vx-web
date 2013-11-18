@@ -31,6 +31,7 @@ describe Github::Payload do
   end
 
   context "closed_pull_request?" do
+    subject { payload.closed_pull_request? }
     context "when state is closed" do
       let(:content) { read_json_fixture("github/closed_pull_request.json") }
       it { should be_true }
@@ -38,6 +39,7 @@ describe Github::Payload do
   end
 
   context "ignore?" do
+    subject { payload.ignore? }
     context "when pull request" do
       let(:content) { read_json_fixture("github/pull_request.json") }
       it {  should be_false}
