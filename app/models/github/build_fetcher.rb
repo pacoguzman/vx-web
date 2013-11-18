@@ -25,6 +25,7 @@ module Github
         Base64.decode64 travis.content
       rescue ::Octokit::NotFound => e
         Rails.logger.error "ERROR: #{e.inspect}"
+        nil
       end
     end
 
