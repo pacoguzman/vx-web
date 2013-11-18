@@ -13,6 +13,7 @@ class JobUpdater
         @job = build.find_or_create_job_by_status_message(message)
 
         update_job_status
+        truncate_job_logs
         publish_job
 
         if all_jobs_finished? || build_need_start?
@@ -26,6 +27,12 @@ class JobUpdater
   end
 
   private
+
+    def truncate_job_logs
+      if message.status == 2
+        JobLog.where(job_id: job.id).delete_all
+      end
+    end
 
     def new_build_status
       if all_jobs_finished?

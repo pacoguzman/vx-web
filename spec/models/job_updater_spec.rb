@@ -38,6 +38,46 @@ describe JobUpdater do
       expect(subject.job).to eq job
     end
 
+    context "truncate job logs" do
+      let(:message_attributes) { {
+        build_id: b.id,
+        status: status,
+        job_id: job.number
+      } }
+      let(:job) { create :job, build: b, status: 2 }
+      let!(:log) { create :job_log, job: job }
+
+      context "when status STARTED" do
+        let(:status) { 2 }
+
+        it "should delete all job logs" do
+          expect {
+            subject
+          }.to change(job.logs, :count).from(1).to(0)
+        end
+      end
+
+      context "when status FINISHED" do
+        let(:status) { 3 }
+
+        it "cannot touch job logs" do
+          expect {
+            subject
+          }.to_not change(job.logs, :count)
+        end
+      end
+
+      context "when status FAILED" do
+        let(:status) { 4 }
+
+        it "cannot touch job logs" do
+          expect {
+            subject
+          }.to_not change(job.logs, :count)
+        end
+      end
+    end
+
     context "finalize build" do
       let(:job1_status) { 2 }
       let(:job2_status) { 2 }
