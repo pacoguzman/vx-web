@@ -30,6 +30,24 @@ describe Github::Payload do
     its(:url)                 { should eq url }
   end
 
+  context "ignore?" do
+    context "when pull request" do
+      let(:content) { read_json_fixture("github/pull_request.json")              }
+      it {  should be_false}
+    end
+
+    context "when regular commit" do
+      it { should be_false }
+
+      context "and deleted branch" do
+        before do
+          mock(payload).head{ '0000000000000000000000000000000000000000' }
+        end
+        it { should be_true }
+      end
+    end
+  end
+
   context "to_hash" do
     subject { payload.to_hash.keys }
     it { should eq [:pull_request, :pull_request_number, :head,

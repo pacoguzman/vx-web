@@ -54,6 +54,14 @@ class Github::Payload
     end
   end
 
+  def ignore?
+    if pull_request?
+      false
+    else
+      head == '0000000000000000000000000000000000000000'
+    end
+  end
+
   def to_hash
     {
       pull_request:        !!pull_request?,
