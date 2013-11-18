@@ -30,10 +30,22 @@ describe Github::Payload do
     its(:url)                 { should eq url }
   end
 
+  context "closed_pull_request?" do
+    context "when state is closed" do
+      let(:content) { read_json_fixture("github/closed_pull_request.json") }
+      it { should be_true }
+    end
+  end
+
   context "ignore?" do
     context "when pull request" do
-      let(:content) { read_json_fixture("github/pull_request.json")              }
+      let(:content) { read_json_fixture("github/pull_request.json") }
       it {  should be_false}
+
+      context "and is closed" do
+        let(:content) { read_json_fixture("github/closed_pull_request.json") }
+        it { should be_true }
+      end
     end
 
     context "when regular commit" do

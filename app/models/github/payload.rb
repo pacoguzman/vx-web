@@ -54,9 +54,13 @@ class Github::Payload
     end
   end
 
+  def closed_pull_request?
+    pull_request? && (pull_request["state"] == 'closed')
+  end
+
   def ignore?
     if pull_request?
-      false
+      !closed_pull_request?
     else
       head == '0000000000000000000000000000000000000000'
     end
