@@ -1,7 +1,11 @@
 class GithubRepoSerializer < ActiveModel::Serializer
-  attributes :id, :full_name, :html_url, :subscribed, :repo_exists
+  attributes :id, :full_name, :html_url, :subscribed, :disabled
 
-  def repo_exists
-    !!object.project
+  def disabled
+    !!(!object.subscribed && object.project?)
+  end
+
+  def subscribed
+    !!(object.subscribed || object.project?)
   end
 end
