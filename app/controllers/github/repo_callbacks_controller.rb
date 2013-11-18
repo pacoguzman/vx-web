@@ -6,10 +6,14 @@ class Github::RepoCallbacksController < ApplicationController
   def create
     @project = Project.find_by_token params[:token]
     @payload = Github::Payload.new(params)
-    @build   = @project.create_build_from_github_payload(@payload)
 
-    @build.publish :created
-    @build.delivery_to_fetcher
+    if @payload.ignore?
+      Rails.logger.info "ignore pull request"
+    else
+      @build  = @project.create_build_from_github_payload(@payload)
+      @build.publish :created
+      @build.delivery_to_fetcher
+    end
 
     head :ok
   end
