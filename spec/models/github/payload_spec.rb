@@ -15,6 +15,9 @@ describe Github::Payload do
     its(:branch)              { should eq 'master'                                   }
     its(:branch_label)        { should eq 'master' }
     its(:url)                 { should eq url                                        }
+
+    its(:pull_request_head_repo_id){ should be_nil }
+    its(:pull_request_base_repo_id){ should be_nil }
   end
 
   context "pull_request" do
@@ -28,6 +31,9 @@ describe Github::Payload do
     its(:branch)              { should eq 'test' }
     its(:branch_label)        { should eq 'dima-exe:test' }
     its(:url)                 { should eq url }
+
+    its(:pull_request_head_repo_id){ should eq 7155123 }
+    its(:pull_request_base_repo_id){ should eq 7155123 }
   end
 
   context "closed_pull_request?" do
@@ -38,14 +44,39 @@ describe Github::Payload do
     end
   end
 
+  context "foreign_pull_request?" do
+    subject { payload.foreign_pull_request? }
+
+    context "when same repo" do
+      let(:content) { read_json_fixture("github/pull_request.json") }
+      it { should be_false }
+    end
+
+    context "when different repo" do
+      let(:content) { read_json_fixture("github/foreign_pull_request.json") }
+      it { should be_true }
+    end
+
+    context "when is not pull request" do
+      it { should be_false }
+    end
+  end
+
   context "ignore?" do
     subject { payload.ignore? }
     context "when pull request" do
-      let(:content) { read_json_fixture("github/pull_request.json") }
+      let(:content) { read_json_fixture("github/foreign_pull_request.json") }
       it {  should be_false}
 
       context "and is closed" do
-        let(:content) { read_json_fixture("github/closed_pull_request.json") }
+        before do
+          mock(payload).closed_pull_request? { true }
+        end
+        it { should be_true }
+      end
+
+      context "and same repo" do
+        let(:content) { read_json_fixture("github/pull_request.json") }
         it { should be_true }
       end
     end

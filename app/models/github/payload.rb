@@ -54,13 +54,29 @@ class Github::Payload
     end
   end
 
+  def pull_request_head_repo_id
+    if pull_request?
+      pull_request['head']['repo']['id']
+    end
+  end
+
+  def pull_request_base_repo_id
+    if pull_request?
+      pull_request['base']['repo']['id']
+    end
+  end
+
   def closed_pull_request?
     pull_request? && (pull_request["state"] == 'closed')
   end
 
+  def foreign_pull_request?
+    pull_request? && (pull_request_head_repo_id != pull_request_base_repo_id)
+  end
+
   def ignore?
     if pull_request?
-      closed_pull_request?
+      closed_pull_request? || !foreign_pull_request?
     else
       head == '0000000000000000000000000000000000000000'
     end
