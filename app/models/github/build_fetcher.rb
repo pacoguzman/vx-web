@@ -14,13 +14,18 @@ module Github
       commit = fetch_commit_from_github
       build.update! commit.to_h
 
-      travis = fetch_travis_from_github
-      build.delivery_perform_build_message(travis)
+      if travis = fetch_travis_from_github
+        build.delivery_perform_build_message(travis)
+      end
     end
 
     def fetch_travis_from_github
-      travis = github.contents project.name, ref: build.sha, path: ".travis.yml"
-      Base64.decode64 travis.content
+      begin
+        travis = github.contents project.name, ref: build.sha, path: ".travis.yml"
+        Base64.decode64 travis.content
+      rescue ::Octokit::NotFound => e
+        Rails.logger.error "ERROR: #{e.inspect}"
+      end
     end
 
     def fetch_commit_from_github

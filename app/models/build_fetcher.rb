@@ -16,7 +16,6 @@ class BuildFetcher
     create_perform_build_message_using_github
   end
 
-
   private
 
     def identity_not_found
