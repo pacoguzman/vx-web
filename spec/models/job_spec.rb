@@ -10,9 +10,9 @@ describe Job do
   end
 
   context ".extract_matrix" do
-    let(:msg) { OpenStruct.new matrix: ["env:FOO = 1", "rvm:1.9.3"] }
+    let(:msg) { OpenStruct.new matrix: ["env:FOO = 1:2", "rvm:1.9.3"] }
     let(:expected) { {
-      env: "FOO = 1",
+      env: "FOO = 1:2",
       rvm: "1.9.3"
     } }
     subject { described_class.extract_matrix msg }
@@ -41,9 +41,15 @@ describe Job do
     let(:msg) { Evrone::CI::Message::JobStatus.test_message }
     subject { described_class.create_job_for_status_message b, msg }
 
+    before do
+      mock(msg).matrix.twice {
+        ["env: FOO = 1:2", "rvm: 1.9.3"]
+      }
+    end
+
     it { should be }
     its(:number) { should eq 2 }
-    its(:matrix) { should eq(:env=>"FOO = 1", :rvm=>"1.9.3") }
+    its(:matrix) { should eq(:env=>"FOO = 1:2", :rvm=>"1.9.3") }
   end
 end
 

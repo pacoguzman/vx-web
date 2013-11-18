@@ -40,7 +40,9 @@ class Job < ActiveRecord::Base
     def extract_matrix(job_status_message)
       if job_status_message.matrix
         job_status_message.matrix.inject({}) do |a,m|
-          k,v = m.to_s.split("\:").map(&:strip)
+          arr = m.to_s.split("\:").map(&:strip)
+          k = arr.shift
+          v = arr.join(":")
           a[k.to_sym] = v
           a
         end
