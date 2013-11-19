@@ -37,11 +37,21 @@ class Build < ActiveRecord::Base
     event :error do
       transition [:initialized, :queued, :started] => :errored
     end
+
+    after_transition any => [:started, :finished, :failed, :errored] do |build, transition|
+      build.delivery_to_notifier(transition.to_name.to_s)
+    end
   end
 
   def find_or_create_job_by_status_message(job_status_message)
     Job.find_job_for_status_message(self, job_status_message) ||
       Job.create_job_for_status_message(self, job_status_message)
+  end
+
+  def duration
+    if started_at && finished_at
+      finished_at - started_at
+    end
   end
 
   private

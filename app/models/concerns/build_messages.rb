@@ -12,6 +12,10 @@ module BuildMessages
     )
   end
 
+  def delivery_to_notifier(state)
+    ::BuildNotifyConsumer.publish build_id: self.id, status: state
+  end
+
   def delivery_to_fetcher
     ::FetchBuildConsumer.publish self.id
   end

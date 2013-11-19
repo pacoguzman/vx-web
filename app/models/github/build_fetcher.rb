@@ -11,11 +11,13 @@ module Github
     end
 
     def create_perform_build_message_using_github
-      commit = fetch_commit_from_github
-      build.update! commit.to_h
+      if github
+        commit = fetch_commit_from_github
+        build.update! commit.to_h
 
-      if travis = fetch_travis_from_github
-        build.delivery_perform_build_message(travis)
+        if travis = fetch_travis_from_github
+          build.delivery_perform_build_message(travis)
+        end
       end
     end
 

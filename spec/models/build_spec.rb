@@ -72,6 +72,14 @@ describe Build do
       end
     end
 
+    context "#delivery_to_notifier" do
+      it "should be success" do
+        expect{
+          build.delivery_to_notifier("started")
+        }.to change(BuildNotifyConsumer.messages, :count).by(1)
+      end
+    end
+
     context "#delivery_perform_build_message" do
       it "should be success" do
         expect{
@@ -92,6 +100,74 @@ describe Build do
         }.to change(build.jobs, :size).by(1)
       end
     end
+  end
+
+  context "duration" do
+    subject { build.duration }
+
+    it "should be" do
+      Timecop.freeze(Time.local(1990)) do
+        build.started_at = 23.minutes.ago
+        build.finished_at = 1.minute.ago
+      end
+      expect(subject).to eq 1320.0
+    end
+
+    context "without started_at" do
+      before { build.finished_at = 1.day.ago }
+      it { should be_nil }
+    end
+
+    context "without finished_at" do
+      before { build.started_at = 1.day.ago }
+      it { should be_nil }
+    end
+
+  end
+
+  context "(state machine)" do
+    let(:b) { create :build, status: status }
+
+    context "after transition to started" do
+      let(:status) { 0 }
+      subject { b.start }
+
+      it "should delivery message to notifier" do
+        mock(b).delivery_to_notifier("started") { true }
+        expect(subject).to be
+      end
+    end
+
+    context "after transition to finished" do
+      let(:status) { 2 }
+      subject { b.finish }
+
+      it "should delivery message to notifier" do
+        mock(b).delivery_to_notifier("finished") { true }
+        expect(subject).to be
+      end
+    end
+
+    context "after transition to failed" do
+      let(:status) { 2 }
+      subject { b.decline }
+
+      it "should delivery message to notifier" do
+        mock(b).delivery_to_notifier("failed") { true }
+        expect(subject).to be
+      end
+    end
+
+    context "after transition to errored" do
+      let(:status) { 2 }
+      subject { b.error }
+
+      it "should delivery message to notifier" do
+        mock(b).delivery_to_notifier("errored") { true }
+        expect(subject).to be
+      end
+    end
+
   end
 
 end
