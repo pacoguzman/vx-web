@@ -18,7 +18,7 @@
     .github-repo.small-text{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30" }
 
       %a.octocat{ href: '{{repo.html_url}}/settings/hooks', title: "View on Github", "target" => "blank" }
-        %i.icon-wrench
+        %i.fa.fa-wrench
 
       %label
         %input{ type: 'checkbox', 'ng-disabled' => 'repo.disabled', 'ng-model' => 'repo.subscribed', 'ng-change' => "changeSubscription(repo)"}

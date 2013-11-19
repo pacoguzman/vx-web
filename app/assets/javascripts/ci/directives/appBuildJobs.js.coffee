@@ -21,7 +21,7 @@ angular.module('CI').
           ng-repeat="job in jobs | orderBy:'number'" status="job.status">
         <td>
           <a ng-href='/jobs/{{job.id}}'>
-            <i class='icon-circle'></i>
+            <i class='fa fa-circle'></i>
             <span>{{ job.number }}</span>
           </a>
         </td>

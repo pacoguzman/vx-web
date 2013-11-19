@@ -25,7 +25,7 @@
     %tr.tasks-table-item.app-task-status-class{ 'ng-repeat' => "build in builds | orderBy:'number':true | limitTo:20", 'status' => "build.status" }
       %td
         %a{ 'ng-href' => "/builds/{{build.id}}" }
-          %i.icon-circle
+          %i.fa.fa-circle
           %span {{ build.number }}
       %td.app-build-http-url{ build: 'build' }
       %td {{ build.branch }}

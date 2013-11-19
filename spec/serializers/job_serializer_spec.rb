@@ -8,6 +8,12 @@ describe JobSerializer do
     subject { serializer.as_json.keys }
 
     it { should eq [:id, :build_id, :project_id, :number, :status, :matrix,
-                    :started_at, :finished_at] }
+                    :started_at, :finished_at, :text_logs_url] }
+
+  end
+
+  context "#text_logs_url" do
+    subject { serializer.text_logs_url }
+    it { should eq "/api/jobs/4/logs.txt" }
   end
 end

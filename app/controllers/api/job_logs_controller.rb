@@ -5,7 +5,7 @@ class Api::JobLogsController < Api::BaseController
 
     respond_to do |want|
       want.json { render json: @job_logs }
-      want.txt  { render text: @job_logs.map(&:data).join("\n") }
+      want.txt  { render text: @job_logs.map(&:data).join("") }
     end
   end
 

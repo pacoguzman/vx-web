@@ -16,4 +16,4 @@ angular.module('CI').
           scope.prevClass = newVal
 
       scope.$watch("task.status", updateTaskStatus)
-      elem.prepend('<i class="icon-circle">')
+      elem.prepend('<i class="fa fa-circle">')
