@@ -14,6 +14,6 @@ describe JobSerializer do
 
   context "#text_logs_url" do
     subject { serializer.text_logs_url }
-    it { should eq "/api/jobs/#{job.id}/logs.txt" }
+    it { should eq "/api/jobs/#{object.id}/logs.txt" }
   end
 end
