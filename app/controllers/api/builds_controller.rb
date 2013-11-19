@@ -3,7 +3,7 @@ class ::Api::BuildsController < ::Api::BaseController
   respond_to :json
 
   def index
-    respond_with(@builds = project.builds.limit(30))
+    respond_with(@builds = project.builds.limit(20))
   end
 
   def create
