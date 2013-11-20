@@ -26,6 +26,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def to_s
+    name
+  end
+
   def deploy_key_name
     self.class.deploy_key_name
   end

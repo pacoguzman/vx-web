@@ -59,6 +59,10 @@ class Build < ActiveRecord::Base
     end
   end
 
+  def short_sha
+    sha.to_s[0..8]
+  end
+
   private
 
     def assign_number
