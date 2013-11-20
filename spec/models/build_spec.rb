@@ -134,7 +134,7 @@ describe Build do
   end
 
   context "(state machine)" do
-    let(:b) { create :build, status: status }
+    let!(:b) { create :build, status: status }
 
     context "after transition to started" do
       let(:status) { 0 }
