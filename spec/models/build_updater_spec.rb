@@ -31,20 +31,6 @@ describe BuildUpdater do
 
       it { should eq b }
 
-      it "should publish build" do
-        any_instance_of(Build) do |b|
-          mock(b).publish
-        end
-        subject
-      end
-
-      it "should publish build.project" do
-        any_instance_of(Project) do |b|
-          mock(b).publish
-        end
-        subject
-      end
-
       context "update build status" do
         let(:tm) { Time.now }
         let(:message_attributes) { {

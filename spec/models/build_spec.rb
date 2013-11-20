@@ -144,6 +144,12 @@ describe Build do
         mock(b).delivery_to_notifier("started") { true }
         expect(subject).to be
       end
+
+      it "should delivery messages to WsPublishConsumer" do
+        expect{
+          subject
+        }.to change(WsPublishConsumer.messages, :count).by(2)
+      end
     end
 
     context "after transition to finished" do
@@ -154,6 +160,12 @@ describe Build do
         mock(b).delivery_to_notifier("finished") { true }
         expect(subject).to be
       end
+
+      it "should delivery messages to WsPublishConsumer" do
+        expect{
+          subject
+        }.to change(WsPublishConsumer.messages, :count).by(2)
+      end
     end
 
     context "after transition to failed" do
@@ -163,6 +175,12 @@ describe Build do
       it "should delivery message to notifier" do
         mock(b).delivery_to_notifier("failed") { true }
         expect(subject).to be
+      end
+
+      it "should delivery messages to WsPublishConsumer" do
+        expect{
+          subject
+        }.to change(WsPublishConsumer.messages, :count).by(2)
       end
     end
 

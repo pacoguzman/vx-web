@@ -16,11 +16,12 @@ class JobUpdater
         truncate_job_logs
         publish_job
 
-        if all_jobs_finished? || build_need_start?
-          start_build
-          finalize_build
-          build.save!
-          publish_build_and_project
+        if build_need_start?
+          start_build!
+        end
+
+        if all_jobs_finished?
+          finalize_build!
         end
       end
     end
@@ -77,30 +78,25 @@ class JobUpdater
       job.save!
     end
 
-    def start_build
+    def start_build!
       if build_need_start?
-        build.start
         build.started_at = tm
+        build.start!
       end
     end
 
-    def finalize_build
+    def finalize_build!
       case new_build_status
       when 3
-        build.finish
         build.finished_at = tm
+        build.finish!
       when 4
-        build.decline
         build.finished_at = tm
+        build.decline!
       when 5
-        build.error
         build.finished_at = tm
+        build.error!
       end
-    end
-
-    def publish_build_and_project
-      build.publish serializer: :build_status
-      build.project.publish
     end
 
     def tm

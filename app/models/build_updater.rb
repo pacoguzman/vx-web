@@ -10,11 +10,8 @@ class BuildUpdater
     Build.transaction do
       @build = Build.lock(true).find_by(id: @message.build_id)
       if @build
+        update_build_status!
         add_jobs_count_to_build
-        update_build_status
-        build.save!
-        build.publish
-        build.project.publish
       end
       @build
     end
@@ -22,23 +19,23 @@ class BuildUpdater
 
   private
 
-    def update_build_status
+    def update_build_status!
       case message.status
       when 2 # started
         nil
       when 3 # finished
         nil  # ignored
       when 4 # failed
-        build.decline
         build.finished_at = tm
+        build.decline!
       when 5 # errored
-        build.error
         build.finished_at = tm
+        build.error!
       end
     end
 
     def add_jobs_count_to_build
-      build.jobs_count = message.jobs_count
+      build.update_attribute :jobs_count, message.jobs_count
     end
 
     def tm
