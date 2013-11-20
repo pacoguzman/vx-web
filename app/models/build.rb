@@ -35,7 +35,7 @@ class Build < ActiveRecord::Base
     end
 
     event :error do
-      transition [:initialized, :queued, :started] => :errored
+      transition [:initialized, :started] => :errored
     end
 
     after_transition any => [:started, :finished, :failed, :errored] do |build, transition|

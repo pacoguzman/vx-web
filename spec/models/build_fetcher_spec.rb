@@ -64,21 +64,75 @@ describe BuildFetcher do
 
     context "#create_perform_build_message_using_github" do
       subject { fetcher.create_perform_build_message_using_github }
-      before do
-        mock_commit_request
-        mock_contents_request
-      end
 
-      %w{ sha message author author_email http_url }.each do |m|
-        it "should update build #{m}" do
-          expect{ subject }.to change{ build.reload.public_send(m) }
+      context "when success" do
+        before do
+          mock_commit_request
+          mock_contents_request
+        end
+
+        it { should be_true }
+
+        %w{ sha message author author_email http_url }.each do |m|
+          it "should update build #{m}" do
+            expect{ subject }.to change{ build.reload.public_send(m) }
+          end
+        end
+
+        it "should delivery PerformBuild message" do
+          expect {
+            subject
+          }.to change(BuildsConsumer.messages, :count).by(1)
         end
       end
 
-      it "should delivery PerformBuild message" do
-        expect {
-          subject
-        }.to change(BuildsConsumer.messages, :count).by(1)
+      context "when cannot retrieve github identity" do
+        before do
+          mock(fetcher).github { nil }
+        end
+
+        it { should be_false }
+        it "should fail build" do
+          expect{ subject }.to change(build, :status_name).to(:errored)
+        end
+      end
+
+      context "when cannot retrieve commit" do
+        before do
+          mock_not_found_commit_request
+        end
+
+        it { should be_false }
+        it "should fail build" do
+          expect{ subject }.to change(build, :status_name).to(:errored)
+        end
+      end
+
+      context "when cannot update build commit" do
+        before do
+          mock(fetcher).fetch_commit_from_github{
+            Github::BuildFetcher::GithubCommit.new(
+              nil, nil, nil, nil, nil
+            )
+          }
+        end
+
+        it { should be_false }
+        it "should fail build" do
+          expect{ subject }.to change(build, :status_name).to(:errored)
+        end
+      end
+
+      context "when cannot retrieve travis" do
+        before do
+          mock_commit_request
+          mock_not_found_contents_request
+        end
+
+        it { should be_false }
+        it "should fail build" do
+          expect{ subject }.to change(build, :status_name).to(:errored)
+        end
       end
     end
 
