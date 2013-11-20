@@ -6,17 +6,18 @@ module Github
     GithubCommit = Struct.new(:sha, :message, :author, :author_email, :http_url)
 
     def github
-      project.identity || identity_not_found
-      project.identity.user.github
+      if project && project.identity
+        project.identity.user.github
+      end
     end
 
     def create_perform_build_message_using_github
       if github
         commit = fetch_commit_from_github
-        build.update! commit.to_h
-
-        if travis = fetch_travis_from_github
-          build.delivery_perform_build_message(travis)
+        if commit && build.update(commit.to_h)
+          if travis = fetch_travis_from_github
+            build.delivery_perform_build_message(travis)
+          end
         end
       end
     end
@@ -32,15 +33,23 @@ module Github
     end
 
     def fetch_commit_from_github
-      re = github.commit project.name, build.sha
-      url = re.rels[:html]
-      GithubCommit.new(
-        re.sha,
-        re.commit.message,
-        re.commit.author.name,
-        re.commit.author.email,
-        url && url.href
-      )
+      re = nil
+      begin
+        re = github.commit project.name, build.sha
+      rescue ::Octokit::NotFound => e
+        Rails.logger.error "ERROR: #{e.inspect}"
+      end
+
+      if re
+        url = re.rels[:html]
+        GithubCommit.new(
+          re.sha,
+          re.commit.message,
+          re.commit.author.name,
+          re.commit.author.email,
+          url && url.href
+        )
+      end
     end
 
   end

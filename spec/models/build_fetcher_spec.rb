@@ -25,26 +25,40 @@ describe BuildFetcher do
 
     context "#fetch_commit_from_github" do
       subject { fetcher.fetch_commit_from_github }
-      before { mock_commit_request }
 
       it "should be success" do
+        mock_commit_request
         expect(subject.sha).to     eq '84158c732ff1af3db9775a37a74ddc39f5c4078f'
         expect(subject.message).to eq "Update Rakefile"
         expect(subject.author).to  eq "Dmitry Galinsky"
         expect(subject.author_email).to_not be_blank
         expect(subject.http_url).to_not be_blank
       end
+
+      context "when commit not found" do
+        it "should be nil" do
+          mock_not_found_commit_request
+          expect(subject).to be_nil
+        end
+      end
     end
 
     context "#fetch_travis_from_github" do
       subject { fetcher.fetch_travis_from_github }
       before do
-        mock_contents_request
         build.sha = "84158c732ff1af3db9775a37a74ddc39f5c4078f"
       end
 
       it "should be success" do
+        mock_contents_request
         expect(subject).to_not be_blank
+      end
+
+      context "when not found" do
+        it "should be nil" do
+          mock_not_found_contents_request
+          expect(subject).to be_nil
+        end
       end
     end
 
@@ -75,11 +89,23 @@ describe BuildFetcher do
          to_return(:status => 200, :body => commit, headers: {'Content-Type' => 'application/json'})
     end
 
+    def mock_not_found_commit_request
+      stub_request(:get, "https://api.github.com/repos/ci-worker-test-repo/commits/MyString").
+         with(:headers => {'Authorization'=>'token MyString'}).
+         to_return(:status => 404, :body => "{}", headers: {'Content-Type' => 'application/json'})
+    end
+
     def mock_contents_request
       contents = read_fixture("github/contents.json")
       stub_request(:get, "https://api.github.com/repos/ci-worker-test-repo/contents/.travis.yml?ref=84158c732ff1af3db9775a37a74ddc39f5c4078f").
          with(:headers => {'Authorization'=>'token MyString'}).
          to_return(:status => 200, :body => contents, headers: {'Content-Type' => 'application/json'})
+    end
+
+    def mock_not_found_contents_request
+      stub_request(:get, "https://api.github.com/repos/ci-worker-test-repo/contents/.travis.yml?ref=84158c732ff1af3db9775a37a74ddc39f5c4078f").
+         with(:headers => {'Authorization'=>'token MyString'}).
+         to_return(:status => 404, :body => "{}", headers: {'Content-Type' => 'application/json'})
     end
   end
 

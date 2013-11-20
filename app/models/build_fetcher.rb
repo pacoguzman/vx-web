@@ -16,9 +16,4 @@ class BuildFetcher
     create_perform_build_message_using_github
   end
 
-  private
-
-    def identity_not_found
-      raise RuntimeError, "identity on project ID=#{project.id} is not exists"
-    end
 end
