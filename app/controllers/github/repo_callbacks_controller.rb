@@ -11,7 +11,6 @@ class Github::RepoCallbacksController < ApplicationController
       Rails.logger.info "ignore pull request"
     else
       @build  = @project.create_build_from_github_payload(@payload)
-      @build.publish :created
       @build.delivery_to_fetcher
     end
 

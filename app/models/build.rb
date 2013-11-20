@@ -12,6 +12,8 @@ class Build < ActiveRecord::Base
   before_validation :assign_sha,    on: :create
   before_validation :assign_branch, on: :create
 
+  after_create :publish_created
+
   default_scope ->{ order 'builds.number DESC' }
 
   state_machine :status, initial: :initialized do
@@ -66,6 +68,10 @@ class Build < ActiveRecord::Base
 
     def assign_branch
       self.branch ||= 'master'
+    end
+
+    def publish_created
+      publish :created
     end
 
 end

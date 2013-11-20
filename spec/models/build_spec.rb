@@ -42,7 +42,15 @@ describe Build do
         expect(subject).to_not change(build, :branch)
       end
     end
+  end
 
+  it "should publish(:created) after create" do
+    expect{
+      create :build
+    }.to change(WsPublishConsumer.messages, :count).by(1)
+    msg = WsPublishConsumer.messages.last
+    expect(msg[:channel]).to eq 'builds'
+    expect(msg[:event]).to eq :created
   end
 
   context "(messages)" do

@@ -9,7 +9,6 @@ class ::Api::BuildsController < ::Api::BaseController
   def create
     @build = project.builds.build params[:build]
     if @build.save
-      @build.publish :created
       @build.delivery_to_fetcher
     end
     respond_with @build, location: [:api, @build]

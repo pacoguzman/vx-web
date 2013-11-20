@@ -30,14 +30,8 @@ describe Api::BuildsController do
 
     it { should be_success }
 
-    it "should delivery message to WsPublishConsumer" do
-      expect(WsPublishConsumer.messages).to have(1).item
-    end
-
     it "should delivery message to FetchBuildConsumer" do
       expect(FetchBuildConsumer.messages).to have(1).item
     end
   end
-
-
 end
