@@ -26,7 +26,7 @@ class BuildNotifier
   end
 
   def delivery_email_notifications
-    if subscribed_emails.any?
+    if subscribed_emails.any? && build.notify?
       ::BuildsMailer.status_email(build, subscribed_emails).deliver
     end
   end

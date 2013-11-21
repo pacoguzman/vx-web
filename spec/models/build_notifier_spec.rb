@@ -52,6 +52,7 @@ describe BuildNotifier do
 
     before do
       mock(notifier).subscribed_emails.twice { ["example@example.com"] }
+      mock(notifier.build).notify? { true }
     end
 
     it { should be_true }

@@ -1,45 +1,45 @@
 require 'spec_helper'
 
 describe Build do
-  let(:build)   { Build.new       }
+  let(:b)       { Build.new }
   let(:project) { create :project }
-  subject       { build           }
+  subject       { b }
 
   context "before creation" do
-    subject { ->{ build.save! } }
-    before { build.project = project }
+    subject { ->{ b.save! } }
+    before { b.project = project }
 
     context "assign number" do
 
       it "should be 1 when no other builds" do
-        expect(subject).to change(build, :number).to(1)
+        expect(subject).to change(b, :number).to(1)
       end
 
       it "should increment when any other builds exist" do
         create :build, project: project
-        expect(subject).to change(build, :number).to(2)
+        expect(subject).to change(b, :number).to(2)
       end
     end
 
     context "assign sha" do
       it "by default should be 'HEAD'" do
-        expect(subject).to change(build, :sha).to("HEAD")
+        expect(subject).to change(b, :sha).to("HEAD")
       end
 
       it "when exists dont touch sha" do
-        build.sha = '1234'
-        expect(subject).to_not change(build, :sha)
+        b.sha = '1234'
+        expect(subject).to_not change(b, :sha)
       end
     end
 
     context "assign branch" do
       it "by default should be 'master'" do
-        expect(subject).to change(build, :branch).to("master")
+        expect(subject).to change(b, :branch).to("master")
       end
 
       it "when exists dont touch branch" do
-        build.branch = '1234'
-        expect(subject).to_not change(build, :branch)
+        b.branch = '1234'
+        expect(subject).to_not change(b, :branch)
       end
     end
   end
@@ -54,28 +54,28 @@ describe Build do
   end
 
   context "(messages)" do
-    let(:build)   { create :build }
+    let(:b) { create :build }
 
     context "#to_perform_build_message" do
       let(:travis)  { 'travis' }
-      let(:project) { build.project }
-      subject { build.to_perform_build_message travis }
+      let(:project) { b.project }
+      subject { b.to_perform_build_message travis }
 
       context "should create PerformBuild message with" do
-        its(:id)         { should eq build.id }
+        its(:id)         { should eq b.id }
         its(:name)       { should eq project.name }
         its(:src)        { should eq project.clone_url }
-        its(:sha)        { should eq build.sha }
+        its(:sha)        { should eq b.sha }
         its(:deploy_key) { should eq project.deploy_key }
         its(:travis)     { should eq travis }
-        its(:branch)     { should eq build.branch }
+        its(:branch)     { should eq b.branch }
       end
     end
 
     context "#delivery_to_fetcher" do
       it "should be success" do
         expect{
-          build.delivery_to_fetcher
+          b.delivery_to_fetcher
         }.to change(FetchBuildConsumer.messages, :count).by(1)
       end
     end
@@ -83,7 +83,7 @@ describe Build do
     context "#delivery_to_notifier" do
       it "should be success" do
         expect{
-          build.delivery_to_notifier("started")
+          b.delivery_to_notifier("started")
         }.to change(BuildNotifyConsumer.messages, :count).by(1)
       end
     end
@@ -91,7 +91,7 @@ describe Build do
     context "#delivery_perform_build_message" do
       it "should be success" do
         expect{
-          build.delivery_perform_build_message 'travis'
+          b.delivery_perform_build_message 'travis'
         }.to change(BuildsConsumer.messages, :count).by(1)
       end
     end
@@ -99,35 +99,35 @@ describe Build do
 
   context "find_or_create_job_by_status_message" do
     let(:msg) { Evrone::CI::Message::JobStatus.test_message }
-    subject { build.find_or_create_job_by_status_message msg }
+    subject { b.find_or_create_job_by_status_message msg }
 
     context "when job does not exists" do
       it "should create job" do
         expect {
           subject
-        }.to change(build.jobs, :size).by(1)
+        }.to change(b.jobs, :size).by(1)
       end
     end
   end
 
   context "duration" do
-    subject { build.duration }
+    subject { b.duration }
 
     it "should be" do
       Timecop.freeze(Time.local(1990)) do
-        build.started_at = 23.minutes.ago
-        build.finished_at = 1.minute.ago
+        b.started_at = 23.minutes.ago
+        b.finished_at = 1.minute.ago
       end
       expect(subject).to eq 1320.0
     end
 
     context "without started_at" do
-      before { build.finished_at = 1.day.ago }
+      before { b.finished_at = 1.day.ago }
       it { should be_nil }
     end
 
     context "without finished_at" do
-      before { build.started_at = 1.day.ago }
+      before { b.started_at = 1.day.ago }
       it { should be_nil }
     end
 
@@ -196,37 +196,37 @@ describe Build do
   end
 
   context "#prev_finished_build_in_branch" do
-    let(:build) { create :build, number: 2, branch: 'foo', status: 3 }
-    subject { build.prev_finished_build_in_branch }
+    let(:b) { create :build, number: 2, branch: 'foo', status: 3 }
+    subject { b.prev_finished_build_in_branch }
 
     context "when build exists" do
-      let!(:prev_build) { create :build, number: 1, branch: 'foo', project: build.project, status: 3 }
-      let!(:next_build) { create :build, number: 3, branch: 'foo', project: build.project, status: 3 }
+      let!(:prev_build) { create :build, number: 1, branch: 'foo', project: b.project, status: 3 }
+      let!(:next_build) { create :build, number: 3, branch: 'foo', project: b.project, status: 3 }
 
       it { should eq prev_build }
     end
 
     context "when build is not exists" do
-      let!(:p1) { create :build, number: 1, branch: 'bar', project_id: build.project_id, status: 3 }
-      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: build.project_id + 1, status: 3 }
-      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: build.project_id, status: 2 }
+      let!(:p1) { create :build, number: 1, branch: 'bar', project_id: b.project_id, status: 3 }
+      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: b.project_id + 1, status: 3 }
+      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: b.project_id, status: 2 }
 
       it { should be_nil }
     end
   end
 
   context "#finished?" do
-    subject { build.finished? }
+    subject { b.finished? }
     [0,2].each do |s|
       context "when status is #{s}" do
-        before { build.status = s }
+        before { b.status = s }
         it { should be_false }
       end
     end
 
     [3,4,5].each do |s|
       context "when status is #{s}" do
-        before { build.status = s }
+        before { b.status = s }
         it { should be_true }
       end
     end
@@ -234,17 +234,17 @@ describe Build do
 
   context "#status_has_changed?" do
     let(:prev) { Build.new status: prev_status }
-    subject { build.status_has_changed? }
+    subject { b.status_has_changed? }
 
     before do
-      stub(build).prev_finished_build_in_branch { prev }
+      stub(b).prev_finished_build_in_branch { prev }
     end
 
     context "when status is different" do
       let(:prev_status) { 3 }
 
       before do
-        build.status = 4
+        b.status = 4
       end
 
       it { should be_true }
@@ -254,7 +254,7 @@ describe Build do
       let(:prev_status) { 3 }
 
       before do
-        build.status = 3
+        b.status = 3
       end
 
       it { should be_false }
@@ -264,7 +264,7 @@ describe Build do
       let(:prev) { nil }
 
       before do
-        build.status = 3
+        b.status = 3
       end
 
       it { should be_true }
@@ -274,19 +274,19 @@ describe Build do
   context "#human_status_name" do
     let(:prev) { create :build, status: prev_status }
 
-    subject { build.human_status_name }
+    subject { b.human_status_name }
 
     [0,2,4,5].each do |s|
       context "when status is #{s}" do
-        before { build.status = s }
-        it { should eq build.human_status_name.to_s.capitalize }
+        before { b.status = s }
+        it { should eq b.human_status_name.to_s.capitalize }
       end
     end
 
     context "when status is 3" do
       before do
-        build.status = 3
-        stub(build).prev_finished_build_in_branch { prev }
+        b.status = 3
+        stub(b).prev_finished_build_in_branch { prev }
       end
 
       context "and previous build is not passed" do
@@ -307,8 +307,8 @@ describe Build do
 
     context "when status is 4" do
       before do
-        build.status = 4
-        stub(build).prev_finished_build_in_branch { prev }
+        b.status = 4
+        stub(b).prev_finished_build_in_branch { prev }
       end
 
       context "and previous build is failed" do
@@ -324,8 +324,8 @@ describe Build do
 
     context "when status is 5" do
       before do
-        build.status = 5
-        stub(build).prev_finished_build_in_branch { prev }
+        b.status = 5
+        stub(b).prev_finished_build_in_branch { prev }
       end
 
       context "and previous build is errored" do
@@ -337,6 +337,35 @@ describe Build do
         let(:prev_status) { 3 }
         it { should eq 'Broken' }
       end
+    end
+  end
+
+  context "#notify?" do
+    let(:b) { build :build }
+    subject { b.notify? }
+    before do
+      b.status = 2
+    end
+
+    context "when status failed" do
+      before do
+        b.decline
+      end
+      it { should be_true }
+    end
+
+    context "when status errored" do
+      before do
+        b.error
+      end
+      it { should be_true }
+    end
+
+    context "when status passed" do
+      before do
+        b.pass
+      end
+      it { should be_true }
     end
   end
 

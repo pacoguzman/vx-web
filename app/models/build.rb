@@ -89,6 +89,14 @@ class Build < ActiveRecord::Base
     end
   end
 
+  def notify?
+    finished? &&
+      (
+        [4,5].include?(status) ||
+        (status_name == :passed && status_has_changed?)
+      )
+  end
+
   def human_status_name
     @numan_status_name ||= begin
       case status_name
