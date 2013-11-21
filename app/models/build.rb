@@ -124,6 +124,31 @@ class Build < ActiveRecord::Base
     end
   end
 
+  def restart
+    if finished?
+      transaction do
+        self.started_at  = nil
+        self.finished_at = nil
+        self.status      = 0
+        self.jobs_count  = 0
+
+        self.jobs.each do |job|
+          job.destroy.or_rollback_transaction
+        end
+
+        self.save.or_rollback_transaction
+
+        self.publish
+        self.jobs.each do |job|
+          job.publish :destroyed
+        end
+
+        self.delivery_to_notifier
+        self
+      end
+    end
+  end
+
   private
 
     def assign_number

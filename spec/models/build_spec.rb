@@ -389,6 +389,79 @@ describe Build do
     end
   end
 
+  context "#restart!" do
+    let(:job) { create :job, build: b }
+    let(:b)   { create :build }
+    subject   { b.restart.try(:reload) }
+
+    context "when build is finished" do
+      before do
+        job.update! status: 3
+        b.update! status: 3, jobs_count: 1
+      end
+
+      it { should eq b }
+
+      its(:started_at)  { should be_nil }
+      its(:finished_at) { should be_nil }
+      its(:status_name) { should eq :initialized }
+      its("jobs.count") { should eq 0 }
+      its(:jobs_count)  { should eq 0 }
+
+      it "should delivery messages to WsPublishConsumer" do
+        expect{
+          subject
+        }.to change(WsPublishConsumer.messages, :count).by(2)
+        job_m   = WsPublishConsumer.messages.pop
+        build_m = WsPublishConsumer.messages.pop
+
+        expect(job_m[:channel]).to eq 'jobs'
+        expect(job_m[:event]).to eq :destroyed
+        expect(job_m[:payload][:id]).to eq job.id
+
+        expect(build_m[:channel]).to eq 'builds'
+        expect(build_m[:event]).to eq :updated
+      end
+
+      it "should delivery message to BuildNotifyConsumer" do
+        expect {
+          subject
+        }.to change(BuildNotifyConsumer.messages, :count).to(1)
+        m = BuildNotifyConsumer.messages.first
+        expect(m["id"]).to eq b.id
+        expect(m["status"]).to eq 0
+      end
+    end
+
+    context "when build is not finished" do
+      before do
+        b.update! status: 2
+      end
+
+      it { should be_nil }
+
+      it "cannot touch build" do
+        expect {
+          subject
+        }.to_not change{ b.reload.attributes }
+      end
+
+      it "cannot job build" do
+        expect {
+          subject
+        }.to_not change{ job.reload.attributes }
+      end
+
+      it "cannnot delivery any messages" do
+        expect{
+          subject
+        }.to_not change(WsPublishConsumer.messages, :count)
+        expect {
+          subject
+        }.to_not change(BuildNotifyConsumer.messages, :count)
+      end
+    end
+  end
 end
 
 # == Schema Information
