@@ -10,7 +10,7 @@ class BuildsMailer < ActionMailer::Base
   end
 
   def build_subject(build)
-    "[#{build.status_name.capitalize}] #{build.project}##{build.number} (#{build.branch} - #{build.short_sha})"
+    "[#{build.human_status_name}] #{build.project}##{build.number} (#{build.branch} - #{build.short_sha})"
   end
 
 end
