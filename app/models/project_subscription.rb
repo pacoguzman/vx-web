@@ -6,5 +6,20 @@ class ProjectSubscription < ActiveRecord::Base
   validates :project_id, :user_id, presence: true
   validates :user_id, uniqueness: { scope: :user_id }
 
+  class << self
+
+    def subscribe_by_email(email, project)
+      user = User.select(:id).find_by(email: email)
+
+      if user
+        subscription = project.subscriptions.where(user_id: user.id).exists?
+        unless subscription
+          project.subscriptions.create(user: user)
+        end
+      end
+    end
+
+  end
+
 end
 
