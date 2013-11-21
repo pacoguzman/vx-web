@@ -267,7 +267,7 @@ describe Build do
         build.status = 3
       end
 
-      it { should be_false }
+      it { should be_true }
     end
   end
 

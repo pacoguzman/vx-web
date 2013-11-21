@@ -79,9 +79,13 @@ class Build < ActiveRecord::Base
   end
 
   def status_has_changed?
-    completed? &&
-      prev_completed_build_in_branch &&
-      prev_completed_build_in_branch.status != status
+    if completed?
+      if prev_completed_build_in_branch
+        prev_completed_build_in_branch.status != status
+      else
+        true
+      end
+    end
   end
 
   def human_status_name
