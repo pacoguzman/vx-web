@@ -12,7 +12,13 @@
 }
 
 .project-subscribe {
-  font-weight: normal;
-  margin-right: 1em;
-  cursor: pointer;
+  margin-right: .5em;
+
+  i.fa-star {
+    color: DarkKhaki;
+  }
+
+  &:hover {
+    border-bottom: 0;
+  }
 }

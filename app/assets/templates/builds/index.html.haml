@@ -11,11 +11,13 @@
 
     .col-4
       .pull-right
-        %label.small-text.project-subscribe
-          %input{ type: "checkbox", 'ng-model' => 'project.subscribed', 'ng-change' => 'changeProjectSubscription(project)' }
-          Watch
-        %a.btn.btn-small.btn-primary{ "ng-click" => "createBuild()" }
-          Create Build
+
+        %a.project-subscribe{ href: 'javascript://', 'ng-click' => 'changeProjectSubscription(project)' }
+          %i.fa.fa-2x{ 'ng-class' => "projectSubscribeClass(project)" }
+
+        %a{ "ng-click" => "createBuild()", href: 'javascript://', title: "Create New Build" }
+          %i.fa.fa-plus-circle.fa-2x
+
 
   %table.tasks-table.table.small-text
 
