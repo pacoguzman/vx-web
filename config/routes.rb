@@ -14,6 +14,9 @@ CiWeb::Application.routes.draw do
     end
 
     resources :builds, only: [:show] do
+      member do
+        put :restart
+      end
       resources :jobs, only: [:index]
     end
 

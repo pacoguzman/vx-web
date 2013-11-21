@@ -18,8 +18,12 @@ class ::Api::BuildsController < ::Api::BaseController
     respond_with build
   end
 
-  def restart!
-    build.restart
+  def restart
+    if build.restart
+      respond_with build
+    else
+      head :unprocessable_entity
+    end
   end
 
   private
