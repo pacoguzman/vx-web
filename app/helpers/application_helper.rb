@@ -5,7 +5,9 @@ module ApplicationHelper
   end
 
   def build_duration(build)
-    distance_of_time_in_words(build.started_at, build.finished_at, include_seconds: true)
+    if build.started_at && build.finished_at
+      distance_of_time_in_words(build.started_at, build.finished_at, include_seconds: true)
+    end
   end
 
   def build_title(build)

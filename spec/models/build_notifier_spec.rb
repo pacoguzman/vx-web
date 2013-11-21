@@ -11,7 +11,57 @@ describe BuildNotifier do
   context "just created" do
     its(:build_id)  { should eq b.id }
     its(:status)    { should eq 'passed' }
-    its("build.id") { should eq b.id }
+  end
+
+  context "#build" do
+    subject { notifier.build }
+
+    context "when build found" do
+      it { should eq b }
+    end
+
+    context "when build is not found" do
+      let(:notifier) { described_class.new b.id + 1, b.status_name }
+      it { should be_nil }
+    end
+  end
+
+  context "#project" do
+    subject { notifier.project }
+
+    context "when build found" do
+      it { should eq b.project  }
+    end
+
+    context "when build is not found" do
+      let(:notifier) { described_class.new b.id + 1, b.status_name }
+      it { should be_nil }
+    end
+  end
+
+  context "#subscribed_emails" do
+    let(:user) { create :user }
+    let!(:sub) { create :project_subscription, user: user, project: b.project }
+    subject { notifier.subscribed_emails }
+
+    it { should eq %w{ email } }
+  end
+
+  context "#delivery_email_notifications" do
+    subject { notifier.delivery_email_notifications }
+
+    before do
+      mock(notifier).subscribed_emails.twice { ["example@example.com"] }
+    end
+
+    it { should be_true }
+
+    it "should delivery email" do
+      expect {
+        subject
+      }.to change(ActionMailer::Base.deliveries, :size).by(1)
+      expect(ActionMailer::Base.deliveries.first.subject).to eq "[Passed] ci-worker-test-repo#1 (MyString - MyString)"
+    end
   end
 
   context "#description" do

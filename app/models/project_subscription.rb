@@ -6,6 +6,8 @@ class ProjectSubscription < ActiveRecord::Base
   validates :project_id, :user_id, presence: true
   validates :user_id, uniqueness: { scope: :user_id }
 
+  scope :active, ->{ where(subscribe: true) }
+
   class << self
 
     def subscribe_by_email(email, project)
