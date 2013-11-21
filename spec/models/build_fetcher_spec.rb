@@ -36,7 +36,7 @@ describe BuildFetcher do
     context "when build found" do
       before do
         mock(fetcher).create_perform_build_message_using_github
-        mock(fetcher).subscribe_by_email { true }
+        mock(fetcher).subscribe_author_to_repo { true }
       end
 
       it { should be_true }
