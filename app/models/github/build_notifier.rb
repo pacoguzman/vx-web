@@ -19,14 +19,14 @@ module Github
     end
 
     def github_commit_status
-      case status
-      when 'started'
+      case build.status_name
+      when :started
         'pending'
-      when 'passed'
+      when :passed
         'success'
-      when 'failed'
+      when :failed
         'failure'
-      when 'errored'
+      when :errored
         'error'
       end
     end

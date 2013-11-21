@@ -1,16 +1,17 @@
 class BuildNotifier
   include ::Github::BuildNotifier
 
-  attr_reader :build_id, :status
+  attr_reader :message
 
-  def initialize(build_id, status)
-    @build_id = build_id.to_i
-    @status   = status.to_s
+  def initialize(message)
+    @message  = message
   end
 
   def build
-    if build_id?
-      @build ||= ::Build.find_by id: build_id
+    @build ||= begin
+      b = ::Build.new message
+      b.freeze
+      b
     end
   end
 
@@ -42,24 +43,20 @@ class BuildNotifier
   def description
     if build
       n  = build.number
-      case status
-      when 'started'
+      case build.status_name
+      when :started
         "EvroneCI build ##{n} started"
-      when 'passed'
+      when :passed
         "EvroneCI build ##{n} successed"
-      when 'failed'
+      when :failed
         "EvroneCI build ##{n} failed"
-      when 'errored'
+      when :errored
         "EvroneCI build ##{n} broken"
       end
     end
   end
 
   private
-
-    def build_id?
-      build_id > 0
-    end
 
     def identity_not_found
       raise RuntimeError, "identity on project ID=#{build.project_id} is not exists"
