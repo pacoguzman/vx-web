@@ -11,7 +11,7 @@ CI.controller 'BuildsCtrl', ($scope, appMenu, buildStore, projectStore, $routePa
       $location.path "/builds/#{build.id}"
 
   $scope.changeProjectSubscription = (project) ->
-    if project.subscribe
+    if project.subscribed
       projectStore.subscribe(project.id)
     else
       projectStore.unsubscribe(project.id)
