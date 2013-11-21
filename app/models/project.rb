@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
 
   belongs_to :identity, class_name: "::UserIdentity"
   has_many :builds, dependent: :destroy, class_name: "::Build"
+  has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
 
   validates :name, :http_url, :clone_url, :provider, :token,
     :deploy_key, presence: true
