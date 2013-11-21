@@ -26,5 +26,16 @@ CI.service 'projectStore',
         _.find its, (it) ->
           it.id == id
 
+    subscribeUserToProject = (projectId) ->
+      $http.post("/api/projects/#{projectId}/subscription").then (re) ->
+        re.data
+
+    unsubscribeUserFromProject = (projectId) ->
+      $http.delete("/api/projects/#{projectId}/subscription").then (re) ->
+        re.data
+
     all: all
     one: one
+    subscribe: subscribeUserToProject
+    unsubscribe: unsubscribeUserFromProject
+
