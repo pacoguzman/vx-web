@@ -1,5 +1,5 @@
 .job
-  .row.task-attributes
+  .row.task-attributes{ 'ng-show' => 'job' }
     .col-5.small-text
 
       %dl.task-attribute.dl-horizontal
@@ -46,4 +46,6 @@
           %i.fa.fa-bars.fa-2x
 
   .app-task-output{ collection: "logs" }
+
+  .ajax-loader{ 'ng-hide' => 'logs.length != undefined' }
 

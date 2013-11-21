@@ -1,5 +1,5 @@
 .build
-  .row.task-attributes
+  .row.task-attributes{ 'ng-show' => "build" }
     .col-5
 
       %dl.task-attribute.dl-horizontal
@@ -36,6 +36,8 @@
         %dt Message
         %dd {{ build.message }}
 
-  .build-jobs{ 'ng-show' => "jobs.length > 0" }
+  .build-jobs{ 'ng-show' => "jobs.length != undefined" }
 
     %pre.app-build-jobs.small-text{ jobs: 'jobs' }
+
+  .ajax-loader{ 'ng-hide' => 'jobs.length != undefined' }

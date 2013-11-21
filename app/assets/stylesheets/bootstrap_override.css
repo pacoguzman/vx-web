@@ -3,6 +3,11 @@ small {
   font-size: 13px;
 }
 
+
+.navigation > .nav-tabs {
+  height: 3.1em;
+}
+
 .btn-small {
   font-weight: normal;
   font-size: 13px;

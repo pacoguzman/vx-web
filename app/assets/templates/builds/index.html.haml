@@ -1,6 +1,6 @@
 .builds
 
-  .row
+  .row{ 'ng-show' => 'project' }
 
     .col-8
       .build-info
@@ -14,7 +14,7 @@
         %label.small-text.project-subscribe
           %input{ type: "checkbox", 'ng-model' => 'project.subscribed', 'ng-change' => 'changeProjectSubscription(project)' }
           Watch
-        %a.btn.btn-small.btn-primary{ 'ng-show' => "project", "ng-click" => "createBuild()" }
+        %a.btn.btn-small.btn-primary{ "ng-click" => "createBuild()" }
           Create Build
 
   %table.tasks-table.table.small-text
@@ -35,3 +35,5 @@
       %td {{ build.branch }}
       %td.app-task-duration{ task: 'build' }
       %td.app-task-finished{ task: 'build' }
+
+  .ajax-loader{ 'ng-hide' => 'builds.length != undefined' }
