@@ -10,10 +10,7 @@ class FetchBuildConsumer
 
   def perform(build_id)
     ::Rails.logger.tagged("fetch build #{build_id}") do
-      build = ::Build.find_by id: build_id.to_i
-      if build
-        ::BuildFetcher.new(build).process
-      end
+      ::BuildFetcher.new(build_id).perform
     end
     ack!
   end
