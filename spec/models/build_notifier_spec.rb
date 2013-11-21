@@ -3,40 +3,27 @@ require 'spec_helper'
 describe BuildNotifier do
   let(:status) { 3 }
   let(:b)      { create :build, status: status, number: 1 }
-  let(:notifier) { described_class.new b.id, b.status_name }
+  let(:attrs)  { JSON.parse(b.attributes.to_json) }
+  let(:notifier) { described_class.new attrs }
   subject { notifier }
 
   it { should be }
 
   context "just created" do
-    its(:build_id)  { should eq b.id }
-    its(:status)    { should eq 'passed' }
+    its(:message)  { should eq attrs }
   end
 
   context "#build" do
     subject { notifier.build }
 
-    context "when build found" do
-      it { should eq b }
-    end
-
-    context "when build is not found" do
-      let(:notifier) { described_class.new b.id + 1, b.status_name }
-      it { should be_nil }
-    end
+    its(:status)  { should eq b.status }
+    its(:frozen?) { should be_true }
   end
 
   context "#project" do
     subject { notifier.project }
 
-    context "when build found" do
-      it { should eq b.project  }
-    end
-
-    context "when build is not found" do
-      let(:notifier) { described_class.new b.id + 1, b.status_name }
-      it { should be_nil }
-    end
+    it { should eq b.project  }
   end
 
   context "#subscribed_emails" do
