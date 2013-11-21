@@ -51,6 +51,64 @@ describe Job do
     its(:number) { should eq 2 }
     its(:matrix) { should eq(:env=>"FOO = 1:2", :rvm=>"1.9.3") }
   end
+
+  it "should publish(:created) after create" do
+    b = create :build
+    expect{
+      create :job, build: b
+    }.to change(WsPublishConsumer.messages, :count).by(1)
+    msg = WsPublishConsumer.messages.last
+    expect(msg[:channel]).to eq 'jobs'
+    expect(msg[:event]).to eq :created
+  end
+
+  context "(state machine)" do
+    let!(:job) { create :job, status: status }
+
+    context "after transition to started" do
+      let(:status) { 0 }
+      subject { job.start }
+
+      it "should delivery messages to WsPublishConsumer" do
+        expect{
+          subject
+        }.to change(WsPublishConsumer.messages, :count).by(1)
+      end
+    end
+
+    context "after transition to passed" do
+      let(:status) { 2 }
+      subject { job.pass }
+
+      it "should delivery messages to WsPublishConsumer" do
+        expect{
+          subject
+        }.to change(WsPublishConsumer.messages, :count).by(1)
+      end
+    end
+
+    context "after transition to failed" do
+      let(:status) { 2 }
+      subject { job.decline }
+
+      it "should delivery messages to WsPublishConsumer" do
+        expect{
+          subject
+        }.to change(WsPublishConsumer.messages, :count).by(1)
+      end
+    end
+
+    context "after transition to errored" do
+      let(:status) { 2 }
+      subject { job.error }
+
+      it "should delivery messages to WsPublishConsumer" do
+        expect{
+          subject
+        }.to change(WsPublishConsumer.messages, :count).by(1)
+      end
+    end
+  end
 end
 
 # == Schema Information

@@ -12,9 +12,8 @@ class JobUpdater
       if build
         @job = build.find_or_create_job_by_status_message(message)
 
-        update_job_status
+        update_and_save_job_status!
         truncate_job_logs
-        publish_job
 
         if build_need_start?
           start_build!
@@ -50,32 +49,23 @@ class JobUpdater
       message.status == 2 && build.status_name == :initialized
     end
 
-    def publish_job
-      if message.status == 0
-        job.publish :created
-      else
-        job.publish
-      end
-    end
-
-    def update_job_status
+    def update_and_save_job_status!
       case message.status
       when 0 # initialized
         nil
       when 2 # started
-        job.start
         job.started_at  = tm
+        job.start!
       when 3 # finished
-        job.pass
         job.finished_at = tm
+        job.pass!
       when 4 # failed
-        job.decline
         job.finished_at = tm
+        job.decline!
       when 5 # errored
-        job.error
         job.finished_at = tm
+        job.error!
       end
-      job.save!
     end
 
     def start_build!

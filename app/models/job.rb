@@ -7,6 +7,8 @@ class Job < ActiveRecord::Base
   validates :build_id, :number, :status, presence: true
   validates :number, uniqueness: { scope: [:build_id] }
 
+  after_create :publish_created
+
   default_scope ->{ order 'jobs.number DESC' }
 
 
@@ -19,7 +21,7 @@ class Job < ActiveRecord::Base
     state :errored,       value: 5
 
     event :start do
-      transition :initialized => :started
+      transition [:initialized, :started] => :started
     end
 
     event :pass do
@@ -32,6 +34,10 @@ class Job < ActiveRecord::Base
 
     event :error do
       transition [:initialized, :started] => :errored
+    end
+
+    after_transition any => [:started, :passed, :failed, :errored] do |job, _|
+      job.publish
     end
   end
 
@@ -62,8 +68,13 @@ class Job < ActiveRecord::Base
 
       job.save ? job : nil
     end
-
   end
+
+  private
+
+    def publish_created
+      publish :created
+    end
 
 end
 
