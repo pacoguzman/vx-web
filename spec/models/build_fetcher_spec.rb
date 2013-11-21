@@ -12,6 +12,23 @@ describe BuildFetcher do
     its(:project) { should eq build.project }
   end
 
+  context "#subscribe_author_to_repo" do
+    let(:user) { create :user }
+    subject { fetcher.subscribe_author_to_repo }
+
+    context "when email exists" do
+      before do
+        build.update! author_email: user.email
+      end
+
+      it { should be_true }
+    end
+
+    context "when email is not exists" do
+      it { should be_nil }
+    end
+  end
+
   context "(github)" do
     let(:user) { create :user }
     let(:identity) { create :user_identity, :github, user: user }
