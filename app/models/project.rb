@@ -3,9 +3,11 @@ require 'securerandom'
 class Project < ActiveRecord::Base
 
   include ::Github::Project
+  include ::PublicUrl::Project
 
   belongs_to :identity, class_name: "::UserIdentity"
   has_many :builds, dependent: :destroy, class_name: "::Build"
+  has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
 
   validates :name, :http_url, :clone_url, :provider, :token,
     :deploy_key, presence: true
@@ -24,6 +26,10 @@ class Project < ActiveRecord::Base
     def find_by_token(token)
       find_by token: token
     end
+  end
+
+  def to_s
+    name
   end
 
   def deploy_key_name
@@ -57,6 +63,26 @@ class Project < ActiveRecord::Base
       :unknown
     end
   end
+
+  def subscribed_by?(user)
+    !!subscriptions.where(user_id: user.id).pluck(:subscribe).first
+  end
+
+  def subscribe(user)
+    subscription = find_or_build_subscription_for_user(user)
+    subscription.update subscribe: true
+  end
+
+  def unsubscribe(user)
+    subscription = find_or_build_subscription_for_user(user)
+    subscription.update subscribe: false
+  end
+
+  private
+    def find_or_build_subscription_for_user(user)
+      subscription = subscriptions.find_by user_id: user.id
+      subscription ||= subscriptions.build user: user
+    end
 
 end
 

@@ -2,14 +2,50 @@ require 'spec_helper'
 
 describe BuildFetcher do
   let(:build)   { create :build }
-  let(:fetcher) { described_class.new build }
+  let(:fetcher) { described_class.new build.id }
   subject { fetcher }
 
   it { should be }
 
   context "just created" do
+    its(:build_id){ should eq build.id }
     its(:build)   { should eq build }
     its(:project) { should eq build.project }
+  end
+
+  context "#subscribe_author_to_repo" do
+    let(:user) { create :user }
+    subject { fetcher.subscribe_author_to_repo }
+
+    context "when email exists" do
+      before do
+        build.update! author_email: user.email
+      end
+
+      it { should be_true }
+    end
+
+    context "when email is not exists" do
+      it { should be_nil }
+    end
+  end
+
+  context "#perform" do
+    subject { fetcher.perform }
+
+    context "when build found" do
+      before do
+        mock(fetcher).create_perform_build_message_using_github
+        mock(fetcher).subscribe_author_to_repo { true }
+      end
+
+      it { should be_true }
+    end
+
+    context "when build does not exists" do
+      subject { described_class.new(build.id + 1).perform }
+      it { should be_nil }
+    end
   end
 
   context "(github)" do
@@ -46,7 +82,7 @@ describe BuildFetcher do
     context "#fetch_travis_from_github" do
       subject { fetcher.fetch_travis_from_github }
       before do
-        build.sha = "84158c732ff1af3db9775a37a74ddc39f5c4078f"
+        build.update_attribute :sha, "84158c732ff1af3db9775a37a74ddc39f5c4078f"
       end
 
       it "should be success" do
@@ -93,7 +129,7 @@ describe BuildFetcher do
 
         it { should be_false }
         it "should fail build" do
-          expect{ subject }.to change(build, :status_name).to(:errored)
+          expect{ subject }.to change{ build.reload.status_name }.to(:errored)
         end
       end
 
@@ -104,7 +140,7 @@ describe BuildFetcher do
 
         it { should be_false }
         it "should fail build" do
-          expect{ subject }.to change(build, :status_name).to(:errored)
+          expect{ subject }.to change{ build.reload.status_name }.to(:errored)
         end
       end
 
@@ -119,7 +155,7 @@ describe BuildFetcher do
 
         it { should be_false }
         it "should fail build" do
-          expect{ subject }.to change(build, :status_name).to(:errored)
+          expect{ subject }.to change{ build.reload.status_name }.to(:errored)
         end
       end
 
@@ -131,7 +167,7 @@ describe BuildFetcher do
 
         it { should be_false }
         it "should fail build" do
-          expect{ subject }.to change(build, :status_name).to(:errored)
+          expect{ subject }.to change{ build.reload.status_name }.to(:errored)
         end
       end
     end

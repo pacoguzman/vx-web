@@ -152,12 +152,12 @@ describe Build do
       end
     end
 
-    context "after transition to finished" do
+    context "after transition to passed" do
       let(:status) { 2 }
-      subject { b.finish }
+      subject { b.pass }
 
       it "should delivery message to notifier" do
-        mock(b).delivery_to_notifier("finished") { true }
+        mock(b).delivery_to_notifier("passed") { true }
         expect(subject).to be
       end
 
@@ -193,7 +193,151 @@ describe Build do
         expect(subject).to be
       end
     end
+  end
 
+  context "#prev_finished_build_in_branch" do
+    let(:build) { create :build, number: 2, branch: 'foo', status: 3 }
+    subject { build.prev_finished_build_in_branch }
+
+    context "when build exists" do
+      let!(:prev_build) { create :build, number: 1, branch: 'foo', project: build.project, status: 3 }
+      let!(:next_build) { create :build, number: 3, branch: 'foo', project: build.project, status: 3 }
+
+      it { should eq prev_build }
+    end
+
+    context "when build is not exists" do
+      let!(:p1) { create :build, number: 1, branch: 'bar', project_id: build.project_id, status: 3 }
+      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: build.project_id + 1, status: 3 }
+      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: build.project_id, status: 2 }
+
+      it { should be_nil }
+    end
+  end
+
+  context "#finished?" do
+    subject { build.finished? }
+    [0,2].each do |s|
+      context "when status is #{s}" do
+        before { build.status = s }
+        it { should be_false }
+      end
+    end
+
+    [3,4,5].each do |s|
+      context "when status is #{s}" do
+        before { build.status = s }
+        it { should be_true }
+      end
+    end
+  end
+
+  context "#status_has_changed?" do
+    let(:prev) { Build.new status: prev_status }
+    subject { build.status_has_changed? }
+
+    before do
+      stub(build).prev_finished_build_in_branch { prev }
+    end
+
+    context "when status is different" do
+      let(:prev_status) { 3 }
+
+      before do
+        build.status = 4
+      end
+
+      it { should be_true }
+    end
+
+    context "when status is same" do
+      let(:prev_status) { 3 }
+
+      before do
+        build.status = 3
+      end
+
+      it { should be_false }
+    end
+
+    context "when prev build is nil" do
+      let(:prev) { nil }
+
+      before do
+        build.status = 3
+      end
+
+      it { should be_true }
+    end
+  end
+
+  context "#human_status_name" do
+    let(:prev) { create :build, status: prev_status }
+
+    subject { build.human_status_name }
+
+    [0,2,4,5].each do |s|
+      context "when status is #{s}" do
+        before { build.status = s }
+        it { should eq build.human_status_name.to_s.capitalize }
+      end
+    end
+
+    context "when status is 3" do
+      before do
+        build.status = 3
+        stub(build).prev_finished_build_in_branch { prev }
+      end
+
+      context "and previous build is not passed" do
+        let(:prev_status) { 4 }
+        it { should eq 'Fixed' }
+      end
+
+      context "and previous build is not exists" do
+        let(:prev) { nil }
+        it { should eq 'Passed' }
+      end
+
+      context "and previous build is passed" do
+        let(:prev_status) { 3 }
+        it { should eq 'Passed' }
+      end
+    end
+
+    context "when status is 4" do
+      before do
+        build.status = 4
+        stub(build).prev_finished_build_in_branch { prev }
+      end
+
+      context "and previous build is failed" do
+        let(:prev_status) { 4 }
+        it { should eq 'Still Failing' }
+      end
+
+      context "and previous build is not failed" do
+        let(:prev_status) { 3 }
+        it { should eq 'Failed' }
+      end
+    end
+
+    context "when status is 5" do
+      before do
+        build.status = 5
+        stub(build).prev_finished_build_in_branch { prev }
+      end
+
+      context "and previous build is errored" do
+        let(:prev_status) { 5 }
+        it { should eq 'Still Broken' }
+      end
+
+      context "and previous build is not errored" do
+        let(:prev_status) { 3 }
+        it { should eq 'Broken' }
+      end
+    end
   end
 
 end

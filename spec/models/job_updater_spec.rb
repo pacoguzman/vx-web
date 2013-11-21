@@ -98,7 +98,7 @@ describe JobUpdater do
         let(:job1_status) { 3 }
         let(:job2_status) { 3 }
         it "should finish build" do
-          expect(b.status_name).to eq :finished
+          expect(b.status_name).to eq :passed
           expect(b.finished_at).to be
         end
       end
@@ -153,15 +153,15 @@ describe JobUpdater do
         end
       end
 
-      context "when build finished" do
+      context "when build passed" do
         let(:status) { 0 }
         before do
           b.start!
-          b.finish!
+          b.pass!
           b.reload
         end
         it "cannot start build" do
-          expect(b.status_name).to eq :finished
+          expect(b.status_name).to eq :passed
         end
       end
     end

@@ -5,6 +5,15 @@ describe "projectStore", ->
   $http    = null
   expected = null
 
+  succVal  = null
+  failVal  = null
+
+  succ = (it) ->
+    succVal = it
+
+  fail = (it) ->
+    failVal = it
+
   testObj = {
     id:   12
     name: "MyName"
@@ -35,14 +44,15 @@ describe "projectStore", ->
     inject ['$injector',
       ($injector) ->
         $http    = $injector.get("$httpBackend")
-        $http.expectGET("/api/projects").respond(angular.copy [testObj,testObj2])
-
         projects = $injector.get("projectStore")
     ]
     expected = []
 
 
   describe "all()", ->
+
+    beforeEach ->
+      $http.expectGET("/api/projects").respond(angular.copy [testObj,testObj2])
 
     it "should return all projects", ->
       $scope.$apply ->
@@ -54,6 +64,9 @@ describe "projectStore", ->
 
   describe "one()", ->
 
+    beforeEach ->
+      $http.expectGET("/api/projects").respond(angular.copy [testObj,testObj2])
+
     it "should find project by id", ->
       $scope.$apply ->
         projects.one(12).then (it) ->
@@ -62,9 +75,35 @@ describe "projectStore", ->
       expect(expected).toEqual testObj
 
 
+  describe "subscribe()", ->
+
+    beforeEach ->
+      $http.expectPOST('/api/projects/1/subscription').respond('success')
+
+    it "should send POST request", ->
+      $scope.$apply ->
+        projects.subscribe(1).then succ, fail
+      $http.flush()
+      expect(succVal).toEqual 'success'
+
+  describe "unsubscribe()", ->
+
+    beforeEach ->
+      $http.expectDELETE('/api/projects/1/subscription').respond('success')
+
+    it "should send DELETE request", ->
+      $scope.$apply ->
+        projects.unsubscribe(1).then succ, fail
+      $http.flush()
+      expect(succVal).toEqual 'success'
+
+
   describe "with eventSource", ->
 
     f = null
+
+    beforeEach ->
+      $http.expectGET("/api/projects").respond(angular.copy [testObj,testObj2])
 
     beforeEach ->
       found = _.find evSource.subscriptions(), (it) ->

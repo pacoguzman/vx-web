@@ -1,6 +1,7 @@
 class Build < ActiveRecord::Base
 
-  include BuildMessages
+  include ::BuildMessages
+  include ::PublicUrl::Build
 
   belongs_to :project, class_name: "::Project"
   has_many :jobs, class_name: "::Job", dependent: :destroy
@@ -15,12 +16,13 @@ class Build < ActiveRecord::Base
   after_create :publish_created
 
   default_scope ->{ order 'builds.number DESC' }
+  scope :finished, -> { where(status: [3,4,5]) }
 
   state_machine :status, initial: :initialized do
 
     state :initialized,   value: 0
     state :started,       value: 2
-    state :finished,      value: 3
+    state :passed,        value: 3
     state :failed,        value: 4
     state :errored,       value: 5
 
@@ -28,8 +30,8 @@ class Build < ActiveRecord::Base
       transition :initialized => :started
     end
 
-    event :finish do
-      transition :started => :finished
+    event :pass do
+      transition :started => :passed
     end
 
     event :decline do
@@ -40,7 +42,7 @@ class Build < ActiveRecord::Base
       transition [:initialized, :started] => :errored
     end
 
-    after_transition any => [:started, :finished, :failed, :errored] do |build, transition|
+    after_transition any => [:started, :passed, :failed, :errored] do |build, transition|
       build.delivery_to_notifier(transition.to_name.to_s)
 
       build.publish
@@ -59,10 +61,65 @@ class Build < ActiveRecord::Base
     end
   end
 
+  def short_sha
+    sha.to_s[0..8]
+  end
+
+  def prev_finished_build_in_branch
+    @prev_finished_build_in_branch ||=
+      Build.finished
+           .where(project_id: project_id)
+           .where(branch: branch)
+           .where("number < ?", number)
+           .order("number DESC")
+           .first
+  end
+
+  def finished?
+    [3,4,5].include?(status)
+  end
+
+  def status_has_changed?
+    if finished?
+      if prev_finished_build_in_branch
+        prev_finished_build_in_branch.status != status
+      else
+        true
+      end
+    end
+  end
+
+  def human_status_name
+    @numan_status_name ||= begin
+      case status_name
+      when :passed
+        if status_has_changed? && prev_finished_build_in_branch
+          "Fixed"
+        else
+          status_name
+        end
+      when :errored
+        if status_has_changed?
+          'Broken'
+        else
+          "Still Broken"
+        end
+      when :failed
+        if status_has_changed?
+          status_name
+        else
+          "Still Failing"
+        end
+      else
+        status_name
+      end.to_s.titleize
+    end
+  end
+
   private
 
     def assign_number
-      self.number = project.builds.maximum(:number).to_i + 1
+      self.number ||= project.builds.maximum(:number).to_i + 1
     end
 
     def assign_sha

@@ -2,16 +2,20 @@
 
   .row
 
-    .col-10
+    .col-8
       .build-info
         %p.small-text
           %span {{ project.description || "no description available" }}
           %a{ href: '{{project.http_url}}', target: "_blank" }
             <nobr>view on github</nobr>
 
-    .col-2
-      %a.builds-add.pull-right{ class: "btn btn-small btn-primary", 'ng-show' => "project", "ng-click" => "createBuild()" }
-        Create Build
+    .col-4
+      .pull-right
+        %label.small-text.project-subscribe
+          %input{ type: "checkbox", 'ng-model' => 'project.subscribed', 'ng-change' => 'changeProjectSubscription(project)' }
+          Watch
+        %a.btn.btn-small.btn-primary{ 'ng-show' => "project", "ng-click" => "createBuild()" }
+          Create Build
 
   %table.tasks-table.table.small-text
 
