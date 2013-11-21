@@ -12,7 +12,10 @@ describe Api::BuildsController do
   end
 
   context "GET /index" do
-    before { get :index, project_id: project.id, format: :json }
+    before do
+      build
+      get :index, project_id: project.id, format: :json
+    end
 
     it { should be_success }
     its(:body) { should_not be_blank }
@@ -23,6 +26,29 @@ describe Api::BuildsController do
 
     it { should be_success }
     its(:body) { should_not be_blank }
+  end
+
+  context "PUT /restart" do
+    before do
+      any_instance_of(Build) do |b|
+        mock(b).restart { ret }
+      end
+      put :restart, id: build.id, format: :json
+    end
+
+    context "when success" do
+      let(:ret) { build }
+
+      it { should be_success }
+      its(:body) { should be_blank }
+    end
+
+    context "when fail" do
+      let(:ret) { nil }
+
+      its(:response_code) { should eq 422 }
+      its(:body) { should be_blank }
+    end
   end
 
   context "POST /create" do

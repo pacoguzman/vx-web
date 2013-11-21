@@ -15,14 +15,25 @@ class ::Api::BuildsController < ::Api::BaseController
   end
 
   def show
-    @build = ::Build.find params[:id]
-    respond_with @build
+    respond_with build
+  end
+
+  def restart
+    if build.restart
+      respond_with build
+    else
+      head :unprocessable_entity
+    end
   end
 
   private
 
     def project
       @project ||= ::Project.find params[:project_id]
+    end
+
+    def build
+      @build ||= ::Build.find params[:id]
     end
 
 end

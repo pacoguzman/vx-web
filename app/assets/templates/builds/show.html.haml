@@ -36,6 +36,11 @@
         %dt Message
         %dd {{ build.message }}
 
+    .col-2
+      .pull-right
+        %a{ href: 'javascript://', title: "Restart Build", 'ng-click' => 'restartBuild(build)', 'ng-show' => 'isFinished(build)' }
+          %i.fa.fa-refresh.fa-2x
+
   .build-jobs{ 'ng-show' => "jobs.length != undefined" }
 
     %pre.app-build-jobs.small-text{ jobs: 'jobs' }
