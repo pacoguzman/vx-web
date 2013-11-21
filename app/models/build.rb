@@ -92,7 +92,7 @@ class Build < ActiveRecord::Base
     @numan_status_name ||= begin
       case status_name
       when :passed
-        if prev_finished_build_in_branch && status_has_changed?
+        if status_has_changed? && prev_finished_build_in_branch
           "Fixed"
         else
           status_name
