@@ -89,21 +89,17 @@ class Build < ActiveRecord::Base
   end
 
   def human_status_name
-    case status_name
-    when :passed
-      if status_has_changed?
-        "Fixed"
+    @numan_status_name ||= begin
+      case status_name
+      when :passed
+        if status_has_changed?
+          "Fixed"
+        else
+          status_name
+        end
       else
         status_name
-      end
-    when :failed, :errored
-      if status_has_changed?
-        "Still #{status_name}"
-      else
-        status_name.capitalize
-      end
-    else
-      status_name
+      end.to_s.capitalize
     end
   end
 

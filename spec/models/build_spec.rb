@@ -271,6 +271,35 @@ describe Build do
     end
   end
 
+  context "#human_status_name" do
+    subject { build.human_status_name }
+    [0,2,4,5].each do |s|
+      context "when status is #{s}" do
+        before { build.status = s }
+        it { should eq build.human_status_name.to_s.capitalize }
+      end
+    end
+
+    context "when status is 3" do
+      let(:prev) { create :build, status: prev_status }
+
+      before do
+        build.status = 3
+        stub(build).prev_completed_build_in_branch { prev }
+      end
+
+      context "and previous build is not passed" do
+        let(:prev_status) { 4 }
+        it { should eq 'Fixed' }
+      end
+
+      context "and previous build is passed" do
+        let(:prev_status) { 3 }
+        it { should eq 'Passed' }
+      end
+    end
+  end
+
 end
 
 # == Schema Information
