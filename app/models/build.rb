@@ -143,7 +143,7 @@ class Build < ActiveRecord::Base
           job.publish :destroyed
         end
 
-        self.delivery_to_notifier
+        self.delivery_to_fetcher
         self
       end
     end

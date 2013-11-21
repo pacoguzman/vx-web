@@ -59,6 +59,18 @@ describe "buildStore", ->
       expect(succVal).toEqual 'success'
 
 
+  describe "restart()", ->
+
+    beforeEach ->
+      $http.expectPUT('/api/builds/1/restart').respond('success')
+
+    it "should send PUT request", ->
+      $scope.$apply ->
+        builds.restart(1).then succ, fail
+      $http.flush()
+      expect(succVal).toEqual 'success'
+
+
   describe "all()", ->
 
     beforeEach ->

@@ -423,13 +423,12 @@ describe Build do
         expect(build_m[:event]).to eq :updated
       end
 
-      it "should delivery message to BuildNotifyConsumer" do
+      it "should delivery message to FetchBuildConsumer" do
         expect {
           subject
-        }.to change(BuildNotifyConsumer.messages, :count).to(1)
-        m = BuildNotifyConsumer.messages.first
-        expect(m["id"]).to eq b.id
-        expect(m["status"]).to eq 0
+        }.to change(FetchBuildConsumer.messages, :count).to(1)
+        m = FetchBuildConsumer.messages.first
+        expect(m).to eq b.id
       end
     end
 
@@ -458,7 +457,7 @@ describe Build do
         }.to_not change(WsPublishConsumer.messages, :count)
         expect {
           subject
-        }.to_not change(BuildNotifyConsumer.messages, :count)
+        }.to_not change(FetchBuildConsumer.messages, :count)
       end
     end
   end
