@@ -75,22 +75,22 @@ describe BuildNotifier do
 
     context "when build is started" do
       let(:status) { 2 }
-      it { should eq 'Build #1 started' }
+      it { should eq 'EvroneCI build #1 started' }
     end
 
     context "when build is passed" do
       let(:status) { 3 }
-      it { should eq "Build #1 successed in 1s" }
+      it { should eq "EvroneCI build #1 successed" }
     end
 
     context "when build is failed" do
       let(:status) { 4 }
-      it { should eq "Build #1 failed in 1s" }
+      it { should eq "EvroneCI build #1 failed" }
     end
 
     context "when build is errored" do
       let(:status) { 5 }
-      it { should eq "Build #1 errored in 1s" }
+      it { should eq "EvroneCI build #1 broken" }
     end
   end
 
