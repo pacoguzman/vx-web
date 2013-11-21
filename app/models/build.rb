@@ -15,6 +15,7 @@ class Build < ActiveRecord::Base
   after_create :publish_created
 
   default_scope ->{ order 'builds.number DESC' }
+  scope :completed, -> { where(status: [3,4,5]) }
 
   state_machine :status, initial: :initialized do
 
@@ -63,10 +64,49 @@ class Build < ActiveRecord::Base
     sha.to_s[0..8]
   end
 
+  def prev_completed_build_in_branch
+    @prev_completed_build_in_branch ||=
+      Build.completed
+           .where(project_id: project_id)
+           .where(branch: branch)
+           .where("number < ?", number)
+           .order("number DESC")
+           .first
+  end
+
+  def completed?
+    [3,4,5].include?(status)
+  end
+
+  def status_has_changed?
+    completed? &&
+      prev_completed_build_in_branch &&
+      prev_completed_build_in_branch.status != status
+  end
+
+  def human_status_name
+    case status_name
+    when :finished
+      if status_has_changed?
+        "Fixed"
+      else
+        status_name
+      end
+    when :failed, :errored
+      if status_has_changed?
+        "Still #{status_name}"
+      else
+        status_name.capitalize
+      end
+    else
+      status_name
+    end
+  end
+
   private
 
     def assign_number
-      self.number = project.builds.maximum(:number).to_i + 1
+      self.number ||= project.builds.maximum(:number).to_i + 1
     end
 
     def assign_sha

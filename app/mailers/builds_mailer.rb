@@ -1,7 +1,7 @@
 class BuildsMailer < ActionMailer::Base
   add_template_helper(ApplicationHelper)
 
-  default from: "from@example.com"
+  default from: "\"EvroneCI\" <no-reply@#{Rails.configuration.x.hostname}>"
 
   def status_email(build, recipients)
     @build = build

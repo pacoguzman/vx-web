@@ -193,7 +193,82 @@ describe Build do
         expect(subject).to be
       end
     end
+  end
 
+  context "#prev_completed_build_in_branch" do
+    let(:build) { create :build, number: 2, branch: 'foo', status: 3 }
+    subject { build.prev_completed_build_in_branch }
+
+    context "when build exists" do
+      let!(:prev_build) { create :build, number: 1, branch: 'foo', project: build.project, status: 3 }
+      let!(:next_build) { create :build, number: 3, branch: 'foo', project: build.project, status: 3 }
+
+      it { should eq prev_build }
+    end
+
+    context "when build is not exists" do
+      let!(:p1) { create :build, number: 1, branch: 'bar', project_id: build.project_id, status: 3 }
+      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: build.project_id + 1, status: 3 }
+      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: build.project_id, status: 2 }
+
+      it { should be_nil }
+    end
+  end
+
+  context "#completed?" do
+    subject { build.completed? }
+    [0,2].each do |s|
+      context "when status is #{s}" do
+        before { build.status = s }
+        it { should be_false }
+      end
+    end
+
+    [3,4,5].each do |s|
+      context "when status is #{s}" do
+        before { build.status = s }
+        it { should be_true }
+      end
+    end
+  end
+
+  context "#status_has_changed?" do
+    let(:prev) { Build.new status: prev_status }
+    subject { build.status_has_changed? }
+
+    before do
+      stub(build).prev_completed_build_in_branch { prev }
+    end
+
+    context "when status is different" do
+      let(:prev_status) { 3 }
+
+      before do
+        build.status = 4
+      end
+
+      it { should be_true }
+    end
+
+    context "when status is same" do
+      let(:prev_status) { 3 }
+
+      before do
+        build.status = 3
+      end
+
+      it { should be_false }
+    end
+
+    context "when prev build is nil" do
+      let(:prev) { nil }
+
+      before do
+        build.status = 3
+      end
+
+      it { should be_false }
+    end
   end
 
 end
