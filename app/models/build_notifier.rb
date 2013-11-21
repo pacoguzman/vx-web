@@ -21,7 +21,7 @@ class BuildNotifier
       case status
       when 'started'
         "Build ##{n} started"
-      when 'finished'
+      when 'passed'
         "Build ##{n} successed in #{tm}s"
       when 'failed'
         "Build ##{n} failed in #{tm}s"

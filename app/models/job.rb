@@ -14,7 +14,7 @@ class Job < ActiveRecord::Base
 
     state :initialized,   value: 0
     state :started,       value: 2
-    state :finished,      value: 3
+    state :passed,        value: 3
     state :failed,        value: 4
     state :errored,       value: 5
 
@@ -22,8 +22,8 @@ class Job < ActiveRecord::Base
       transition :initialized => :started
     end
 
-    event :finish do
-      transition :started => :finished
+    event :pass do
+      transition :started => :passed
     end
 
     event :decline do

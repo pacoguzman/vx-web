@@ -10,7 +10,7 @@ describe BuildNotifier do
 
   context "just created" do
     its(:build_id)  { should eq b.id }
-    its(:status)    { should eq 'finished' }
+    its(:status)    { should eq 'passed' }
     its("build.id") { should eq b.id }
   end
 
@@ -28,7 +28,7 @@ describe BuildNotifier do
       it { should eq 'Build #1 started' }
     end
 
-    context "when build is finished" do
+    context "when build is passed" do
       let(:status) { 3 }
       it { should eq "Build #1 successed in 1s" }
     end
@@ -84,7 +84,7 @@ describe BuildNotifier do
         it { should eq 'pending' }
       end
 
-      context "when build is finished" do
+      context "when build is passed" do
         let(:status) { 3 }
         it { should eq 'success' }
       end

@@ -22,7 +22,7 @@ module Github
       case status
       when 'started'
         'pending'
-      when 'finished'
+      when 'passed'
         'success'
       when 'failed'
         'failure'

@@ -13,7 +13,7 @@ describe BuildsMailer do
 
   subject { mail }
 
-  its(:subject) { should eq '[Finished] ci-worker-test-repo#1 (MyString - MyString)' }
+  its(:subject) { should eq '[Passed] ci-worker-test-repo#1 (MyString - MyString)' }
   its(:to)      { should eq ["example@exaple.com"] }
   its(:body)    { should match(/#1/) }
   its(:body)    { should match(/#{ build.project }/) }

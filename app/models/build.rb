@@ -21,7 +21,7 @@ class Build < ActiveRecord::Base
 
     state :initialized,   value: 0
     state :started,       value: 2
-    state :finished,      value: 3
+    state :passed,        value: 3
     state :failed,        value: 4
     state :errored,       value: 5
 
@@ -29,8 +29,8 @@ class Build < ActiveRecord::Base
       transition :initialized => :started
     end
 
-    event :finish do
-      transition :started => :finished
+    event :pass do
+      transition :started => :passed
     end
 
     event :decline do
@@ -41,7 +41,7 @@ class Build < ActiveRecord::Base
       transition [:initialized, :started] => :errored
     end
 
-    after_transition any => [:started, :finished, :failed, :errored] do |build, transition|
+    after_transition any => [:started, :passed, :failed, :errored] do |build, transition|
       build.delivery_to_notifier(transition.to_name.to_s)
 
       build.publish
@@ -86,7 +86,7 @@ class Build < ActiveRecord::Base
 
   def human_status_name
     case status_name
-    when :finished
+    when :passed
       if status_has_changed?
         "Fixed"
       else

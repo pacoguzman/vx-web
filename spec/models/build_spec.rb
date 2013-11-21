@@ -152,12 +152,12 @@ describe Build do
       end
     end
 
-    context "after transition to finished" do
+    context "after transition to passed" do
       let(:status) { 2 }
-      subject { b.finish }
+      subject { b.pass }
 
       it "should delivery message to notifier" do
-        mock(b).delivery_to_notifier("finished") { true }
+        mock(b).delivery_to_notifier("passed") { true }
         expect(subject).to be
       end
 

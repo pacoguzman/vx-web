@@ -66,7 +66,7 @@ class JobUpdater
         job.start
         job.started_at  = tm
       when 3 # finished
-        job.finish
+        job.pass
         job.finished_at = tm
       when 4 # failed
         job.decline
@@ -89,7 +89,7 @@ class JobUpdater
       case new_build_status
       when 3
         build.finished_at = tm
-        build.finish!
+        build.pass!
       when 4
         build.finished_at = tm
         build.decline!
