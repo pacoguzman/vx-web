@@ -83,8 +83,10 @@ describe Build do
     context "#delivery_to_notifier" do
       it "should be success" do
         expect{
-          b.delivery_to_notifier("started")
+          b.delivery_to_notifier
         }.to change(BuildNotifyConsumer.messages, :count).by(1)
+        msg = BuildNotifyConsumer.messages.last
+        expect(msg).to eq b.attributes
       end
     end
 
@@ -140,9 +142,12 @@ describe Build do
       let(:status) { 0 }
       subject { b.start }
 
-      it "should delivery message to notifier" do
-        mock(b).delivery_to_notifier("started") { true }
-        expect(subject).to be
+      it "should delivery message to BuildNotifyConsumer" do
+        expect{
+          subject
+        }.to change(BuildNotifyConsumer.messages, :count).by(1)
+        msg = BuildNotifyConsumer.messages.last
+        expect(msg["status"]).to eq 2
       end
 
       it "should delivery messages to WsPublishConsumer" do
@@ -156,9 +161,12 @@ describe Build do
       let(:status) { 2 }
       subject { b.pass }
 
-      it "should delivery message to notifier" do
-        mock(b).delivery_to_notifier("passed") { true }
-        expect(subject).to be
+      it "should delivery message to BuildNotifyConsumer" do
+        expect{
+          subject
+        }.to change(BuildNotifyConsumer.messages, :count).by(1)
+        msg = BuildNotifyConsumer.messages.last
+        expect(msg["status"]).to eq 3
       end
 
       it "should delivery messages to WsPublishConsumer" do
@@ -172,9 +180,12 @@ describe Build do
       let(:status) { 2 }
       subject { b.decline }
 
-      it "should delivery message to notifier" do
-        mock(b).delivery_to_notifier("failed") { true }
-        expect(subject).to be
+      it "should delivery message to BuildNotifyConsumer" do
+        expect{
+          subject
+        }.to change(BuildNotifyConsumer.messages, :count).by(1)
+        msg = BuildNotifyConsumer.messages.last
+        expect(msg["status"]).to eq 4
       end
 
       it "should delivery messages to WsPublishConsumer" do
@@ -188,9 +199,18 @@ describe Build do
       let(:status) { 2 }
       subject { b.error }
 
-      it "should delivery message to notifier" do
-        mock(b).delivery_to_notifier("errored") { true }
-        expect(subject).to be
+      it "should delivery message to BuildNotifyConsumer" do
+        expect{
+          subject
+        }.to change(BuildNotifyConsumer.messages, :count).by(1)
+        msg = BuildNotifyConsumer.messages.last
+        expect(msg["status"]).to eq 5
+      end
+
+      it "should delivery messages to WsPublishConsumer" do
+        expect{
+          subject
+        }.to change(WsPublishConsumer.messages, :count).by(2)
       end
     end
   end

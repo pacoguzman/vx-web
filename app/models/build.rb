@@ -43,7 +43,7 @@ class Build < ActiveRecord::Base
     end
 
     after_transition any => [:started, :passed, :failed, :errored] do |build, transition|
-      build.delivery_to_notifier(transition.to_name.to_s)
+      build.delivery_to_notifier
 
       build.publish
       build.project.publish
