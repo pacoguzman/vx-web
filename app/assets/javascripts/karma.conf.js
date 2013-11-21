@@ -13,7 +13,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      "lib/underscore-1.4.4.js",
+      "lib/underscore-1.5.2.js",
       "lib/moment-2.2.1.js",
       "lib/angular-1.2.1.js",
       "lib/angular-mocks-1.2.1.js",

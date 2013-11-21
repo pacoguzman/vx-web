@@ -1,4 +1,4 @@
-//= require lib/underscore-1.4.4
+//= require lib/underscore-1.5.2
 //= require lib/moment-2.2.1
 //= require lib/ansiparse
 //
