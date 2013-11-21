@@ -272,7 +272,10 @@ describe Build do
   end
 
   context "#human_status_name" do
+    let(:prev) { create :build, status: prev_status }
+
     subject { build.human_status_name }
+
     [0,2,4,5].each do |s|
       context "when status is #{s}" do
         before { build.status = s }
@@ -281,8 +284,6 @@ describe Build do
     end
 
     context "when status is 3" do
-      let(:prev) { create :build, status: prev_status }
-
       before do
         build.status = 3
         stub(build).prev_finished_build_in_branch { prev }
@@ -301,6 +302,40 @@ describe Build do
       context "and previous build is passed" do
         let(:prev_status) { 3 }
         it { should eq 'Passed' }
+      end
+    end
+
+    context "when status is 4" do
+      before do
+        build.status = 4
+        stub(build).prev_finished_build_in_branch { prev }
+      end
+
+      context "and previous build is failed" do
+        let(:prev_status) { 4 }
+        it { should eq 'Still Failing' }
+      end
+
+      context "and previous build is not failed" do
+        let(:prev_status) { 3 }
+        it { should eq 'Failed' }
+      end
+    end
+
+    context "when status is 5" do
+      before do
+        build.status = 5
+        stub(build).prev_finished_build_in_branch { prev }
+      end
+
+      context "and previous build is errored" do
+        let(:prev_status) { 5 }
+        it { should eq 'Still Broken' }
+      end
+
+      context "and previous build is not errored" do
+        let(:prev_status) { 3 }
+        it { should eq 'Broken' }
       end
     end
   end

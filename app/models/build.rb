@@ -98,9 +98,21 @@ class Build < ActiveRecord::Base
         else
           status_name
         end
+      when :errored
+        if status_has_changed?
+          'Broken'
+        else
+          "Still Broken"
+        end
+      when :failed
+        if status_has_changed?
+          status_name
+        else
+          "Still Failing"
+        end
       else
         status_name
-      end.to_s.capitalize
+      end.to_s.titleize
     end
   end
 
