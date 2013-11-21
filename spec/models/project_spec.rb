@@ -107,7 +107,7 @@ describe Project do
     let(:user)    { create :user }
     subject { project.subscribe(user) }
 
-    context "when subscribtion exists" do
+    context "when subscription exists" do
       let!(:sub) { create :project_subscription, user: user, project: project, subscribe: false }
       it { should be_true }
       it "should subscribe user" do
@@ -117,7 +117,7 @@ describe Project do
       end
     end
 
-    context "when subscribtion does not exists" do
+    context "when subscription does not exists" do
       it { should be_true }
       it "should subscribe user" do
         expect {
@@ -134,7 +134,7 @@ describe Project do
     let(:user)    { create :user }
     subject { project.unsubscribe(user) }
 
-    context "when subscribtion exists" do
+    context "when subscription exists" do
       let!(:sub) { create :project_subscription, user: user, project: project, subscribe: true }
       it { should be_true }
       it "should unsubscribe user" do
@@ -144,7 +144,7 @@ describe Project do
       end
     end
 
-    context "when subscribtion does not exists" do
+    context "when subscription does not exists" do
       it { should be_true }
       it "should unsubscribe user" do
         expect {

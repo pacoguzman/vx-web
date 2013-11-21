@@ -69,19 +69,19 @@ class Project < ActiveRecord::Base
   end
 
   def subscribe(user)
-    subscribtion = find_or_build_subscribtion_for_user(user)
-    subscribtion.update subscribe: true
+    subscription = find_or_build_subscription_for_user(user)
+    subscription.update subscribe: true
   end
 
   def unsubscribe(user)
-    subscribtion = find_or_build_subscribtion_for_user(user)
-    subscribtion.update subscribe: false
+    subscription = find_or_build_subscription_for_user(user)
+    subscription.update subscribe: false
   end
 
   private
-    def find_or_build_subscribtion_for_user(user)
-      subscribtion = subscriptions.find_by user_id: user.id
-      subscribtion ||= subscriptions.build user: user
+    def find_or_build_subscription_for_user(user)
+      subscription = subscriptions.find_by user_id: user.id
+      subscription ||= subscriptions.build user: user
     end
 
 end

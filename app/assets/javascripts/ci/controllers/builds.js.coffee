@@ -10,5 +10,5 @@ CI.controller 'BuildsCtrl', ($scope, appMenu, buildStore, projectStore, $routePa
     buildStore.create($routeParams.projectId).then (build) ->
       $location.path "/builds/#{build.id}"
 
-  $scope.changeProjectSubscribtion = (project) ->
+  $scope.changeProjectSubscription = (project) ->
     console.log project

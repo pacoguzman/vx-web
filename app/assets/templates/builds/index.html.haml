@@ -12,7 +12,7 @@
     .col-4
       .pull-right
         %label.small-text.project-subscribe
-          %input{ type: "checkbox", 'ng-model' => 'project.subscribed', 'ng-change' => 'changeProjectSubscribtion(project)' }
+          %input{ type: "checkbox", 'ng-model' => 'project.subscribed', 'ng-change' => 'changeProjectSubscription(project)' }
           Watch
         %a.btn.btn-small.btn-primary{ 'ng-show' => "project", "ng-click" => "createBuild()" }
           Create Build

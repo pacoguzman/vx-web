@@ -1,4 +1,4 @@
-class Api::ProjectSubscribtionsController < Api::BaseController
+class Api::ProjectSubscriptionsController < Api::BaseController
 
   respond_to :json
 

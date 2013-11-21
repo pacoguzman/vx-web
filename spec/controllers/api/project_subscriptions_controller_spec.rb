@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Api::ProjectSubscribtionsController do
+describe Api::ProjectSubscriptionsController do
   let(:user)    { create :user }
   let(:project) { create :project }
 
