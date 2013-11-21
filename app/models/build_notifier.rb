@@ -42,16 +42,18 @@ class BuildNotifier
 
   def description
     if build
+      tm = build.duration.to_i
+      duration = tm > 0 ? " in #{tm}s" : ""
       n  = build.number
       case build.status_name
       when :started
-        "EvroneCI build ##{n} started"
+        "EvroneCI build ##{n} started and still running"
       when :passed
-        "EvroneCI build ##{n} successed"
+        "EvroneCI build ##{n} is successfully completed#{duration}"
       when :failed
-        "EvroneCI build ##{n} failed"
+        "EvroneCI build ##{n} failed#{duration}"
       when :errored
-        "EvroneCI build ##{n} broken"
+        "EvroneCI build ##{n} broken#{duration}"
       end
     end
   end
