@@ -65,10 +65,10 @@ describe Project do
 
     context "with builds" do
       before do
-        create :build, status: 0, project: project
-        create :build, status: 2, project: project
-        create :build, status: 3, project: project
-        create :build, status: 4, project: project
+        create :build, status: 0, project: project, number: 1
+        create :build, status: 2, project: project, number: 2
+        create :build, status: 3, project: project, number: 3
+        create :build, status: 4, project: project, number: 4
       end
       it { should eq :failed }
     end
