@@ -19,7 +19,7 @@ class BuildFetcher
   def perform
     if build
       create_perform_build_message_using_github
-      subscribe_by_email
+      subscribe_author_to_repo
     end
   end
 
