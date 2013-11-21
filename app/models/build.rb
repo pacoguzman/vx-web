@@ -15,7 +15,7 @@ class Build < ActiveRecord::Base
   after_create :publish_created
 
   default_scope ->{ order 'builds.number DESC' }
-  scope :completed, -> { where(status: [3,4,5]) }
+  scope :finished, -> { where(status: [3,4,5]) }
 
   state_machine :status, initial: :initialized do
 
@@ -64,9 +64,9 @@ class Build < ActiveRecord::Base
     sha.to_s[0..8]
   end
 
-  def prev_completed_build_in_branch
-    @prev_completed_build_in_branch ||=
-      Build.completed
+  def prev_finished_build_in_branch
+    @prev_finished_build_in_branch ||=
+      Build.finished
            .where(project_id: project_id)
            .where(branch: branch)
            .where("number < ?", number)
@@ -74,14 +74,14 @@ class Build < ActiveRecord::Base
            .first
   end
 
-  def completed?
+  def finished?
     [3,4,5].include?(status)
   end
 
   def status_has_changed?
-    if completed?
-      if prev_completed_build_in_branch
-        prev_completed_build_in_branch.status != status
+    if finished?
+      if prev_finished_build_in_branch
+        prev_finished_build_in_branch.status != status
       else
         true
       end
@@ -92,7 +92,7 @@ class Build < ActiveRecord::Base
     @numan_status_name ||= begin
       case status_name
       when :passed
-        if status_has_changed?
+        if prev_finished_build_in_branch && status_has_changed?
           "Fixed"
         else
           status_name

@@ -195,9 +195,9 @@ describe Build do
     end
   end
 
-  context "#prev_completed_build_in_branch" do
+  context "#prev_finished_build_in_branch" do
     let(:build) { create :build, number: 2, branch: 'foo', status: 3 }
-    subject { build.prev_completed_build_in_branch }
+    subject { build.prev_finished_build_in_branch }
 
     context "when build exists" do
       let!(:prev_build) { create :build, number: 1, branch: 'foo', project: build.project, status: 3 }
@@ -215,8 +215,8 @@ describe Build do
     end
   end
 
-  context "#completed?" do
-    subject { build.completed? }
+  context "#finished?" do
+    subject { build.finished? }
     [0,2].each do |s|
       context "when status is #{s}" do
         before { build.status = s }
@@ -237,7 +237,7 @@ describe Build do
     subject { build.status_has_changed? }
 
     before do
-      stub(build).prev_completed_build_in_branch { prev }
+      stub(build).prev_finished_build_in_branch { prev }
     end
 
     context "when status is different" do
@@ -285,12 +285,17 @@ describe Build do
 
       before do
         build.status = 3
-        stub(build).prev_completed_build_in_branch { prev }
+        stub(build).prev_finished_build_in_branch { prev }
       end
 
       context "and previous build is not passed" do
         let(:prev_status) { 4 }
         it { should eq 'Fixed' }
+      end
+
+      context "and previous build is not exists" do
+        let(:prev) { nil }
+        it { should eq 'Passed' }
       end
 
       context "and previous build is passed" do
