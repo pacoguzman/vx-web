@@ -13,7 +13,7 @@ module Github
           build.sha,
           github_commit_status,
           description: description,
-          target_url:  build_url
+          target_url:  build.public_url
         )
       end
     end

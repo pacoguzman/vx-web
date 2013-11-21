@@ -31,12 +31,6 @@ class BuildNotifier
     end
   end
 
-  def build_url
-    if build
-      "http://#{Rails.configuration.x.hostname}/builds/#{build.id}"
-    end
-  end
-
   private
 
     def build

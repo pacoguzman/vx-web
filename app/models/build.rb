@@ -1,6 +1,7 @@
 class Build < ActiveRecord::Base
 
-  include BuildMessages
+  include ::BuildMessages
+  include ::PublicUrl::Build
 
   belongs_to :project, class_name: "::Project"
   has_many :jobs, class_name: "::Job", dependent: :destroy

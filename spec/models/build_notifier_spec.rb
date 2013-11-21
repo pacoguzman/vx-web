@@ -44,17 +44,6 @@ describe BuildNotifier do
     end
   end
 
-  context "#build_url" do
-    subject { notifier.build_url }
-
-    before do
-      mock(Rails.configuration.x).hostname { 'test.local' }
-    end
-
-    it { should eq "http://test.local/builds/#{b.id}" }
-  end
-
-
   context "(github)" do
     let(:identity) { create :user_identity, :github }
     before do
@@ -102,7 +91,7 @@ describe BuildNotifier do
 
     def stub_github_commit_status_request
       stub_request(:post, "https://api.github.com/repos/ci-worker-test-repo/statuses/MyString").
-        with(:body => "{\"description\":\"#{notifier.description}\",\"target_url\":\"#{notifier.build_url}\",\"state\":\"success\"}").
+        with(:body => "{\"description\":\"#{notifier.description}\",\"target_url\":\"#{b.public_url}\",\"state\":\"success\"}").
         to_return(:status => 200, :body => "{}", :headers => {})
     end
 

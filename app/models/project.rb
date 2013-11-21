@@ -3,6 +3,7 @@ require 'securerandom'
 class Project < ActiveRecord::Base
 
   include ::Github::Project
+  include ::PublicUrl::Project
 
   belongs_to :identity, class_name: "::UserIdentity"
   has_many :builds, dependent: :destroy, class_name: "::Build"
