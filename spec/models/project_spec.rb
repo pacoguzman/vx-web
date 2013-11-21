@@ -78,4 +78,28 @@ describe Project do
     end
   end
 
+  context "#subscribed_by?" do
+    let(:project) { create :project }
+    let(:user)    { create :user }
+    subject { project.subscribed_by?(user) }
+
+    context "when user subscribed" do
+      before do
+        create :project_subscription, user: user, project: project
+      end
+      it { should be_true }
+    end
+
+    context "when user is not subscribed" do
+      before do
+        create :project_subscription, user: user, project: project, subscribe: false
+      end
+      it { should be_false }
+    end
+
+    context "when subscription does not exists" do
+      it { should be_false }
+    end
+  end
+
 end

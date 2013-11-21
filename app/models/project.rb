@@ -64,6 +64,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def subscribed_by?(user)
+    !!subscriptions.where(user_id: user.id).pluck(:subscribe).first
+  end
+
 end
 
 # == Schema Information

@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
   helper_method :current_user,
                 :user_logged_in?
 
+  serialization_scope :current_user
+
   private
 
     def current_user
