@@ -102,4 +102,58 @@ describe Project do
     end
   end
 
+  context "#subscribe" do
+    let(:project) { create :project }
+    let(:user)    { create :user }
+    subject { project.subscribe(user) }
+
+    context "when subscribtion exists" do
+      let!(:sub) { create :project_subscription, user: user, project: project, subscribe: false }
+      it { should be_true }
+      it "should subscribe user" do
+        expect {
+          subject
+        }.to change{ sub.reload.subscribe }.to(true)
+      end
+    end
+
+    context "when subscribtion does not exists" do
+      it { should be_true }
+      it "should subscribe user" do
+        expect {
+          subject
+        }.to change(project.subscriptions, :count).by(1)
+        expect(project.subscriptions.first.subscribe).to be_true
+        expect(project.subscriptions.first.user).to eq user
+      end
+    end
+  end
+
+  context "#unsubscribe" do
+    let(:project) { create :project }
+    let(:user)    { create :user }
+    subject { project.unsubscribe(user) }
+
+    context "when subscribtion exists" do
+      let!(:sub) { create :project_subscription, user: user, project: project, subscribe: true }
+      it { should be_true }
+      it "should unsubscribe user" do
+        expect {
+          subject
+        }.to change{ sub.reload.subscribe }.to(false)
+      end
+    end
+
+    context "when subscribtion does not exists" do
+      it { should be_true }
+      it "should unsubscribe user" do
+        expect {
+          subject
+        }.to change(project.subscriptions, :count).by(1)
+        expect(project.subscriptions.first.subscribe).to be_false
+        expect(project.subscriptions.first.user).to eq user
+      end
+    end
+  end
+
 end

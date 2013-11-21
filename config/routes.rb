@@ -10,6 +10,7 @@ CiWeb::Application.routes.draw do
 
     resources :projects do
       resources :builds, only: [:index, :create]
+      resource :subscribe, only: [:create, :destroy], controller: "project_subscribtions"
     end
 
     resources :builds, only: [:show] do
