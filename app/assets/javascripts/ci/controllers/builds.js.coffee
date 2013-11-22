@@ -6,10 +6,6 @@ CI.controller 'BuildsCtrl', ($scope, appMenu, buildStore, projectStore, $routePa
   appMenu.define $scope.project, (p) ->
     appMenu.add p.name, "/projects/#{p.id}/builds"
 
-  $scope.createBuild = () ->
-    buildStore.create($routeParams.projectId).then (build) ->
-      $location.path "/builds/#{build.id}"
-
   $scope.projectSubscribeClass = (project) ->
     if project && project.subscribed
       'fa-star'
