@@ -7,6 +7,13 @@ describe UserSerializer do
   context "as_json" do
     subject { serializer.as_json.keys }
 
-    it { should eq [:id, :email, :name, :identities] }
+    it { should eq [:id, :email, :name, :project_subscriptions, :identities] }
+  end
+
+  context "#project_subscriptions" do
+    let!(:sub) { create :project_subscription, user: object }
+    subject { serializer.project_subscriptions }
+
+    it { should eq [sub.project_id] }
   end
 end

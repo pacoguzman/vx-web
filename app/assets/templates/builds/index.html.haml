@@ -11,16 +11,13 @@
 
     .col-4
       .pull-right
-
-        %a.project-subscribe{ href: 'javascript://', 'ng-click' => 'changeProjectSubscription(project)' }
-          %i.fa.fa-2x{ 'ng-class' => "projectSubscribeClass(project)" }
+        .project-subscribe.app-project-subscribe{ 'project' => "project" }
 
   %table.tasks-table.table.small-text
 
     %thead
       %th No.
       %th Commit
-      %th Branch
       %th Duration
       %th Finished At
 

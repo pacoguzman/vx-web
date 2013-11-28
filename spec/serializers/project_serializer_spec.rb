@@ -7,6 +7,6 @@ describe ProjectSerializer do
   context "as_json" do
     subject { serializer.as_json.keys }
 
-    it { should eq [:id, :name, :http_url, :description, :status, :subscribed] }
+    it { should eq [:id, :name, :http_url, :description, :status] }
   end
 end
