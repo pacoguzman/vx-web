@@ -39,7 +39,7 @@ describe Github::Repo do
 
   context "#unsubscribe" do
     let(:user)    { repo.user   }
-    let(:project) { Project.new }
+    let(:project) { create :project }
     subject { repo.unsubscribe }
 
     before do
@@ -67,6 +67,10 @@ describe Github::Repo do
 
         it "should change 'subscribed' to false" do
           expect{ subject }.to change(repo, :subscribed).to(false)
+        end
+
+        it "should destroy project" do
+          expect { subject }.to change(project, :persisted?).to(false)
         end
 
         it "should return true value" do

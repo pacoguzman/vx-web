@@ -36,8 +36,10 @@ class BuildNotifier
     project.subscriptions
            .active
            .joins(:user)
-           .select("users.email AS user_email")
-           .map(&:user_email)
+           .select("users.email AS user_email, users.name AS user_name")
+           .map do |s|
+             "\"#{s.user_name}\" <#{s.user_email}>"
+           end
   end
 
   def description

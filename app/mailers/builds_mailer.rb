@@ -4,7 +4,7 @@ class BuildsMailer < ActionMailer::Base
   default from: "\"EvroneCI\" <no-reply@#{Rails.configuration.x.hostname}>"
 
   def status_email(build, recipients)
-    @build = build
+    @build   = build
     @project = build.project
     mail(to: recipients, subject: build_subject(build))
   end

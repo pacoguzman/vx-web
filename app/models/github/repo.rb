@@ -31,6 +31,7 @@ class Github::Repo < ActiveRecord::Base
       update_attribute(:subscribed, false).or_rollback_transaction
 
       if project?
+        project.destroy
         user.remove_hook_from_github_project(project).or_rollback_transaction
         user.remove_deploy_key_from_github_project(project).or_rollback_transaction
       end

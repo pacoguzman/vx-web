@@ -17,6 +17,8 @@ class Project < ActiveRecord::Base
   before_validation :generate_token,      on: :create
   before_validation :generate_deploy_key, on: :create
 
+  after_destroy :publish_destroyed
+
 
   class << self
     def deploy_key_name
@@ -79,9 +81,14 @@ class Project < ActiveRecord::Base
   end
 
   private
+
     def find_or_build_subscription_for_user(user)
       subscription = subscriptions.find_by user_id: user.id
       subscription ||= subscriptions.build user: user
+    end
+
+    def publish_destroyed
+      publish :destroyed
     end
 
 end
