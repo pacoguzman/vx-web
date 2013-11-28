@@ -24,3 +24,15 @@ class ProjectSubscription < ActiveRecord::Base
 
 end
 
+# == Schema Information
+#
+# Table name: project_subscriptions
+#
+#  id         :integer          not null, primary key
+#  project_id :integer          not null
+#  user_id    :integer          not null
+#  subscribe  :boolean          default(TRUE), not null
+#  created_at :datetime
+#  updated_at :datetime
+#
+
