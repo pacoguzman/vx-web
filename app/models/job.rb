@@ -1,7 +1,7 @@
 class Job < ActiveRecord::Base
 
   belongs_to :build, class_name: "::Build"
-  has_many :logs, class_name: "::JobLog", dependent: :destroy,
+  has_many :logs, class_name: "::JobLog", dependent: :delete_all,
     extend: AppendLogMessage
 
   validates :build_id, :number, :status, presence: true
