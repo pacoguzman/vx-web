@@ -59,9 +59,9 @@ describe Project do
     end
   end
 
-  context "#last_build_status" do
+  context "#last_build" do
     let(:project) { create :project }
-    subject { project.last_build_status }
+    subject { project.last_build }
 
     context "with builds" do
       before do
@@ -70,11 +70,44 @@ describe Project do
         create :build, status: 3, project: project, number: 3
         create :build, status: 4, project: project, number: 4
       end
+      its(:number) { should eq 4 }
+    end
+
+    context "without builds" do
+      it { should be_nil }
+    end
+  end
+
+  context "#last_build_status" do
+    let(:build) { Build.new status: 4 }
+    subject { project.last_build_status }
+
+    context "with builds" do
+      before do
+        mock(project).last_build.twice { build }
+      end
       it { should eq :failed }
     end
 
     context "without builds" do
       it { should eq :unknown }
+    end
+  end
+
+  context "#last_build_created_at" do
+    let(:tm) { Time.now }
+    let(:build) { Build.new created_at: tm }
+    subject { project.last_build_created_at }
+
+    context "with builds" do
+      before do
+        mock(project).last_build.twice { build }
+      end
+      it { should eq tm }
+    end
+
+    context "without builds" do
+      it { should be_nil }
     end
   end
 

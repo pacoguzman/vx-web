@@ -7,14 +7,14 @@
 
       %ul.projects-list.list-group
 
-        %li.project.list-group-item{ 'ng-repeat' => "project in projects" }
+        %li.project.list-group-item{ 'ng-repeat' => "project in projects | orderBy:'last_build_created_at':true" }
           .pull-right.app-task-status{ 'task' => 'project'}
 
           %a{ 'ng-href' => "/projects/{{project.id}}/builds" }
             {{project.name}}
 
           %br
-          %small {{project.description || "[no description available]"}}
+          %small {{ project.last_build_created_at | fromNow }}
 
     .col-4
       .projects-add-new.pull-right
