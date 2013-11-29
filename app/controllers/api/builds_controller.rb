@@ -20,7 +20,7 @@ class ::Api::BuildsController < ::Api::BaseController
 
   def restart
     if build.restart
-      respond_with build
+      respond_with build, location: [:api, build]
     else
       head :unprocessable_entity
     end

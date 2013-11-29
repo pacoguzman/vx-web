@@ -35,7 +35,8 @@ CI.service 'buildStore',
         re.data
 
     restart = (buildId) ->
-      $http.put("/api/builds/#{buildId}/restart").then (re) ->
+      $http.post("/api/builds/#{buildId}/restart").then (re) ->
+        item(buildId).update re.data, re.data.project_id
         re.data
 
     all:     all

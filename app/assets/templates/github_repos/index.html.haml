@@ -12,8 +12,7 @@
 
   .github-repos-list
 
-    .github-repos-empty{ 'ng-hide' => 'repos.length > 0' }
-      No repositories loaded
+    .ajax-loader{ 'ng-hide' => 'repos.length != undefined' }
 
     .github-repo.small-text{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30" }
 

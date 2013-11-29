@@ -60,16 +60,27 @@ describe "buildStore", ->
 
 
   describe "restart()", ->
+    loadedObj =
+      a: "loaded"
 
-    beforeEach ->
-      $http.expectPUT('/api/builds/1/restart').respond('success')
+    restartedObj =
+      a: "restarted"
 
     it "should send PUT request", ->
+      $http.expectGET('/api/builds/1').respond(loadedObj)
       $scope.$apply ->
-        builds.restart(1).then succ, fail
+        builds.one(1).then succ, fail
       $http.flush()
-      expect(succVal).toEqual 'success'
+      expect(succVal.a).toEqual 'loaded'
 
+      $http.expectPOST('/api/builds/1/restart').respond(restartedObj)
+      $scope.$apply ->
+        builds.restart(1)
+      $http.flush()
+      expect(succVal.a).toEqual 'restarted'
+
+      builds.one(1).then succ, fail
+      expect(succVal.a).toEqual 'restarted'
 
   describe "all()", ->
 

@@ -28,19 +28,19 @@ describe Api::BuildsController do
     its(:body) { should_not be_blank }
   end
 
-  context "PUT /restart" do
+  context "POST /restart" do
     before do
       any_instance_of(Build) do |b|
         mock(b).restart { ret }
       end
-      put :restart, id: build.id, format: :json
+      post :restart, id: build.id, format: :json
     end
 
     context "when success" do
       let(:ret) { build }
 
       it { should be_success }
-      its(:body) { should be_blank }
+      its(:body) { should_not be_blank }
     end
 
     context "when fail" do

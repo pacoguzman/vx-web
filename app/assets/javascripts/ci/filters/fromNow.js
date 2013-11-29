@@ -4,7 +4,7 @@ angular.module('CI').
         if (tm) {
           return moment(tm).fromNow();
         } else {
-          return "";
+          return "- ; -";
         }
       };
   });
