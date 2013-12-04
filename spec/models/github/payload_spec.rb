@@ -36,6 +36,22 @@ describe Github::Payload do
     its(:pull_request_base_repo_id){ should eq 7155123 }
   end
 
+  context "tag?" do
+    let(:content) { read_json_fixture("github/push_tag.json") }
+    subject { payload.tag? }
+    it { should be_true }
+
+    context "when regular push" do
+      let(:content) { read_json_fixture("github/push.json") }
+      it { should be_false }
+    end
+
+    context "when pull request" do
+      let(:content) { read_json_fixture("github/pull_request.json") }
+      it { should be_false }
+    end
+  end
+
   context "closed_pull_request?" do
     subject { payload.closed_pull_request? }
     context "when state is closed" do
@@ -64,6 +80,7 @@ describe Github::Payload do
 
   context "ignore?" do
     subject { payload.ignore? }
+
     context "when pull request" do
       let(:content) { read_json_fixture("github/foreign_pull_request.json") }
       it {  should be_false}
@@ -87,6 +104,13 @@ describe Github::Payload do
       context "and deleted branch" do
         before do
           mock(payload).head{ '0000000000000000000000000000000000000000' }
+        end
+        it { should be_true }
+      end
+
+      context "and tag created" do
+        before do
+          mock(payload).tag? { true }
         end
         it { should be_true }
       end

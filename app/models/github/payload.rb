@@ -8,6 +8,10 @@ class Github::Payload
     key? "pull_request"
   end
 
+  def tag?
+    !pull_request? && self['ref'] =~ /^#{Regexp.escape 'refs/tags/'}/
+  end
+
   def pull_request_number
     if pull_request? && key?("number")
       self["number"]
@@ -78,7 +82,8 @@ class Github::Payload
     if pull_request?
       closed_pull_request? || !foreign_pull_request?
     else
-      head == '0000000000000000000000000000000000000000'
+      head == '0000000000000000000000000000000000000000' ||
+        tag?
     end
   end
 
