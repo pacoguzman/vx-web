@@ -58,7 +58,7 @@ class JobUpdater
         job.start!
       when 3 # finished
         job.finished_at = tm
-        job.pass!
+        job.pass! unless job.passed?
       when 4 # failed
         job.finished_at = tm
         job.decline!
