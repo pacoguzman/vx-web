@@ -8,13 +8,17 @@ module Github
 
     def create_github_commit_status
       if github && github_commit_status
-        github.create_status(
-          build.project.name,
-          build.sha,
-          github_commit_status,
-          description: description,
-          target_url:  build.public_url
-        )
+        begin
+          github.create_status(
+            build.project.name,
+            build.sha,
+            github_commit_status,
+            description: description,
+            target_url:  build.public_url
+          )
+        rescue Octokit::UnprocessableEntity => e
+          Rails.logger.error "ERROR: #{e.inspect}"
+        end
       end
     end
 
