@@ -53,9 +53,7 @@ class Project < ActiveRecord::Base
   end
 
   def public_deploy_key
-    @public_deploy_key ||= SSHKey.new(deploy_key, comment: deploy_key_name).then do |s|
-      s.ssh_public_key
-    end
+    @public_deploy_key ||= SSHKey.new(deploy_key, comment: deploy_key_name).try(:ssh_public_key)
   end
 
   def last_build

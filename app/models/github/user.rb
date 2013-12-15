@@ -8,7 +8,7 @@ module Github::User
   end
 
   def add_hook_to_github_project(project)
-    github.then do |g|
+    github.try do |g|
       config = {
         url:           project.hook_url,
         secret:        project.token,
@@ -20,7 +20,7 @@ module Github::User
   end
 
   def add_deploy_key_to_github_project(project)
-    github.then do |g|
+    github.try do |g|
       g.add_deploy_key(project.name,
                        project.deploy_key_name,
                        project.public_deploy_key)
@@ -28,7 +28,7 @@ module Github::User
   end
 
   def remove_hook_from_github_project(project)
-    github.then do |g|
+    github.try do |g|
       g.hooks(project.name).select do |hook|
         if url = hook.config.rels[:self]
           url.href =~ /#{Regexp.escape Rails.configuration.x.hostname}\//
@@ -40,7 +40,7 @@ module Github::User
   end
 
   def remove_deploy_key_from_github_project(project)
-    github.then do |g|
+    github.try do |g|
       g.deploy_keys(project.name).select do |key|
         key.title == project.deploy_key_name
       end.map do |key|
@@ -60,7 +60,7 @@ module Github::User
   end
 
   def github_organizations
-    github.then(&:organizations) || []
+    github.try(&:organizations) || []
   end
 
   def sync_github_repos!
@@ -94,7 +94,7 @@ module Github::User
   private
 
     def create_github_session
-      identities.find_by_provider(:github).then do |i|
+      identities.find_by_provider(:github).try do |i|
         Octokit::Client.new(login: i.login, access_token: i.token)
       end
     end

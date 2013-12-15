@@ -63,7 +63,7 @@ class Github::Repo < ActiveRecord::Base
   class << self
 
     def fetch_for_organization(user, organization)
-      user.github.then do |g|
+      user.github.try do |g|
         g.organization_repositories(organization).reject do |repo|
           not repo.permissions.admin
         end.map do |repo|
@@ -73,7 +73,7 @@ class Github::Repo < ActiveRecord::Base
     end
 
     def fetch_for_user(user)
-      user.github.then do |g|
+      user.github.try do |g|
         g.repositories.map do |repo|
           Github::Repo.build_from_attributes user, repo
         end
