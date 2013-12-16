@@ -1,7 +1,7 @@
 class BuildsConsumer
 
-  include Evrone::Common::AMQP::Consumer
+  include Vx::Common::AMQP::Consumer
 
-  exchange 'ci.builds'
+  exchange 'vx.builds'
 
 end

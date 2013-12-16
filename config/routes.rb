@@ -1,4 +1,4 @@
-CiWeb::Application.routes.draw do
+VxWeb::Application.routes.draw do
 
   namespace :api do
 

@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-CiWeb::Application.config.secret_key_base = 'c49f21a5f91bb92f24f03a2bb1ecc53d0bc205a02761b465e592deea643b689c55428a40648cfd1a03a8b9c3090123ab9e5bbc922f4407d195b5bee4fdd62c4d'
+VxWeb::Application.config.secret_key_base = 'c49f21a5f91bb92f24f03a2bb1ecc53d0bc205a02761b465e592deea643b689c55428a40648cfd1a03a8b9c3090123ab9e5bbc922f4407d195b5bee4fdd62c4d'

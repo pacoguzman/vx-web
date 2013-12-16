@@ -4,12 +4,12 @@ require File.expand_path("../../config/environment", __FILE__)
 
 trap('INT') {
   Thread.new do
-    Evrone::Common::AMQP.shutdown
-    Evrone::Common::AMQP::Supervisor::Threaded.shutdown
+    Vx::Common::AMQP.shutdown
+    Vx::Common::AMQP::Supervisor::Threaded.shutdown
   end
 }
 
-Evrone::Common::AMQP::Supervisor::Threaded.build(
+Vx::Common::AMQP::Supervisor::Threaded.build(
   FetchBuildConsumer   => 2,
   BuildNotifyConsumer  => 1,
   BuildStatusConsumer  => 1,

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe JobUpdater do
   let(:message_attributes) { {} }
   let(:message)  {
-    Evrone::CI::Message::JobStatus.test_message(
+    Vx::Message::JobStatus.test_message(
       message_attributes
     )
   }

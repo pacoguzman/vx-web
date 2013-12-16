@@ -100,7 +100,7 @@ describe Build do
   end
 
   context "find_or_create_job_by_status_message" do
-    let(:msg) { Evrone::CI::Message::JobStatus.test_message }
+    let(:msg) { Vx::Message::JobStatus.test_message }
     subject { b.find_or_create_job_by_status_message msg }
 
     context "when job does not exists" do

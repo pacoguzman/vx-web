@@ -4,8 +4,8 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
 require 'webmock/rspec'
-require 'evrone/ci/message/testing'
-require 'evrone/common/amqp/testing'
+require 'vx/message/testing'
+require 'vx/common/amqp/testing'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -30,7 +30,7 @@ RSpec.configure do |config|
   config.order = "random"
 
   config.before(:each) do
-    Evrone::Common::AMQP::Testing.clear
+    Vx::Common::AMQP::Testing.clear
   end
 
   config.before(:suite) do

@@ -1,9 +1,9 @@
 class BuildNotifyConsumer
 
-  include Evrone::Common::AMQP::Consumer
+  include Vx::Common::AMQP::Consumer
 
-  exchange 'ci.web.builds.notify'
-  queue    'ci.web.builds.notify'
+  exchange 'vx.web.builds.notify'
+  queue    'vx.web.builds.notify'
   ack      true
 
   model Hash

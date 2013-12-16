@@ -1,12 +1,12 @@
 class JobStatusConsumer
 
-  include Evrone::Common::AMQP::Consumer
+  include Vx::Common::AMQP::Consumer
 
-  exchange 'ci.jobs.status'
-  queue    'ci.web.jobs.status'
+  exchange 'vx.jobs.status'
+  queue    'vx.web.jobs.status'
   ack      true
 
-  model    Evrone::CI::Message::JobStatus
+  model    Vx::Message::JobStatus
 
   def perform(message)
     Rails.logger.tagged("job #{message.build_id}.#{message.job_id}") do

@@ -2,6 +2,6 @@
 
 require File.expand_path("../../config/environment", __FILE__)
 
-require 'evrone/ci/message/testing'
+require 'vx/message/testing'
 
-BuildsConsumer.publish Evrone::CI::Message::PerformBuild.test_message.to_serialized_string
+BuildsConsumer.publish Vx::Message::PerformBuild.test_message.to_serialized_string

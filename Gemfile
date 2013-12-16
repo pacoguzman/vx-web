@@ -18,8 +18,8 @@ gem 'sshkey'
 
 gem 'pusher'
 
-gem 'evrone-common-amqp', '~> 0.2.3'
-gem 'evrone-ci-message', '0.2.0.pre6'
+gem 'vx-common-amqp', '~> 0.2.3'
+gem 'vx-message', '0.2.0.pre28'
 
 gem 'capistrano_evrone_recipes'
 

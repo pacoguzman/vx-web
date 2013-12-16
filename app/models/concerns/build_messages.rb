@@ -1,7 +1,7 @@
 module BuildMessages
 
   def to_perform_build_message(travis)
-    ::Evrone::CI::Message::PerformBuild.new(
+    ::Vx::Message::PerformBuild.new(
       id:         id,
       name:       project.name,
       src:        project.clone_url,

@@ -1,6 +1,6 @@
-require 'evrone/common/amqp'
+require 'vx/common/amqp'
 
-Evrone::Common::AMQP.configure do |c|
+Vx::Common::AMQP.configure do |c|
 
   logger = Rails.logger
 

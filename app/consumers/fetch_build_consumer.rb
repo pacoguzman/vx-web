@@ -1,9 +1,9 @@
 class FetchBuildConsumer
 
-  include Evrone::Common::AMQP::Consumer
+  include Vx::Common::AMQP::Consumer
 
-  exchange 'ci.web.builds.fetch'
-  queue    'ci.web.builds.fetch'
+  exchange 'vx.web.builds.fetch'
+  queue    'vx.web.builds.fetch'
   ack      true
 
   content_type "text/plain"

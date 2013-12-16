@@ -1,9 +1,9 @@
 class WsPublishConsumer
 
-  include Evrone::Common::AMQP::Consumer
+  include Vx::Common::AMQP::Consumer
 
-  exchange 'ci.web.ws'
-  queue    'ci.web.ws'
+  exchange 'vx.web.ws'
+  queue    'vx.web.ws'
   ack      false
 
   content_type "application/json"

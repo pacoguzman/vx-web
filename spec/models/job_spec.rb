@@ -21,7 +21,7 @@ describe Job do
   end
 
   context ".find_job_for_status_message" do
-    let(:msg) { Evrone::CI::Message::JobStatus.test_message job_id: job_id }
+    let(:msg) { Vx::Message::JobStatus.test_message job_id: job_id }
     let(:job) { create :job }
     subject { described_class.find_job_for_status_message job.build, msg }
 
@@ -38,7 +38,7 @@ describe Job do
 
   context "create_job_for_status_message" do
     let(:b) { create :build }
-    let(:msg) { Evrone::CI::Message::JobStatus.test_message }
+    let(:msg) { Vx::Message::JobStatus.test_message }
     subject { described_class.create_job_for_status_message b, msg }
 
     before do

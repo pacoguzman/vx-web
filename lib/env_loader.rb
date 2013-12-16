@@ -2,7 +2,7 @@ class EnvLoader
 
   class << self
     def load!
-      file = '/etc/evrone/ci'
+      file = '/etc/vexor/ci'
       file = File.expand_path(file)
 
       if File.readable?(file)

@@ -5,7 +5,7 @@ describe BuildUpdater do
   let(:project)  { create :project }
   let(:message_attributes) { {} }
   let(:message)  {
-    Evrone::CI::Message::BuildStatus.test_message(
+    Vx::Message::BuildStatus.test_message(
       message_attributes.merge build_id: build_id
     )
   }

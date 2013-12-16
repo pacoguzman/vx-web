@@ -1,12 +1,12 @@
 class BuildStatusConsumer
 
-  include Evrone::Common::AMQP::Consumer
+  include Vx::Common::AMQP::Consumer
 
-  exchange 'ci.builds.status'
-  queue    'ci.web.builds.status'
+  exchange 'vx.builds.status'
+  queue    'vx.web.builds.status'
   ack      true
 
-  model Evrone::CI::Message::BuildStatus
+  model Vx::Message::BuildStatus
 
   def perform(message)
     Rails.logger.tagged("build #{message.build_id}") do

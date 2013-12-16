@@ -3,7 +3,7 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-CiWeb::Application.load_tasks
+VxWeb::Application.load_tasks
 
 namespace :travis do
 
