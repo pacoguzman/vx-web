@@ -21,7 +21,7 @@ end
 
 shared_examples "cannot touch any projects on github when user is not githubber" do
   context "when user is not githubber" do
-    before { mock(user).github{ nil } }
+    before { stub(user).github { nil } }
 
     it "cannot touch any projects on github" do
       expect(subject).to be_nil
@@ -130,7 +130,8 @@ describe Github::User do
       context "when user is githubber" do
         before do
           project.generate_deploy_key
-          mock(user).github { github }
+          mock(user).github.twice { github }
+          mock(github).deploy_keys(anything) { [] }
           mock(github).add_deploy_key(project.name,
                                       project.deploy_key_name,
                                       project.public_deploy_key) {
@@ -142,9 +143,7 @@ describe Github::User do
           expect(subject).to eq 'success'
         end
       end
-
       include_examples "cannot touch any projects on github when user is not githubber"
-
     end
 
     context "#add_hook_to_github_project" do
@@ -152,7 +151,8 @@ describe Github::User do
 
       context "when user is githubber" do
         before do
-          mock(user).github { github }
+          mock(user).github.twice { github }
+          mock(github).hooks(anything) { [] }
           mock(github).create_hook(project.name, 'web', {
             url:          project.hook_url,
             secret:       project.token,

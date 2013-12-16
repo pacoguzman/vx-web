@@ -23,17 +23,17 @@ describe Project do
     subject { project.public_deploy_key }
     before { project.generate_deploy_key }
 
-    it { should match(/\=\= evrone\.ci/) }
+    it { should match(/\=\= Vexor \(.*\)/) }
   end
 
   context ".deploy_key_name" do
     subject { Project.deploy_key_name }
-    it { should eq 'evrone.ci' }
+    it { should match(/Vexor \(.*\)/) }
   end
 
   context "#deploy_key_name" do
     subject { project.deploy_key_name }
-    it { should eq 'evrone.ci' }
+    it { should match(/Vexor \(.*\)/) }
   end
 
   context "#generate_deploy_key" do

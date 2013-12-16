@@ -8,6 +8,7 @@ module Github::User
   end
 
   def add_hook_to_github_project(project)
+    remove_hook_from_github_project project
     github.try do |g|
       config = {
         url:           project.hook_url,
@@ -20,6 +21,7 @@ module Github::User
   end
 
   def add_deploy_key_to_github_project(project)
+    remove_deploy_key_from_github_project project
     github.try do |g|
       g.add_deploy_key(project.name,
                        project.deploy_key_name,

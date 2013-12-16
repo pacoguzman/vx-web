@@ -22,7 +22,7 @@ class Project < ActiveRecord::Base
 
   class << self
     def deploy_key_name
-      'evrone.ci'
+      "Vexor (#{Rails.configuration.x.hostname})"
     end
 
     def find_by_token(token)
