@@ -54,7 +54,7 @@ describe Build do
   end
 
   context "(messages)" do
-    let(:b) { create :build }
+    let(:b) { create :build, pull_request_id: 1 }
 
     context "#to_perform_build_message" do
       let(:travis)  { 'travis' }
@@ -69,6 +69,7 @@ describe Build do
         its(:deploy_key) { should eq project.deploy_key }
         its(:travis)     { should eq travis }
         its(:branch)     { should eq b.branch }
+        its(:pull_request_id) { should eq 1 }
       end
     end
 
