@@ -5,7 +5,7 @@ Build: #<%= @build.number %>
 Status: <%= @build.human_status_name %>
 
 Duration: <%= build_duration(@build) %>
-Commit: <%= @build.short_sha %> (<%= @build.branch %>)
+Commit: <%= @build.short_sha %> (<%= @build.branch_label %>)
 Author: <%= @build.author %>
 Message: <%= @build.message %>
 
