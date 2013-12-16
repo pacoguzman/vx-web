@@ -1,0 +1,25 @@
+Vx.config ($routeProvider, $locationProvider) ->
+
+  $routeProvider.
+    when('/jobs/:jobId',
+      templateUrl: "<%= asset_path 'jobs/show.html' %>",
+      controller: "JobCtrl"
+    ).
+    when('/builds/:buildId',
+      templateUrl: "<%= asset_path 'builds/show.html' %>",
+      controller: "BuildCtrl"
+    ).
+    when('/projects/:projectId/builds',
+      templateUrl: "<%= asset_path 'builds/index.html' %>",
+      controller: "BuildsCtrl"
+    ).
+    when('/github_repos',
+      templateUrl: "<%= asset_path 'github_repos/index.html' %>",
+      controller: "GithubReposCtrl"
+    ).
+    when('/',
+      templateUrl: "<%= asset_path 'projects/index.html' %>",
+      controller: "ProjectsCtrl"
+    )
+
+  $locationProvider.html5Mode true

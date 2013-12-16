@@ -31,7 +31,7 @@ describe "cacheStore", ->
   }
 
   beforeEach ->
-    module("CI")
+    module("Vx")
     inject ["$q", '$rootScope', 'cacheStore',
       (_$q_, _$scope_, cacheStore) ->
         $q      = _$q_

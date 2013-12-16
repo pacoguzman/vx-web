@@ -1,1 +1,1 @@
-//= require ci/app
+//= require vx/app

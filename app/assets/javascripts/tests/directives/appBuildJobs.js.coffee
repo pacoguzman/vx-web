@@ -7,7 +7,7 @@ describe "appBuildJobs", ->
   job2     = null
 
   beforeEach ->
-    module("CI")
+    module("Vx")
     inject ['$rootScope', '$compile',
       (_$scope_, _$compile_) ->
         $scope   = _$scope_.$new()

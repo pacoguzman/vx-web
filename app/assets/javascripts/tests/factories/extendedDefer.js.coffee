@@ -19,7 +19,7 @@ describe "extendedDefer", ->
   }
 
   beforeEach ->
-    module("CI")
+    module("Vx")
     inject ["$q", '$rootScope', "extendedDefer",
       (_$q_, _$scope_, _factory_) ->
         $q      = _$q_

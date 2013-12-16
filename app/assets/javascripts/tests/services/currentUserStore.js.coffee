@@ -17,7 +17,7 @@ describe "currentUserStore", ->
     name: "MyName"
   }
 
-  beforeEach module("CI")
+  beforeEach module("Vx")
 
   beforeEach ->
     inject ['$rootScope',

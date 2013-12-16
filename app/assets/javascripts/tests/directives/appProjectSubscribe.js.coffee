@@ -8,7 +8,7 @@ describe "appProjectSubscribe", ->
   user     = null
 
   beforeEach ->
-    module("CI")
+    module("Vx")
     inject ['$rootScope', '$compile', "$injector"
       (_$scope_, _$compile_, $injector ) ->
         $scope   = _$scope_.$new()

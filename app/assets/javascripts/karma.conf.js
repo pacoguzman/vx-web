@@ -19,11 +19,11 @@ module.exports = function(config) {
       "lib/angular-mocks-1.2.1.js",
       "lib/angular-route-1.2.1.js",
 
-      "ci/init/*.js.coffee",
-      "ci/directives/*.js.coffee",
-      "ci/filters/*.js",
-      "ci/factories/*.js.coffee",
-      "ci/services/*.js.coffee",
+      "vx/init/*.js.coffee",
+      "vx/directives/*.js.coffee",
+      "vx/filters/*.js",
+      "vx/factories/*.js.coffee",
+      "vx/services/*.js.coffee",
 
       "tests/support/*.js.coffee",
       "tests/**/*.js.coffee",

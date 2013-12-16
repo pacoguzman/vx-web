@@ -26,7 +26,7 @@ describe "projectStore", ->
 
   evSource = eventSourceMock()
 
-  beforeEach module("CI")
+  beforeEach module("Vx")
 
   beforeEach ->
     module ($provide) ->

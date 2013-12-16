@@ -9,7 +9,7 @@ describe "appBuildHttpUrl", ->
   }
 
   beforeEach ->
-    module("CI")
+    module("Vx")
     inject ['$rootScope', '$compile',
       (_$scope_, _$compile_) ->
         $scope   = _$scope_.$new()
