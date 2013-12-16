@@ -204,7 +204,7 @@ GEM
     uglifier (2.2.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
-    vx-common-amqp (0.2.5)
+    vx-common-amqp (0.2.6)
       bunny (~> 1.0.0)
       vx-common-rack-builder (~> 0.0.2)
     vx-common-rack-builder (0.0.2)
