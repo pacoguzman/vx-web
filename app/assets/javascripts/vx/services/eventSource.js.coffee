@@ -1,16 +1,10 @@
 Vx.service 'eventSource', [ '$rootScope'
   ($scope) ->
 
-    $bus      = $scope.$new()
-    pusher    = null
-    pusherKey = document.getElementsByTagName("body")[0].dataset.pusherKey
+    $bus = $scope.$new()
+    sub  = new EventSource("/sse_events")
 
-    if window.Pusher && pusherKey
-      pusher = new Pusher(pusherKey);
-
-    sub = new EventSource("/sse")
-
-    sub.addEventListener "sse", (e) ->
+    sub.addEventListener "sse_events", (e) ->
       data    = JSON.parse(e.data)
       channel = data.channel
       event   = data.event
