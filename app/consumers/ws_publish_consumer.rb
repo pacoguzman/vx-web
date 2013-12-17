@@ -11,11 +11,13 @@ class WsPublishConsumer
   model Hash
 
   def perform(message)
-    channel = message["channel"]
-    event   = message["event"]
-    payload = message['payload']
+    if Pusher.url && Pusher.url.user
+      channel = message["channel"]
+      event   = message["event"]
+      payload = message['payload']
 
-    Pusher[channel].trigger event, payload
+      Pusher[channel].trigger event, payload
+    end
   end
 
 end

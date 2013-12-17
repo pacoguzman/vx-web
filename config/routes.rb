@@ -41,6 +41,8 @@ VxWeb::Application.routes.draw do
   get '/auth/github/callback', to: 'github/user_callbacks#create'
   get '/auth/failure', to: redirect('/')
 
+  get '/sse', to: 'sse#show'
+
   root 'welcome#index'
 
   get "*path", to: "welcome#index", constraints: ->(req) { req.format == Mime::HTML }

@@ -28,8 +28,7 @@ module Vx
           payload: payload
         }
 
-        Rails.logger.debug "publish payload #{payload.inspect}"
-        WsPublishConsumer.publish message, content_type: "application/json"
+        SseEventConsumer.publish message
 
         true
       end

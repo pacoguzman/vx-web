@@ -1,19 +1,24 @@
 Vx.service 'eventSource', [ '$rootScope'
   ($scope) ->
 
+    $bus      = $scope.$new()
+    pusher    = null
     pusherKey = document.getElementsByTagName("body")[0].dataset.pusherKey
-    if window.Pusher
+
+    if window.Pusher && pusherKey
       pusher = new Pusher(pusherKey);
 
-    subscribe: (name, callback) ->
-      proxy = (e) ->
-        $scope.$apply ->
-          callback(angular.fromJson e)
+    sub = new EventSource("/sse")
 
-      if pusher
-        channel = pusher.subscribe(name)
-        channel.bind "created",   proxy
-        channel.bind "updated",   proxy
-        channel.bind "destroyed", proxy
+    sub.addEventListener "sse", (e) ->
+      data    = JSON.parse(e.data)
+      channel = data.channel
+      event   = data.event
+      $bus.$broadcast(channel, data.payload)
+
+    subscribe: (name, callback) ->
+      $bus.$on name, (e, data) ->
+        $scope.$apply ->
+          callback(data)
 ]
 
