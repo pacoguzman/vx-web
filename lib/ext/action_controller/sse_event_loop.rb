@@ -39,11 +39,10 @@ module ActionController
           while sse_stream_live?
             payload, _, _ = SseEventConsumer.pop q
             if payload
-              Rails.logger.info "---> Delivery sse #{payload.inspect}"
               data  = JSON.dump payload
               response.stream.write("event: sse_event\n")
               response.stream.write("data: #{data}\n\n")
-              sleep 0.1
+              sleep 0.3
             else
               sleep 1
             end
