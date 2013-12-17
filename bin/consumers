@@ -15,5 +15,4 @@ Vx::Common::AMQP::Supervisor::Threaded.build(
   BuildStatusConsumer  => 1,
   JobStatusConsumer    => 1,
   JobLogsConsumer      => 1,
-  WsPublishConsumer    => 4,
 ).run

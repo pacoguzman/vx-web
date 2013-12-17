@@ -47,8 +47,8 @@ describe Build do
   it "should publish(:created) after create" do
     expect{
       create :build
-    }.to change(WsPublishConsumer.messages, :count).by(1)
-    msg = WsPublishConsumer.messages.last
+    }.to change(SseEventConsumer.messages, :count).by(1)
+    msg = SseEventConsumer.messages.last
     expect(msg[:channel]).to eq 'builds'
     expect(msg[:event]).to eq :created
   end
@@ -151,10 +151,10 @@ describe Build do
         expect(msg["status"]).to eq 2
       end
 
-      it "should delivery messages to WsPublishConsumer" do
+      it "should delivery messages to SseEventConsumer" do
         expect{
           subject
-        }.to change(WsPublishConsumer.messages, :count).by(2)
+        }.to change(SseEventConsumer.messages, :count).by(2)
       end
     end
 
@@ -170,10 +170,10 @@ describe Build do
         expect(msg["status"]).to eq 3
       end
 
-      it "should delivery messages to WsPublishConsumer" do
+      it "should delivery messages to SseEventConsumer" do
         expect{
           subject
-        }.to change(WsPublishConsumer.messages, :count).by(2)
+        }.to change(SseEventConsumer.messages, :count).by(2)
       end
     end
 
@@ -189,10 +189,10 @@ describe Build do
         expect(msg["status"]).to eq 4
       end
 
-      it "should delivery messages to WsPublishConsumer" do
+      it "should delivery messages to SseEventConsumer" do
         expect{
           subject
-        }.to change(WsPublishConsumer.messages, :count).by(2)
+        }.to change(SseEventConsumer.messages, :count).by(2)
       end
     end
 
@@ -208,10 +208,10 @@ describe Build do
         expect(msg["status"]).to eq 5
       end
 
-      it "should delivery messages to WsPublishConsumer" do
+      it "should delivery messages to SseEventConsumer" do
         expect{
           subject
-        }.to change(WsPublishConsumer.messages, :count).by(2)
+        }.to change(SseEventConsumer.messages, :count).by(2)
       end
     end
   end
@@ -409,12 +409,12 @@ describe Build do
       its("jobs.count") { should eq 0 }
       its(:jobs_count)  { should eq 0 }
 
-      it "should delivery messages to WsPublishConsumer" do
+      it "should delivery messages to SseEventConsumer" do
         expect{
           subject
-        }.to change(WsPublishConsumer.messages, :count).by(2)
-        job_m   = WsPublishConsumer.messages.pop
-        build_m = WsPublishConsumer.messages.pop
+        }.to change(SseEventConsumer.messages, :count).by(2)
+        job_m   = SseEventConsumer.messages.pop
+        build_m = SseEventConsumer.messages.pop
 
         expect(job_m[:channel]).to eq 'jobs'
         expect(job_m[:event]).to eq :destroyed
@@ -455,7 +455,7 @@ describe Build do
       it "cannnot delivery any messages" do
         expect{
           subject
-        }.to_not change(WsPublishConsumer.messages, :count)
+        }.to_not change(SseEventConsumer.messages, :count)
         expect {
           subject
         }.to_not change(FetchBuildConsumer.messages, :count)

@@ -22,10 +22,9 @@ module ActionController
     end
 
     def sse_event_loop
-      raise "28364"
       response.headers["Content-Type"] = 'text/event-stream'
       th = sse_heartbeat_thread
-      sse_event_loop
+      sse_event_loop_begin
       th.join
     end
 
@@ -35,7 +34,7 @@ module ActionController
         Status.live? and !response.stream.closed?
       end
 
-      def sse_event_loop
+      def sse_event_loop_begin
         SseEventConsumer.start do |_, q|
           while sse_stream_live?
             payload, _, _ = SseEventConsumer.pop q
@@ -58,14 +57,11 @@ module ActionController
       end
 
       def sse_heartbeat_thread
-        puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!---"
         Thread.new do
-          puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
           while sse_stream_live?
             begin
-              Rails.logger.info "---> Ping"
               response.stream.write "event: 0\n\n"
-              sleep 1
+              sleep 3
             rescue IOError
               Rails.logger.info '---> Closed sse stream'
             end
