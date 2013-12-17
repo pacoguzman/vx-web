@@ -8,7 +8,7 @@
     = stylesheet_link_tag "application", media: "all"
     = csrf_meta_tags
 
-  %body{ data: { "pusher-key" => ENV['CI_WEB_PUSHER_KEY'] } }
+  %body
 
     .container
 
@@ -16,7 +16,6 @@
 
       .ng-view{'ng-animate' => "{enter: 'animate-enter', leave: 'animate-leave'}"}
 
-    = javascript_include_tag 'http://js.pusher.com/2.1/pusher.min.js'
     = javascript_include_tag 'lib'
     = javascript_include_tag 'application'
 

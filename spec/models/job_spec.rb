@@ -56,8 +56,8 @@ describe Job do
     b = create :build
     expect{
       create :job, build: b
-    }.to change(WsPublishConsumer.messages, :count).by(1)
-    msg = WsPublishConsumer.messages.last
+    }.to change(SseEventConsumer.messages, :count).by(1)
+    msg = SseEventConsumer.messages.last
     expect(msg[:channel]).to eq 'jobs'
     expect(msg[:event]).to eq :created
   end
@@ -69,10 +69,10 @@ describe Job do
       let(:status) { 0 }
       subject { job.start }
 
-      it "should delivery messages to WsPublishConsumer" do
+      it "should delivery messages to SseEventConsumer" do
         expect{
           subject
-        }.to change(WsPublishConsumer.messages, :count).by(1)
+        }.to change(SseEventConsumer.messages, :count).by(1)
       end
     end
 
@@ -80,10 +80,10 @@ describe Job do
       let(:status) { 2 }
       subject { job.pass }
 
-      it "should delivery messages to WsPublishConsumer" do
+      it "should delivery messages to SseEventConsumer" do
         expect{
           subject
-        }.to change(WsPublishConsumer.messages, :count).by(1)
+        }.to change(SseEventConsumer.messages, :count).by(1)
       end
     end
 
@@ -91,10 +91,10 @@ describe Job do
       let(:status) { 2 }
       subject { job.decline }
 
-      it "should delivery messages to WsPublishConsumer" do
+      it "should delivery messages to SseEventConsumer" do
         expect{
           subject
-        }.to change(WsPublishConsumer.messages, :count).by(1)
+        }.to change(SseEventConsumer.messages, :count).by(1)
       end
     end
 
@@ -102,10 +102,10 @@ describe Job do
       let(:status) { 2 }
       subject { job.error }
 
-      it "should delivery messages to WsPublishConsumer" do
+      it "should delivery messages to SseEventConsumer" do
         expect{
           subject
-        }.to change(WsPublishConsumer.messages, :count).by(1)
+        }.to change(SseEventConsumer.messages, :count).by(1)
       end
     end
   end

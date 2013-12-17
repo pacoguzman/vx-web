@@ -1,19 +1,21 @@
 Vx.service 'eventSource', [ '$rootScope'
   ($scope) ->
 
-    pusherKey = document.getElementsByTagName("body")[0].dataset.pusherKey
-    if window.Pusher
-      pusher = new Pusher(pusherKey);
+    $bus = $scope.$new()
+    sub  = new EventSource("/sse_events")
+
+    sub.addEventListener "sse_event", (e) ->
+      data    = JSON.parse(e.data)
+      channel = data.channel
+      event   = data.event
+      $bus.$broadcast(channel, data.payload)
+
+    sub.onopen = (e) ->
+      console.log "---> Open sse connection to #{sub.url}"
 
     subscribe: (name, callback) ->
-      proxy = (e) ->
+      $bus.$on name, (e, data) ->
         $scope.$apply ->
-          callback(angular.fromJson e)
-
-      if pusher
-        channel = pusher.subscribe(name)
-        channel.bind "created",   proxy
-        channel.bind "updated",   proxy
-        channel.bind "destroyed", proxy
+          callback(data)
 ]
 

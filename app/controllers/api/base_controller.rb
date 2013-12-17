@@ -1,4 +1,4 @@
-class Api::BaseController < ApplicationController
+class ::Api::BaseController < ::ApplicationController
 
   before_filter :default_format_json
 
