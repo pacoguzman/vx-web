@@ -1,5 +1,5 @@
 angular.module('Vx').
-  directive "appTaskOutput", () ->
+  directive "appTaskOutput", ($window) ->
 
     restrict: 'EC'
     replace: true
@@ -14,6 +14,7 @@ angular.module('Vx').
       scope.lines = []
       scope.output = ""
       nbsp = '\u00A0'
+      firstRun = true
 
       updateLines = (newVal) ->
         return unless newVal
@@ -41,6 +42,11 @@ angular.module('Vx').
           container.appendChild(lineEl)
 
         elem.html container.innerHTML
+
+        unless firstRun
+          window.scrollTo 0, elem[0].scrollHeight
+
+        firstRun = false
 
       elem.addClass("hidden")
 
