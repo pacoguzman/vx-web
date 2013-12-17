@@ -3,7 +3,7 @@ class SseEventConsumer
   include Vx::Common::AMQP::Consumer
 
   exchange 'vx.web.ws'
-  queue    exclusive: true
+  queue    '', exclusive: true
   ack      false
 
   content_type "application/json"
