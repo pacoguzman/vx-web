@@ -71,4 +71,4 @@ module ActionController
   end
 end
 
-trap("TERM") { Thread.new{ ActionController::SseEventLoop::Status.shutdown } }
+#trap("TERM") { Thread.new{ ActionController::SseEventLoop::Status.shutdown } }
