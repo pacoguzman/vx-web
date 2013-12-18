@@ -72,6 +72,19 @@ module ActionController
   end
 end
 
-if Rails.env.development?
-  Signal.trap("TERM") { ActionController::SseEventLoop::Status.shutdown }
+if defined?(::Puma)
+  puts "Apply patch to Puma::Server#stop"
+
+  module ::Puma
+    class Server
+
+      alias_method :orig_stop, :stop
+
+      def stop(*args, &block)
+        puts "---> Shutdown ActionController::SseEventLoop"
+        Thread.new { ActionController::SseEventLoop::Status.shutdown }
+        orig_stop(*args, &block)
+      end
+    end
+  end
 end
