@@ -37,15 +37,22 @@ module ActionController
 
       def sse_event_loop_begin
         SseEventConsumer.start do |_, q|
-          while sse_stream_live?
-            payload, _, _ = SseEventConsumer.pop q
-            if payload
-              data  = JSON.dump payload
-              response.stream.write("event: sse_event\n")
-              response.stream.write("data: #{data}\n\n")
-              sleep 0.3
-            else
-              sleep 1
+          begin
+            while sse_stream_live?
+              payload, _, _ = SseEventConsumer.pop q
+              if payload
+                data  = JSON.dump payload
+                response.stream.write("event: sse_event\n")
+                response.stream.write("data: #{data}\n\n")
+                sleep 0.3
+              else
+                sleep 1
+              end
+            end
+          ensure
+            if q
+              q.purge
+              q.delete if_unused: false, if_empty: false
             end
           end
         end
