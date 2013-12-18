@@ -5,6 +5,7 @@ module ActionController
       extend self
 
       def shutdown
+        Rails.logger.info '---> Shutdown see'
         @shutdown = true
       end
 
@@ -71,4 +72,6 @@ module ActionController
   end
 end
 
-#trap("TERM") { Thread.new{ ActionController::SseEventLoop::Status.shutdown } }
+if Rails.env.development?
+  Signal.trap("TERM") { ActionController::SseEventLoop::Status.shutdown }
+end
