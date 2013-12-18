@@ -23,7 +23,7 @@ module ActionController
     end
 
     def sse_event_loop
-      response.headers["Content-Type"] = 'text/event-stream'
+      response.headers["Content-Type"] = 'text/event-stream;charset=UTF-8'
       th = sse_heartbeat_thread
       sse_event_loop_begin
       th.join
