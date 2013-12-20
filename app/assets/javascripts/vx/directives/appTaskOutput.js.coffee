@@ -41,6 +41,7 @@ angular.module('Vx').
 
           container.appendChild(lineEl)
 
+        # TODO: avoid html copy
         elem.html container.innerHTML
 
         unless firstRun
