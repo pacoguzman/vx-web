@@ -1,5 +1,3 @@
-require 'vx/builder'
-
 class BuildFetcher
 
   include Github::BuildFetcher
@@ -15,22 +13,11 @@ class BuildFetcher
   end
 
   def project
-    @project ||= ::Project.where(token: params[:token]).lock(true).first
+    @project ||= ::Project.lock(true).find_by(token: params[:token])
   end
 
   def build
     @build ||= project.create_build_from_github_payload(payload)
-  end
-
-  def task
-    ::Vx::Builder::Task.new(
-      project.name,
-      project.clone_url,
-      build.sha,
-      deploy_key: project.deploy_key,
-      branch: build.branch,
-      pull_request_id: build.pull_request_id
-    )
   end
 
   def source
@@ -45,10 +32,11 @@ class BuildFetcher
     transaction do
       guard do
         (
-          build                  &&
-          assign_source_to_build &&
-          assign_commit_to_build &&
-          create_jobs            &&
+          build                    &&
+          assign_source_to_build   &&
+          assign_commit_to_build   &&
+          create_jobs              &&
+          publish_jobs             &&
           subscribe_author_to_repo
         ).or_rollback_transaction
         build
@@ -71,28 +59,18 @@ class BuildFetcher
       matrix.each_with_index do |config, idx|
         number = idx + 1
         Rails.logger.info "create job: number:#{number}, matrix: #{config.matrix_keys.inspect}"
-        if build.jobs.create matrix: config.matrix_keys, number: number, source: config.to_yaml
-          publish_job_message task, config, number
-        else
-          break
-        end
+        build.jobs.create(
+          matrix: config.matrix_keys,
+          number: number,
+          source: config.to_yaml
+        ) || return
       end
       build.jobs.any?
     end
 
-    def publish_job_message(task, source, number)
-      script = ::Vx::Builder::Script.new(task, source)
-
-      message = ::Vx::Message::PerformJob.new(
-        id:              build.id,
-        job_id:          number,
-        name:            project.name,
-        before_script:   script.to_before_script,
-        script:          script.to_script,
-        after_script:    script.to_after_script,
-        matrix_keys:     source.to_matrix_s
-      )
-      ::JobsConsumer.publish message
+    def publish_jobs
+      build.jobs.each(&:publish_perform_job_message)
+      true
     end
 
     def assign_commit_to_build

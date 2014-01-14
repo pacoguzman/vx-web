@@ -10,7 +10,7 @@ class JobUpdater
     Job.transaction do
       @build = Build.lock(true).find_by(id: message.build_id)
       if build
-        @job = build.find_or_create_job_by_status_message(message)
+        @job = build.jobs.find_by(number: message.job_id)
 
         update_and_save_job_status!
         truncate_job_logs
@@ -54,7 +54,7 @@ class JobUpdater
       when 0 # initialized
         nil
       when 2 # started
-        job.started_at  = tm
+        job.started_at = tm
         job.start!
       when 3 # finished
         job.finished_at = tm

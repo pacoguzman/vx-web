@@ -41,32 +41,48 @@ class Job < ActiveRecord::Base
     end
   end
 
-  class << self
+  def finished?
+    [3,4,5].include?(status)
+  end
 
-    def extract_matrix(job_status_message)
-      if job_status_message.matrix
-        job_status_message.matrix.inject({}) do |a,m|
-          arr = m.to_s.split("\:").map(&:strip)
-          k = arr.shift
-          v = arr.join(":")
-          a[k.to_sym] = v
-          a
-        end
-      else
-        {}
+  def to_builder_script
+    ::Vx::Builder::Script.new(build.to_builder_task, to_builder_source)
+  end
+
+  def to_builder_source
+    ::Vx::Builder::Source.from_yaml(source)
+  end
+
+  def to_perform_job_message
+    script = to_builder_script
+    ::Vx::Message::PerformJob.new(
+      id:              build.id,
+      job_id:          number,
+      name:            build.project.name,
+      before_script:   script.to_before_script,
+      script:          script.to_script,
+      after_script:    script.to_after_script,
+      matrix_keys:     script.source.to_matrix_s
+    )
+  end
+
+  def publish_perform_job_message
+    ::JobsConsumer.publish to_perform_job_message
+  end
+
+  def restart
+    if finished?
+      transaction do
+        self.started_at  = nil
+        self.finished_at = nil
+        self.status      = 0
+
+        self.logs.delete_all
+        self.save.or_rollback_transaction
+        self.publish_perform_job_message
+        self.publish
+        self
       end
-    end
-
-
-    def find_job_for_status_message(build, job_status_message)
-      build.jobs.find_by(number: job_status_message.job_id)
-    end
-
-    def create_job_for_status_message(build, job_status_message)
-      job = build.jobs.build number:     job_status_message.job_id,
-                             matrix:     extract_matrix(job_status_message)
-
-      job.save ? job : nil
     end
   end
 

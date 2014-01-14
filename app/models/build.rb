@@ -1,6 +1,5 @@
 class Build < ActiveRecord::Base
 
-  include ::BuildMessages
   include ::PublicUrl::Build
 
   belongs_to :project, class_name: "::Project"
@@ -50,11 +49,6 @@ class Build < ActiveRecord::Base
     end
   end
 
-  def find_or_create_job_by_status_message(job_status_message)
-    Job.find_job_for_status_message(self, job_status_message) ||
-      Job.create_job_for_status_message(self, job_status_message)
-  end
-
   def source
     @unpacked_source ||= begin
       if s = read_attribute(:source)
@@ -75,9 +69,20 @@ class Build < ActiveRecord::Base
     sha.to_s[0..8]
   end
 
+  def to_builder_task
+    ::Vx::Builder::Task.new(
+      project.name,
+      project.clone_url,
+      sha,
+      deploy_key:      project.deploy_key,
+      branch:          branch,
+      pull_request_id: pull_request_id
+    )
+  end
+
   def prev_finished_build_in_branch
     @prev_finished_build_in_branch ||=
-      Build.finished
+      self.class.finished
            .where(project_id: project_id)
            .where(branch: branch)
            .where("number < ?", number)
@@ -140,23 +145,21 @@ class Build < ActiveRecord::Base
         self.started_at  = nil
         self.finished_at = nil
         self.status      = 0
-        self.jobs_count  = 0
-
-        self.jobs.each do |job|
-          job.destroy.or_rollback_transaction
-        end
 
         self.save.or_rollback_transaction
 
-        self.publish
         self.jobs.each do |job|
-          job.publish :destroyed
+          job.restart.or_rollback_transaction
         end
 
-        self.delivery_to_fetcher
+        self.publish
         self
       end
     end
+  end
+
+  def delivery_to_notifier
+    ::BuildNotifyConsumer.publish self.attributes
   end
 
   private

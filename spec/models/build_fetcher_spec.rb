@@ -10,7 +10,6 @@ describe BuildFetcher do
   context "just created" do
     its(:project) { should eq project }
     its(:payload) { should be }
-    its(:task)    { should be }
     its(:source)  { should be }
     its(:matrix)  { should be }
   end

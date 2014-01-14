@@ -51,13 +51,4 @@ describe Api::BuildsController do
     end
   end
 
-  context "POST /create" do
-    before { post :create, project_id: project.id, format: :json }
-
-    it { should be_success }
-
-    it "should delivery message to FetchBuildConsumer" do
-      expect(FetchBuildConsumer.messages).to have(1).item
-    end
-  end
 end
