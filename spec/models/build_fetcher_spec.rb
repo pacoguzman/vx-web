@@ -34,82 +34,106 @@ describe BuildFetcher do
     subject { fetcher.perform }
 
     before do
-      mock_commit_request
-      mock_contents_request
-      fetcher.project.update! identity: identity
+      fetcher.project.update! identity: identity if fetcher.project
     end
 
-    it { should be }
-
-    it "should assign commit to build" do
-      subject
-      expect(subject.author).to eq 'Dmitry Galinsky'
-    end
-
-    it "should assign source to build" do
-      subject
-      expect(subject.source.keys).to be_include("rvm")
-    end
-
-    it "should create jobs" do
-      subject
-      expect(subject.jobs.count).to eq 1
-      job = subject.jobs.first
-      expect(job).to be
-      expect(job.number).to eq 1
-      expect(job.matrix).to eq({"rvm"=>"2.0.0"})
-      expect(job.source).to be
-    end
-  end
-
-=begin
-  let(:build)   { create :build }
-  let(:fetcher) { described_class.new build.id }
-  subject { fetcher }
-
-  it { should be }
-
-  context "just created" do
-    its(:build_id){ should eq build.id }
-    its(:build)   { should eq build }
-    its(:project) { should eq build.project }
-  end
-
-  context "#subscribe_author_to_repo" do
-    let(:user) { create :user }
-    subject { fetcher.subscribe_author_to_repo }
-
-    context "when email exists" do
+    context "success" do
       before do
-        build.update! author_email: user.email
+        mock_commit_request
+        mock_contents_request
       end
 
-      it { should be_true }
-    end
+      it { should be }
 
-    context "when email is not exists" do
-      it { should be_nil }
-    end
-  end
-
-  context "#perform" do
-    subject { fetcher.perform }
-
-    context "when build found" do
-      before do
-        mock(fetcher).create_perform_build_message_using_github
-        mock(fetcher).subscribe_author_to_repo { true }
+      it "should craate project build" do
+        expect {
+          subject
+        }.to change(project.builds, :count).by(1)
       end
 
-      it { should be_true }
+      it "should assign commit to build" do
+        subject
+        expect(subject.author).to eq 'Dmitry Galinsky'
+      end
+
+      it "should assign source to build" do
+        subject
+        expect(subject.source.keys).to be_include("rvm")
+      end
+
+      it "should create jobs" do
+        expect {
+          subject
+        }.to change(fetcher.build.jobs, :count).by(1)
+        job = subject.jobs.first
+        expect(job).to be
+        expect(job.number).to eq 1
+        expect(job.matrix).to eq({"rvm"=>"2.0.0"})
+        expect(job.source).to be
+      end
+
+      it "should publish message to JobConsumer" do
+        expect {
+          subject
+        }.to change(JobsConsumer.messages, :count).by(1)
+      end
     end
 
-    context "when build does not exists" do
-      subject { described_class.new(build.id + 1).perform }
-      it { should be_nil }
+    context "failed" do
+      context "when fail to find project" do
+        let(:params) { {} }
+
+        it { should be_nil }
+      end
+
+      context "when ignore payload" do
+        before do
+          mock(fetcher.payload).ignore? { true }
+        end
+        it { should be_nil }
+      end
+
+      context "when fail to fetch source" do
+        before do
+          mock_not_found_contents_request
+        end
+
+        it "cannot create any builds" do
+          expect {
+            subject
+          }.to_not change(project.builds, :count)
+        end
+      end
+
+      context "when fail to fetch commit" do
+        before do
+          mock_contents_request
+          mock_not_found_commit_request
+        end
+
+        it "cannot create any builds" do
+          expect {
+            subject
+          }.to_not change(project.builds, :count)
+        end
+      end
+
+      context "when jobs is empty" do
+        before do
+          mock_contents_request
+          mock_commit_request
+          mock(fetcher).matrix { [] }
+        end
+
+        it "cannot create any builds" do
+          expect {
+            subject
+          }.to_not change(project.builds, :count)
+        end
+      end
     end
+
   end
-=end
 
   context "(github)" do
     let(:user)     { create :user }
@@ -159,83 +183,6 @@ describe BuildFetcher do
         end
       end
     end
-
-=begin
-    context "#create_perform_build_message_using_github" do
-      subject { fetcher.create_perform_build_message_using_github }
-
-      context "when success" do
-        before do
-          mock_commit_request
-          mock_contents_request
-        end
-
-        it { should be_true }
-
-        %w{ sha message author author_email http_url }.each do |m|
-          it "should update build #{m}" do
-            expect{ subject }.to change{ build.reload.public_send(m) }
-          end
-        end
-
-        it "should delivery PerformBuild message" do
-          expect {
-            subject
-          }.to change(BuildsConsumer.messages, :count).by(1)
-        end
-      end
-
-      context "when cannot retrieve github identity" do
-        before do
-          mock(fetcher).github { nil }
-        end
-
-        it { should be_false }
-        it "should fail build" do
-          expect{ subject }.to change{ build.reload.status_name }.to(:errored)
-        end
-      end
-
-      context "when cannot retrieve commit" do
-        before do
-          mock_not_found_commit_request
-        end
-
-        it { should be_false }
-        it "should fail build" do
-          expect{ subject }.to change{ build.reload.status_name }.to(:errored)
-        end
-      end
-
-      context "when cannot update build commit" do
-        before do
-          mock(fetcher).fetch_commit_from_github{
-            Github::BuildFetcher::GithubCommit.new(
-              nil, nil, nil, nil, nil
-            )
-          }
-        end
-
-        it { should be_false }
-        it "should fail build" do
-          expect{ subject }.to change{ build.reload.status_name }.to(:errored)
-        end
-      end
-
-      context "when cannot retrieve travis" do
-        before do
-          mock_commit_request
-          mock_not_found_contents_request
-        end
-
-        it { should be_false }
-        it "should fail build" do
-          expect{ subject }.to change{ build.reload.status_name }.to(:errored)
-        end
-      end
-    end
-=end
-
   end
 
   def mock_commit_request

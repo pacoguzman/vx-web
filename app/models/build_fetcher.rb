@@ -15,7 +15,7 @@ class BuildFetcher
   end
 
   def project
-    @project ||= ::Project.find_by_token(params[:token])
+    @project ||= ::Project.where(token: params[:token]).lock(true).first
   end
 
   def build
@@ -37,17 +37,15 @@ class BuildFetcher
     ::Vx::Builder::Source.new(build.source)
   end
 
-  def script
-  end
-
   def matrix
-    ::Vx::Builder::Source::Matrix.new(source)
+    ::Vx::Builder::Source::Matrix.new(source).configurations
   end
 
   def perform
-    guard do
-      transaction do
+    transaction do
+      guard do
         (
+          build                  &&
           assign_source_to_build &&
           assign_commit_to_build &&
           create_jobs            &&
@@ -70,24 +68,31 @@ class BuildFetcher
     end
 
     def create_jobs
-      matrix.configurations.each_with_index do |config, idx|
-        Rails.logger.info "create job: number:#{idx}, matrix: #{config.matrix_keys.inspect}"
-        job = build.jobs.create! matrix: config.matrix_keys, number: idx+1, source: config.to_yaml
-
-        script = ::Vx::Builder::Script.new(task, config)
-
-        message = ::Vx::Message::PerformJob.new(
-          id:              build.id,
-          job_id:          job.number,
-          name:            project.name,
-          before_script:   script.to_before_script,
-          script:          script.to_script,
-          after_script:    script.to_after_script,
-          matrix_keys:     config.to_matrix_s
-        )
-        ::JobsConsumer.publish message
+      matrix.each_with_index do |config, idx|
+        number = idx + 1
+        Rails.logger.info "create job: number:#{number}, matrix: #{config.matrix_keys.inspect}"
+        if build.jobs.create matrix: config.matrix_keys, number: number, source: config.to_yaml
+          publish_job_message task, config, number
+        else
+          break
+        end
       end
       build.jobs.any?
+    end
+
+    def publish_job_message(task, source, number)
+      script = ::Vx::Builder::Script.new(task, source)
+
+      message = ::Vx::Message::PerformJob.new(
+        id:              build.id,
+        job_id:          number,
+        name:            project.name,
+        before_script:   script.to_before_script,
+        script:          script.to_script,
+        after_script:    script.to_after_script,
+        matrix_keys:     source.to_matrix_s
+      )
+      ::JobsConsumer.publish message
     end
 
     def assign_commit_to_build
