@@ -4,6 +4,8 @@ class Github::RepoCallbacksController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
   def create
+    PayloadConsumer.publish params
+=begin
     @project = Project.find_by_token params[:token]
     @payload = Github::Payload.new(params)
 
@@ -13,6 +15,7 @@ class Github::RepoCallbacksController < ApplicationController
       @build  = @project.create_build_from_github_payload(@payload)
       @build.delivery_to_fetcher
     end
+=end
 
     head :ok
   end
