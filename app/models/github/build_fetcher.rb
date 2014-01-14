@@ -11,24 +11,7 @@ module Github
       end
     end
 
-    def create_perform_build_message_using_github
-      succ = false
-      if github
-        commit = fetch_commit_from_github
-        if commit && build.update(commit.to_h)
-          if travis = fetch_travis_from_github
-            build.delivery_perform_build_message(travis)
-            succ = true
-          end
-        end
-      end
-      unless succ
-        build.reload.error!
-      end
-      succ
-    end
-
-    def fetch_travis_from_github
+    def fetch_configuration_from_github
       begin
         travis = github.contents project.name, ref: build.sha, path: ".travis.yml"
         Base64.decode64 travis.content

@@ -1,7 +1,7 @@
-class BuildsConsumer
+class JobsConsumer
 
   include Vx::Common::AMQP::Consumer
 
-  exchange 'vx.builds'
+  exchange 'vx.jobs'
 
 end

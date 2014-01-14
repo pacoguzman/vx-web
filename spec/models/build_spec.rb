@@ -462,6 +462,17 @@ describe Build do
       end
     end
   end
+
+  context "#source" do
+    subject { b.source }
+    before do
+      b.source = { "script" => "true" }.to_yaml
+    end
+
+    it "should be" do
+      expect(subject).to eq("script" => "true")
+    end
+  end
 end
 
 # == Schema Information

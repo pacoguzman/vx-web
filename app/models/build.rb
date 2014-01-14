@@ -55,6 +55,16 @@ class Build < ActiveRecord::Base
       Job.create_job_for_status_message(self, job_status_message)
   end
 
+  def source
+    @unpacked_source ||= begin
+      if s = read_attribute(:source)
+        ::YAML.load(s)
+      else
+        {}
+      end
+    end
+  end
+
   def duration
     if started_at && finished_at
       finished_at - started_at
