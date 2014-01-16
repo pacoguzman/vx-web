@@ -362,7 +362,7 @@ describe Build do
     context "when build is finished" do
       before do
         job.update! status: 3
-        b.update! status: 3, jobs_count: 1
+        b.update! status: 3
       end
 
       it { should eq b }
@@ -424,8 +424,8 @@ end
 #  created_at      :datetime
 #  updated_at      :datetime
 #  author_email    :string(255)
-#  jobs_count      :integer          default(0), not null
 #  http_url        :string(255)
 #  branch_label    :string(255)
+#  source          :text
 #
 

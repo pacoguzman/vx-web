@@ -107,5 +107,6 @@ end
 #  finished_at :datetime
 #  created_at  :datetime
 #  updated_at  :datetime
+#  source      :text
 #
 

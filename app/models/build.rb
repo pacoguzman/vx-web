@@ -200,8 +200,8 @@ end
 #  created_at      :datetime
 #  updated_at      :datetime
 #  author_email    :string(255)
-#  jobs_count      :integer          default(0), not null
 #  http_url        :string(255)
 #  branch_label    :string(255)
+#  source          :text
 #
 
