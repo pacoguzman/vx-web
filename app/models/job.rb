@@ -9,7 +9,7 @@ class Job < ActiveRecord::Base
 
   after_create :publish_created
 
-  default_scope ->{ order 'jobs.number DESC' }
+  default_scope ->{ order 'jobs.number ASC' }
 
 
   state_machine :status, initial: :initialized do

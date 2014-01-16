@@ -10,9 +10,9 @@ trap('INT') {
 }
 
 Vx::Common::AMQP::Supervisor::Threaded.build(
-  FetchBuildConsumer   => 2,
   BuildNotifyConsumer  => 1,
-  BuildStatusConsumer  => 1,
+  JobStatusConsumer    => 1,
   JobStatusConsumer    => 1,
   JobLogsConsumer      => 1,
+  PayloadConsumer      => 1,
 ).run

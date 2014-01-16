@@ -50,12 +50,10 @@ class Build < ActiveRecord::Base
   end
 
   def source
-    @unpacked_source ||= begin
-      if s = read_attribute(:source)
-        ::YAML.load(s)
-      else
-        {}
-      end
+    if s = read_attribute(:source)
+      ::YAML.load(s)
+    else
+      {}
     end
   end
 
