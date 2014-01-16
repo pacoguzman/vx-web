@@ -114,5 +114,16 @@ describe JobUpdater do
 
       it { should be_nil }
     end
+
+    context "when job already finished" do
+      let(:status) { 3 }
+
+      before do
+        b.start! && b.pass!
+        job.start! && job.pass!
+      end
+
+      it { should eq :invalid_transition }
+    end
   end
 end

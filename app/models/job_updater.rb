@@ -29,7 +29,13 @@ class JobUpdater
     def guard
       Build.transaction do
         if build && job
-          yield
+          begin
+            yield
+          # TODO: save and compare messages
+          rescue StateMachine::InvalidTransition => e
+            Rails.logger.error "ERROR: #{e.inspect}"
+            :invalid_transition
+          end
         end
       end
     end
