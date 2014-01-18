@@ -6,6 +6,10 @@ class PayloadConsumer
   queue    'vx.web.payload'
   ack      true
 
+  content_type "application/json"
+
+  model Hash
+
   def perform(message)
     fetcher = BuildFetcher.new(message)
     fetcher.perform
