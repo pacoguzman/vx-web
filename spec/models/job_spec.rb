@@ -9,47 +9,33 @@ describe Job do
     let(:collection) { job.logs }
   end
 
-  context ".extract_matrix" do
-    let(:msg) { OpenStruct.new matrix: ["env:FOO = 1:2", "rvm:1.9.3"] }
-    let(:expected) { {
-      env: "FOO = 1:2",
-      rvm: "1.9.3"
-    } }
-    subject { described_class.extract_matrix msg }
-
-    it { should eq expected }
-  end
-
-  context ".find_job_for_status_message" do
-    let(:msg) { Vx::Message::JobStatus.test_message job_id: job_id }
+  context "#to_builder_source" do
     let(:job) { create :job }
-    subject { described_class.find_job_for_status_message job.build, msg }
-
-    context "when job exists" do
-      let(:job_id) { job.number }
-      it { should eq job }
-    end
-
-    context "when job does not exists" do
-      let(:job_id) { job.number + 1 }
-      it { should be_nil }
-    end
+    subject { job.to_builder_source }
+    it { should be }
   end
 
-  context "create_job_for_status_message" do
-    let(:b) { create :build }
-    let(:msg) { Vx::Message::JobStatus.test_message }
-    subject { described_class.create_job_for_status_message b, msg }
-
-    before do
-      mock(msg).matrix.twice {
-        ["env: FOO = 1:2", "rvm: 1.9.3"]
-      }
-    end
-
+  context "#to_builder_script" do
+    let(:job) { create :job }
+    subject { job.to_builder_script }
     it { should be }
-    its(:number) { should eq 2 }
-    its(:matrix) { should eq(:env=>"FOO = 1:2", :rvm=>"1.9.3") }
+  end
+
+  context "#to_perform_job_message" do
+    let(:job) { create :job }
+    subject { job.to_perform_job_message }
+    it { should be }
+  end
+
+  context "#publish_perform_job_message" do
+    let(:job) { create :job }
+    subject { job.publish_perform_job_message }
+
+    it "should be" do
+      expect {
+        subject
+      }.to change(JobsConsumer.messages, :count).by(1)
+    end
   end
 
   it "should publish(:created) after create" do
@@ -109,6 +95,53 @@ describe Job do
       end
     end
   end
+
+  context "#finished?" do
+    subject { job.finished? }
+    [0,2].each do |s|
+      context "when status is #{s}" do
+        before { job.status = s }
+        it { should be_false }
+      end
+    end
+
+    [3,4,5].each do |s|
+      context "when status is #{s}" do
+        before { job.status = s }
+        it { should be_true }
+      end
+    end
+  end
+
+  context "#restart!" do
+    let(:job) { create :job }
+    subject   { job.restart.try(:reload) }
+
+    context "when job is finished" do
+      before do
+        job.update! status: 3
+      end
+
+      it { should eq job }
+
+      its(:started_at)  { should be_nil }
+      its(:finished_at) { should be_nil }
+      its(:status_name) { should eq :initialized }
+
+      it "should delivery message to SseEventConsumer" do
+        expect{
+          subject
+        }.to change(SseEventConsumer.messages, :count).by(1)
+      end
+
+      it "should delivery message to JobsConsumer" do
+        expect{
+          subject
+        }.to change(JobsConsumer.messages, :count).by(1)
+      end
+    end
+  end
+
 end
 
 # == Schema Information
@@ -124,5 +157,6 @@ end
 #  finished_at :datetime
 #  created_at  :datetime
 #  updated_at  :datetime
+#  source      :text
 #
 

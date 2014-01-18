@@ -56,31 +56,6 @@ describe Build do
   context "(messages)" do
     let(:b) { create :build, pull_request_id: 1 }
 
-    context "#to_perform_build_message" do
-      let(:travis)  { 'travis' }
-      let(:project) { b.project }
-      subject { b.to_perform_build_message travis }
-
-      context "should create PerformBuild message with" do
-        its(:id)         { should eq b.id }
-        its(:name)       { should eq project.name }
-        its(:src)        { should eq project.clone_url }
-        its(:sha)        { should eq b.sha }
-        its(:deploy_key) { should eq project.deploy_key }
-        its(:travis)     { should eq travis }
-        its(:branch)     { should eq b.branch }
-        its(:pull_request_id) { should eq 1 }
-      end
-    end
-
-    context "#delivery_to_fetcher" do
-      it "should be success" do
-        expect{
-          b.delivery_to_fetcher
-        }.to change(FetchBuildConsumer.messages, :count).by(1)
-      end
-    end
-
     context "#delivery_to_notifier" do
       it "should be success" do
         expect{
@@ -90,27 +65,17 @@ describe Build do
         expect(msg).to eq b.attributes
       end
     end
-
-    context "#delivery_perform_build_message" do
-      it "should be success" do
-        expect{
-          b.delivery_perform_build_message 'travis'
-        }.to change(BuildsConsumer.messages, :count).by(1)
-      end
-    end
   end
 
-  context "find_or_create_job_by_status_message" do
-    let(:msg) { Vx::Message::JobStatus.test_message }
-    subject { b.find_or_create_job_by_status_message msg }
-
-    context "when job does not exists" do
-      it "should create job" do
-        expect {
-          subject
-        }.to change(b.jobs, :size).by(1)
-      end
-    end
+  context "to_builder_task" do
+    let(:b) { create :build }
+    subject { b.to_builder_task }
+    it { should be }
+    its(:name)       { should eq "ci-worker-test-repo" }
+    its(:src)        { should eq 'MyString' }
+    its(:sha)        { should eq 'MyString' }
+    its(:deploy_key) { should be }
+    its(:branch)     { should eq 'MyString' }
   end
 
   context "duration" do
@@ -133,7 +98,6 @@ describe Build do
       before { b.started_at = 1.day.ago }
       it { should be_nil }
     end
-
   end
 
   context "(state machine)" do
@@ -390,7 +354,7 @@ describe Build do
     end
   end
 
-  context "#restart!" do
+  context "#restart" do
     let(:job) { create :job, build: b }
     let(:b)   { create :build }
     subject   { b.restart.try(:reload) }
@@ -398,7 +362,7 @@ describe Build do
     context "when build is finished" do
       before do
         job.update! status: 3
-        b.update! status: 3, jobs_count: 1
+        b.update! status: 3
       end
 
       it { should eq b }
@@ -406,60 +370,38 @@ describe Build do
       its(:started_at)  { should be_nil }
       its(:finished_at) { should be_nil }
       its(:status_name) { should eq :initialized }
-      its("jobs.count") { should eq 0 }
-      its(:jobs_count)  { should eq 0 }
 
       it "should delivery messages to SseEventConsumer" do
         expect{
           subject
         }.to change(SseEventConsumer.messages, :count).by(2)
-        job_m   = SseEventConsumer.messages.pop
         build_m = SseEventConsumer.messages.pop
+        job_m   = SseEventConsumer.messages.pop
 
         expect(job_m[:channel]).to eq 'jobs'
-        expect(job_m[:event]).to eq :destroyed
+        expect(job_m[:event]).to eq :updated
         expect(job_m[:payload][:id]).to eq job.id
 
         expect(build_m[:channel]).to eq 'builds'
         expect(build_m[:event]).to eq :updated
       end
 
-      it "should delivery message to FetchBuildConsumer" do
+      it "should delivery message to JobsConsumer" do
         expect {
           subject
-        }.to change(FetchBuildConsumer.messages, :count).to(1)
-        m = FetchBuildConsumer.messages.first
-        expect(m).to eq b.id
+        }.to change(JobsConsumer.messages, :count).to(1)
       end
     end
+  end
 
-    context "when build is not finished" do
-      before do
-        b.update! status: 2
-      end
+  context "#source" do
+    subject { b.source }
+    before do
+      b.source = { "script" => "true" }.to_yaml
+    end
 
-      it { should be_nil }
-
-      it "cannot touch build" do
-        expect {
-          subject
-        }.to_not change{ b.reload.attributes }
-      end
-
-      it "cannot job build" do
-        expect {
-          subject
-        }.to_not change{ job.reload.attributes }
-      end
-
-      it "cannnot delivery any messages" do
-        expect{
-          subject
-        }.to_not change(SseEventConsumer.messages, :count)
-        expect {
-          subject
-        }.to_not change(FetchBuildConsumer.messages, :count)
-      end
+    it "should be" do
+      expect(subject).to eq("script" => "true")
     end
   end
 end
@@ -482,8 +424,8 @@ end
 #  created_at      :datetime
 #  updated_at      :datetime
 #  author_email    :string(255)
-#  jobs_count      :integer          default(0), not null
 #  http_url        :string(255)
 #  branch_label    :string(255)
+#  source          :text
 #
 

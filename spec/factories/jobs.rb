@@ -5,5 +5,6 @@ FactoryGirl.define do
     build
     number 1
     status 0
+    source({"script" => "true"}.to_yaml)
   end
 end

@@ -14,14 +14,9 @@ describe Github::RepoCallbacksController do
 
     it { should be_success }
 
-    it "should create build" do
-      expect(project.builds.last).to be
-    end
-
-    it "should delivery build to FetchBuildConsumer" do
-      expect(FetchBuildConsumer.messages.last).to eq Build.last.id
+    it "should delivery build to PayloadConsumer" do
+      expect(PayloadConsumer.messages.last).to be
     end
 
   end
-
 end

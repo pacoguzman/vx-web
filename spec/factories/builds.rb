@@ -8,5 +8,6 @@ FactoryGirl.define do
     sha      "MyString"
     author   "MyString"
     message  "MyString"
+    source({ script: "true" }.to_yaml)
   end
 end
