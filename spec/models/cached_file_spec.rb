@@ -26,7 +26,7 @@ describe CachedFile do
 
     it "file should be exists" do
       expect(File.exists? file.file.path).to be
-      expect(file.file.path).to match(/\/orig\.tgz/)
+      expect(file.file.path).to match(/\/upload_test\.tgz/)
     end
   end
 end
