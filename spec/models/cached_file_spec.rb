@@ -30,3 +30,18 @@ describe CachedFile do
     end
   end
 end
+
+# == Schema Information
+#
+# Table name: cached_files
+#
+#  id           :integer          not null, primary key
+#  project_id   :integer          not null
+#  file         :string(255)      not null
+#  content_type :string(255)      not null
+#  file_size    :integer          not null
+#  file_name    :string(255)      not null
+#  created_at   :datetime
+#  updated_at   :datetime
+#
+

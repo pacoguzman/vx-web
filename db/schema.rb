@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140118152833) do
+ActiveRecord::Schema.define(version: 20140118164231) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,8 @@ ActiveRecord::Schema.define(version: 20140118152833) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "cached_files", ["project_id", "file_name"], name: "index_cached_files_on_project_id_and_file_name", unique: true, using: :btree
 
   create_table "github_repos", force: true do |t|
     t.integer  "user_id",                            null: false
@@ -110,6 +112,7 @@ ActiveRecord::Schema.define(version: 20140118152833) do
   end
 
   add_index "projects", ["name"], name: "index_projects_on_name", unique: true, using: :btree
+  add_index "projects", ["token"], name: "index_projects_on_token", unique: true, using: :btree
 
   create_table "user_identities", force: true do |t|
     t.integer  "user_id",    null: false

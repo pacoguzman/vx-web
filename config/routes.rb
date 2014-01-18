@@ -34,6 +34,7 @@ VxWeb::Application.routes.draw do
       end
     end
 
+    put "cached_files/upload/:token/*file_name.:file_ext", to: "cached_files#upload"
   end
 
   post '/github/callback/:token', to: 'github/repo_callbacks#create'

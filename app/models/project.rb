@@ -13,7 +13,7 @@ class Project < ActiveRecord::Base
   validates :name, :http_url, :clone_url, :provider, :token,
     :deploy_key, presence: true
   validates :provider, inclusion: { in: %w{ github } }
-  validates :name, uniqueness: true
+  validates :name, :token, uniqueness: true
 
   before_validation :generate_token,      on: :create
   before_validation :generate_deploy_key, on: :create
