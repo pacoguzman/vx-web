@@ -1,13 +1,12 @@
 require 'spec_helper'
 
 describe Build do
-  let(:b)       { Build.new }
-  let(:project) { create :project }
+  let(:b)       { build :build, branch: nil, sha: nil, number: nil }
+  let(:project) { b.project }
   subject       { b }
 
   context "before creation" do
     subject { ->{ b.save! } }
-    before { b.project = project }
 
     context "assign number" do
 
@@ -257,7 +256,7 @@ describe Build do
   end
 
   context "#human_status_name" do
-    let(:prev) { create :build, status: prev_status }
+    let(:prev) { create :build, status: prev_status, project: project }
 
     subject { b.human_status_name }
 
@@ -426,6 +425,6 @@ end
 #  author_email    :string(255)
 #  http_url        :string(255)
 #  branch_label    :string(255)
-#  source          :text
+#  source          :text             not null
 #
 

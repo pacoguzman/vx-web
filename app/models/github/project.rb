@@ -6,7 +6,7 @@ module Github::Project
     scope :github, -> { where provider: :github }
   end
 
-  def create_build_from_github_payload(payload)
+  def new_build_from_github_payload(payload)
     attrs = {
       pull_request_id:  payload.pull_request_number,
       branch:           payload.branch,
@@ -15,8 +15,7 @@ module Github::Project
       http_url:         payload.url,
     }
 
-    build = builds.build(attrs)
-    build.save && build
+    builds.build(attrs)
   end
 
 end

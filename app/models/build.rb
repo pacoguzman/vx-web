@@ -5,7 +5,7 @@ class Build < ActiveRecord::Base
   belongs_to :project, class_name: "::Project"
   has_many :jobs, class_name: "::Job", dependent: :destroy
 
-  validates :project_id, :number, :sha, :branch, presence: true
+  validates :project_id, :number, :sha, :branch, :source, presence: true
   validates :number, uniqueness: { scope: [:project_id] }
 
   before_validation :assign_number, on: :create
@@ -200,6 +200,6 @@ end
 #  author_email    :string(255)
 #  http_url        :string(255)
 #  branch_label    :string(255)
-#  source          :text
+#  source          :text             not null
 #
 

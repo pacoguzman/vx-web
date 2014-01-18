@@ -4,7 +4,7 @@ class Job < ActiveRecord::Base
   has_many :logs, class_name: "::JobLog", dependent: :delete_all,
     extend: AppendLogMessage
 
-  validates :build_id, :number, :status, presence: true
+  validates :build_id, :number, :status, :source, presence: true
   validates :number, uniqueness: { scope: [:build_id] }
 
   after_create :publish_created
@@ -107,6 +107,6 @@ end
 #  finished_at :datetime
 #  created_at  :datetime
 #  updated_at  :datetime
-#  source      :text
+#  source      :text             not null
 #
 

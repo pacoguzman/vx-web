@@ -17,7 +17,7 @@ class BuildFetcher
   end
 
   def build
-    @build ||= project.create_build_from_github_payload(payload)
+    @build ||= project.new_build_from_github_payload(payload)
   end
 
   def source
@@ -35,6 +35,7 @@ class BuildFetcher
           build                    &&
           assign_source_to_build   &&
           assign_commit_to_build   &&
+          build.save               &&
           create_jobs              &&
           publish_jobs             &&
           subscribe_author_to_repo
@@ -76,14 +77,16 @@ class BuildFetcher
     def assign_commit_to_build
       fetch_commit_from_github.try do |commit|
         Rails.logger.info "assign commit: #{commit.inspect}"
-        build.update commit.to_h
+        build.assign_attributes commit.to_h
+        true
       end
     end
 
     def assign_source_to_build
       fetch_configuration_from_github.try do |source|
         Rails.logger.info "assign source"
-        build.update source: source
+        build.source = source
+        true
       end
     end
 

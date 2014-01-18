@@ -18,9 +18,7 @@ describe BuildFetcher do
     subject { fetcher.build }
 
     it "should create build using payload" do
-      expect{
-        fetcher.build
-      }.to change(project.builds, :count).by(1)
+      expect(subject).to be_new_record
 
       expect(subject.sha).to eq '84158c732ff1af3db9775a37a74ddc39f5c4078f'
       expect(subject.branch).to eq 'master'
@@ -48,15 +46,14 @@ describe BuildFetcher do
         expect {
           subject
         }.to change(project.builds, :count).by(1)
+        expect(subject).to_not be_new_record
       end
 
       it "should assign commit to build" do
-        subject
         expect(subject.author).to eq 'Dmitry Galinsky'
       end
 
       it "should assign source to build" do
-        subject
         expect(subject.source.keys).to be_include("rvm")
       end
 
