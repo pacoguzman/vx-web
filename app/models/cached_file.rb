@@ -1,4 +1,7 @@
 class CachedFile < ActiveRecord::Base
+
+  include PublicUrl::CachedFile
+
   belongs_to :project
 
   validates :project_id, :file, :content_type, :file_size, :file_name,
@@ -7,6 +10,7 @@ class CachedFile < ActiveRecord::Base
   validates :file_name, uniqueness: { scope: :project_id }
 
   mount_uploader :file, FileUploader
+
 end
 
 # == Schema Information

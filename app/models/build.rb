@@ -72,9 +72,10 @@ class Build < ActiveRecord::Base
       project.name,
       project.clone_url,
       sha,
-      deploy_key:      project.deploy_key,
-      branch:          branch,
-      pull_request_id: pull_request_id
+      deploy_key:       project.deploy_key,
+      branch:           branch,
+      pull_request_id:  pull_request_id,
+      cache_url_prefix: cache_url_prefix
     )
   end
 

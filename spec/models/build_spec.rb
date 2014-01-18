@@ -70,11 +70,12 @@ describe Build do
     let(:b) { create :build }
     subject { b.to_builder_task }
     it { should be }
-    its(:name)       { should eq "ci-worker-test-repo" }
-    its(:src)        { should eq 'MyString' }
-    its(:sha)        { should eq 'MyString' }
-    its(:deploy_key) { should be }
-    its(:branch)     { should eq 'MyString' }
+    its(:name)             { should eq "ci-worker-test-repo" }
+    its(:src)              { should eq 'MyString' }
+    its(:sha)              { should eq 'MyString' }
+    its(:deploy_key)       { should be }
+    its(:branch)           { should eq 'MyString' }
+    its(:cache_url_prefix) { should be }
   end
 
   context "duration" do

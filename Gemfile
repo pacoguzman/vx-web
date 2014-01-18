@@ -18,7 +18,7 @@ gem 'sshkey'
 
 gem 'vx-common-amqp', '~> 0.2.7'
 gem 'vx-message', '0.2.0.pre31'
-gem 'vx-builder', '0.0.3'
+gem 'vx-builder', path: "~/apps/vx-builder"
 
 gem 'capistrano_evrone_recipes'
 

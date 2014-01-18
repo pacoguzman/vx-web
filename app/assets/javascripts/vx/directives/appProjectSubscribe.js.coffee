@@ -10,7 +10,7 @@ angular.module('Vx').
     template: """
     <label ng-show="display">
       <input type="checkbox" ng-model="subscribed" ng-change="subscribe()">
-      Watch
+      Watch project
     </label>
     """
 
