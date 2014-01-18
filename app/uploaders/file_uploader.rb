@@ -21,10 +21,6 @@ class FileUploader < CarrierWave::Uploader::Base
     ("%09d" % model.id).scan(/.{3}/).join("/")
   end
 
-  def filename
-    "orig.#{file.extension}"
-  end
-
   # By default, CarrierWave copies an uploaded file twice, first copying the
   # file into the cache, then copying the file into the store. For large files,
   # this can be prohibitively time consuming.

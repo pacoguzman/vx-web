@@ -1,18 +1,15 @@
 require 'spec_helper'
 
 describe Api::CachedFilesController do
+  let(:project) { create :project }
   subject { response }
 
+  after do
+    FileUtils.rm_rf "#{Rails.root}/private/test"
+  end
+
   context "PUT /upload" do
-    let(:project) { create :project }
-
-    before do
-      upload
-    end
-
-    after do
-      FileUtils.rm_rf "#{Rails.root}/private/test"
-    end
+    before { upload }
 
     it { should be_success }
 
@@ -27,6 +24,22 @@ describe Api::CachedFilesController do
       io = File.read("#{Rails.root}/spec/fixtures/upload.tgz")
       @request.env["RAW_POST_DATA"] = io
       put :upload, { token: project.token, file_name: "main/foo", file_ext: "tgz" }, 'CONTENT_TYPE' => 'application/octet-stream'
+    end
+  end
+
+  context "GET /download" do
+    let(:upload)  { File.open Rails.root.join("spec/fixtures/upload_test.tgz") }
+
+    before { download }
+
+    it { should be_success }
+    its(:content_type) { should eq 'application/x-gtar' }
+    its(:body) { should have(5403).items }
+
+    def download
+      FileUtils.cp "#{Rails.root}/spec/fixtures/upload.tgz", "#{Rails.root}/spec/fixtures/upload_test.tgz"
+      project.cached_files.create! file: upload, file_name: "main/foo.tgz"
+      get :download, { token: project.token, file_name: "main/foo", file_ext: "tgz" }
     end
   end
 
