@@ -13,7 +13,7 @@ class BuildFetcher
   end
 
   def project
-    @project ||= ::Project.lock(true).find_by(token: params[:token])
+    @project ||= ::Project.lock(true).find_by(token: params["token"])
   end
 
   def build

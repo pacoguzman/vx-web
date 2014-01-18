@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe BuildFetcher do
   let(:project) { create :project }
-  let(:params)  { read_json_fixture("github/push.json").merge(token: project.token) }
+  let(:params)  { read_json_fixture("github/push.json").merge("token" => project.token) }
   let(:fetcher) { described_class.new params }
 
   subject { fetcher }
