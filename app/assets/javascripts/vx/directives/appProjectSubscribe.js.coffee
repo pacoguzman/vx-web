@@ -8,15 +8,13 @@ angular.module('Vx').
     }
 
     template: """
-    <a class="project-subscribe" href="javascript://" ng-click="subscribe()">
-      <i class="fa fa-2x" ng-class="subscriptionClass()" />
-    </a>
+    <label ng-show="display">
+      <input type="checkbox" ng-model="subscribed" ng-change="subscribe()">
+      Watch
+    </label>
     """
 
     link: (scope, elem) ->
-
-      isSubscribed = () ->
-        scope.subscriptions.indexOf(scope.project.id) != -1
 
       subscribeToProject = () ->
         scope.subscriptions.push scope.project.id
@@ -28,21 +26,24 @@ angular.module('Vx').
           scope.subscriptions.splice(idx, 1)
         projectStore.unsubscribe scope.project.id
 
+      scope.display       = false
+      scope.subscribed    = false
       scope.subscriptions = []
 
-      scope.subscriptionClass = () ->
-        if scope.project
-          if isSubscribed()
-            'fa-star'
-          else
-            'fa-star-o'
-
       scope.subscribe = () ->
-        if scope.project
-          if isSubscribed()
-            unsubscribeFromProject()
-          else
+        if scope.project.id
+          if scope.subscribed
             subscribeToProject()
+          else
+            unsubscribeFromProject()
+
+      updateSubscribed = (_) ->
+        if scope.subscriptions && scope.project
+          scope.display = true
+          scope.subscribed = scope.subscriptions.indexOf(scope.project.id) != -1
+
+      scope.$watch("subscriptions", updateSubscribed, true)
+      scope.$watch("project", updateSubscribed)
 
       currentUserStore.get().then (me) ->
         scope.subscriptions = me.project_subscriptions
