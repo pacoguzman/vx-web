@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140118141002) do
+ActiveRecord::Schema.define(version: 20140118152833) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,16 @@ ActiveRecord::Schema.define(version: 20140118141002) do
   end
 
   add_index "builds", ["project_id", "number"], name: "index_builds_on_project_id_and_number", unique: true, using: :btree
+
+  create_table "cached_files", force: true do |t|
+    t.integer  "project_id",   null: false
+    t.string   "file",         null: false
+    t.string   "content_type", null: false
+    t.integer  "file_size",    null: false
+    t.string   "file_name",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "github_repos", force: true do |t|
     t.integer  "user_id",                            null: false
