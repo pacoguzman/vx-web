@@ -1,0 +1,21 @@
+.cached_files
+
+  %table.table.tasks-table.small-text.table-striped
+    %thead
+      %tr
+        %th
+        %th
+          Name
+        %th
+          Size
+        %th
+          Uploaded At
+
+    %tbody
+      %tr{ 'ng-repeat' => "file in files | orderBy:'created_at':true", 'ng-class' => "cached_file_{{file.id}}" }
+        %td
+          %input{ type: "checkbox", checked: "true", value: "1", "ng-click" => 'destroy(file)' }
+        %td {{ file.name }}
+        %td {{ file.size }}
+        %td {{ file.updated_at | fromNow }}
+

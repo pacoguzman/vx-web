@@ -10,6 +10,7 @@ VxWeb::Application.routes.draw do
 
     resources :projects do
       resources :builds, only: [:index, :create]
+      resources :cached_files, only: [:index]
       resource :subscription, only: [:create, :destroy], controller: "project_subscriptions"
     end
 
@@ -24,6 +25,8 @@ VxWeb::Application.routes.draw do
       resources :logs, only: [:index], controller: "job_logs"
     end
 
+    resources :cached_files, only: [:destroy]
+
     resources :github_repos, only: [:index] do
       member do
         post :subscribe
@@ -33,8 +36,10 @@ VxWeb::Application.routes.draw do
         post :sync
       end
     end
-
   end
+
+  put "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#upload"
+  get "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#download"
 
   post '/github/callback/:token', to: 'github/repo_callbacks#create'
 

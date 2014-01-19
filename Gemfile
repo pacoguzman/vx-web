@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.0.2'
 gem 'pg'
-gem 'redis'
 
 gem 'haml'
 gem 'haml-rails'
@@ -10,6 +9,7 @@ gem 'omniauth'
 gem 'puma'
 gem 'state_machine'
 gem 'active_model_serializers'
+gem 'carrierwave'
 
 # github integration
 gem 'omniauth-github'
@@ -18,7 +18,7 @@ gem 'sshkey'
 
 gem 'vx-common-amqp', '~> 0.2.7'
 gem 'vx-message', '0.2.0.pre31'
-gem 'vx-builder', '0.0.3'
+gem 'vx-builder', '0.0.4'
 
 gem 'capistrano_evrone_recipes'
 

@@ -10,7 +10,11 @@
             <nobr>view on github</nobr>
 
     .col-4
-      .pull-right
+      .pull-right.small-text
+
+        %a.show-cache{ "ng-href" => "/projects/{{project.id}}/cache" }
+          Show cache
+
         .project-subscribe.app-project-subscribe{ 'project' => "project" }
 
   %table.tasks-table.table.small-text

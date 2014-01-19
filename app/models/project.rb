@@ -8,11 +8,12 @@ class Project < ActiveRecord::Base
   belongs_to :identity, class_name: "::UserIdentity"
   has_many :builds, dependent: :destroy, class_name: "::Build"
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
+  has_many :cached_files, dependent: :destroy
 
   validates :name, :http_url, :clone_url, :provider, :token,
     :deploy_key, presence: true
   validates :provider, inclusion: { in: %w{ github } }
-  validates :name, uniqueness: true
+  validates :name, :token, uniqueness: true
 
   before_validation :generate_token,      on: :create
   before_validation :generate_deploy_key, on: :create

@@ -39,4 +39,4 @@ describe "appProjectSubscribe", ->
     it "should be", ->
       $http.flush()
       $scope.$digest()
-      expect(elem.html()).toEqual '\n  <i class="fa fa-2x fa-star" ng-class="subscriptionClass()">\n</i>'
+      expect(elem.html()).toContain("input type=\"checkbox\"")
