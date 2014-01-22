@@ -34,6 +34,7 @@ class JobUpdater
           # TODO: save and compare messages
           rescue StateMachine::InvalidTransition => e
             Rails.logger.error "ERROR: #{e.inspect}"
+            Airbrake.notify(e)
             :invalid_transition
           end
         end
