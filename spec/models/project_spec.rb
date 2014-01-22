@@ -113,7 +113,7 @@ describe Project do
 
   context "#subscribed_by?" do
     let(:project) { create :project }
-    let(:user)    { create :user }
+    let(:user)    { project.user_repo.user }
     subject { project.subscribed_by?(user) }
 
     context "when user subscribed" do
@@ -137,7 +137,7 @@ describe Project do
 
   context "#subscribe" do
     let(:project) { create :project }
-    let(:user)    { create :user }
+    let(:user)    { project.user_repo.user }
     subject { project.subscribe(user) }
 
     context "when subscription exists" do
@@ -164,7 +164,7 @@ describe Project do
 
   context "#unsubscribe" do
     let(:project) { create :project }
-    let(:user)    { create :user }
+    let(:user)    { project.user_repo.user }
     subject { project.unsubscribe(user) }
 
     context "when subscription exists" do
@@ -205,9 +205,9 @@ describe Project do
   end
 
   context "#service_connector" do
-    let(:identity) { create :user_identity, :github }
+    let(:user_repo) { create :user_repo }
     subject { project.service_connector }
-    before { project.identity = identity }
+    before { project.user_repo = user_repo }
     it { should be }
   end
 

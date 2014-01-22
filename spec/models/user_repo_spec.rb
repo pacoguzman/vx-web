@@ -1,15 +1,6 @@
 require 'spec_helper'
 require 'ostruct'
 
-shared_examples 'github repo common attributes' do
-  its(:full_name)   { should eq 'full name'   }
-  its(:is_private)  { should eq true          }
-  its(:ssh_url)     { should eq 'ssh url'     }
-  its(:html_url)    { should eq 'html url'    }
-  its(:user)        { should eq user          }
-  its(:description) { should eq 'description' }
-end
-
 shared_examples 'UserRepo#(un)subscribe cannot touch any projects' do
   it "should be return nil" do
     expect( subject ).to be_nil
@@ -22,6 +13,34 @@ end
 
 describe UserRepo do
   let(:repo) { create :user_repo }
+
+  context ".find_or_create_by_service_connector" do
+    let(:identity) { repo.identity }
+    let(:model)    { Vx::ServiceConnector::Model.test_repo }
+    subject { described_class.find_or_create_by_service_connector identity, model }
+
+    it { should be }
+
+    context "when is not exists" do
+      it "should create a new user_repo" do
+        identity
+        expect{
+          subject
+        }.to change(described_class, :count).by(1)
+      end
+    end
+
+    context "when already exists with same name" do
+      it "should return existing repo" do
+        repo.update full_name: model.full_name
+        expect {
+          subject
+        }.to_not change(described_class, :count)
+        expect(subject).to eq repo
+      end
+    end
+
+  end
 
   context "#unsubscribe" do
     let(:user)     { repo.user   }

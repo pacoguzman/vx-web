@@ -11,6 +11,22 @@ class UserRepo < ActiveRecord::Base
 
   default_scope ->{ order("user_repos.full_name ASC") }
 
+  class << self
+    def find_or_create_by_service_connector(identity, model)
+      repo = where(full_name: model.full_name, identity: identity).first_or_initialize
+      unless repo.persisted?
+        repo.assign_attributes(
+          is_private:   model.is_private,
+          ssh_url:      model.ssh_url,
+          html_url:     model.html_url,
+          description:  model.description
+        )
+        repo.save
+      end
+      repo.persisted? && repo
+    end
+  end
+
   def subscribe
     transaction do
 

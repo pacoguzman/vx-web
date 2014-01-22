@@ -28,16 +28,11 @@ describe BuildFetcher do
   end
 
   context "#perform" do
-    let(:user)     { create :user }
-    let(:identity) { create :user_identity, :github, user: user }
+    let(:user)     { project.user_repo.user }
     let(:commit)   { Vx::ServiceConnector::Model.test_commit }
     let(:file)     { { "rvm" => "2.0.0" }.to_yaml }
 
     subject { fetcher.perform }
-
-    before do
-      fetcher.project.update! identity: identity if fetcher.project
-    end
 
     context "success" do
       before do

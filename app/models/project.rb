@@ -96,7 +96,7 @@ class Project < ActiveRecord::Base
   end
 
   def service_connector
-    identity && identity.service_connector
+    user_repo.try(:identity).try(:service_connector)
   end
 
   def to_service_connector_model

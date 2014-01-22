@@ -9,6 +9,13 @@ class User < ActiveRecord::Base
   validates :name, :email, presence: true
   validates :email, uniqueness: true
 
+  def sync_repos
+    identities.map do |identity|
+      conn = identity.service_connector
+      conn.repos
+    end
+  end
+
 end
 
 # == Schema Information
