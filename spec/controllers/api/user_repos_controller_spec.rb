@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Api::GithubReposController do
-  let(:user) { create :user }
-  let(:repo) { create :github_repo, user: user }
+describe Api::UserReposController do
+  let(:repo) { create :user_repo }
+  let(:user) { repo.user }
   subject { response }
 
   before do

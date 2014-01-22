@@ -27,7 +27,7 @@ VxWeb::Application.routes.draw do
 
     resources :cached_files, only: [:destroy]
 
-    resources :github_repos, only: [:index] do
+    resources :user_repos, only: [:index] do
       member do
         post :subscribe
         post :unsubscribe

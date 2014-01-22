@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GithubRepoSerializer do
+describe UserRepoSerializer do
   let(:object) { create :github_repo }
   let(:serializer) { described_class.new object }
 
