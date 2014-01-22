@@ -243,6 +243,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers
+  airbrake
   annotate
   capistrano_evrone_recipes
   carrierwave
