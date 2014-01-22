@@ -31,8 +31,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     Vx::Common::AMQP::Testing.clear
+    Rails.configuration.x.hostname = 'test.local'
   end
 
-  config.before(:suite) do
-  end
 end

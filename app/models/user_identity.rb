@@ -16,10 +16,6 @@ class UserIdentity < ActiveRecord::Base
       provider(p).first
     end
 
-    def github
-      find_by_provider "github"
-    end
-
     def provider?(p)
       provider(p).exists?
     end

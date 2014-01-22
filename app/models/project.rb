@@ -2,7 +2,6 @@ require 'securerandom'
 
 class Project < ActiveRecord::Base
 
-  include ::Github::Project
   include ::PublicUrl::Project
 
   belongs_to :user_repo, class_name: "::UserRepo"

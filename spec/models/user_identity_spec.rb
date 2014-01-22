@@ -12,15 +12,6 @@ describe UserIdentity do
     end
   end
 
-  context ".github" do
-    subject { described_class.github }
-    before { identity.save! }
-
-    it "should find the github identity" do
-      expect(subject).to eq identity
-    end
-  end
-
   context ".provider?" do
     before { identity.save! }
 
