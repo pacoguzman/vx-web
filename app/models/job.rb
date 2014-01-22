@@ -56,13 +56,13 @@ class Job < ActiveRecord::Base
   def to_perform_job_message
     script = to_builder_script
     ::Vx::Message::PerformJob.new(
+      project_id:      build.project_id,
       id:              build.id,
       job_id:          number,
       name:            build.project.name,
       before_script:   script.to_before_script,
       script:          script.to_script,
-      after_script:    script.to_after_script,
-      matrix_keys:     script.source.to_matrix_s
+      after_script:    script.to_after_script
     )
   end
 

@@ -8,12 +8,14 @@ describe JobUpdater do
       message_attributes
     )
   }
-  let(:b)       { create :build, id: message.build_id }
+  let(:project) { create :project, id: message.project_id }
+  let(:b)       { create :build, id: message.build_id, project: project }
   let(:job)     { create :job, number: message.job_id, build: b }
   let(:updater) { described_class.new message }
   subject { updater }
 
   context "just created" do
+    its(:project) { should eq project }
     its(:build)   { should eq b }
     its(:job)     { should eq job }
     its(:message) { should eq message }

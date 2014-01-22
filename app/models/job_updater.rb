@@ -6,8 +6,12 @@ class JobUpdater
     @message = job_status_message
   end
 
+  def project
+    @project ||= Project.lock(true).find_by(id: message.project_id)
+  end
+
   def build
-    @build ||= Build.find_by(id: message.build_id)
+    @build ||= project && project.builds.find_by(id: message.build_id)
   end
 
   def job
@@ -28,9 +32,7 @@ class JobUpdater
 
     def guard
       Build.transaction do
-        if build && job
-          # TODO: rewrite
-          Project.where(id: build.project_id).select(:id).lock(true)
+        if project && build && job
           begin
             yield
           # TODO: save and compare messages

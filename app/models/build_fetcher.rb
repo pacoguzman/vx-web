@@ -88,7 +88,7 @@ class BuildFetcher
       with_connector do |conn|
         file = conn.files(connector_model).get(build.sha, '.travis.yml')
         if file
-          Rails.logger.warn "assign source: #{file.inspect}"
+          Rails.logger.warn "assign source"
           build.source = file
           true
         end
