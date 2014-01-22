@@ -1,4 +1,5 @@
 module Github
+
   module BuildNotifier
 
     def github
