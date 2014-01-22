@@ -45,7 +45,7 @@ class BuildFetcher
     def subscribe_author_to_repo
       email = build.author_email
       if email
-        Rails.logger.warn "subscribe #{email} to #{project}"
+        Rails.logger.warn "try to subscribe #{email} to #{project}"
         ProjectSubscription.subscribe_by_email(email, project)
       end
       true
