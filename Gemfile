@@ -20,6 +20,7 @@ gem 'vx-service_connector', '0.0.1'
 
 gem 'capistrano_evrone_recipes', require: false
 gem 'airbrake'
+gem 'dalli'
 
 group :assets do
   gem 'execjs'
