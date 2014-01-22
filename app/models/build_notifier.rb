@@ -1,11 +1,4 @@
-class BuildNotifier
-  include ::Github::BuildNotifier
-
-  attr_reader :message
-
-  def initialize(message)
-    @message  = message
-  end
+BuildNotifier = Struct.new(:message) do
 
   def build
     @build ||= begin
@@ -21,8 +14,9 @@ class BuildNotifier
 
   def notify
     if build
-      create_github_commit_status
+      create_commit_status
       delivery_email_notifications
+      true
     end
   end
 
@@ -62,7 +56,18 @@ class BuildNotifier
 
   private
 
-    def identity_not_found
-      raise RuntimeError, "identity on project ID=#{build.project_id} is not exists"
+    def create_commit_status
+      conn  = project.service_connector
+      if conn
+        Rails.logger.warn "create commit status notification for #{conn.inspect}"
+        model = project.to_service_connector_model
+        conn.notices(model).create(
+          build.sha,
+          build.status_name,
+          build.public_url,
+          description
+        )
+      end
     end
+
 end

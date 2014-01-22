@@ -1,8 +1,8 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :github_repo, :class => 'Github::Repo' do
-    user
+  factory :user_repo do
+    identity { create :user_identity }
     organization_login nil
     full_name          "MyString"
     is_private          false

@@ -24,6 +24,10 @@ Vx::Common::AMQP.configure do |c|
     logger.warn "message delivered #{e[:message].inspect[0...60]}..."
   end
 
+  c.on_error do |e|
+    ::Airbrake.notify(e)
+  end
+
   c.content_type = 'application/x-protobuf'
   c.logger       = nil
 end

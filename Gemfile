@@ -6,21 +6,20 @@ gem 'pg'
 gem 'haml'
 gem 'haml-rails'
 gem 'omniauth'
+gem 'omniauth-github'
 gem 'puma'
 gem 'state_machine'
 gem 'active_model_serializers'
 gem 'carrierwave'
-
-# github integration
-gem 'omniauth-github'
-gem 'octokit'
 gem 'sshkey'
 
-gem 'vx-common-amqp', '~> 0.2.7'
-gem 'vx-message', '0.2.0.pre31'
-gem 'vx-builder', '0.0.4'
+gem 'vx-common-amqp',       '~> 0.2.7'
+gem 'vx-message',           '0.2.0.pre31'
+gem 'vx-builder',           '0.0.4'
+gem 'vx-service_connector', '0.0.1'
 
-gem 'capistrano_evrone_recipes'
+gem 'capistrano_evrone_recipes', require: false
+gem 'airbrake'
 
 group :assets do
   gem 'execjs'

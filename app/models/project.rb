@@ -2,18 +2,18 @@ require 'securerandom'
 
 class Project < ActiveRecord::Base
 
-  include ::Github::Project
   include ::PublicUrl::Project
 
-  belongs_to :identity, class_name: "::UserIdentity"
+  belongs_to :user_repo, class_name: "::UserRepo"
   has_many :builds, dependent: :destroy, class_name: "::Build"
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
   has_many :cached_files, dependent: :destroy
 
-  validates :name, :http_url, :clone_url, :provider, :token,
+  validates :name, :http_url, :clone_url, :token, :user_repo_id,
     :deploy_key, presence: true
-  validates :provider, inclusion: { in: %w{ github } }
   validates :name, :token, uniqueness: true
+
+  delegate :identity, to: :user_repo
 
   before_validation :generate_token,      on: :create
   before_validation :generate_deploy_key, on: :create
@@ -50,7 +50,7 @@ class Project < ActiveRecord::Base
   end
 
   def hook_url
-    "http://#{Rails.configuration.x.hostname}/github/callback/#{token}"
+    "http://#{Rails.configuration.x.hostname}/callbacks/github/#{token}"
   end
 
   def public_deploy_key
@@ -83,6 +83,26 @@ class Project < ActiveRecord::Base
     subscription.update subscribe: false
   end
 
+  def new_build_from_payload(payload)
+    attrs = {
+      pull_request_id:  payload.pull_request_number,
+      branch:           payload.branch,
+      branch_label:     payload.branch_label,
+      sha:              payload.head,
+      http_url:         payload.url,
+    }
+
+    builds.build(attrs)
+  end
+
+  def service_connector
+    user_repo.try(:identity).try(:service_connector)
+  end
+
+  def to_service_connector_model
+    Vx::ServiceConnector::Model::Repo.new(id, name)
+  end
+
   private
 
     def find_or_build_subscription_for_user(user)
@@ -100,16 +120,17 @@ end
 #
 # Table name: projects
 #
-#  id          :integer          not null, primary key
-#  name        :string(255)      not null
-#  http_url    :string(255)      not null
-#  clone_url   :string(255)      not null
-#  description :text
-#  provider    :string(255)
-#  deploy_key  :text             not null
-#  token       :string(255)      not null
-#  created_at  :datetime
-#  updated_at  :datetime
-#  identity_id :integer
+#  id           :integer          not null, primary key
+#  name         :string(255)      not null
+#  http_url     :string(255)      not null
+#  clone_url    :string(255)      not null
+#  description  :text
+#  provider     :string(255)
+#  deploy_key   :text             not null
+#  token        :string(255)      not null
+#  created_at   :datetime
+#  updated_at   :datetime
+#  identity_id  :integer
+#  user_repo_id :integer          not null
 #
 

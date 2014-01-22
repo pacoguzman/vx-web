@@ -8,7 +8,7 @@ describe ProjectSubscription do
 
   context ".subscribe_by_email" do
     let(:project) { create :project }
-    let(:user)    { create :user }
+    let(:user)    { project.user_repo.user }
     let(:email)   { user.email }
 
     subject { described_class.subscribe_by_email email, project }

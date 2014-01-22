@@ -55,7 +55,7 @@ describe Project do
   context "#hook_url" do
     it "should return secure hook url for project" do
       token = project.generate_token
-      expect(project.hook_url).to eq "http://#{Rails.configuration.x.hostname}/github/callback/#{token}"
+      expect(project.hook_url).to eq "http://#{Rails.configuration.x.hostname}/callbacks/github/#{token}"
     end
   end
 
@@ -113,7 +113,7 @@ describe Project do
 
   context "#subscribed_by?" do
     let(:project) { create :project }
-    let(:user)    { create :user }
+    let(:user)    { project.user_repo.user }
     subject { project.subscribed_by?(user) }
 
     context "when user subscribed" do
@@ -137,7 +137,7 @@ describe Project do
 
   context "#subscribe" do
     let(:project) { create :project }
-    let(:user)    { create :user }
+    let(:user)    { project.user_repo.user }
     subject { project.subscribe(user) }
 
     context "when subscription exists" do
@@ -164,7 +164,7 @@ describe Project do
 
   context "#unsubscribe" do
     let(:project) { create :project }
-    let(:user)    { create :user }
+    let(:user)    { project.user_repo.user }
     subject { project.unsubscribe(user) }
 
     context "when subscription exists" do
@@ -187,6 +187,37 @@ describe Project do
         expect(project.subscriptions.first.user).to eq user
       end
     end
+  end
+
+  context "#new_build_from_payload" do
+    let(:project) { create :project }
+    let(:payload) { Vx::ServiceConnector::Model.test_payload }
+    subject { project.new_build_from_payload payload }
+
+    context "a new build" do
+      it { should be_new_record }
+      its(:pull_request_id) { should be_nil }
+      its(:branch)          { should eq 'master' }
+      its(:branch_label)    { should eq 'master:label' }
+      its(:sha)             { should eq 'HEAD' }
+      its(:http_url)        { should eq 'http://example.com' }
+    end
+  end
+
+  context "#service_connector" do
+    let(:user_repo) { create :user_repo }
+    subject { project.service_connector }
+    before { project.user_repo = user_repo }
+    it { should be }
+  end
+
+  context "#to_service_connector_model" do
+    subject { project.to_service_connector_model }
+    before do
+      project.name = 'full/name'
+    end
+    it { should be }
+    its(:full_name) { should eq 'full/name' }
   end
 
 end

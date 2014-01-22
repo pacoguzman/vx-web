@@ -10,8 +10,8 @@ class PayloadConsumer
 
   model Hash
 
-  def perform(message)
-    fetcher = BuildFetcher.new(message)
+  def perform(payload)
+    fetcher = BuildFetcher.new(payload)
     fetcher.perform
 
     ack!

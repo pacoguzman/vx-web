@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :project_subscription do
-    user
     project
+    user { |rec| rec.project.user_repo.user }
   end
 end

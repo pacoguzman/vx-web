@@ -27,7 +27,7 @@ VxWeb::Application.routes.draw do
 
     resources :cached_files, only: [:destroy]
 
-    resources :github_repos, only: [:index] do
+    resources :user_repos, only: [:index] do
       member do
         post :subscribe
         post :unsubscribe
@@ -41,7 +41,9 @@ VxWeb::Application.routes.draw do
   put "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#upload"
   get "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#download"
 
-  post '/github/callback/:token', to: 'github/repo_callbacks#create'
+  # TODO: remove it
+  post '/:_service/callback/:token', to: 'repo_callbacks#create', _service: /(github)/
+  post '/callbacks/:_service/:token', to: 'repo_callbacks#create', _service: /(github)/
 
   get '/auth/github/callback', to: 'github/user_callbacks#create'
   get '/auth/failure', to: redirect('/')

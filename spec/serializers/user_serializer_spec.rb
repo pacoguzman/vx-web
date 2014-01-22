@@ -11,7 +11,8 @@ describe UserSerializer do
   end
 
   context "#project_subscriptions" do
-    let!(:sub) { create :project_subscription, user: object }
+    let(:sub)    { create :project_subscription }
+    let(:object) { sub.user }
     subject { serializer.project_subscriptions }
 
     it { should eq [sub.project_id] }

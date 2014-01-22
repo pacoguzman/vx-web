@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140118164231) do
+ActiveRecord::Schema.define(version: 20140122165805) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,21 +50,6 @@ ActiveRecord::Schema.define(version: 20140118164231) do
 
   add_index "cached_files", ["project_id", "file_name"], name: "index_cached_files_on_project_id_and_file_name", unique: true, using: :btree
 
-  create_table "github_repos", force: true do |t|
-    t.integer  "user_id",                            null: false
-    t.string   "organization_login"
-    t.string   "full_name",                          null: false
-    t.boolean  "is_private",                         null: false
-    t.string   "ssh_url",                            null: false
-    t.string   "html_url",                           null: false
-    t.boolean  "subscribed",         default: false, null: false
-    t.text     "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "github_repos", ["user_id", "full_name"], name: "index_github_repos_on_user_id_and_full_name", unique: true, using: :btree
-
   create_table "job_logs", force: true do |t|
     t.integer "job_id"
     t.integer "tm"
@@ -99,16 +84,15 @@ ActiveRecord::Schema.define(version: 20140118164231) do
   add_index "project_subscriptions", ["project_id"], name: "index_project_subscriptions_on_project_id", using: :btree
 
   create_table "projects", force: true do |t|
-    t.string   "name",        null: false
-    t.string   "http_url",    null: false
-    t.string   "clone_url",   null: false
+    t.string   "name",         null: false
+    t.string   "http_url",     null: false
+    t.string   "clone_url",    null: false
     t.text     "description"
-    t.string   "provider"
-    t.text     "deploy_key",  null: false
-    t.string   "token",       null: false
+    t.text     "deploy_key",   null: false
+    t.string   "token",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "identity_id"
+    t.integer  "user_repo_id", null: false
   end
 
   add_index "projects", ["name"], name: "index_projects_on_name", unique: true, using: :btree
@@ -125,6 +109,21 @@ ActiveRecord::Schema.define(version: 20140118164231) do
   end
 
   add_index "user_identities", ["user_id", "provider"], name: "index_user_identities_on_user_id_and_provider", unique: true, using: :btree
+
+  create_table "user_repos", force: true do |t|
+    t.string   "organization_login"
+    t.string   "full_name",                          null: false
+    t.boolean  "is_private",                         null: false
+    t.string   "ssh_url",                            null: false
+    t.string   "html_url",                           null: false
+    t.boolean  "subscribed",         default: false, null: false
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "identity_id",                        null: false
+  end
+
+  add_index "user_repos", ["full_name", "identity_id"], name: "index_user_repos_on_full_name_and_identity_id", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",      null: false

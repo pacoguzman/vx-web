@@ -6,12 +6,8 @@ FactoryGirl.define do
     http_url      "MyString"
     clone_url     "MyString"
     description   ""
-    provider      "github"
     token         'token'
     deploy_key    'deploy key'
-
-    trait :github do
-      provider 'github'
-    end
+    user_repo
   end
 end

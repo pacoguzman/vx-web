@@ -1,15 +1,16 @@
 require 'spec_helper'
 
-describe Github::RepoCallbacksController do
+describe RepoCallbacksController do
 
   subject { response }
 
   describe "GET /create" do
     let(:project) { create :project }
-    let(:params)  { read_json_fixture("github/push.json") }
+    let(:service) { 'github' }
+    let(:params)  { {} }
 
     before do
-      get :create, params.merge(token: project.token)
+      get :create, params.merge(token: project.token, _service: service)
     end
 
     it { should be_success }

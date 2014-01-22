@@ -17,9 +17,9 @@ Vx.config ($routeProvider, $locationProvider) ->
       templateUrl: "<%= asset_path 'cached_files/index.html' %>",
       controller: "CachedFilesCtrl"
     ).
-    when('/github_repos',
-      templateUrl: "<%= asset_path 'github_repos/index.html' %>",
-      controller: "GithubReposCtrl"
+    when('/user_repos',
+      templateUrl: "<%= asset_path 'user_repos/index.html' %>",
+      controller: "UserReposCtrl"
     ).
     when('/',
       templateUrl: "<%= asset_path 'projects/index.html' %>",

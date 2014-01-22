@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Api::GithubReposController do
-  let(:user) { create :user }
-  let(:repo) { create :github_repo, user: user }
+describe Api::UserReposController do
+  let(:repo) { create :user_repo }
+  let(:user) { repo.user }
   subject { response }
 
   before do
@@ -22,7 +22,7 @@ describe Api::GithubReposController do
     before do
       repo
       mock(User).find_by(id: user.id) { user }
-      mock(user).sync_github_repos! { true }
+      mock(user).sync_repos { true }
       post :sync, format: :json
     end
     it { should be_success }
@@ -31,6 +31,9 @@ describe Api::GithubReposController do
 
   context "POST /subscribe" do
     before do
+      any_instance_of(UserRepo) do |r|
+        mock(r).subscribe { true }
+      end
       post :subscribe, id: repo.id, format: :json
     end
 
@@ -40,6 +43,9 @@ describe Api::GithubReposController do
 
   context "POST /unsubscribe" do
     before do
+      any_instance_of(UserRepo) do |r|
+        mock(r).unsubscribe { true }
+      end
       post :unsubscribe, id: repo.id, format: :json
     end
     it { should be_success }

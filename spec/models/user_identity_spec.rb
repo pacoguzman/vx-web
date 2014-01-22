@@ -12,15 +12,6 @@ describe UserIdentity do
     end
   end
 
-  context ".github" do
-    subject { described_class.github }
-    before { identity.save! }
-
-    it "should find the github identity" do
-      expect(subject).to eq identity
-    end
-  end
-
   context ".provider?" do
     before { identity.save! }
 
@@ -30,6 +21,17 @@ describe UserIdentity do
 
     it "should be false unless provider" do
       expect(described_class.provider? "not-exists").to be_false
+    end
+  end
+
+  context "#service_connector" do
+    subject { identity.service_connector }
+
+    context "github" do
+      before { identity.provider = 'github' }
+      it { should be }
+      its(:login)        { should eq identity.login }
+      its(:access_token) { should eq identity.token }
     end
   end
 
