@@ -1,4 +1,6 @@
 class UserSerializer < ActiveModel::Serializer
+  cached
+
   attributes :id, :email, :name, :project_subscriptions
 
   has_many :identities

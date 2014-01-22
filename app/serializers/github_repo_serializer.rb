@@ -1,4 +1,6 @@
 class GithubRepoSerializer < ActiveModel::Serializer
+  cached
+
   attributes :id, :full_name, :html_url, :subscribed, :disabled
 
   def disabled

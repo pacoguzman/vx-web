@@ -26,4 +26,6 @@ VxWeb::Application.configure do
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
   config.assets.debug = true
+
+  #config.cache_store = :file_store, "#{Rails.root}/tmp/app_cache/#{Rails.env}"
 end

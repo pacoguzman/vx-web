@@ -1,4 +1,6 @@
 class JobSerializer < ActiveModel::Serializer
+  cached
+
   attributes :id, :build_id, :project_id, :number, :status,
     :matrix, :started_at, :finished_at, :text_logs_url
 

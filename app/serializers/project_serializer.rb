@@ -1,4 +1,6 @@
 class ProjectSerializer < ActiveModel::Serializer
+  cached
+
   attributes :id, :name, :http_url, :description, :status, :last_build_created_at
 
   def status
