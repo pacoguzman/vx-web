@@ -7,7 +7,7 @@ class Api::UserReposController < Api::BaseController
   end
 
   def sync
-    current_user.sync_user_repos!
+    current_user.sync_repos
     respond_with(user_repos, each_serializer: UserRepoSerializer, location: nil)
   end
 
