@@ -4,7 +4,6 @@ Vx.controller 'CachedFilesCtrl', ($scope, appMenu, projectStore, cachedFilesStor
   $scope.files   = cachedFilesStore.all $routeParams.projectId
 
   $scope.destroy = (file) ->
-    console.log file
     cachedFilesStore.destroy(file)
 
   appMenu.define $scope.project, (p) ->

@@ -31,8 +31,6 @@ angular.module('Vx').
       scope.subscribed    = false
       scope.subscriptions = []
 
-      console.log scope.title
-
       scope.subscribe = () ->
         if scope.project.id
           if scope.subscribed

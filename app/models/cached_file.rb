@@ -9,7 +9,16 @@ class CachedFile < ActiveRecord::Base
 
   validates :file_name, uniqueness: { scope: :project_id }
 
+  after_create :publish_created
+  after_update :publish
+
   mount_uploader :file, FileUploader
+
+  private
+
+    def publish_created
+      publish :created
+    end
 
 end
 

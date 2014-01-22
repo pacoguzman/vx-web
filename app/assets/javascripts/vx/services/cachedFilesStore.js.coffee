@@ -1,9 +1,22 @@
 Vx.service 'cachedFilesStore',
-  ($http, $q, cacheStore) ->
+  ($http, $q, cacheStore, eventSource) ->
 
     cache      = cacheStore()
     collection = cache.collection
     item       = cache.item
+
+    subscribe = (e) ->
+      projectId = e.data.project_id
+      fileId    = e.id
+      value     = e.data
+
+      switch e.event
+        when 'created'
+          collection(projectId).addItem value
+        when 'updated'
+          item(fileId).update value, projectId
+
+    eventSource.subscribe "cached_files", subscribe
 
     all = (projectId) ->
       collection(projectId).get () ->

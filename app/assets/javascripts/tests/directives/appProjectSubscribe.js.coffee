@@ -7,8 +7,16 @@ describe "appProjectSubscribe", ->
   project  = null
   user     = null
 
+  evSource = eventSourceMock()
+
   beforeEach ->
     module("Vx")
+
+    module ($provide) ->
+      () ->
+        $provide.value 'eventSource', evSource
+    evSource.reset()
+
     inject ['$rootScope', '$compile', "$injector"
       (_$scope_, _$compile_, $injector ) ->
         $scope   = _$scope_.$new()
@@ -40,3 +48,4 @@ describe "appProjectSubscribe", ->
       $http.flush()
       $scope.$digest()
       expect(elem.html()).toContain("input type=\"checkbox\"")
+
