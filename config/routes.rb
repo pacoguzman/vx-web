@@ -43,7 +43,8 @@ VxWeb::Application.routes.draw do
 
   # TODO: remove it
   post '/:_service/callback/:token', to: 'repo_callbacks#create', _service: /(github)/
-  post '/callbacks/:_service/:token', to: 'repo_callbacks#create', _service: /(github)/
+  post '/callbacks/:_service/:token', to: 'repo_callbacks#create', _service: /(github)/,
+    as: 'repo_callback'
 
   get '/auth/github/callback', to: 'github/user_callbacks#create'
   get '/auth/failure', to: redirect('/')
