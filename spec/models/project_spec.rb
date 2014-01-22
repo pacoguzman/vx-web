@@ -55,7 +55,7 @@ describe Project do
   context "#hook_url" do
     it "should return secure hook url for project" do
       token = project.generate_token
-      expect(project.hook_url).to eq "http://#{Rails.configuration.x.hostname}/github/callback/#{token}"
+      expect(project.hook_url).to eq "http://#{Rails.configuration.x.hostname}/callbacks/github/#{token}"
     end
   end
 
@@ -213,8 +213,11 @@ describe Project do
 
   context "#to_service_connector_model" do
     subject { project.to_service_connector_model }
+    before do
+      project.name = 'full/name'
+    end
     it { should be }
-    its(:full_name) { should  }
+    its(:full_name) { should eq 'full/name' }
   end
 
 end
