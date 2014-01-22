@@ -1,12 +1,14 @@
-class Github::Repo < ActiveRecord::Base
+class UserRepo < ActiveRecord::Base
+
+  belongs_to :identity, class_name: "::UserIdentity", foreign_key: :identity_id
 
   validates :full_name, :ssh_url, :user_id, :html_url, presence: true
   validates :is_private, inclusion: { in: [true, false] }
   validates :full_name, uniqueness: { scope: [:user_id] }
 
-  belongs_to :user, class_name: "::User"
+  delegate :user, to: :identity
 
-  default_scope ->{ order("github_repos.full_name ASC") }
+  default_scope ->{ order("user_repos.full_name ASC") }
 
   def subscribe
     transaction do
@@ -104,7 +106,7 @@ end
 
 # == Schema Information
 #
-# Table name: github_repos
+# Table name: user_repos
 #
 #  id                 :integer          not null, primary key
 #  user_id            :integer          not null
@@ -117,5 +119,6 @@ end
 #  description        :text
 #  created_at         :datetime
 #  updated_at         :datetime
+#  identity_id        :integer          not null
 #
 

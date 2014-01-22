@@ -2,11 +2,12 @@ class User < ActiveRecord::Base
 
   include Github::User
 
+  has_many :identities, class_name: "::UserIdentity", dependent: :nullify
+  has_many :user_repos, through: :identities
+  has_many :project_subscriptions, class_name: "::ProjectSubscription", dependent: :destroy
+
   validates :name, :email, presence: true
   validates :email, uniqueness: true
-
-  has_many :identities, class_name: "::UserIdentity", dependent: :nullify
-  has_many :project_subscriptions, class_name: "::ProjectSubscription", dependent: :destroy
 
 end
 

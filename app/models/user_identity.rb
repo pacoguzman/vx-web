@@ -3,6 +3,8 @@ class UserIdentity < ActiveRecord::Base
   belongs_to :user
   has_many :projects, dependent: :nullify, foreign_key: :identity_id,
     class_name: "::Project"
+  has_many :user_repos, dependent: :destroy, foreign_key: :identity_id,
+    class_name: "::UserRepo"
 
   validates :user_id, :provider, :uid, :token, presence: true
   validates :user_id, uniqueness: { scope: [:provider] }
