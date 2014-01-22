@@ -190,29 +190,17 @@ describe Project do
   end
 
   context "#new_build_from_payload" do
-    let(:project)         { create :project }
-    let(:pull_request_id) { 1 }
-    let(:branch)          { 'branch' }
-    let(:branch_label)    { 'branch:label' }
-    let(:head)            { 'head' }
-    let(:url)             { 'url' }
-    let(:payload)         {
-      # TODO: create model for testing
-      OpenStruct.new pull_request_number: pull_request_id,
-                     branch: branch,
-                     head: head,
-                     url: url,
-                     branch_label: branch_label
-    }
+    let(:project) { create :project }
+    let(:payload) { Vx::ServiceConnector::Model.test_payload }
     subject { project.new_build_from_payload payload }
 
     context "a new build" do
       it { should be_new_record }
-      its(:pull_request_id) { should eq pull_request_id }
-      its(:branch)          { should eq branch }
-      its(:branch_label)    { should eq branch_label }
-      its(:sha)             { should eq head }
-      its(:http_url)        { should eq url }
+      its(:pull_request_id) { should be_nil }
+      its(:branch)          { should eq 'master' }
+      its(:branch_label)    { should eq 'master:label' }
+      its(:sha)             { should eq 'HEAD' }
+      its(:http_url)        { should eq 'http://example.com' }
     end
   end
 
@@ -226,7 +214,6 @@ describe Project do
   context "#to_service_connector_model" do
     subject { project.to_service_connector_model }
     it { should be }
-    its(:id)        { should be }
     its(:full_name) { should  }
   end
 

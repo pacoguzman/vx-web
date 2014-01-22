@@ -2,16 +2,18 @@ require 'spec_helper'
 
 describe BuildFetcher do
   let(:project) { create :project }
-  let(:params)  { read_json_fixture("github/push.json").merge("token" => project.token) }
+  let(:payload) { Vx::ServiceConnector::Model.test_payload }
+  let(:params)  { payload.to_hash.stringify_keys.merge("project_id" => project.id) }
   let(:fetcher) { described_class.new params }
 
   subject { fetcher }
 
   context "just created" do
-    its(:project) { should eq project }
-    its(:payload) { should be }
-    its(:source)  { should be }
-    its(:matrix)  { should be }
+    its(:project_id) { should eq project.id }
+    its(:project)    { should eq project }
+    its(:payload)    { should be }
+    its(:source)     { should be }
+    its(:matrix)     { should be }
   end
 
   context "#build" do
@@ -20,7 +22,7 @@ describe BuildFetcher do
     it "should create build using payload" do
       expect(subject).to be_new_record
 
-      expect(subject.sha).to eq '84158c732ff1af3db9775a37a74ddc39f5c4078f'
+      expect(subject.sha).to eq 'HEAD'
       expect(subject.branch).to eq 'master'
     end
   end
@@ -28,6 +30,9 @@ describe BuildFetcher do
   context "#perform" do
     let(:user)     { create :user }
     let(:identity) { create :user_identity, :github, user: user }
+    let(:commit)   { Vx::ServiceConnector::Model.test_commit }
+    let(:file)     { { "rvm" => "2.0.0" }.to_yaml }
+
     subject { fetcher.perform }
 
     before do
@@ -36,8 +41,10 @@ describe BuildFetcher do
 
     context "success" do
       before do
-        mock_commit_request
-        mock_contents_request
+        any_instance_of(Vx::ServiceConnector::Github) do |g|
+          mock(g).commits(anything).mock!.get(payload.head) { commit }
+          mock(g).files(anything).mock!.get(payload.head, '.travis.yml') { file }
+        end
       end
 
       it { should be }
@@ -50,7 +57,7 @@ describe BuildFetcher do
       end
 
       it "should assign commit to build" do
-        expect(subject.author).to eq 'Dmitry Galinsky'
+        expect(subject.author).to eq 'author'
       end
 
       it "should assign source to build" do
@@ -91,7 +98,9 @@ describe BuildFetcher do
 
       context "when fail to fetch source" do
         before do
-          mock_not_found_contents_request
+          any_instance_of(Vx::ServiceConnector::Github) do |g|
+            mock(g).files(anything).mock!.get(payload.head, '.travis.yml') { nil }
+          end
         end
 
         it "cannot create any builds" do
@@ -103,8 +112,10 @@ describe BuildFetcher do
 
       context "when fail to fetch commit" do
         before do
-          mock_contents_request
-          mock_not_found_commit_request
+          any_instance_of(Vx::ServiceConnector::Github) do |g|
+            mock(g).files(anything).mock!.get(payload.head, '.travis.yml') { file }
+            mock(g).commits(anything).mock!.get(payload.head) { nil }
+          end
         end
 
         it "cannot create any builds" do
@@ -116,9 +127,10 @@ describe BuildFetcher do
 
       context "when jobs is empty" do
         before do
-          mock_contents_request
-          mock_commit_request
-          mock(fetcher).matrix { [] }
+          any_instance_of(Vx::ServiceConnector::Github) do |g|
+            mock(g).commits(anything).mock!.get(payload.head) { commit }
+            mock(g).files(anything).mock!.get(payload.head, '.travis.yml') { "---\n" }
+          end
         end
 
         it "cannot create any builds" do
@@ -131,79 +143,4 @@ describe BuildFetcher do
 
   end
 
-  context "(github)" do
-    let(:user)     { create :user }
-    let(:identity) { create :user_identity, :github, user: user }
-    let(:project)  { create :project }
-    before do
-      project.update! identity: identity
-      stub(fetcher).project { project }
-    end
-
-    context "just created" do
-      its(:github) { should be }
-    end
-
-    context "#fetch_commit_from_github" do
-      subject { fetcher.fetch_commit_from_github }
-
-      it "should be success" do
-        mock_commit_request
-        expect(subject.sha).to     eq '84158c732ff1af3db9775a37a74ddc39f5c4078f'
-        expect(subject.message).to eq "Update Rakefile"
-        expect(subject.author).to  eq "Dmitry Galinsky"
-        expect(subject.author_email).to_not be_blank
-        expect(subject.http_url).to_not be_blank
-      end
-
-      context "when commit not found" do
-        it "should be nil" do
-          mock_not_found_commit_request
-          expect(subject).to be_nil
-        end
-      end
-    end
-
-    context "#fetch_configuration_from_github" do
-      subject { fetcher.fetch_configuration_from_github }
-
-      it "should be success" do
-        mock_contents_request
-        expect(subject).to_not be_blank
-      end
-
-      context "when not found" do
-        it "should be nil" do
-          mock_not_found_contents_request
-          expect(subject).to be_nil
-        end
-      end
-    end
-  end
-
-  def mock_commit_request
-    commit = read_fixture("github/commit.json")
-    stub_request(:get, "https://api.github.com/repos/ci-worker-test-repo/commits/84158c732ff1af3db9775a37a74ddc39f5c4078f").
-       with(:headers => {'Authorization'=>'token MyString'}).
-       to_return(:status => 200, :body => commit, headers: {'Content-Type' => 'application/json'})
-  end
-
-  def mock_not_found_commit_request
-    stub_request(:get, "https://api.github.com/repos/ci-worker-test-repo/commits/84158c732ff1af3db9775a37a74ddc39f5c4078f").
-       with(:headers => {'Authorization'=>'token MyString'}).
-       to_return(:status => 404, :body => "{}", headers: {'Content-Type' => 'application/json'})
-  end
-
-  def mock_contents_request
-    contents = read_fixture("github/contents.json")
-    stub_request(:get, "https://api.github.com/repos/ci-worker-test-repo/contents/.travis.yml?ref=84158c732ff1af3db9775a37a74ddc39f5c4078f").
-       with(:headers => {'Authorization'=>'token MyString'}).
-       to_return(:status => 200, :body => contents, headers: {'Content-Type' => 'application/json'})
-  end
-
-  def mock_not_found_contents_request
-    stub_request(:get, "https://api.github.com/repos/ci-worker-test-repo/contents/.travis.yml?ref=84158c732ff1af3db9775a37a74ddc39f5c4078f").
-       with(:headers => {'Authorization'=>'token MyString'}).
-       to_return(:status => 404, :body => "{}", headers: {'Content-Type' => 'application/json'})
-  end
 end

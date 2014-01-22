@@ -4,17 +4,19 @@ class RepoCallbacksController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
   def create
-    unless payload.ignore?
-      Rails.logger.warn "ignore payload #{payload.inspect}"
-      PayloadConsumer.publish payload
+    if project && !payload.ignore?
+      PayloadConsumer.publish payload.to_hash.merge(project_id: project.id)
     end
     head :ok
   end
 
   private
+    def project
+      @project ||= Project.select(:id).find_by(token: params[:token])
+    end
 
     def payload
-      @payload = Vx::ServiceConnector.payload(params[:_service], params)
+      @payload ||= Vx::ServiceConnector.payload(:github, params)
     end
 
 end

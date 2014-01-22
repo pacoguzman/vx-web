@@ -1,13 +1,14 @@
 class BuildFetcher
 
-  attr_reader :payload
+  attr_reader :payload, :project_id
 
   def initialize(params)
-    @payload = OpenStruct.new params
+    @payload    = Vx::ServiceConnector::Model::Payload.from_hash(params)
+    @project_id = params["project_id"].to_i
   end
 
   def project
-    @project ||= ::Project.lock(true).find_by(token: params["token"])
+    @project ||= ::Project.lock(true).find_by(id: project_id)
   end
 
   def build
@@ -87,7 +88,7 @@ class BuildFetcher
       with_connector do |conn|
         file = conn.files(connector_model).get(build.sha, '.travis.yml')
         if file
-          Rails.logger.warn "assign source"
+          Rails.logger.warn "assign source: #{file.inspect}"
           build.source = file
           true
         end
@@ -95,7 +96,7 @@ class BuildFetcher
     end
 
     def guard
-      if project
+      if project && !payload.ignore?
         yield
       end
     end

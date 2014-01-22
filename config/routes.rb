@@ -41,7 +41,9 @@ VxWeb::Application.routes.draw do
   put "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#upload"
   get "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#download"
 
+  # TODO: remove it
   post '/:_service/callback/:token', to: 'repo_callbacks#create', _service: /(github)/
+  post '/callback/:_service/:token', to: 'repo_callbacks#create', _service: /(github)/
 
   get '/auth/github/callback', to: 'github/user_callbacks#create'
   get '/auth/failure', to: redirect('/')
