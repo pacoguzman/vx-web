@@ -8,7 +8,7 @@ angular.module('Vx').
     }
 
     template: """
-    <table class='table tasks-table'>
+    <table class='table tasks-table' ng-show="display">
       <thead>
         <th>Job</th>
         <th>Duration</th>
@@ -36,9 +36,11 @@ angular.module('Vx').
 
     link: (scope, elem, attrs) ->
       scope.matrix = []
+      scope.display = false
 
       updateMatrix = (newVal) ->
-        if newVal
+        if newVal && newVal.length > 0
+          scope.display = true
           values = _.pluck(newVal, 'matrix')
           values = _.map(values, (it) -> _.keys(it))
           scope.matrix = _.uniq _.flatten(values).sort()

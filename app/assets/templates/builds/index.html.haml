@@ -17,8 +17,8 @@
 
         .project-subscribe.app-project-subscribe{ project: "project", title: "Watch Project" }
 
-  %table.tasks-table.table
 
+  %table.tasks-table.table{ 'ng-show' => 'builds.length > 0' }
     %thead
       %th No.
       %th Commit

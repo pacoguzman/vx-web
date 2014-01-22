@@ -41,8 +41,6 @@
         %a{ href: 'javascript://', title: "Restart Build", 'ng-click' => 'restartBuild(build)', 'ng-show' => 'isFinished(build)' }
           %i.fa.fa-refresh.fa-2x
 
-  .build-jobs{ 'ng-show' => "jobs.length != undefined" }
-
-    %pre.app-build-jobs{ jobs: 'jobs' }
+  %pre.app-build-jobs{ jobs: 'jobs' }
 
   .ajax-loader{ 'ng-hide' => 'jobs.length != undefined' }
