@@ -6,6 +6,7 @@
 body, head, html {
   font-family: 'Helvetica Neue', 'Helvetica' !important;
   color: #666 !important;
+  font-size: 13px;
 }
 
 body > .container {
@@ -13,7 +14,6 @@ body > .container {
 }
 
 body > .container > .ng-view {
-  margin-left: 5.1em;
   margin-top: 2em;
 
   &> div {
@@ -34,7 +34,8 @@ body > .container > .ng-view {
     color: white;
     font-size: 1.2em;
     line-height: 1.2em;
-    margin-left: -1em;
+    margin-left: -5em;
+    margin-top: .3em;
 
     span {
       display: block;
@@ -44,7 +45,6 @@ body > .container > .ng-view {
   }
 
   .navigation {
-    margin-left: 5em;
 
     ul li {
       margin-right: 1em;
@@ -80,8 +80,8 @@ body > .container > .ng-view {
   content: url(asset-path("ajax-loader.gif"));
 }
 
-.small-text {
-  font-size: 13px;
+.medium-text {
+  font-size: 14px;
 }
 
 .secondary-text {

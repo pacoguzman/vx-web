@@ -5,7 +5,7 @@
 
   .navigation
 
-    %ul.nav.nav-tabs{ 'ng-controller' => 'NavCtrl' }
+    %ul.nav.nav-tabs.medium-text{ 'ng-controller' => 'NavCtrl' }
 
       %li{ 'ng-repeat' => "item in items", 'ng-class' => '{active: item.active}' }
         %a{ 'href' => "{{ item.path }}" }

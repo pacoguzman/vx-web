@@ -12,8 +12,10 @@
     margin-left: .5em;
   }
 
-  .show-cache {
-    margin-right: 2em;
+  .project-cached-files, .project-url{
+    margin-right: 1em;
+    padding-right: 1em;
+    border-right: 1px solid #ddd;
   }
 }
 

@@ -14,7 +14,7 @@
 
     .ajax-loader{ 'ng-hide' => 'repos.length != undefined' }
 
-    .github-repo.small-text{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30" }
+    .github-repo{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30" }
 
       %a.octocat{ href: '{{repo.html_url}}/settings/hooks', title: "View on Github", "target" => "blank" }
         %i.fa.fa-wrench

@@ -1,4 +1,4 @@
-Vx.controller 'CacheCtrl', ($scope, appMenu, projectStore, cachedFilesStore, $routeParams) ->
+Vx.controller 'CachedFilesCtrl', ($scope, appMenu, projectStore, cachedFilesStore, $routeParams) ->
 
   $scope.project = projectStore.one $routeParams.projectId
   $scope.files   = cachedFilesStore.all $routeParams.projectId
@@ -9,4 +9,4 @@ Vx.controller 'CacheCtrl', ($scope, appMenu, projectStore, cachedFilesStore, $ro
 
   appMenu.define $scope.project, (p) ->
     appMenu.add p.name, "/projects/#{p.id}/builds"
-    appMenu.add "Cache", "/projects/#{p.id}/cache"
+    appMenu.add "Cached Files", "/projects/#{p.id}/cached_files"

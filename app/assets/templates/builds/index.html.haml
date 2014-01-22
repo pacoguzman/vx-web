@@ -2,22 +2,22 @@
 
   .row{ 'ng-show' => 'project' }
 
-    .col-8
+    .col-6
       .build-info
-        %p.small-text
-          %span {{ project.description || "no description available" }}
-          %a{ href: '{{project.http_url}}', target: "_blank" }
-            <nobr>view on github</nobr>
+        {{ project.description || "[no description available]" }}
 
-    .col-4
-      .pull-right.small-text
+    .col-6
+      .pull-right
 
-        %a.show-cache{ "ng-href" => "/projects/{{project.id}}/cache" }
-          Show cache
+        %a.project-url{ "ng-href" => "{{ project.http_url}}" }
+          On Github
 
-        .project-subscribe.app-project-subscribe{ 'project' => "project" }
+        %a.project-cached-files{ "ng-href" => "/projects/{{project.id}}/cached_files" }
+          Cached Files
 
-  %table.tasks-table.table.small-text
+        .project-subscribe.app-project-subscribe{ project: "project", title: "Watch Project" }
+
+  %table.tasks-table.table
 
     %thead
       %th No.

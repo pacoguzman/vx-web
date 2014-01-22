@@ -10,7 +10,7 @@
         %li.project.list-group-item{ 'ng-repeat' => "project in projects | orderBy:'last_build_created_at':true" }
           .pull-right.app-task-status{ 'task' => 'project'}
 
-          %a{ 'ng-href' => "/projects/{{project.id}}/builds" }
+          %a.medium-text{ 'ng-href' => "/projects/{{project.id}}/builds" }
             {{project.name}}
 
           %br

@@ -43,6 +43,6 @@
 
   .build-jobs{ 'ng-show' => "jobs.length != undefined" }
 
-    %pre.app-build-jobs.small-text{ jobs: 'jobs' }
+    %pre.app-build-jobs{ jobs: 'jobs' }
 
   .ajax-loader{ 'ng-hide' => 'jobs.length != undefined' }

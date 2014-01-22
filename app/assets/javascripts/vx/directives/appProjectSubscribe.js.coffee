@@ -5,12 +5,13 @@ angular.module('Vx').
     replace: true
     scope: {
       project: "=project",
+      title: "@title"
     }
 
     template: """
     <label ng-show="display">
       <input type="checkbox" ng-model="subscribed" ng-change="subscribe()">
-      Watch project
+      {{title}}
     </label>
     """
 
@@ -29,6 +30,8 @@ angular.module('Vx').
       scope.display       = false
       scope.subscribed    = false
       scope.subscriptions = []
+
+      console.log scope.title
 
       scope.subscribe = () ->
         if scope.project.id
