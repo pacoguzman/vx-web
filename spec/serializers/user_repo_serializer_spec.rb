@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe UserRepoSerializer do
-  let(:object) { create :github_repo }
+  let(:object)     { create :user_repo }
   let(:serializer) { described_class.new object }
 
   context "as_json" do

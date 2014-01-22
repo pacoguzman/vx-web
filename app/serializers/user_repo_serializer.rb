@@ -4,7 +4,7 @@ class UserRepoSerializer < ActiveModel::Serializer
   attributes :id, :full_name, :html_url, :subscribed, :disabled
 
   def disabled
-    other_project = Project.where(name, object.full_name).exists?
+    other_project = Project.where(name: object.full_name).exists?
     !!(!object.subscribed && other_project)
   end
 

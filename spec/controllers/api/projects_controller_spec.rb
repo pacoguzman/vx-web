@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Api::ProjectsController do
-  let(:user)    { create :user }
   let(:project) { create :project }
+  let(:user)    { project.user_repo.user }
 
   subject { response }
 
