@@ -189,4 +189,45 @@ describe Project do
     end
   end
 
+  context "#new_build_from_payload" do
+    let(:project)         { create :project }
+    let(:pull_request_id) { 1 }
+    let(:branch)          { 'branch' }
+    let(:branch_label)    { 'branch:label' }
+    let(:head)            { 'head' }
+    let(:url)             { 'url' }
+    let(:payload)         {
+      # TODO: create model for testing
+      OpenStruct.new pull_request_number: pull_request_id,
+                     branch: branch,
+                     head: head,
+                     url: url,
+                     branch_label: branch_label
+    }
+    subject { project.new_build_from_payload payload }
+
+    context "a new build" do
+      it { should be_new_record }
+      its(:pull_request_id) { should eq pull_request_id }
+      its(:branch)          { should eq branch }
+      its(:branch_label)    { should eq branch_label }
+      its(:sha)             { should eq head }
+      its(:http_url)        { should eq url }
+    end
+  end
+
+  context "#service_connector" do
+    let(:identity) { create :user_identity, :github }
+    subject { project.service_connector }
+    before { project.identity = identity }
+    it { should be }
+  end
+
+  context "#to_service_connector_model" do
+    subject { project.to_service_connector_model }
+    it { should be }
+    its(:id)        { should be }
+    its(:full_name) { should  }
+  end
+
 end

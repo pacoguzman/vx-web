@@ -22,6 +22,16 @@ class UserIdentity < ActiveRecord::Base
       provider(p).exists?
     end
   end
+
+  def service_connector
+    @service_connector ||= begin
+      connector_class = Vx::ServiceConnector.to(provider)
+      case provider.to_sym
+      when :github
+        connector_class.new(login, token)
+      end
+    end
+  end
 end
 
 # == Schema Information

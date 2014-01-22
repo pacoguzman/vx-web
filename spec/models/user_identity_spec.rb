@@ -33,6 +33,17 @@ describe UserIdentity do
     end
   end
 
+  context "#service_connector" do
+    subject { identity.service_connector }
+
+    context "github" do
+      before { identity.provider = 'github' }
+      it { should be }
+      its(:login)        { should eq identity.login }
+      its(:access_token) { should eq identity.token }
+    end
+  end
+
 end
 
 # == Schema Information

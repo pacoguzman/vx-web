@@ -1,15 +1,9 @@
 class BuildFetcher
 
-  include Github::BuildFetcher
-
-  attr_reader :params
+  attr_reader :payload
 
   def initialize(params)
-    @params = params
-  end
-
-  def payload
-    @payload ||= ::Github::Payload.new params
+    @payload = OpenStruct.new params
   end
 
   def project
@@ -17,7 +11,7 @@ class BuildFetcher
   end
 
   def build
-    @build ||= project.new_build_from_github_payload(payload)
+    @build ||= project.new_build_from_payload(payload)
   end
 
   def source
@@ -50,7 +44,7 @@ class BuildFetcher
     def subscribe_author_to_repo
       email = build.author_email
       if email
-        Rails.logger.info "subscribe #{email} to #{project}"
+        Rails.logger.warn "subscribe #{email} to #{project}"
         ProjectSubscription.subscribe_by_email(email, project)
       end
       true
@@ -59,7 +53,7 @@ class BuildFetcher
     def create_jobs
       matrix.each_with_index do |config, idx|
         number = idx + 1
-        Rails.logger.info "create job: number:#{number}, matrix: #{config.matrix_keys.inspect}"
+        Rails.logger.warn "create job: number:#{number}, matrix: #{config.matrix_keys.inspect}"
         build.jobs.create(
           matrix: config.matrix_keys,
           number: number,
@@ -75,29 +69,50 @@ class BuildFetcher
     end
 
     def assign_commit_to_build
-      fetch_commit_from_github.try do |commit|
-        Rails.logger.info "assign commit: #{commit.inspect}"
-        build.assign_attributes commit.to_h
-        true
+      with_connector do |conn|
+        commit = conn.commits(connector_model).get(build.sha)
+        if commit
+          Rails.logger.warn "assign commit: #{commit.inspect}"
+          build.sha          = commit.sha
+          build.message      = commit.message
+          build.author       = commit.author
+          build.author_email = commit.author_email
+          build.http_url     = commit.http_url
+          true
+        end
       end
     end
 
     def assign_source_to_build
-      fetch_configuration_from_github.try do |source|
-        Rails.logger.info "assign source"
-        build.source = source
-        true
+      with_connector do |conn|
+        file = conn.files(connector_model).get(build.sha, '.travis.yml')
+        if file
+          Rails.logger.warn "assign source"
+          build.source = file
+          true
+        end
       end
     end
 
     def guard
-      if project && !payload.ignore?
+      if project
         yield
       end
     end
 
     def transaction
       Build.transaction { yield }
+    end
+
+    def with_connector
+      conn = project && project.service_connector
+      if conn && block_given?
+        yield conn
+      end
+    end
+
+    def connector_model
+      @connector_model ||= project && project.to_service_connector_model
     end
 
 end

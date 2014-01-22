@@ -83,6 +83,26 @@ class Project < ActiveRecord::Base
     subscription.update subscribe: false
   end
 
+  def new_build_from_payload(payload)
+    attrs = {
+      pull_request_id:  payload.pull_request_number,
+      branch:           payload.branch,
+      branch_label:     payload.branch_label,
+      sha:              payload.head,
+      http_url:         payload.url,
+    }
+
+    builds.build(attrs)
+  end
+
+  def service_connector
+    identity && identity.service_connector
+  end
+
+  def to_service_connector_model
+    Vx::ServiceConnector::Model::Repo.new(id, name)
+  end
+
   private
 
     def find_or_build_subscription_for_user(user)
