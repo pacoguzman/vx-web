@@ -1,4 +1,4 @@
-describe "githubRepoStore", ->
+describe "userRepoStore", ->
 
   $scope   = null
   repos    = null
@@ -27,9 +27,9 @@ describe "githubRepoStore", ->
     inject ['$injector',
       ($injector) ->
         $http = $injector.get("$httpBackend")
-        $http.expectGET('/api/github_repos').respond([testObj])
+        $http.expectGET('/api/user_repos').respond([testObj])
 
-        repos = $injector.get("githubRepoStore")
+        repos = $injector.get("userRepoStore")
         $http.flush()
     ]
     expected = []
@@ -46,7 +46,7 @@ describe "githubRepoStore", ->
   describe "sync()", ->
 
     beforeEach ->
-      $http.expectPOST('/api/github_repos/sync').respond([testObj2])
+      $http.expectPOST('/api/user_repos/sync').respond([testObj2])
 
     it "should send request to sync repos and replace current repos from response", ->
       $scope.$apply ->
@@ -65,7 +65,7 @@ describe "githubRepoStore", ->
   describe "subscribe()", ->
 
     beforeEach ->
-      $http.expectPOST('/api/github_repos/1/subscribe').respond('success')
+      $http.expectPOST('/api/user_repos/1/subscribe').respond('success')
 
     it "should send POST request", ->
       $scope.$apply ->
@@ -78,7 +78,7 @@ describe "githubRepoStore", ->
   describe "unsubscribe()", ->
 
     beforeEach ->
-      $http.expectPOST('/api/github_repos/1/unsubscribe').respond('success')
+      $http.expectPOST('/api/user_repos/1/unsubscribe').respond('success')
 
     it "should send POST request", ->
       $scope.$apply ->

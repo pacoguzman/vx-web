@@ -59,6 +59,7 @@ BuildNotifier = Struct.new(:message) do
     def create_commit_status
       conn  = project.service_connector
       if conn
+        Rails.logger.warn "create commit status notification for #{conn.inspect}"
         model = project.to_service_connector_model
         conn.notices(model).create(
           build.sha,

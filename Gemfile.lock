@@ -253,7 +253,6 @@ DEPENDENCIES
   foreman
   haml
   haml-rails
-  octokit
   omniauth
   omniauth-github
   pg

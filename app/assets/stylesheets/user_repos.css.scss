@@ -1,7 +1,7 @@
-.github-repos {
+.user-repos {
   min-height: 40em;
 
-  .github-repos-sync {
+  .user-repos-sync {
     a {
       position: relative;
     }
@@ -13,22 +13,22 @@
     }
   }
 
-  .github-repos-show {
+  .user-repos-show {
     margin-top: 1em;
   }
 
-  .github-repos-search {
+  .user-repos-search {
     width: 30em;
     input {
       border: 1px solid #eee;
     }
   }
 
-  .github-repos-list {
+  .user-repos-list {
     margin-top: 1em;
   }
 
-  .github-repo {
+  .user-repo {
     margin: .1em 0 .1em -4em;
     padding: .2em 0 .2em 4em;
     max-width: 40em;
