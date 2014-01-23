@@ -141,6 +141,7 @@ class Build < ActiveRecord::Base
   def restart
     if finished?
       transaction do
+        Project.lock(true).find_by(id: project_id)
         self.started_at  = nil
         self.finished_at = nil
         self.status      = 0
