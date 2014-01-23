@@ -34,8 +34,8 @@ body > .container > .ng-view {
     color: white;
     font-size: 1.2em;
     line-height: 1.2em;
-    margin-left: -5em;
-    margin-top: .3em;
+    margin-left: 0;
+    margin-top: .35em;
 
     span {
       display: block;
@@ -45,6 +45,8 @@ body > .container > .ng-view {
   }
 
   .navigation {
+
+    margin-left: 5em;
 
     ul li {
       margin-right: 1em;
