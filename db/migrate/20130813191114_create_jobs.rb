@@ -1,5 +1,7 @@
 class CreateJobs < ActiveRecord::Migration
-  def change
+  def up
+    execute "CREATE EXTENSION IF NOT EXISTS hstore"
+
     create_table :jobs do |t|
       t.integer   :build_id,   null: false
       t.integer   :number,     null: false
@@ -11,5 +13,9 @@ class CreateJobs < ActiveRecord::Migration
       t.timestamps
     end
     add_index :jobs, [:build_id, :number], unique: true
+  end
+
+  def down
+    drop_table :jobs
   end
 end
