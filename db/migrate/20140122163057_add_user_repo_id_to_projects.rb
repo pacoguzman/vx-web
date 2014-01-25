@@ -16,7 +16,7 @@ class AddUserRepoIdToProjects < ActiveRecord::Migration
         WHERE
           sub.identity_id = projects.identity_id AND
           sub.full_name = projects.name
-    "
+    ".gsub(/\n/, ' ').gsub(/ +/, ' ')
     change_column :projects, :user_repo_id, :integer, null: false
   end
 end

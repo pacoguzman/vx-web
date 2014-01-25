@@ -11,7 +11,7 @@ class AddUserIdentityIdToUserRepos < ActiveRecord::Migration
           GROUP BY user_id, id
         ) sub
         WHERE sub.user_id = user_repos.user_id
-    "
+    ".gsub(/\n/, ' ').gsub(/ +/, ' ')
     change_column :user_repos, :user_identity_id, :integer, null: false
   end
 end
