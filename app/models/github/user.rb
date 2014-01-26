@@ -22,13 +22,14 @@ module Github::User
           user = ::User.create(email: email, name: name)
           user.persisted?.or_rollback_transaction
 
-          identity = UserIdentity.create(
+          identity = UserIdentity.new(
             provider: 'github',
             uid:      uid,
             token:    token,
             user:     user,
             login:    login
-          ).persisted?.or_rollback_transaction
+          ).
+          identity.save.or_rollback_transaction
 
           if org = Rails.configuration.x.github_restriction
             identity.service_connector.organizations.include?(org).or_rollback_transaction
