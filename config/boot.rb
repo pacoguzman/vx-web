@@ -5,4 +5,4 @@ require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
 
 require 'dotenv'
 
-Dotenv.load "#{Rails.root}.env", "/etc/vexor/ci"
+Dotenv.load "#{File.expand_path("../../", __FILE__)}/.env", "/etc/vexor/ci"
