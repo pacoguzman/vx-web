@@ -16,7 +16,7 @@ gem 'sshkey'
 gem 'vx-common-amqp',       '~> 0.2.7'
 gem 'vx-message',           '0.4.1'
 gem 'vx-builder',           '0.0.4'
-gem 'vx-service_connector', '0.0.1'
+gem 'vx-service_connector', '0.0.2'
 
 gem 'capistrano_evrone_recipes', require: false
 gem 'airbrake'
