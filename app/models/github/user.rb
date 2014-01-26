@@ -28,9 +28,10 @@ module Github::User
             token:    token,
             user:     user,
             login:    login
-          ).
+          )
           identity.save.or_rollback_transaction
 
+          # TODO: add specs
           if org = Rails.configuration.x.github_restriction
             identity.service_connector.organizations.include?(org).or_rollback_transaction
           end
