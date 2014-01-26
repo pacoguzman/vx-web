@@ -250,6 +250,7 @@ DEPENDENCIES
   carrierwave
   coffee-rails (~> 4.0.0)
   dalli
+  dotenv
   execjs
   factory_girl
   factory_girl_rails
