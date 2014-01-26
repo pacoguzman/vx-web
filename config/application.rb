@@ -30,8 +30,8 @@ module VxWeb
     ]
 
     config.x = OpenStruct.new
-    config.x.hostname = (ENV['VX_HOSTNAME'] || Socket.gethostname)
-    config.x.github_restriction = ENV['VX_GITHUB_RESTRICTION']
+    config.x.hostname = (ENV['VX_HOSTNAME'] || Socket.gethostbyname(Socket.gethostname).first || "example.com")
+    config.x.github_restriction = ENV['GITHUB_RESTRICTION']
 
     config.middleware.delete "Rack::Lock"
     config.assets.precompile += %w( lib.js )
