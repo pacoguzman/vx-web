@@ -38,9 +38,9 @@ VxWeb::Application.routes.draw do
     end
   end
 
-  namespace :gitlab do
-    resources :user_sessions
-  end
+  get  'auth/github/callback', to: 'github/user_sessions#create'
+  post 'auth/gitlab/session',  to: "gitlab/user_sessions#create"
+  get  'auth/failure',         to: redirect('/')
 
   put "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#upload"
   get "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#download"
@@ -49,9 +49,6 @@ VxWeb::Application.routes.draw do
   post '/:_service/callback/:token', to: 'repo_callbacks#create', _service: /(github)/
   post '/callbacks/:_service/:token', to: 'repo_callbacks#create', _service: /(github)/,
     as: 'repo_callback'
-
-  get '/auth/github/callback', to: 'github/user_callbacks#create'
-  get '/auth/failure', to: redirect('/')
 
   get '/sse_events', to: 'sse_events#index'
 

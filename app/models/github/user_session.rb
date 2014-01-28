@@ -1,20 +1,20 @@
 module Github
-  class UserSession
+  UserSession = Struct.new(:auth_info) do
 
-    def create(auth_info)
-      find_user(auth_info) || create_user(auth_info)
+    def create
+      find_user || create_user
     end
 
     private
 
-      def create_user(auth)
+      def create_user
         User.transaction do
 
-          uid   = auth.uid
-          name  = auth.info.name
-          token = auth.credentials.token
-          email = auth.info.email || "github#{uid}@empty"
-          login = auth.info.nickname
+          uid   = auth_info.uid
+          name  = auth_info.info.name
+          token = auth_info.credentials.token
+          email = auth_info.info.email || "github#{uid}@empty"
+          login = auth_info.info.nickname
 
           user = ::User.find_or_initialize_by(email: email)
           if user.new_record?
@@ -42,7 +42,7 @@ module Github
       end
 
       def find_user(response)
-        identity = UserIdentity.provider(:gitlab).find_by(uid: auth.uid)
+        identity = UserIdentity.provider(:gitlab).find_by(uid: auth_info.uid)
         if identity
           identity.user
         end
