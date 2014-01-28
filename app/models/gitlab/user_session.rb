@@ -100,19 +100,18 @@ module Gitlab
 
           user = User.find_or_initialize_by(email: email)
           if user.new_record?
-            user.update name: name
+            user.update(name: name).or_rollback_transaction
           end
-          user.persisted?.or_rollback_transaction
 
-          identity = UserIdentity.new(
+          identity = user.identities.find_or_initialize_by(
             provider: 'gitlab',
-            uid:      uid,
+            url:      uri.to_s
+          )
+          identity.update(
             token:    token,
             user:     user,
             login:    login,
-            url:      uri.to_s
-          )
-          identity.save.or_rollback_transaction
+          ).save.or_rollback_transaction
           false.or_rollback_transaction
         end
       end

@@ -7,7 +7,7 @@ class UserIdentity < ActiveRecord::Base
     class_name: "::UserRepo"
 
   validates :user_id, :provider, :uid, :token, presence: true
-  validates :user_id, uniqueness: { scope: [:provider] }
+  validates :user_id, uniqueness: { scope: [:provider, :uid, :url] }
 
   validates :url, presence: true, if: :gitlab?
 

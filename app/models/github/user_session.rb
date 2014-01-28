@@ -23,7 +23,10 @@ module Github
             user.update(name: name).or_rollback_transaction
           end
 
-          identity = user.identities.find_or_initialize_by(uid: uid, provider: 'github')
+          identity = user.identities.find_or_initialize_by(
+            provider: 'github',
+            url:      'https://github.com'
+          )
           identity.update(
             token: token,
             user:  user,
