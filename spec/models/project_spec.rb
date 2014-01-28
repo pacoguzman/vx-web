@@ -204,19 +204,20 @@ describe Project do
     end
   end
 
-  context "#service_connector" do
+  context "#sc" do
     let(:user_repo) { create :user_repo }
-    subject { project.service_connector }
+    subject { project.sc }
     before { project.user_repo = user_repo }
     it { should be }
   end
 
-  context "#to_service_connector_model" do
-    subject { project.to_service_connector_model }
+  context "#sc_model" do
+    subject { project.sc_model }
     before do
       project.name = 'full/name'
     end
     it { should be }
+    xit(:id)
     its(:full_name) { should eq 'full/name' }
   end
 

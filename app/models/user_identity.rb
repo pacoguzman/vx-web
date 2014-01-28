@@ -32,12 +32,12 @@ class UserIdentity < ActiveRecord::Base
     provider.to_s == 'gitlab'
   end
 
-  def service_connector
-    @service_connector ||= begin
-      connector_class = Vx::ServiceConnector.to(provider)
+  def sc
+    @sc ||= begin
+      sc_class = Vx::ServiceConnector.to(provider)
       case provider.to_sym
       when :github
-        connector_class.new(login, token)
+        sc_class.new(login, token)
       end
     end
   end

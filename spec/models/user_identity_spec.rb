@@ -24,10 +24,10 @@ describe UserIdentity do
     end
   end
 
-  context "#service_connector" do
-    subject { identity.service_connector }
+  context "#sc" do
+    subject { identity.sc }
 
-    context "github" do
+    context "for github" do
       before { identity.provider = 'github' }
       it { should be }
       its(:login)        { should eq identity.login }

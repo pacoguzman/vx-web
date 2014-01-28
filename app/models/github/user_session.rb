@@ -2,7 +2,9 @@ module Github
   UserSession = Struct.new(:auth_info) do
 
     def create
-      find_user || create_user
+      if auth_info.try(:uid)
+        find_user || create_user
+      end
     end
 
     private
@@ -18,30 +20,28 @@ module Github
 
           user = ::User.find_or_initialize_by(email: email)
           if user.new_record?
-            user.update name: name
+            user.update(name: name).or_rollback_transaction
           end
-          user.persisted?.or_rollback_transaction
 
-          identity = UserIdentity.new(
-            provider: 'github',
-            uid:      uid,
-            token:    token,
-            user:     user,
-            login:    login,
-            url:      "https://github.com"
-          )
-          identity.save.or_rollback_transaction
+          identity = user.identities.find_or_initialize_by(uid: uid, provider: 'github')
+          identity.update(
+            token: token,
+            user:  user,
+            login: login,
+            url:   'https://github.com'
+          ).or_rollback_transaction
 
-          # TODO: add specs
-          if org = Rails.configuration.x.github_restriction
-            identity.service_connector.organizations.include?(org).or_rollback_transaction
+          if orgs = Rails.configuration.x.github_restriction
+            orgs.any? do |org|
+              identity.sc.organizations.include?(org)
+            end.or_rollback_transaction
           end
 
           user
         end
       end
 
-      def find_user(response)
+      def find_user
         identity = UserIdentity.provider(:gitlab).find_by(uid: auth_info.uid)
         if identity
           identity.user

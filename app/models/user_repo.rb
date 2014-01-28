@@ -12,7 +12,7 @@ class UserRepo < ActiveRecord::Base
   default_scope ->{ order("user_repos.full_name ASC") }
 
   class << self
-    def find_or_create_by_service_connector(identity, model)
+    def find_or_create_by_sc(identity, model)
       repo = where(full_name: model.full_name, identity: identity).first_or_initialize
       repo.assign_attributes(
         is_private:   model.is_private,
@@ -58,22 +58,19 @@ class UserRepo < ActiveRecord::Base
   private
 
     def unsubscribe_project
-      model = project.to_service_connector_model
-      conn  = identity.service_connector
-
-      conn.hooks(model).destroy(Rails.configuration.x.hostname)
-      conn.deploy_keys(model).destroy(project.deploy_key_name)
+      sc = identity.sc
+      sc.hooks(project.sc_model).destroy(Rails.configuration.x.hostname)
+      sc.deploy_keys(project.sc_model).destroy(project.deploy_key_name)
     end
 
     def subscribe_project
-      model = project.to_service_connector_model
-      conn  = identity.service_connector
+      sc = identity.sc
 
-      conn.hooks(model).create(
+      sc.hooks(project.sc_model).create(
         project.hook_url,
         project.token
       )
-      conn.deploy_keys(model).create(
+      sc.deploy_keys(project.sc_model).create(
         project.deploy_key_name,
         project.public_deploy_key
       )

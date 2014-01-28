@@ -70,8 +70,8 @@ class BuildFetcher
     end
 
     def assign_commit_to_build
-      with_connector do |conn|
-        commit = conn.commits(connector_model).get(build.sha)
+      with_sc do |sc|
+        commit = sc.commits(sc_model).get(build.sha)
         if commit
           Rails.logger.warn "assign commit: #{commit.inspect}"
           build.sha          = commit.sha
@@ -85,8 +85,8 @@ class BuildFetcher
     end
 
     def assign_source_to_build
-      with_connector do |conn|
-        file = conn.files(connector_model).get(build.sha, '.travis.yml')
+      with_sc do |sc|
+        file = sc.files(sc_model).get(build.sha, '.travis.yml')
         if file
           Rails.logger.warn "assign source"
           build.source = file
@@ -105,15 +105,15 @@ class BuildFetcher
       Build.transaction { yield }
     end
 
-    def with_connector
-      conn = project && project.service_connector
+    def with_sc
+      conn = project && project.sc
       if conn && block_given?
         yield conn
       end
     end
 
-    def connector_model
-      @connector_model ||= project && project.to_service_connector_model
+    def sc_model
+      @sc_model ||= project && project.sc_model
     end
 
 end

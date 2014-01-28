@@ -8,6 +8,9 @@ require 'ostruct'
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env)
 
+require 'dotenv'
+Dotenv.load "#{File.expand_path("../../", __FILE__)}/.env.#{Rails.env}", "/etc/vexor/ci"
+
 module VxWeb
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -36,8 +39,11 @@ module VxWeb
       rescue SocketError
         Socket.gethostname
       end
-    config.x.hostname = (ENV['VX_HOSTNAME'] || sys_hostname || "example.com")
-    config.x.github_restriction = ENV['GITHUB_RESTRICTION']
+
+    config.x.hostname =
+      (ENV['VX_HOSTNAME'] || sys_hostname || "example.com")
+    config.x.github_restriction =
+      ENV['GITHUB_RESTRICTION'] && ENV["GITHUB_RESTRICTION"].split(",").map(&:strip)
 
     config.middleware.delete "Rack::Lock"
     config.assets.precompile += %w( lib.js )

@@ -95,11 +95,11 @@ class Project < ActiveRecord::Base
     builds.build(attrs)
   end
 
-  def service_connector
-    user_repo.try(:identity).try(:service_connector)
+  def sc
+    user_repo.try(:identity).try(:sc)
   end
 
-  def to_service_connector_model
+  def sc_model
     Vx::ServiceConnector::Model::Repo.new(id, name)
   end
 
