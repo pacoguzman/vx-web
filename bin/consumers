@@ -12,7 +12,6 @@ trap('INT') {
 Vx::Common::AMQP::Supervisor::Threaded.build(
   BuildNotifyConsumer  => 1,
   JobStatusConsumer    => 1,
-  JobStatusConsumer    => 1,
   JobLogsConsumer      => 1,
   PayloadConsumer      => 1,
 ).run
