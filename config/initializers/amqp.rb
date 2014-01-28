@@ -14,7 +14,7 @@ Vx::Common::AMQP.configure do |c|
 
   c.before_recieve do |e|
     unless e[:payload].class.to_s == "Vx::Message::JobLog"
-      logger.warn "[#{e[:name]}] payload recieved #{e[:payload]}"
+      logger.warn "[#{e[:name]}] payload recieved #{e[:payload].inspect}"
     end
   end
 
