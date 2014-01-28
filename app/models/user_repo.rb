@@ -94,7 +94,6 @@ end
 # Table name: user_repos
 #
 #  id                 :integer          not null, primary key
-#  user_id            :integer          not null
 #  organization_login :string(255)
 #  full_name          :string(255)      not null
 #  is_private         :boolean          not null

@@ -32,13 +32,21 @@ class UserIdentity < ActiveRecord::Base
 
   def sc
     @sc ||= begin
-      sc_class = Vx::ServiceConnector.to(provider)
+      sc_class = Vx::ServiceConnector.to(mangle_provider)
       case provider.to_sym
       when :github
         sc_class.new(login, token)
+      when :gitlab
+        sc_class.new(url, token)
       end
     end
   end
+
+  private
+
+    def mangle_provider
+      provider.to_s == 'gitlab' ? 'gitlab_v41' : provider
+    end
 end
 
 # == Schema Information
@@ -53,5 +61,6 @@ end
 #  login      :string(255)      not null
 #  created_at :datetime
 #  updated_at :datetime
+#  url        :string(255)      not null
 #
 

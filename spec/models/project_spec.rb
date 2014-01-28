@@ -222,3 +222,20 @@ describe Project do
   end
 
 end
+
+# == Schema Information
+#
+# Table name: projects
+#
+#  id           :integer          not null, primary key
+#  name         :string(255)      not null
+#  http_url     :string(255)      not null
+#  clone_url    :string(255)      not null
+#  description  :text
+#  deploy_key   :text             not null
+#  token        :string(255)      not null
+#  created_at   :datetime
+#  updated_at   :datetime
+#  user_repo_id :integer          not null
+#
+

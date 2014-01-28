@@ -33,6 +33,13 @@ describe UserIdentity do
       its(:login)        { should eq identity.login }
       its(:access_token) { should eq identity.token }
     end
+
+    context "for gitlab" do
+      before { identity.provider = 'gitlab' }
+      it { should be }
+      its(:endpoint)      { should eq identity.url }
+      its(:private_token) { should eq identity.token }
+    end
   end
 
 end
@@ -49,5 +56,6 @@ end
 #  login      :string(255)      not null
 #  created_at :datetime
 #  updated_at :datetime
+#  url        :string(255)      not null
 #
 

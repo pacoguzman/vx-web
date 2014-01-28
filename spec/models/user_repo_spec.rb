@@ -148,10 +148,9 @@ end
 
 # == Schema Information
 #
-# Table name: github_repos
+# Table name: user_repos
 #
 #  id                 :integer          not null, primary key
-#  user_id            :integer          not null
 #  organization_login :string(255)
 #  full_name          :string(255)      not null
 #  is_private         :boolean          not null
@@ -161,5 +160,6 @@ end
 #  description        :text
 #  created_at         :datetime
 #  updated_at         :datetime
+#  identity_id        :integer          not null
 #
 
