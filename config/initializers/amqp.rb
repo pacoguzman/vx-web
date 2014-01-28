@@ -13,7 +13,7 @@ Vx::Common::AMQP.configure do |c|
   end
 
   c.before_recieve do |e|
-    logger.warn "[#{e[:name]}] payload recieved #{e[:payload].inspect[0..60]}..."
+    logger.warn "[#{e[:name]}] payload recieved #{e[:payload]}"
   end
 
   c.after_recieve do |e|
@@ -21,7 +21,7 @@ Vx::Common::AMQP.configure do |c|
   end
 
   c.before_publish do |e|
-    logger.warn "message delivered #{e[:message].inspect[0...60]}..."
+    logger.warn "publish #{e[:message].inspect}"
   end
 
   c.on_error do |e|
