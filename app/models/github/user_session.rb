@@ -28,6 +28,7 @@ module Github
             url:      'https://github.com'
           )
           identity.update(
+            uid:   uid,
             token: token,
             user:  user,
             login: login,

@@ -6,10 +6,8 @@ class UserIdentity < ActiveRecord::Base
   has_many :user_repos, dependent: :destroy, foreign_key: :identity_id,
     class_name: "::UserRepo"
 
-  validates :user_id, :provider, :uid, :token, presence: true
-  validates :user_id, uniqueness: { scope: [:provider, :uid, :url] }
-
-  validates :url, presence: true, if: :gitlab?
+  validates :user_id, :provider, :uid, :token, :url, presence: true
+  validates :user_id, uniqueness: { scope: [:provider, :url] }
 
   scope :provider, ->(provider) { where provider: provider }
 
