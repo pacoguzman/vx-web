@@ -41,24 +41,6 @@ module Gitlab
       self.class.uris.select{|u| u.host == host }.first
     end
 
-    def body
-      { email: email, password: password }
-    end
-
-    def authenticate
-      if uri
-        conn = Faraday.new request_options
-        res = conn.post do |req|
-          req.url "/api/v3/session"
-          req.headers['Content-Type'] = 'application/json'
-          req.body = body.to_json
-        end
-        if res.success?
-          OpenStruct.new JSON.parse(res.body)
-        end
-      end
-    end
-
     def create
       if response = authenticate
         Rails.logger.debug "Got response: #{response.inspect}"
@@ -67,6 +49,20 @@ module Gitlab
     end
 
     private
+
+      def authenticate
+        if uri
+          conn = Faraday.new request_options
+          res = conn.post do |req|
+            req.url "/api/v3/session.json"
+            req.headers['Content-Type'] = 'application/json'
+            req.body = { email: email, password: password }.to_json
+          end
+          if res.success?
+            OpenStruct.new JSON.parse(res.body)
+          end
+        end
+      end
 
       def https?
         uri.scheme == 'https'
@@ -108,11 +104,13 @@ module Gitlab
             url:      uri.to_s
           )
           identity.update(
-            token:    token,
-            user:     user,
-            login:    login,
-          ).save.or_rollback_transaction
-          false.or_rollback_transaction
+            uid:   uid,
+            token: token,
+            user:  user,
+            login: login,
+          ).or_rollback_transaction
+
+          user
         end
       end
 

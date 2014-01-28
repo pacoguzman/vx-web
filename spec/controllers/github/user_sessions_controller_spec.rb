@@ -59,7 +59,7 @@ describe Github::UserSessionsController do
 
     context "when user with same email and not have github identity" do
       let!(:user) { create :user, email: "me@example.com" }
-      let(:identity) { user.identities.find_by(uid: "uid", provider: "github") }
+      let(:identity) { user.identities.find_by(provider: "github", url: "https://github.com") }
 
       it { get :create ; should redirect_to("/") }
 
@@ -79,7 +79,7 @@ describe Github::UserSessionsController do
 
     context "when user and identity exists" do
       let!(:user)     { create :user, email: "me@example.com" }
-      let!(:identity) { create :user_identity, :github, user: user, uid: "uid" }
+      let!(:identity) { create :user_identity, :github, user: user, url: "https://github.com" }
 
       it { get :create ; should redirect_to("/") }
 

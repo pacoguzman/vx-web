@@ -6,10 +6,11 @@ module Gitlab
 
     def create
       @gitlab_user_session = Gitlab::UserSession.new user_session_params
-      if @gitlab_user_session.create
+      if user = @gitlab_user_session.create
+        session[:user_id] = user.id
         redirect_to root_path
       else
-        render "welcome/signin"
+        render "welcome/signin", status: :unprocessable_entity
       end
     end
 
