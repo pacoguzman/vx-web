@@ -1,17 +1,14 @@
-module Github::User
+module Github
+  class UserSession
 
-  extend ActiveSupport::Concern
-
-  module ClassMethods
-
-    def from_github(auth)
-      find_from_github(auth) || create_from_github(auth)
+    def create(auth_info)
+      find_user(auth_info) || create_user(auth_info)
     end
 
     private
 
-      def create_from_github(auth)
-        transaction do
+      def create_user(auth)
+        User.transaction do
 
           uid   = auth.uid
           name  = auth.info.name
@@ -19,7 +16,10 @@ module Github::User
           email = auth.info.email || "github#{uid}@empty"
           login = auth.info.nickname
 
-          user = ::User.create(email: email, name: name)
+          user = ::User.find_or_initialize_by(email: email)
+          if user.new_record?
+            user.update name: name
+          end
           user.persisted?.or_rollback_transaction
 
           identity = UserIdentity.new(
@@ -27,7 +27,8 @@ module Github::User
             uid:      uid,
             token:    token,
             user:     user,
-            login:    login
+            login:    login,
+            url:      "https://github.com"
           )
           identity.save.or_rollback_transaction
 
@@ -40,8 +41,8 @@ module Github::User
         end
       end
 
-      def find_from_github(auth)
-        identity = UserIdentity.where(uid: auth.uid, provider: 'github').first
+      def find_user(response)
+        identity = UserIdentity.provider(:gitlab).find_by(uid: auth.uid)
         if identity
           identity.user
         end

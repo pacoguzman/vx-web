@@ -29,7 +29,7 @@ shared_examples "cannot touch any projects on github when user is not githubber"
   end
 end
 
-describe Github::User do
+describe Github::UserSession do
   let(:user) { User.new }
   subject    { user     }
 
