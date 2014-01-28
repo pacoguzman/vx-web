@@ -9,9 +9,12 @@ class UserIdentity < ActiveRecord::Base
   validates :user_id, :provider, :uid, :token, presence: true
   validates :user_id, uniqueness: { scope: [:provider] }
 
+  validates :url, presence: true, if: :gitlab?
+
   scope :provider, ->(provider) { where provider: provider }
 
   class << self
+    # TODO: remove
     def find_by_provider(p)
       provider(p).first
     end
@@ -19,6 +22,14 @@ class UserIdentity < ActiveRecord::Base
     def provider?(p)
       provider(p).exists?
     end
+  end
+
+  def github?
+    provider.to_s == 'github'
+  end
+
+  def gitlab?
+    provider.to_s == 'gitlab'
   end
 
   def service_connector

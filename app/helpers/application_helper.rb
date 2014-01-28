@@ -21,4 +21,8 @@ module ApplicationHelper
     link_to build.author, "mailto:#{build.author_email}"
   end
 
+  def gitlab_user_session
+    @gitlab_user_session ||= Gitlab::UserSession.new params
+  end
+
 end

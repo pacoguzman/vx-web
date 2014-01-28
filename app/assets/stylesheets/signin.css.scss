@@ -1,0 +1,92 @@
+body.signin {
+  width: 100%;
+  height: 100%;
+
+
+  .row {
+    max-width: 50em;
+    margin: 10% auto 0;
+  }
+
+  .row .separator {
+    border-left: 1px solid #eee;
+    height: 26em;
+  }
+
+  .row > div {
+    padding: 4em 2em;
+  }
+
+  .row > div:first-child {
+    border-left: none;
+  }
+
+  .title {
+    font-weight: 200;
+    font-size: 3em;
+    color: #333;
+  }
+
+  h3 {
+    margin: 0 0 .5em;
+  }
+
+  button, input[type=submit] {
+    font-weight: 200;
+  }
+
+  .github {
+    vertical-align: middle;
+
+    h3 {
+      text-align: center;
+    }
+
+    img {
+      width: 10em;
+    }
+
+    a {
+      display: block;
+      text-align: center;
+
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    button {
+      margin-top: 2.7em;
+    }
+  }
+
+  .gitlab {
+    img {
+      width: 2em;
+    }
+  }
+
+  .gitlab form {
+
+    .form-control {
+      position: relative;
+    }
+
+    .form-control:focus {
+      z-index: 2;
+    }
+
+    .email {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      margin-bottom: -1px;
+    }
+
+    .password {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+  }
+}

@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
 
   include Github::User
+  include Gitlab::User
 
   has_many :identities, class_name: "::UserIdentity", dependent: :nullify
   has_many :user_repos, through: :identities

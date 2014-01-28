@@ -38,6 +38,10 @@ VxWeb::Application.routes.draw do
     end
   end
 
+  namespace :gitlab do
+    resources :user_sessions
+  end
+
   put "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#upload"
   get "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#download"
 
