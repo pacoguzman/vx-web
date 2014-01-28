@@ -13,11 +13,15 @@ Vx::Common::AMQP.configure do |c|
   end
 
   c.before_recieve do |e|
-    logger.warn "[#{e[:name]}] payload recieved #{e[:payload]}"
+    unless e[:payload].class.to_s == "Vx::Message::JobLog"
+      logger.warn "[#{e[:name]}] payload recieved #{e[:payload]}"
+    end
   end
 
   c.after_recieve do |e|
-    logger.warn "[#{e[:name]}] commit message"
+    unless e[:payload].class.to_s == "Vx::Message::JobLog"
+      logger.warn "[#{e[:name]}] commit message"
+    end
   end
 
   c.before_publish do |e|
