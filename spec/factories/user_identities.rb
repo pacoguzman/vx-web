@@ -8,7 +8,6 @@ FactoryGirl.define do
     uid        "MyString"
     login      "login"
     url        "https://example.com"
-    version    "undefined"
 
     trait :github do
       url      "https://github.com"

@@ -43,14 +43,16 @@ class UserIdentity < ActiveRecord::Base
     end
   end
 
-  def real_provider_name
-    case provider.to_s
-    when "github"
-      "github"
-    when "gitlab"
-      "gitlab_v4"
+  private
+
+    def real_provider_name
+      case provider.to_s
+      when "github"
+        "github"
+      when "gitlab"
+        version ? "gitlab_v5" : "gitlab_v4"
+      end
     end
-  end
 
 end
 

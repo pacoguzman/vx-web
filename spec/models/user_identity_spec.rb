@@ -29,18 +29,22 @@ describe UserIdentity do
 
     context "for github" do
       before { identity.provider = 'github' }
-      it { should be }
+      it { should be_an_instance_of(Vx::ServiceConnector::Github) }
       its(:login)        { should eq identity.login }
       its(:access_token) { should eq identity.token }
     end
 
     context "for gitlab" do
       before { identity.provider = 'gitlab' }
-      it { should be }
+      it { should be_an_instance_of(Vx::ServiceConnector::GitlabV4) }
       its(:endpoint)      { should eq identity.url }
       its(:private_token) { should eq identity.token }
-    end
 
+      context "when version is exists" do
+        before { identity.version = '5.0.1' }
+        it { should be_an_instance_of(Vx::ServiceConnector::GitlabV5) }
+      end
+    end
   end
 
 end
