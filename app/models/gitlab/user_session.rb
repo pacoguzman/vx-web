@@ -121,7 +121,7 @@ module Gitlab
 
       def gitlab_version(token)
         conn = Faraday.new request_options
-        res = conn.post do |req|
+        res = conn.get do |req|
           req.url "/api/v3/internal/check"
           req.headers['Content-Type'] = 'application/json'
           req.headers['PRIVATE-TOKEN'] = token

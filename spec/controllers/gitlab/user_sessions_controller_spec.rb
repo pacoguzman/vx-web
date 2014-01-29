@@ -152,13 +152,13 @@ describe Gitlab::UserSessionsController do
   end
 
   def mock_check_request
-    stub_request(:post, "https://example.com/api/v3/internal/check").
+    stub_request(:get, "https://example.com/api/v3/internal/check").
       with(:headers => {'Content-Type'=>'application/json', 'Private-Token'=>'token'}).
       to_return(:status => 200, :body => read_fixture("gitlab/check.json"), :headers => {'Content-Type' => 'application/json'})
   end
 
   def mock_check_fail_request
-    stub_request(:post, "https://example.com/api/v3/internal/check").
+    stub_request(:get, "https://example.com/api/v3/internal/check").
       with(:headers => {'Content-Type'=>'application/json', 'Private-Token'=>'token'}).
       to_return(:status => 404, :body => "")
   end
