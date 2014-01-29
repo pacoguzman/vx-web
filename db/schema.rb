@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140128232313) do
+ActiveRecord::Schema.define(version: 20140128233649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(version: 20140128232313) do
   end
 
   add_index "user_repos", ["full_name", "identity_id"], name: "index_user_repos_on_full_name_and_identity_id", unique: true, using: :btree
+  add_index "user_repos", ["identity_id", "external_id"], name: "index_user_repos_on_identity_id_and_external_id", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",      null: false

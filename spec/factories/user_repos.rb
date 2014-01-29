@@ -8,6 +8,7 @@ FactoryGirl.define do
     is_private          false
     ssh_url            "MyString"
     html_url           "MyString"
+    external_id        1
 
     trait :organization do
       organization 'Org Name'

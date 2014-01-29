@@ -21,7 +21,9 @@ describe UserRepo do
 
     it { should be }
 
-    context "when is not exists" do
+    context "when repo is not exists" do
+      before { repo.update! external_id: -1 }
+
       it "should create a new user_repo" do
         identity
         expect{
@@ -30,9 +32,9 @@ describe UserRepo do
       end
     end
 
-    context "when already exists with same name" do
+    context "when already exists with same external_id" do
       it "should return existing repo" do
-        repo.update full_name: model.full_name
+        repo.update! external_id: model.id
         expect {
           subject
         }.to_not change(described_class, :count)

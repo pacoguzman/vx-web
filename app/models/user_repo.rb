@@ -3,9 +3,9 @@ class UserRepo < ActiveRecord::Base
   belongs_to :identity, class_name: "::UserIdentity", foreign_key: :identity_id
   has_one :project, dependent: :nullify
 
-  validates :full_name, :ssh_url, :html_url, presence: true
+  validates :full_name, :ssh_url, :html_url, :external_id, presence: true
   validates :is_private, inclusion: { in: [true, false] }
-  validates :full_name, uniqueness: { scope: [:identity_id] }
+  validates :identity_id, uniqueness: { scope: [:external_id] }
 
   delegate :user, to: :identity
 
@@ -13,8 +13,9 @@ class UserRepo < ActiveRecord::Base
 
   class << self
     def find_or_create_by_sc(identity, model)
-      repo = where(full_name: model.full_name, identity: identity).first_or_initialize
+      repo = find_or_initialize_by(external_id: model.id, identity: identity)
       repo.assign_attributes(
+        full_name:    model.full_name,
         is_private:   model.is_private,
         ssh_url:      model.ssh_url,
         html_url:     model.html_url,

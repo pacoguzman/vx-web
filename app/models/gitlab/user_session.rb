@@ -1,8 +1,8 @@
 require 'faraday'
-require 'httplog'
+#require 'httplog'
 require 'json'
 
-HttpLog.options[:log_headers] = true
+#HttpLog.options[:log_headers] = true
 
 module Gitlab
   class UserSession
