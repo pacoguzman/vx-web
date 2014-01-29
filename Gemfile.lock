@@ -209,7 +209,7 @@ GEM
       net-ssh (~> 2.6)
     vx-message (0.4.1)
       beefcake (= 0.3.7)
-    vx-service_connector (0.0.3)
+    vx-service_connector (0.0.4)
       gitlab (= 3.0.0)
       octokit (= 2.2.0)
     webmock (1.13.0)
@@ -252,5 +252,5 @@ DEPENDENCIES
   vx-builder (= 0.0.10)
   vx-common-amqp (= 0.2.8)
   vx-message (= 0.4.1)
-  vx-service_connector (= 0.0.3)
+  vx-service_connector (= 0.0.4)
   webmock
