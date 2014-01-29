@@ -13,7 +13,7 @@ namespace :vx do
             if repo
               puts "#{repo.full_name} -> #{repo.id}"
               ur.update! external_id: repo.id
-              total += 1
+              updated += 1
             end
           end
         end
