@@ -13,10 +13,12 @@ describe RepoCallbacksController do
       get :create, params.merge(token: project.token, _service: service)
     end
 
-    it { should be_success }
+    context "when github" do
+      it { should be_success }
 
-    it "should delivery build to PayloadConsumer" do
-      expect(PayloadConsumer.messages.last).to be
+      it "should delivery build to PayloadConsumer" do
+        expect(PayloadConsumer.messages.last).to be
+      end
     end
 
   end

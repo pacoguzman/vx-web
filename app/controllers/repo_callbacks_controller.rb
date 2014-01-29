@@ -17,10 +17,7 @@ class RepoCallbacksController < ApplicationController
     end
 
     def payload
-      @payload ||= Vx::ServiceConnector.payload(
-        project.identity.provider,
-        params
-      )
+      @payload ||= project.identity.sc_payload params
     end
 
     def process?
