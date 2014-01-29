@@ -43,6 +43,10 @@ class UserIdentity < ActiveRecord::Base
     end
   end
 
+  def sc_payload(params)
+    Vx::ServiceConnector.payload(real_provider_name, params)
+  end
+
   private
 
     def real_provider_name

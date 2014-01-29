@@ -11,6 +11,7 @@ class RepoCallbacksController < ApplicationController
   end
 
   private
+
     def project
       @project ||= Project.find_by(token: params[:token])
     end

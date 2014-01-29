@@ -47,6 +47,26 @@ describe UserIdentity do
     end
   end
 
+  context "#sc_payload" do
+    subject { identity.sc_payload({}) }
+
+    context "for github" do
+      before { identity.provider = 'github' }
+      it { should be }
+    end
+
+    context "for gitlab" do
+      before { identity.provider = 'gitlab' }
+      it { should be }
+
+      context "when version is exists" do
+        before { identity.version = '5.0.1' }
+        it { should be }
+      end
+    end
+
+  end
+
 end
 
 # == Schema Information
