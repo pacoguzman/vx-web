@@ -9,28 +9,6 @@ class UserRepoSerializer < ActiveModel::Serializer
     !!(!object.subscribed && other_project)
   end
 
-  def settings_url
-    case provider
-    when 'github'
-      "#{html_url}/settings/hooks"
-    when 'gitlab'
-      "#{html_url}/hooks"
-    end
-  end
-
-  def provider_title
-    case provider
-    when 'github'
-      'Github'
-    when 'gitlab'
-      'Gitlab'
-    end
-  end
-
-  def provider
-    object.identity.provider
-  end
-
   def subscribed
     !!(object.subscribed || object.project)
   end

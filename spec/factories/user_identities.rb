@@ -15,6 +15,7 @@ FactoryGirl.define do
     end
 
     trait :gitlab do
+      url      "https://gitlab.example.com"
       provider :gitlab
     end
   end

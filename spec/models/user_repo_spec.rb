@@ -146,6 +146,34 @@ describe UserRepo do
 
   end
 
+  context "settings_url" do
+    subject { user_repo.settings_url }
+
+    context "for github" do
+      let(:user_repo) { build :user_repo, :github }
+      it { should eq 'https://github.com/settings/hooks' }
+    end
+
+    context "for gitlab" do
+      let(:user_repo) { build :user_repo, :gitlab }
+      it { should eq 'https://gitlab.example.com/hooks' }
+    end
+  end
+
+  context "provider_title" do
+    subject { user_repo.provider_title }
+
+    context "for github" do
+      let(:user_repo) { build :user_repo, :github }
+      it { should eq 'Github' }
+    end
+
+    context "for gitlab" do
+      let(:user_repo) { build :user_repo, :gitlab }
+      it { should eq 'Gitlab' }
+    end
+  end
+
 end
 
 # == Schema Information

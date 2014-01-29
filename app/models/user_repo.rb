@@ -1,5 +1,10 @@
 class UserRepo < ActiveRecord::Base
 
+  SETTINGS_URL = {
+    "github" => "%s/settings/hooks",
+    'gitlab' => "%s/hooks"
+  }
+
   belongs_to :identity, class_name: "::UserIdentity", foreign_key: :identity_id
   has_one :project, dependent: :nullify
 
@@ -7,7 +12,7 @@ class UserRepo < ActiveRecord::Base
   validates :is_private, inclusion: { in: [true, false] }
   validates :identity_id, uniqueness: { scope: [:external_id] }
 
-  delegate :user, to: :identity
+  delegate :provider, :user, to: :identity
 
   default_scope ->{ order("user_repos.full_name ASC") }
 
@@ -54,6 +59,14 @@ class UserRepo < ActiveRecord::Base
 
       true
     end
+  end
+
+  def settings_url
+    SETTINGS_URL[provider.to_s] % html_url
+  end
+
+  def provider_title
+    provider.to_s.titleize
   end
 
   private
