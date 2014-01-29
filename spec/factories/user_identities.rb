@@ -8,15 +8,17 @@ FactoryGirl.define do
     uid        "MyString"
     login      "login"
     url        "https://example.com"
+    version    "undefined"
 
     trait :github do
       url      "https://github.com"
-      provider :github
+      provider "github"
     end
 
     trait :gitlab do
       url      "https://gitlab.example.com"
-      provider :gitlab
+      provider "gitlab"
     end
+
   end
 end

@@ -44,7 +44,10 @@ describe Gitlab::UserSessionsController do
       let!(:user) { create :user, email: "me@example.com" }
       let(:identity) { user.identities.find_by(url: "https://example.com", provider: "gitlab") }
 
-      before { mock_auth_request }
+      before do
+        mock_auth_request
+        mock_check_request
+      end
 
       it { post_create ; should redirect_to("/") }
 
@@ -66,7 +69,10 @@ describe Gitlab::UserSessionsController do
       let!(:user)     { create :user, email: "me@example.com" }
       let!(:identity) { create :user_identity, :gitlab, user: user, url: "https://example.com" }
 
-      before { mock_auth_request }
+      before do
+        mock_auth_request
+        mock_check_request
+      end
 
       it { post_create ; should redirect_to("/") }
 
@@ -85,6 +91,7 @@ describe Gitlab::UserSessionsController do
 
       before do
         mock_auth_request
+        mock_check_request
         post_create
       end
 
@@ -96,15 +103,31 @@ describe Gitlab::UserSessionsController do
       end
 
       it "should create identity" do
-        expect(identity).to       be
-        expect(identity.uid).to   eq '1'
-        expect(identity.token).to eq 'token'
-        expect(identity.login).to eq 'username'
-        expect(identity.url).to   eq 'https://example.com'
+        expect(identity).to         be
+        expect(identity.uid).to     eq '1'
+        expect(identity.token).to   eq 'token'
+        expect(identity.login).to   eq 'username'
+        expect(identity.url).to     eq 'https://example.com'
+        expect(identity.version).to eq '5.0.1'
       end
 
       it "should store user_id into session" do
         expect(session[:user_id]).to eq user.id
+      end
+    end
+
+    context "when /internal/check is not available" do
+      let(:user)     { User.find_by(email: "me@example.com") }
+      let(:identity) { user && user.identities.find_by(provider: 'gitlab') }
+
+      before do
+        mock_auth_request
+        mock_check_fail_request
+        post_create
+      end
+
+      it "should set version to nil" do
+        expect(identity.version).to be_nil
       end
     end
 
@@ -128,5 +151,16 @@ describe Gitlab::UserSessionsController do
       to_return(:status => 401, :body => {message: "Forbidden"}.to_json, headers: {'Content-Type' => 'application/json'})
   end
 
+  def mock_check_request
+    stub_request(:post, "https://example.com/api/v3/internal/check").
+      with(:headers => {'Content-Type'=>'application/json', 'Private-Token'=>'token'}).
+      to_return(:status => 200, :body => read_fixture("gitlab/check.json"), :headers => {'Content-Type' => 'application/json'})
+  end
+
+  def mock_check_fail_request
+    stub_request(:post, "https://example.com/api/v3/internal/check").
+      with(:headers => {'Content-Type'=>'application/json', 'Private-Token'=>'token'}).
+      to_return(:status => 404, :body => "")
+  end
 
 end

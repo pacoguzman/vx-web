@@ -80,7 +80,7 @@ module ActionController
 end
 
 if defined?(::Puma)
-  puts "Apply patch to Puma::Server#stop"
+  puts "[PATCH] add callback to Puma::Server#stop"
 
   module ::Puma
     class Server

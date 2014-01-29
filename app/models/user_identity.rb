@@ -8,6 +8,7 @@ class UserIdentity < ActiveRecord::Base
 
   validates :user_id, :provider, :uid, :token, :url, presence: true
   validates :user_id, uniqueness: { scope: [:provider, :url] }
+  validates :provider, inclusion: { in: ["github", "gitlab"] }
 
   scope :provider, ->(provider) { where provider: provider }
 
@@ -32,21 +33,25 @@ class UserIdentity < ActiveRecord::Base
 
   def sc
     @sc ||= begin
-      sc_class = Vx::ServiceConnector.to(mangle_provider)
-      case provider.to_sym
-      when :github
+      sc_class = Vx::ServiceConnector.to(real_provider_name)
+      case provider.to_s
+      when "github"
         sc_class.new(login, token)
-      when :gitlab
+      when "gitlab"
         sc_class.new(url, token)
       end
     end
   end
 
-  private
-
-    def mangle_provider
-      provider.to_s == 'gitlab' ? 'gitlab_v41' : provider
+  def real_provider_name
+    case provider.to_s
+    when "github"
+      "github"
+    when "gitlab"
+      "gitlab_v4"
     end
+  end
+
 end
 
 # == Schema Information

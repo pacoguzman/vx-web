@@ -2,7 +2,12 @@ class UserRepo < ActiveRecord::Base
 
   SETTINGS_URL = {
     "github" => "%s/settings/hooks",
-    'gitlab' => "%s/hooks"
+    'gitlab' => "%s/hooks",
+  }
+
+  PROVIDER_TITLE = {
+    'github' => "Github",
+    'gitlab' => 'Gitlab',
   }
 
   belongs_to :identity, class_name: "::UserIdentity", foreign_key: :identity_id
@@ -66,7 +71,7 @@ class UserRepo < ActiveRecord::Base
   end
 
   def provider_title
-    provider.to_s.titleize
+    PROVIDER_TITLE[provider.to_s]
   end
 
   private

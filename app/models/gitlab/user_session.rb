@@ -100,17 +100,35 @@ module Gitlab
           end
 
           identity = user.identities.find_or_initialize_by(
-            provider: 'gitlab',
+            provider: "gitlab",
             url:      uri.to_s
           )
+
+          if identity.new_record?
+            identity.version = gitlab_version(token)
+          end
+
           identity.update(
-            uid:   uid,
-            token: token,
-            user:  user,
-            login: login,
+            uid:      uid,
+            token:    token,
+            user:     user,
+            login:    login
           ).or_rollback_transaction
 
           user
+        end
+      end
+
+      def gitlab_version(token)
+        conn = Faraday.new request_options
+        res = conn.post do |req|
+          req.url "/api/v3/internal/check"
+          req.headers['Content-Type'] = 'application/json'
+          req.headers['PRIVATE-TOKEN'] = token
+        end
+        if res.success?
+          json = JSON.parse(res.body)
+          json["gitlab_version"]
         end
       end
 

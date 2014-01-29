@@ -40,6 +40,7 @@ describe UserIdentity do
       its(:endpoint)      { should eq identity.url }
       its(:private_token) { should eq identity.token }
     end
+
   end
 
 end

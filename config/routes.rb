@@ -52,6 +52,8 @@ VxWeb::Application.routes.draw do
 
   get '/sse_events', to: 'sse_events#index'
 
+  post '/build', to: 'welcome#index'
+
   root 'welcome#index'
 
   get "*path", to: "welcome#index", constraints: ->(req) { req.format == Mime::HTML }
