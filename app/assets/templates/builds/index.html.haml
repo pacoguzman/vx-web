@@ -10,7 +10,7 @@
       .pull-right
 
         %a.project-url{ "ng-href" => "{{ project.http_url}}", "target" => "_blank" }
-          On Github
+          On {{ project.provider_title }}
 
         %a.project-cached-files{ "ng-href" => "/projects/{{project.id}}/cached_files" }
           Cached Files
