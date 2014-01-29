@@ -8,11 +8,13 @@ describe "userRepoStore", ->
   testObj = {
     id:   12
     name: "MyName"
+    subscribed: false
   }
 
   testObj2 = {
     id:   14
     name: "MyName"
+    subscribed: false
   }
 
   beforeEach module("Vx")
@@ -62,27 +64,27 @@ describe "userRepoStore", ->
       expect(expected).toEqual [testObj2]
 
 
-  describe "subscribe()", ->
+  describe "subscribe", ->
 
     beforeEach ->
       $http.expectPOST('/api/user_repos/1/subscribe').respond('success')
 
     it "should send POST request", ->
       $scope.$apply ->
-        repos.subscribe(1).then (it) ->
+        repos.toggleSubscribtion(id: 1, subscribed: true).then (it) ->
           expected = it
       $http.flush()
       expect(expected).toEqual 'success'
 
 
-  describe "unsubscribe()", ->
+  describe "unsubscribe", ->
 
     beforeEach ->
       $http.expectPOST('/api/user_repos/1/unsubscribe').respond('success')
 
     it "should send POST request", ->
       $scope.$apply ->
-        repos.unsubscribe(1).then (it) ->
+        repos.toggleSubscribtion(id: 1, subscribed: false).then (it) ->
           expected = it
       $http.flush()
       expect(expected).toEqual 'success'
