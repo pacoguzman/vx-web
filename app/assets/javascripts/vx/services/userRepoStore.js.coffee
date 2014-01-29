@@ -1,7 +1,6 @@
 Vx.service 'userRepoStore', ['$http',
   ($http) ->
 
-    inSync = false
     repos  = $http.get('/api/user_repos').then (re) ->
       re.data
 
@@ -13,23 +12,23 @@ Vx.service 'userRepoStore', ['$http',
       $http.post("/api/user_repos/#{repoId}/unsubscribe").then (it) ->
         it.data
 
+    toggleSubscribtion = (repo) ->
+      if repo.subscribed
+        subscribe repo.id
+      else
+        unsubscribe repo.id
+
     sync = () ->
-      inSync = true
-      $http.post("/api/user_repos/sync").then (re) ->
-        repos.then (its) ->
-          its.length = 0
-          its.push.apply(its, re.data)
-          inSync = false
+      $http.post("/api/user_repos/sync")
+        .then (re) ->
+          repos.then (its) ->
+            its.length = 0
+            its.push.apply(its, re.data)
 
     all = () ->
       repos
 
-    syncInProgress = () ->
-      inSync
-
-    all:            all
-    subscribe:      subscribe
-    unsubscribe:    unsubscribe
-    sync:           sync
-    syncInProgress: syncInProgress
+    all:                all
+    sync:               sync
+    toggleSubscribtion: toggleSubscribtion
 ]

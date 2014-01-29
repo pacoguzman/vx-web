@@ -79,7 +79,11 @@ body > .container > .ng-view {
 }
 
 .ajax-loader {
-  content: url(asset-path("ajax-loader.gif"));
+  display: block;
+  margin-top: 3em;
+  margin-left: 1em;
+  content: url(asset-path("484.gif"));
+  opacity: 0.5;
 }
 
 .medium-text {

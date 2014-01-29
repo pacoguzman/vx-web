@@ -61,5 +61,14 @@
         margin-top: .1em;
       }
     }
+
+    &.in-progress .octocat {
+      display: block;
+      position: absolute;
+      margin-left: -2em;
+      margin-top: .34em;
+      content: url(asset-path("ajax-loader.gif"));
+    }
+
   }
 }
