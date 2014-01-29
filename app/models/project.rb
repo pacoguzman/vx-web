@@ -13,7 +13,7 @@ class Project < ActiveRecord::Base
     :deploy_key, presence: true
   validates :name, :token, uniqueness: true
 
-  delegate :identity, to: :user_repo
+  delegate :identity, to: :user_repo, allow_nil: true
 
   before_validation :generate_token,      on: :create
   before_validation :generate_deploy_key, on: :create
@@ -50,7 +50,9 @@ class Project < ActiveRecord::Base
   end
 
   def hook_url
-    "http://#{Rails.configuration.x.hostname}/callbacks/github/#{token}"
+    if identity
+      "http://#{Rails.configuration.x.hostname}/callbacks/#{identity.provider}/#{token}"
+    end
   end
 
   def public_deploy_key

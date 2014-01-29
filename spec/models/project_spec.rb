@@ -54,8 +54,16 @@ describe Project do
 
   context "#hook_url" do
     it "should return secure hook url for project" do
+      project.user_repo = create(:user_repo)
       token = project.generate_token
       expect(project.hook_url).to eq "http://#{Rails.configuration.x.hostname}/callbacks/github/#{token}"
+    end
+
+    context "when user_repo is not exits" do
+      it "should return nil" do
+        project.user_repo = nil
+        expect(project.hook_url).to be_nil
+      end
     end
   end
 

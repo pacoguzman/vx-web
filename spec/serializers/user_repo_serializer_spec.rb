@@ -7,6 +7,7 @@ describe UserRepoSerializer do
   context "as_json" do
     subject { serializer.as_json.keys }
 
-    it { should eq [:id, :full_name, :html_url, :subscribed, :disabled] }
+    it { should eq [:id, :full_name, :html_url, :subscribed,
+                    :disabled, :settings_url, :provider_title] }
   end
 end

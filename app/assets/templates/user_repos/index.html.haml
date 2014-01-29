@@ -16,7 +16,7 @@
 
     .user-repo{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30" }
 
-      %a.octocat{ href: '{{repo.html_url}}/settings/hooks', title: "View on Github", "target" => "blank" }
+      %a.octocat{ href: '{{repo.settings_url}}', title: "View on {{repo.provider_title}}", "target" => "blank" }
         %i.fa.fa-wrench
 
       %label
