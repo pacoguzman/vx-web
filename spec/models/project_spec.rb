@@ -213,12 +213,22 @@ describe Project do
 
   context "#sc_model" do
     subject { project.sc_model }
-    before do
-      project.name = 'full/name'
+
+    context "when user_repo exists" do
+      let(:user_repo) { create :user_repo }
+      let(:project) { create :project, user_repo: user_repo }
+
+      before do
+        project.name = 'full/name'
+      end
+      it { should be }
+      its(:id)         { should eq 1 }
+      its(:full_name)  { should eq 'full/name' }
     end
-    it { should be }
-    xit(:id)
-    its(:full_name) { should eq 'full/name' }
+
+    context "when user_repo is not exists" do
+      it { should be_nil }
+    end
   end
 
 end

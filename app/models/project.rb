@@ -100,7 +100,9 @@ class Project < ActiveRecord::Base
   end
 
   def sc_model
-    Vx::ServiceConnector::Model::Repo.new(id, name)
+    if user_repo
+      Vx::ServiceConnector::Model::Repo.new(user_repo.external_id, name)
+    end
   end
 
   private
