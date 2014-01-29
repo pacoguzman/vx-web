@@ -12,15 +12,18 @@ class RepoCallbacksController < ApplicationController
 
   private
     def project
-      @project ||= Project.select(:id).find_by(token: params[:token])
+      @project ||= Project.find_by(token: params[:token])
     end
 
     def payload
-      @payload ||= Vx::ServiceConnector.payload(:github, params)
+      @payload ||= Vx::ServiceConnector.payload(
+        project.identity.provider,
+        params
+      )
     end
 
     def process?
-      if project && !payload.ignore?
+      if project && project.identity && !payload.ignore?
         yield
       else
         Rails.logger.warn "ignore payload: #{payload.inspect}"

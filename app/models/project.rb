@@ -4,7 +4,7 @@ class Project < ActiveRecord::Base
 
   include ::PublicUrl::Project
 
-  belongs_to :user_repo, class_name: "::UserRepo"
+  belongs_to :user_repo, class_name: "::UserRepo", foreign_key: :user_repo_id
   has_many :builds, dependent: :destroy, class_name: "::Build"
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
   has_many :cached_files, dependent: :destroy
