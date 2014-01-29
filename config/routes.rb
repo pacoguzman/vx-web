@@ -38,18 +38,21 @@ VxWeb::Application.routes.draw do
     end
   end
 
+  get  'auth/github/callback', to: 'github/user_sessions#create'
+  post 'auth/gitlab/session',  to: "gitlab/user_sessions#create"
+  get  'auth/failure',         to: redirect('/')
+
   put "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#upload"
   get "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#download"
 
   # TODO: remove it
   post '/:_service/callback/:token', to: 'repo_callbacks#create', _service: /(github)/
-  post '/callbacks/:_service/:token', to: 'repo_callbacks#create', _service: /(github)/,
+  post '/callbacks/:_service/:token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'
 
-  get '/auth/github/callback', to: 'github/user_callbacks#create'
-  get '/auth/failure', to: redirect('/')
-
   get '/sse_events', to: 'sse_events#index'
+
+  post '/build', to: 'welcome#index'
 
   root 'welcome#index'
 

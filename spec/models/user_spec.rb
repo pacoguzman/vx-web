@@ -6,7 +6,7 @@ describe User do
 
   context "sync_repos" do
     let(:external_repo) { Vx::ServiceConnector::Model.test_repo }
-    let(:user_repo)     { create :user_repo, full_name: external_repo.full_name }
+    let(:user_repo)     { create :user_repo, external_id: external_repo.id }
     let(:identity)      { user_repo.identity }
     let(:user)          { identity.user }
 
@@ -28,7 +28,7 @@ describe User do
     end
 
     it "should remove unupdated user_repos" do
-      user_repo.update! full_name: "..."
+      user_repo.update! external_id: -1
       expect(subject).to be
       expect{user_repo.reload}.to raise_error(ActiveRecord::RecordNotFound)
     end
@@ -41,3 +41,15 @@ describe User do
 
   end
 end
+
+# == Schema Information
+#
+# Table name: users
+#
+#  id         :integer          not null, primary key
+#  email      :string(255)      not null
+#  name       :string(255)      not null
+#  created_at :datetime
+#  updated_at :datetime
+#
+

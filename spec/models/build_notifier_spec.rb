@@ -29,7 +29,7 @@ describe BuildNotifier do
   context "#notify" do
     subject { notifier.notify }
     before do
-      mock(notifier.project.service_connector).notices(anything).mock!.create(
+      mock(notifier.project.sc).notices(anything).mock!.create(
         b.sha,
         :passed,
         b.public_url,

@@ -16,7 +16,7 @@ gem 'sshkey'
 gem 'vx-common-amqp',       '0.2.8'
 gem 'vx-message',           '0.4.1'
 gem 'vx-builder',           '0.0.10'
-gem 'vx-service_connector', '0.0.2'
+gem 'vx-service_connector', '0.0.5'
 
 gem 'airbrake'
 gem 'dalli'
@@ -47,4 +47,5 @@ group :development do
   gem 'pry-rails'
   gem 'annotate'
   gem 'foreman'
+  gem 'httplog'
 end

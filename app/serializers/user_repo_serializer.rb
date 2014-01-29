@@ -1,7 +1,8 @@
 class UserRepoSerializer < ActiveModel::Serializer
   cached
 
-  attributes :id, :full_name, :html_url, :subscribed, :disabled
+  attributes :id, :full_name, :html_url, :subscribed, :disabled,
+    :settings_url, :provider_title
 
   def disabled
     other_project = Project.where(name: object.full_name).exists?

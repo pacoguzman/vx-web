@@ -1,9 +1,10 @@
-class Github::UserCallbacksController < ApplicationController
+class Github::UserSessionsController < ApplicationController
 
   skip_before_filter :authorize_user
 
   def create
-    user = User.from_github env['omniauth.auth']
+    github_user_session = Github::UserSession.new request.env["omniauth.auth"]
+    user = github_user_session.create
     if user
       session[:user_id] = user.id
       redirect_to root_path

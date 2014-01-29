@@ -7,9 +7,17 @@ FactoryGirl.define do
     token      "MyString"
     uid        "MyString"
     login      "login"
+    url        "https://example.com"
 
     trait :github do
-      provider :github
+      url      "https://github.com"
+      provider "github"
     end
+
+    trait :gitlab do
+      url      "https://gitlab.example.com"
+      provider "gitlab"
+    end
+
   end
 end

@@ -1,0 +1,37 @@
+!!!
+%html
+  %head
+    %title CI
+    = stylesheet_link_tag "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"
+    = stylesheet_link_tag "//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css"
+    = stylesheet_link_tag "application", media: "all"
+    = csrf_meta_tags
+
+  %body.signin
+    .container
+      .row
+
+        .col-5.github
+
+          %a{ href: "/", title: "Login with Github" }
+
+            %h3.title
+              Github
+            = image_tag 'octokat.svg', alt: "Octokat", title: "Octokat"
+            = button_tag "With Github", class: "btn btn-success"
+
+        .col-1.separator
+
+        .col-6.gitlab
+          %h3.title
+            = image_tag "gitlab_logo.png"
+            Gitlab
+
+          = form_for gitlab_user_session, url: auth_gitlab_session_path, html: { class: "form" } do |f|
+            .form-group
+              = f.email_field :email, placeholder: "Email", class: "form-control email"
+              = f.password_field :password, placeholder: "Password", class: "form-control password"
+            .form-group
+              = f.select :host, f.object.hosts, {}, { class: "form-control" }
+            .form-group
+              = f.submit "With Gitlab", class: "btn btn-success"

@@ -54,8 +54,16 @@ describe Project do
 
   context "#hook_url" do
     it "should return secure hook url for project" do
+      project.user_repo = create(:user_repo)
       token = project.generate_token
       expect(project.hook_url).to eq "http://#{Rails.configuration.x.hostname}/callbacks/github/#{token}"
+    end
+
+    context "when user_repo is not exits" do
+      it "should return nil" do
+        project.user_repo = nil
+        expect(project.hook_url).to be_nil
+      end
     end
   end
 
@@ -204,20 +212,48 @@ describe Project do
     end
   end
 
-  context "#service_connector" do
+  context "#sc" do
     let(:user_repo) { create :user_repo }
-    subject { project.service_connector }
+    subject { project.sc }
     before { project.user_repo = user_repo }
     it { should be }
   end
 
-  context "#to_service_connector_model" do
-    subject { project.to_service_connector_model }
-    before do
-      project.name = 'full/name'
+  context "#sc_model" do
+    subject { project.sc_model }
+
+    context "when user_repo exists" do
+      let(:user_repo) { create :user_repo }
+      let(:project) { create :project, user_repo: user_repo }
+
+      before do
+        project.name = 'full/name'
+      end
+      it { should be }
+      its(:id)         { should eq 1 }
+      its(:full_name)  { should eq 'full/name' }
     end
-    it { should be }
-    its(:full_name) { should eq 'full/name' }
+
+    context "when user_repo is not exists" do
+      it { should be_nil }
+    end
   end
 
 end
+
+# == Schema Information
+#
+# Table name: projects
+#
+#  id           :integer          not null, primary key
+#  name         :string(255)      not null
+#  http_url     :string(255)      not null
+#  clone_url    :string(255)      not null
+#  description  :text
+#  deploy_key   :text             not null
+#  token        :string(255)      not null
+#  created_at   :datetime
+#  updated_at   :datetime
+#  user_repo_id :integer          not null
+#
+

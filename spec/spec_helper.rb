@@ -15,6 +15,8 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 
+OmniAuth.config.test_mode = true
+
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include ReadFixtureSpecSupport
@@ -31,6 +33,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     Vx::Common::AMQP::Testing.clear
+    Rails.configuration.x = OpenStruct.new
     Rails.configuration.x.hostname = 'test.local'
   end
 

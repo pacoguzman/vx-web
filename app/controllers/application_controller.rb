@@ -13,14 +13,18 @@ class ApplicationController < ActionController::Base
   private
 
     def current_user
-      @current_user ||= begin
-        case Rails.env
-        when 'development'
-          ::User.first
-        else
-          ::User.find_by id: session[:user_id].to_i
-        end
-      end
+      @current_user ||= (
+        development_user ||
+        ::User.find_by(id: current_user_id.to_i)
+      )
+    end
+
+    def current_user_id
+      session[:user_id]
+    end
+
+    def development_user
+      #Rails.env.development? && User.first
     end
 
     def user_logged_in?
@@ -33,7 +37,7 @@ class ApplicationController < ActionController::Base
 
     def access_denied
       respond_to do |want|
-        want.html { render 'welcome/login', layout: false }
+        want.html { render 'welcome/signin', layout: false }
         want.json { head 403 }
         want.all  { head 403 }
       end

@@ -14,14 +14,16 @@ end
 describe UserRepo do
   let(:repo) { create :user_repo }
 
-  context ".find_or_create_by_service_connector" do
+  context ".find_or_create_by_sc" do
     let(:identity) { repo.identity }
     let(:model)    { Vx::ServiceConnector::Model.test_repo }
-    subject { described_class.find_or_create_by_service_connector identity, model }
+    subject { described_class.find_or_create_by_sc identity, model }
 
     it { should be }
 
-    context "when is not exists" do
+    context "when repo is not exists" do
+      before { repo.update! external_id: -1 }
+
       it "should create a new user_repo" do
         identity
         expect{
@@ -30,9 +32,9 @@ describe UserRepo do
       end
     end
 
-    context "when already exists with same name" do
+    context "when already exists with same external_id" do
       it "should return existing repo" do
-        repo.update full_name: model.full_name
+        repo.update! external_id: model.id
         expect {
           subject
         }.to_not change(described_class, :count)
@@ -144,14 +146,41 @@ describe UserRepo do
 
   end
 
+  context "settings_url" do
+    subject { user_repo.settings_url }
+
+    context "for github" do
+      let(:user_repo) { build :user_repo, :github }
+      it { should eq 'https://github.com/settings/hooks' }
+    end
+
+    context "for gitlab" do
+      let(:user_repo) { build :user_repo, :gitlab }
+      it { should eq 'https://gitlab.example.com/hooks' }
+    end
+  end
+
+  context "provider_title" do
+    subject { user_repo.provider_title }
+
+    context "for github" do
+      let(:user_repo) { build :user_repo, :github }
+      it { should eq 'Github' }
+    end
+
+    context "for gitlab" do
+      let(:user_repo) { build :user_repo, :gitlab }
+      it { should eq 'Gitlab' }
+    end
+  end
+
 end
 
 # == Schema Information
 #
-# Table name: github_repos
+# Table name: user_repos
 #
 #  id                 :integer          not null, primary key
-#  user_id            :integer          not null
 #  organization_login :string(255)
 #  full_name          :string(255)      not null
 #  is_private         :boolean          not null
@@ -161,5 +190,6 @@ end
 #  description        :text
 #  created_at         :datetime
 #  updated_at         :datetime
+#  identity_id        :integer          not null
 #
 
