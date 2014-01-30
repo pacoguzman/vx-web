@@ -50,7 +50,7 @@ class UserIdentity < ActiveRecord::Base
       when "github"
         "github"
       when "gitlab"
-        version ? "gitlab_v5" : "gitlab_v4"
+        "gitlab_v5"
       end
     end
 

@@ -10,7 +10,7 @@ describe RepoCallbacksController do
     let(:params)  { {} }
 
     before do
-      get :create, params.merge(token: project.token, _service: service)
+      get :create, params.merge(_token: project.token, _service: service)
     end
 
     context "when github" do
