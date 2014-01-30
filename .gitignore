@@ -19,3 +19,4 @@ tags
 Capfile
 /private
 .env.*
+.logstash-forwarder
