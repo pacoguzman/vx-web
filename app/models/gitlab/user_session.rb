@@ -5,10 +5,8 @@ require 'json'
 #HttpLog.options[:log_headers] = true
 
 module Gitlab
-  class UserSession
 
-    extend ActiveModel::Naming
-    include ActiveModel::Conversion
+  class UserSession
 
     ENV_RE = /^GITLAB_URL[0-9]*$/
 
@@ -23,7 +21,7 @@ module Gitlab
       end
     end
 
-    def initialize(params)
+    def initialize(params = {})
       @email    = params[:email]
       @password = params[:password]
       @host     = params[:host]
@@ -42,13 +40,19 @@ module Gitlab
     end
 
     def create
-      if response = authenticate
-        Rails.logger.debug "Got response: #{response.inspect}"
-        find_user(response) || create_user(response)
+      if valid?
+        if response = authenticate
+          Rails.logger.debug "Got response: #{response.inspect}"
+          find_user(response) || create_user(response)
+        end
       end
     end
 
     private
+
+      def valid?
+        email && password && uri
+      end
 
       def authenticate
         if uri

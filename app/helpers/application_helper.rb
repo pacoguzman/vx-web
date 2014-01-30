@@ -22,7 +22,7 @@ module ApplicationHelper
   end
 
   def gitlab_user_session
-    @gitlab_user_session ||= Gitlab::UserSession.new params
+    @gitlab_user_session ||= Gitlab::UserSession.new
   end
 
 end
