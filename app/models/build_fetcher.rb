@@ -27,12 +27,10 @@ class BuildFetcher
     transaction do
       guard do
         (
-          build                    &&
-          assign_source_to_build   &&
-          assign_commit_to_build   &&
-          build.save               &&
-          create_jobs              &&
-          publish_jobs             &&
+          build         &&
+          build.save    &&
+          create_jobs   &&
+          publish_jobs  &&
           subscribe_author_to_repo
         ).or_rollback_transaction
         build
@@ -67,32 +65,6 @@ class BuildFetcher
     def publish_jobs
       build.jobs.each(&:publish_perform_job_message)
       true
-    end
-
-    def assign_commit_to_build
-      with_sc do |sc|
-        commit = sc.commits(sc_model).get(build.sha)
-        if commit
-          Rails.logger.warn "assign commit: #{commit.inspect}"
-          build.sha          = commit.sha
-          build.message      = commit.message
-          build.author       = commit.author
-          build.author_email = commit.author_email
-          build.http_url     = commit.http_url
-          true
-        end
-      end
-    end
-
-    def assign_source_to_build
-      with_sc do |sc|
-        file = sc.files(sc_model).get(build.sha, '.travis.yml')
-        if file
-          Rails.logger.warn "assign source"
-          build.source = file
-          true
-        end
-      end
     end
 
     def guard

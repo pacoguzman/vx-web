@@ -17,14 +17,14 @@ class RepoCallbacksController < ApplicationController
     end
 
     def payload
-      @payload ||= project.build_payload
+      @payload ||= project.build_payload params
     end
 
     def process?
-      if project && payload
+      if project && payload && !payload.ignore?
         yield
       else
-        Rails.logger.warn "Fail to process payload"
+        Rails.logger.warn "Cannot process payload"
       end
     end
 

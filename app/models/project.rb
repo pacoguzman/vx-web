@@ -86,12 +86,20 @@ class Project < ActiveRecord::Base
   end
 
   def new_build_from_payload(payload)
+    return unless sc
+
+    file = sc.files(sc_model).get(payload.sha, ".travis.yml")
+
     attrs = {
       pull_request_id:  payload.pull_request_number,
       branch:           payload.branch,
       branch_label:     payload.branch_label,
-      sha:              payload.head,
-      http_url:         payload.url,
+      sha:              payload.sha,
+      http_url:         payload.web_url,
+      author:           payload.author,
+      author_email:     payload.author_email,
+      message:          payload.message,
+      source:           file
     }
 
     builds.build(attrs)

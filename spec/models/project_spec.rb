@@ -202,6 +202,8 @@ describe Project do
     let(:payload) { Vx::ServiceConnector::Model.test_payload }
     subject { project.new_build_from_payload payload }
 
+    before { mock_file_request }
+
     context "a new build" do
       it { should be_new_record }
       its(:pull_request_id) { should be_nil }
@@ -209,6 +211,18 @@ describe Project do
       its(:branch_label)    { should eq 'master:label' }
       its(:sha)             { should eq 'HEAD' }
       its(:http_url)        { should eq 'http://example.com' }
+      its(:author)          { should eq 'User Name' }
+      its(:author_email)    { should eq 'me@example.com' }
+      its(:message)         { should eq 'test commit' }
+      its(:source)          { should eq 'content' }
+    end
+
+    def mock_file_request
+      content = { "content" => Base64.encode64('content') }.to_json
+      stub_request(:get, "https://api.github.com/repos/ci-worker-test-repo/contents/.travis.yml?ref=HEAD").
+        to_return(:status => 200,
+                  :body => content,
+                  :headers => {"Content-Type" => "application/json"})
     end
   end
 

@@ -9,22 +9,14 @@ describe BuildFetcher do
   subject { fetcher }
 
   context "just created" do
+    before { mock_file_request ({script: "true"}).to_yaml }
+
     its(:project_id) { should eq project.id }
     its(:project)    { should eq project }
     its(:payload)    { should be }
     its(:source)     { should be }
     its(:matrix)     { should be }
-  end
-
-  context "#build" do
-    subject { fetcher.build }
-
-    it "should create build using payload" do
-      expect(subject).to be_new_record
-
-      expect(subject.sha).to eq 'HEAD'
-      expect(subject.branch).to eq 'master'
-    end
+    its(:build)      { should be }
   end
 
   context "#perform" do
@@ -33,14 +25,9 @@ describe BuildFetcher do
     let(:file)     { { "rvm" => "2.0.0" }.to_yaml }
 
     subject { fetcher.perform }
+    before { mock_file_request file }
 
     context "success" do
-      before do
-        any_instance_of(Vx::ServiceConnector::Github) do |g|
-          mock(g).commits(anything).mock!.get(payload.head) { commit }
-          mock(g).files(anything).mock!.get(payload.head, '.travis.yml') { file }
-        end
-      end
 
       it { should be }
 
@@ -52,7 +39,7 @@ describe BuildFetcher do
       end
 
       it "should assign commit to build" do
-        expect(subject.author).to eq 'author'
+        expect(subject.author).to eq 'User Name'
       end
 
       it "should assign source to build" do
@@ -92,26 +79,7 @@ describe BuildFetcher do
       end
 
       context "when fail to fetch source" do
-        before do
-          any_instance_of(Vx::ServiceConnector::Github) do |g|
-            mock(g).files(anything).mock!.get(payload.head, '.travis.yml') { nil }
-          end
-        end
-
-        it "cannot create any builds" do
-          expect {
-            subject
-          }.to_not change(project.builds, :count)
-        end
-      end
-
-      context "when fail to fetch commit" do
-        before do
-          any_instance_of(Vx::ServiceConnector::Github) do |g|
-            mock(g).files(anything).mock!.get(payload.head, '.travis.yml') { file }
-            mock(g).commits(anything).mock!.get(payload.head) { nil }
-          end
-        end
+        let(:file) { nil }
 
         it "cannot create any builds" do
           expect {
@@ -121,13 +89,7 @@ describe BuildFetcher do
       end
 
       context "when jobs is empty" do
-        before do
-          any_instance_of(Vx::ServiceConnector::Github) do |g|
-            mock(g).commits(anything).mock!.get(payload.head) { commit }
-            mock(g).files(anything).mock!.get(payload.head, '.travis.yml') { "---\n" }
-          end
-        end
-
+        let(:file) { "---\n" }
         it "cannot create any builds" do
           expect {
             subject
@@ -135,7 +97,19 @@ describe BuildFetcher do
         end
       end
     end
+  end
 
+  def mock_file_request content
+    json = if content
+             { "content" => Base64.encode64(content) }.to_json
+           else
+             nil
+           end
+    status = json ? 200 : 404
+    stub_request(:get, "https://api.github.com/repos/ci-worker-test-repo/contents/.travis.yml?ref=HEAD").
+      to_return(:status => status,
+                :body => json,
+                :headers => {"Content-Type" => "application/json"})
   end
 
 end
