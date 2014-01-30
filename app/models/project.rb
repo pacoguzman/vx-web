@@ -98,13 +98,17 @@ class Project < ActiveRecord::Base
   end
 
   def sc
-    user_repo.try(:identity).try(:sc)
+    identity.try(:sc)
   end
 
   def sc_model
     if user_repo
       Vx::ServiceConnector::Model::Repo.new(user_repo.external_id, name)
     end
+  end
+
+  def build_payload(params)
+    identity.sc.payload(sc_model, params)
   end
 
   private

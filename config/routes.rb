@@ -46,8 +46,7 @@ VxWeb::Application.routes.draw do
   get "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#download"
 
   # TODO: remove it
-  post '/:_service/callback/:token', to: 'repo_callbacks#create', _service: /(github)/
-  post '/callbacks/:_service/:token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
+  post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'
 
   get '/sse_events', to: 'sse_events#index'

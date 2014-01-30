@@ -13,18 +13,18 @@ class RepoCallbacksController < ApplicationController
   private
 
     def project
-      @project ||= Project.find_by(token: params[:token])
+      @project ||= Project.find_by(token: params[:_token])
     end
 
     def payload
-      @payload ||= project.identity.sc_payload params
+      @payload ||= project.build_payload
     end
 
     def process?
-      if project && project.identity && !payload.ignore?
+      if project && payload
         yield
       else
-        Rails.logger.warn "ignore payload: #{payload.inspect}"
+        Rails.logger.warn "Fail to process payload"
       end
     end
 
