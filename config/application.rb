@@ -4,10 +4,8 @@ require 'rails/all'
 require 'socket'
 require 'ostruct'
 
-require File.expand_path("../../lib/vx/logger", __FILE__)
-Vx::Common::Logger.setup "log/vx.log"
-
 require File.expand_path("../../lib/vx/instrumentation", __FILE__)
+Vx::Instrumentation.install 'log/vx.log'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.

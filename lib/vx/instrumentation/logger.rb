@@ -3,7 +3,7 @@ require 'logger'
 
 module Vx
 
-  module Common
+  module Instrumentation
 
     class Logger
 
@@ -13,19 +13,14 @@ module Vx
 
       def method_missing(sym, *args, &block)
         if @device.respond_to?(sym)
-          @device.send(sym, *args, &block)
+          begin
+            @device.send(sym, *args, &block)
+          rescue Exception => e
+            $stderr.puts "#{e.class.to_s} in #{e.message.inspect} [#{sym.inspect} #{args.inspect}]"
+            $stderr.puts e.backtrace.map{|b| "    #{b}" }.join("\n")
+          end
         else
           super
-        end
-      end
-
-      def with(new_keys)
-        old_keys = Thread.current["vx_logger_keys"]
-        begin
-          Thread.current["vx_logger_keys"] = (old_keys || {}).merge(new_keys)
-          yield if block_given?
-        ensure
-          Thread.current["vx_logger_keys"] = old_keys
         end
       end
 
@@ -37,9 +32,9 @@ module Vx
         attr_accessor :logger
 
         def setup(target)
-          puts "=== SETUP: #{target}"
           log = ::Logger.new(target)
           log.formatter = Formatter
+          $stdout.puts " --> #{self.to_s} to #{target}"
           @logger = new(log)
         end
       end
@@ -57,7 +52,27 @@ module Vx
               { message: msg }
             end
           formatted.merge!(severity: severity.to_s.downcase, tm: tm.to_f)
-          formatted.to_json + "\n"
+
+          flat = formatted.inject({}) do |a, val|
+            k,v = val
+            if k == '@fields'
+              fields = {}
+              v.each do |f_k, f_v|
+                fields[f_k] =
+                  case f_v
+                  when String, Symbol, Fixnum, Float
+                    f_v
+                  else
+                    f_v.to_s
+                  end
+                  f_v.is_a?(String) ? f_v : f_v.inspect
+              end
+              v = fields
+            end
+            a[k] = v
+            a
+          end
+          ::JSON.dump(flat) + "\n"
         end
 
       end

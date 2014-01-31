@@ -1,72 +1,35 @@
 require 'thread'
 
-ActiveSupport::Notifications.subscribe(/.*/) do |name, started, finished, uid, payload|
-  skip  = false
+require File.expand_path("../instrumentation/logger",            __FILE__)
+require File.expand_path("../instrumentation/subscriber",        __FILE__)
 
-  render_bind = ->(column, value) {
-    if column
-      if column.binary?
-        value = "<#{value.bytesize} bytes of binary data>"
-      end
-      [column.name, value]
-    else
-      [nil, value]
+require File.expand_path("../instrumentation/faraday",           __FILE__)
+require File.expand_path("../instrumentation/active_record",     __FILE__)
+require File.expand_path("../instrumentation/action_dispatch",   __FILE__)
+require File.expand_path("../instrumentation/rails",             __FILE__)
+require File.expand_path("../instrumentation/amqp_consumer",     __FILE__)
+
+module Vx
+  module Instrumentation
+
+    extend self
+
+    def install(target)
+      Instrumentation::Logger.setup target
+      Instrumentation::Logger.logger.level = 0
+      Instrumentation::Subscriber.subclasses.map(&:install)
     end
-  }
 
-  render_http_header = ->(headers) {
-    headers.map do |key,value|
-      if %{ PRIVATE-TOKEN Authorization }.include?(key)
-        value = value.gsub(/./, "*")
+    def with(new_keys)
+      old_keys = Thread.current["vx_instrumentation_keys"]
+      begin
+        Thread.current["vx_instrumentation_keys"] = (old_keys || {}).merge(new_keys)
+        yield if block_given?
+      ensure
+        Thread.current["vx_instrumentation_keys"] = old_keys
       end
-      "#{key}: #{value}"
-    end.join("\n")
-  }
+    end
 
-  case name
-
-  # Rails
-  when /^\!/
-    skip = true
-
-  when "sql.active_record"
-    payload = {
-      sql:      payload[:sql].compact,
-      binds:    (payload[:binds] || []).map{|k,v| render_bind.call(k,v) }.inspect,
-      name:     payload[:name],
-      duration: payload[:duration]
-    }
-
-  when "request.action_dispatch"
-    req     = payload.delete(:request)
-    payload = {
-      path:   req.fullpath,
-      ip:     req.ip,
-      method: req.method,
-    }
-
-  when 'request.faraday'
-    name = 'request.http'
-    payload = {
-      method:           payload[:method],
-      url:              payload[:url].to_s,
-      status:           payload[:status],
-      response_headers: render_http_header.call(payload[:response_headers]),
-      request_headers:  render_http_header.call(payload[:request_headers])
-    }
   end
 
-  unless skip
-    tm = started.strftime('%Y-%m-%dT%H:%M:%S.%N%z')
-    Vx::Common::Logger.logger.log(
-      ::Logger::INFO,
-      "@event"      => name,
-      "@process_id" => Process.pid,
-      "@thread_id"  => Thread.current.object_id,
-      "@timestamp"  => tm,
-      "@duration"   => (finished - started).to_f,
-      "@fields"     => payload,
-      "@tags"       => name.split(".")
-    )
-  end
 end
