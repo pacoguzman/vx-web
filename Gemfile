@@ -16,7 +16,7 @@ gem 'sshkey'
 gem 'vx-common-amqp',       path: "../vx-common-amqp"
 gem 'vx-message',           '0.4.1'
 gem 'vx-builder',           '0.0.10'
-gem 'vx-service_connector', '0.0.6'
+gem 'vx-service_connector', path: "../vx-service_connector" #'0.0.6'
 
 gem 'airbrake'
 gem 'dalli'

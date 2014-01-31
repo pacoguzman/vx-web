@@ -4,11 +4,30 @@ ActiveSupport::Notifications.subscribe(/.*/) do |name, started, finished, uid, p
   level = Logger::INFO
   skip  = false
 
+  render_bind = ->(column, value) {
+    if column
+      if column.binary?
+        value = "<#{value.bytesize} bytes of binary data>"
+      end
+      [column.name, value]
+    else
+      [nil, value]
+    end
+  }
+
   case name
 
   # Rails
   when /^\!/
     skip = true
+
+  when "sql.active_record"
+    payload = {
+      sql:      payload[:sql].compact,
+      binds:    (payload[:binds] || []).map{|k,v| render_bind.call(k,v) }.inspect,
+      name:     payload[:name],
+      duration: payload[:duration]
+    }
 
   when "request.action_dispatch"
     req     = payload.delete(:request)
@@ -16,7 +35,7 @@ ActiveSupport::Notifications.subscribe(/.*/) do |name, started, finished, uid, p
       path:   req.fullpath,
       ip:     req.ip,
       method: req.method,
-      uuid:   req.uuid
+      uuid:   req.uuid,
     }
   end
 
