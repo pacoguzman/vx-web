@@ -1,14 +1,16 @@
 PATH
   remote: ../vx-common-amqp
   specs:
-    vx-common-amqp (0.3.2)
-      bunny (~> 1.1.0)
+    vx-common-amqp (0.3.3)
+      bunny (~> 1.1.1)
       vx-common-rack-builder (~> 0.0.2)
 
 PATH
   remote: ../vx-service_connector
   specs:
     vx-service_connector (0.0.7)
+      activesupport (~> 4.0)
+      faraday (~> 0.9.0)
       octokit (= 2.2.0)
 
 GEM
@@ -77,8 +79,8 @@ GEM
     factory_girl_rails (4.2.1)
       factory_girl (~> 4.2.0)
       railties (>= 3.0.0)
-    faraday (0.8.8)
-      multipart-post (~> 1.2.0)
+    faraday (0.9.0)
+      multipart-post (>= 1.2, < 3)
     foreman (0.63.0)
       dotenv (>= 0.7)
       thor (>= 0.13.6)
@@ -105,7 +107,7 @@ GEM
     mime-types (1.25.1)
     minitest (4.7.5)
     multi_json (1.8.4)
-    multipart-post (1.2.0)
+    multipart-post (2.0.0)
     net-ssh (2.7.0)
     oauth2 (0.8.1)
       faraday (~> 0.8)
