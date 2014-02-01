@@ -4,12 +4,11 @@ require 'rails/all'
 require 'socket'
 require 'ostruct'
 
-require File.expand_path("../../lib/vx/instrumentation", __FILE__)
-Vx::Instrumentation.install 'log/vx.log'
-
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env)
+
+Vx::Instrumentation.install 'log/vx.log'
 
 require 'dotenv'
 Dotenv.load "#{File.expand_path("../../", __FILE__)}/.env.#{Rails.env}", "/etc/vexor/ci"
