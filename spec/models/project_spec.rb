@@ -3,16 +3,6 @@ require 'spec_helper'
 describe Project do
   let(:project) { Project.new }
 
-  context ".preload_last_builds!" do
-    let(:project) { create :project }
-    let!(:b0) { create :build, status: 0, project: project, number: 2 }
-    let!(:b1) { create :build, status: 2, project: project, number: 1 }
-    let!(:b2) { create :build, status: 2, project: project, number: 3 }
-
-    subject { Project.preload_last_builds! }
-    it { should eq [project] }
-  end
-
   context ".find_by_token" do
     let(:token)   { project.token   }
     let(:project) { create :project }
@@ -89,39 +79,6 @@ describe Project do
         create :build, status: 4, project: project, number: 4
       end
       its(:number) { should eq 4 }
-    end
-
-    context "without builds" do
-      it { should be_nil }
-    end
-  end
-
-  context "#last_build_status" do
-    let(:build) { Build.new status: 4 }
-    subject { project.last_build_status }
-
-    context "with builds" do
-      before do
-        mock(project).last_build.twice { build }
-      end
-      it { should eq :failed }
-    end
-
-    context "without builds" do
-      it { should eq :unknown }
-    end
-  end
-
-  context "#last_build_created_at" do
-    let(:tm) { Time.now }
-    let(:build) { Build.new created_at: tm }
-    subject { project.last_build_created_at }
-
-    context "with builds" do
-      before do
-        mock(project).last_build.twice { build }
-      end
-      it { should eq tm }
     end
 
     context "without builds" do

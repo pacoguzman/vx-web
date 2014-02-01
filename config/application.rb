@@ -8,8 +8,6 @@ require 'ostruct'
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env)
 
-Vx::Instrumentation.install 'log/vx.log'
-
 require 'dotenv'
 Dotenv.load "#{File.expand_path("../../", __FILE__)}/.env.#{Rails.env}", "/etc/vexor/ci"
 

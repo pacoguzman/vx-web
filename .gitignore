@@ -20,3 +20,4 @@ Capfile
 /private
 .env.*
 .logstash-forwarder
+log/
