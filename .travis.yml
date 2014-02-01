@@ -19,7 +19,7 @@ before_script:
 - mkdir -p log
 - mkdir -p tmp
 - psql -c 'create database vxweb_test;' -U postgres
-- psql -c 'create extension if not exists hstore;' -U postgres
+- psql -c 'create extension if not exists hstore;' -U postgres vxweb_test
 - bundle exec rake db:migrate
 - npm install karma
 
