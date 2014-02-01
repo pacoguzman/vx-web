@@ -3,6 +3,16 @@ require 'spec_helper'
 describe Project do
   let(:project) { Project.new }
 
+  context ".preload_last_builds!" do
+    let(:project) { create :project }
+    let!(:b0) { create :build, status: 0, project: project, number: 2 }
+    let!(:b1) { create :build, status: 2, project: project, number: 1 }
+    let!(:b2) { create :build, status: 2, project: project, number: 3 }
+
+    subject { Project.preload_last_builds! }
+    it { should eq [project] }
+  end
+
   context ".find_by_token" do
     let(:token)   { project.token   }
     let(:project) { create :project }

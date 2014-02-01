@@ -2,7 +2,7 @@ class Build < ActiveRecord::Base
 
   include ::PublicUrl::Build
 
-  belongs_to :project, class_name: "::Project"
+  belongs_to :project, class_name: "::Project", touch: true
   has_many :jobs, class_name: "::Job", dependent: :destroy
 
   validates :project_id, :number, :sha, :branch, :source, presence: true

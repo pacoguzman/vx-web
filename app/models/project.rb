@@ -29,6 +29,24 @@ class Project < ActiveRecord::Base
     def find_by_token(token)
       find_by token: token
     end
+
+    def preload_last_builds!
+      projects = self.all
+      ids = projects.map(&:id)
+      builds = Build.where.not(status: [0,1])
+                    .where(project_id: ids)
+                    .select("project_id, MAX(number) AS number")
+                    .reorder(nil)
+                    .group(:project_id)
+      where = builds.map do |build|
+        "(project_id = #{build.project_id} AND number = #{build.number})"
+      end.join(" OR ")
+      builds = Build.where(where).inject({}){|a, b| a[b.project_id] = b ; a }
+      projects.each do |project|
+        project.last_build! builds[project.id]
+      end
+      projects
+    end
   end
 
   def to_s
@@ -59,8 +77,16 @@ class Project < ActiveRecord::Base
     @public_deploy_key ||= SSHKey.new(deploy_key, comment: deploy_key_name).try(:ssh_public_key)
   end
 
+  def last_build!(build)
+    @last_build_loaded = true
+    @last_build = build
+  end
+
   def last_build
-    @last_build ||= builds.where.not(status: [0,1]).first
+    unless @last_build_loaded
+      @last_build_loaded = true
+      @last_build ||= builds.where.not(status: [0,1]).first
+    end
   end
 
   def last_build_status
