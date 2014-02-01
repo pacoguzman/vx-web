@@ -9,7 +9,7 @@ class Project < ActiveRecord::Base
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
   has_many :cached_files, dependent: :destroy
 
-  validates :name, :http_url, :clone_url, :token, :user_repo_id,
+  validates :name, :http_url, :clone_url, :token,
     :deploy_key, presence: true
   validates :name, :token, uniqueness: true
 

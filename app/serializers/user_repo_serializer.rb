@@ -5,8 +5,7 @@ class UserRepoSerializer < ActiveModel::Serializer
     :settings_url, :provider_title
 
   def disabled
-    other_project = Project.where(name: object.full_name).exists?
-    !!(!object.subscribed && other_project)
+    !!(!object.subscribed && object.same_name_projects.any?)
   end
 
   def subscribed

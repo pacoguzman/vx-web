@@ -3,7 +3,10 @@ class Api::UserReposController < Api::BaseController
   respond_to :json
 
   def index
-    respond_with(user_repos, each_serializer: UserRepoSerializer)
+    respond_with(
+      user_repos.includes(:same_name_projects, :project, :identity),
+      each_serializer: UserRepoSerializer
+    )
   end
 
   def sync

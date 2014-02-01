@@ -14,6 +14,12 @@ end
 describe UserRepo do
   let(:repo) { create :user_repo }
 
+  context "same_name_projects association" do
+    let(:project) { create :project, name: repo.full_name, user_repo: nil }
+    subject { repo.same_name_projects }
+    it { should eq [project] }
+  end
+
   context ".find_or_create_by_sc" do
     let(:identity) { repo.identity }
     let(:model)    { Vx::ServiceConnector::Model.test_repo }
