@@ -19,7 +19,7 @@ gem 'vx-builder',           '0.0.10'
 gem 'vx-service_connector', '0.0.8'
 gem 'vx-instrumentation',   '0.0.3'
 
-gem 'airbrake'
+gem 'airbrake', require: false
 gem 'dalli'
 gem 'dotenv'
 

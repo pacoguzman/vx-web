@@ -1,4 +1,5 @@
 require 'vx/instrumentation'
+require 'airbrake'
 
 module Vx
   module Web
@@ -19,6 +20,7 @@ module Vx
           exception,
           clean_env(env)
         )
+        Airbrake.notify(exception, env)
       end
 
       def call(env)
