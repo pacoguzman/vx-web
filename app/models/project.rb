@@ -9,7 +9,7 @@ class Project < ActiveRecord::Base
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
   has_many :cached_files, dependent: :destroy
 
-  validates :name, :http_url, :clone_url, :token, :user_repo_id,
+  validates :name, :http_url, :clone_url, :token,
     :deploy_key, presence: true
   validates :name, :token, uniqueness: true
 
@@ -60,15 +60,17 @@ class Project < ActiveRecord::Base
   end
 
   def last_build
-    @last_build ||= builds.where.not(status: [0,1]).first
+    builds.where.not(status: [0,1]).first
   end
 
-  def last_build_status
-    last_build ? last_build.status_name : :unknown
-  end
-
-  def last_build_created_at
-    last_build && last_build.created_at
+  def update_last_build
+    if build = last_build
+      update(
+        last_build_id:          build.id,
+        last_build_at:          build.created_at,
+        last_build_status_name: build.status_name
+      )
+    end
   end
 
   def subscribed_by?(user)

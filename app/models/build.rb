@@ -2,7 +2,7 @@ class Build < ActiveRecord::Base
 
   include ::PublicUrl::Build
 
-  belongs_to :project, class_name: "::Project"
+  belongs_to :project, class_name: "::Project", touch: true
   has_many :jobs, class_name: "::Job", dependent: :destroy
 
   validates :project_id, :number, :sha, :branch, :source, presence: true
@@ -45,6 +45,7 @@ class Build < ActiveRecord::Base
       build.delivery_to_notifier
 
       build.publish
+      build.update_last_build_on_project
       build.project.publish
     end
   end
@@ -162,6 +163,10 @@ class Build < ActiveRecord::Base
     ::BuildNotifyConsumer.publish self.attributes
   end
 
+  def update_last_build_on_project
+    project.update_last_build
+  end
+
   private
 
     def assign_number
@@ -179,6 +184,7 @@ class Build < ActiveRecord::Base
     def publish_created
       publish :created
     end
+
 
 end
 

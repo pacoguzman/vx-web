@@ -29,7 +29,6 @@ module VxWeb
 
     config.autoload_paths += [
       Rails.root.join("app/consumers").to_s,
-      Rails.root.join("app/models/github").to_s
     ]
 
     config.x = OpenStruct.new
@@ -46,6 +45,7 @@ module VxWeb
       ENV['GITHUB_RESTRICTION'] && ENV["GITHUB_RESTRICTION"].split(",").map(&:strip)
 
     config.middleware.delete "Rack::Lock"
+
     config.assets.precompile += %w( lib.js )
 
     config.preload_frameworks = true

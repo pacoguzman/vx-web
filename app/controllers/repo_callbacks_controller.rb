@@ -5,7 +5,10 @@ class RepoCallbacksController < ApplicationController
 
   def create
     process? do
-      PayloadConsumer.publish payload.to_hash.merge(project_id: project.id)
+      PayloadConsumer.publish payload.to_hash.merge(
+        project_id: project.id,
+        project_name: project.name
+      )
     end
     head :ok
   end

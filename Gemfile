@@ -13,12 +13,13 @@ gem 'active_model_serializers'
 gem 'carrierwave'
 gem 'sshkey'
 
-gem 'vx-common-amqp',       '0.2.8'
+gem 'vx-common-amqp',       '0.3.4'
 gem 'vx-message',           '0.4.1'
 gem 'vx-builder',           '0.0.10'
-gem 'vx-service_connector', '0.0.7'
+gem 'vx-service_connector', '0.0.8'
+gem 'vx-instrumentation',   '0.0.3'
 
-gem 'airbrake'
+gem 'airbrake', require: false
 gem 'dalli'
 gem 'dotenv'
 

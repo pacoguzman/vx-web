@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+ENV['VX_COMPONENT_NAME'] = 'consumers'
+
 require File.expand_path("../../config/environment", __FILE__)
 
 trap('INT') {

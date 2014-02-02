@@ -5,6 +5,7 @@ rvm:
 env:
   global:
     - RAILS_ENV=test
+    - DATABASE_URL=postgres://postgres@localhost/vxweb_test?pool=50
   matrix:
     - PROJECT=backend
     - PROJECT=frontend
@@ -17,7 +18,9 @@ matrix:
 before_script:
 - mkdir -p log
 - mkdir -p tmp
-- bundle exec rake db:setup
+- psql -c 'create database vxweb_test;' -U postgres
+- psql -c 'create extension if not exists hstore;' -U postgres vxweb_test
+- bundle exec rake db:migrate
 - npm install karma
 
 script: bundle exec rake travis:${PROJECT}

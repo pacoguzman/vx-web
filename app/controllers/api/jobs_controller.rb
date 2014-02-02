@@ -1,4 +1,4 @@
-class Api::JobsController < ::Api::BaseController
+class ::Api::JobsController < ::Api::BaseController
 
   respond_to :json
 

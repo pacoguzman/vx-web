@@ -120,6 +120,12 @@ describe Build do
           subject
         }.to change(SseEventConsumer.messages, :count).by(2)
       end
+
+      it "should update last_build on project" do
+        expect{
+          subject
+        }.to change{ b.project.reload.last_build_id }.to(b.id)
+      end
     end
 
     context "after transition to passed" do

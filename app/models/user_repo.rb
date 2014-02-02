@@ -12,6 +12,8 @@ class UserRepo < ActiveRecord::Base
 
   belongs_to :identity, class_name: "::UserIdentity", foreign_key: :identity_id
   has_one :project, dependent: :nullify
+  has_many :same_name_projects, ->{ readonly }, class_name: "::Project",
+    foreign_key: :name, primary_key: :full_name
 
   validates :full_name, :ssh_url, :html_url, :external_id, presence: true
   validates :is_private, inclusion: { in: [true, false] }

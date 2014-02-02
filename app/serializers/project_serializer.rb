@@ -5,7 +5,7 @@ class ProjectSerializer < ActiveModel::Serializer
     :provider_title
 
   def status
-    object.last_build_status
+    object.last_build_status_name || :unknown
   end
 
   def provider_title
@@ -13,6 +13,6 @@ class ProjectSerializer < ActiveModel::Serializer
   end
 
   def last_build_created_at
-    object.last_build_created_at
+    object.last_build_at
   end
 end
