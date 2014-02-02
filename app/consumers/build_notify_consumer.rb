@@ -14,9 +14,7 @@ class BuildNotifyConsumer
     status   = message["status"]
 
     if build_id && status
-      ::Rails.logger.tagged("notify #{build_id}.#{status}") do
-        ::BuildNotifier.new(message).notify
-      end
+      ::BuildNotifier.new(message).notify
     end
     ack!
   end

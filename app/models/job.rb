@@ -67,7 +67,12 @@ class Job < ActiveRecord::Base
   end
 
   def publish_perform_job_message
-    ::JobsConsumer.publish to_perform_job_message
+    ::JobsConsumer.publish(
+      to_perform_job_message,
+      project_id: build.project_id,
+      build_id:   build.id,
+      job_id:     number
+    )
   end
 
   def restart

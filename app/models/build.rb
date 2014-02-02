@@ -160,7 +160,11 @@ class Build < ActiveRecord::Base
   end
 
   def delivery_to_notifier
-    ::BuildNotifyConsumer.publish self.attributes
+    ::BuildNotifyConsumer.publish(
+      self.attributes,
+      project_id: project_id,
+      build_id:   id
+    )
   end
 
   def update_last_build_on_project

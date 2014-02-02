@@ -9,9 +9,7 @@ class JobStatusConsumer
   model    Vx::Message::JobStatus
 
   def perform(message)
-    Rails.logger.tagged("job #{message.build_id}.#{message.job_id}") do
-      JobUpdater.new(message).perform
-    end
+    JobUpdater.new(message).perform
     ack!
   end
 
