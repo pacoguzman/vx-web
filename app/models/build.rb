@@ -162,8 +162,9 @@ class Build < ActiveRecord::Base
   def delivery_to_notifier
     ::BuildNotifyConsumer.publish(
       self.attributes,
-      project_id: project_id,
-      build_id:   id
+      headers: {
+        build_id: id
+      }
     )
   end
 

@@ -43,7 +43,6 @@ class BuildFetcher
     def subscribe_author_to_repo
       email = build.author_email
       if email
-        Rails.logger.warn "try to subscribe #{email} to #{project}"
         ProjectSubscription.subscribe_by_email(email, project)
       end
       true
@@ -52,7 +51,6 @@ class BuildFetcher
     def create_jobs
       matrix.each_with_index do |config, idx|
         number = idx + 1
-        Rails.logger.warn "create job: number:#{number}, matrix: #{config.matrix_keys.inspect}"
         build.jobs.create(
           matrix: config.matrix_keys,
           number: number,

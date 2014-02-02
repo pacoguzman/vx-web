@@ -10,8 +10,9 @@ module Vx
 
       def call(env)
         prop = env[:properties] || {}
+        head = prop[:headers] || {}
 
-        Vx::Instrumentation.with("@fields" => prop) do
+        Vx::Instrumentation.with("@fields" => head) do
           @app.call(env)
         end
 
