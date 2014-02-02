@@ -6,6 +6,6 @@ Vx::Common::AMQP.configure do |c|
   c.instrumenter = ActiveSupport::Notifications
   c.on_error     = ->(e, env) {
     Vx::Instrumentation.handle_exception("consumer.amqp", e, env)
-    Airbrake.notify(exception, env)
+    Airbrake.notify(e, env)
   }
 end
