@@ -10,5 +10,6 @@ Vx::Common::AMQP.configure do |c|
     Vx::Instrumentation.handle_exception("consumer.amqp", e, env)
     Airbrake.notify(e, env)
   }
-  c.use Vx::Web::Consumer
+  c.use :pub, Vx::Web::Consumer
+  c.use :sub, Vx::Web::Consumer
 end
