@@ -13,7 +13,7 @@ gem 'active_model_serializers'
 gem 'carrierwave'
 gem 'sshkey'
 
-gem 'vx-common-amqp',       '0.3.4'
+gem 'vx-common-amqp',       '0.3.5'
 gem 'vx-message',           '0.4.1'
 gem 'vx-builder',           '0.0.10'
 gem 'vx-service_connector', '0.0.8'
