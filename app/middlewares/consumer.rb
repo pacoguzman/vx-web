@@ -10,13 +10,8 @@ module Vx
 
       def call(env)
         prop = env[:properties] || {}
-        prop.inject({}) do |a, pair|
-          key, value = pair
-          a["consumer.#{key}"] = value
-          a
-        end
 
-        Vx::Instrumentation.with(prop) do
+        Vx::Instrumentation.with("@fields" => prop) do
           @app.call(env)
         end
 
