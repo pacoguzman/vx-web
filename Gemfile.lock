@@ -201,7 +201,7 @@ GEM
     vx-common-rack-builder (0.0.2)
     vx-common-spawn (0.0.7)
       net-ssh (~> 2.6)
-    vx-instrumentation (0.0.3)
+    vx-instrumentation (0.0.4)
       activesupport (~> 4.0)
     vx-message (0.4.1)
       beefcake (= 0.3.7)
@@ -248,7 +248,7 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   vx-builder (= 0.0.10)
   vx-common-amqp (= 0.3.4)
-  vx-instrumentation (= 0.0.3)
+  vx-instrumentation (= 0.0.4)
   vx-message (= 0.4.1)
   vx-service_connector (= 0.0.8)
   webmock

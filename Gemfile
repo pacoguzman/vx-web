@@ -17,7 +17,7 @@ gem 'vx-common-amqp',       '0.3.4'
 gem 'vx-message',           '0.4.1'
 gem 'vx-builder',           '0.0.10'
 gem 'vx-service_connector', '0.0.8'
-gem 'vx-instrumentation',   '0.0.3'
+gem 'vx-instrumentation',   '0.0.4'
 
 gem 'airbrake', require: false
 gem 'dalli'
