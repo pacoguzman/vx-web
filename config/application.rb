@@ -24,7 +24,10 @@ module VxWeb
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
-    logger = ENV['STDOUT_LOGGER'] ? Logger.new(STDOUT) : Logger.new("log/#{Rails.env}.log")
+    if Rails.env.production?
+      ENV['STDOUT_LOGGER'] ||= "1"
+    end
+    logger = ENV['STDOUT_LOGGER'] == '1' ? Logger.new(STDOUT) : Logger.new("log/#{Rails.env}.log")
     config.logger = ActiveSupport::TaggedLogging.new(logger)
 
     config.autoload_paths += [
