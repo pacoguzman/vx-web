@@ -11,6 +11,8 @@ Bundler.require(:default, Rails.env)
 require 'dotenv'
 Dotenv.load "#{File.expand_path("../../", __FILE__)}/.env.#{Rails.env}", "/etc/vexor/ci"
 
+VX_COMPONENT_NAME ||= ENV['VX_COMPONENT_NAME'] || "http"
+
 module VxWeb
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
