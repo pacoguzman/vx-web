@@ -8,8 +8,22 @@ VxWeb::Application.load_tasks
 namespace :travis do
 
   task :backend => ["db:migrate", :spec]
-  task :frontend do
+  task :frontend => ['karma:templates'] do
     karma = File.expand_path("node_modules/karma/bin/karma")
     exec "sh -c 'cd app/assets/javascripts && #{karma} start --single-run --color' "
+  end
+end
+
+namespace :karma do
+  task templates: :environment do
+    require 'erb'
+    tmpl = ERB.new(File.read Rails.root.join("app/assets/javascripts/templates.js.erb"))
+    File.open(Rails.root.join("app/assets/javascripts/templates.compilled.js"), 'w') do |io|
+      io.write tmpl.result
+    end
+  end
+
+  task run: :environment do
+    exec "sh -c 'cd app/assets/javascripts && karma start --single-run --color' "
   end
 end
