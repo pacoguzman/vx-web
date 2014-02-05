@@ -11,15 +11,16 @@ angular.module('Vx').
       '<div></div>'
 
     link: (scope, elem, attrs) ->
-      scope.lines = []
+      scope.lines  = []
       scope.output = ""
-      nbsp = '\u00A0'
-      firstRun = true
+      nbsp         = '\u00A0'
+      currentIndex = 0
 
-      updateLines = (newVal) ->
-        return unless newVal
-
+      updateLines = (newLen, oldLen) ->
+        return if _.isUndefined(newLen)
         elem.removeClass("hidden")
+
+        newVal = scope.collection
 
         container = document.createElement("div")
 
@@ -41,14 +42,8 @@ angular.module('Vx').
 
           container.appendChild(lineEl)
 
-        # TODO: avoid html copy
-        elem.html container.innerHTML
-
-        unless firstRun
-          window.scrollTo 0, elem[0].scrollHeight
-
-        firstRun = false
+        elem[0].innerHTML = container.innerHTML
 
       elem.addClass("hidden")
 
-      scope.$watch('collection', updateLines, true)
+      scope.$watch('collection.length', updateLines)
