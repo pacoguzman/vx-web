@@ -42,8 +42,8 @@ describe Job do
     b = create :build
     expect{
       create :job, build: b
-    }.to change(SseEventConsumer.messages, :count).by(1)
-    msg = SseEventConsumer.messages.last
+    }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+    msg = ServerSideEventsConsumer.messages.last
     expect(msg[:channel]).to eq 'jobs'
     expect(msg[:event]).to eq :created
   end
@@ -55,10 +55,10 @@ describe Job do
       let(:status) { 0 }
       subject { job.start }
 
-      it "should delivery messages to SseEventConsumer" do
+      it "should delivery messages to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(SseEventConsumer.messages, :count).by(1)
+        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
       end
     end
 
@@ -66,10 +66,10 @@ describe Job do
       let(:status) { 2 }
       subject { job.pass }
 
-      it "should delivery messages to SseEventConsumer" do
+      it "should delivery messages to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(SseEventConsumer.messages, :count).by(1)
+        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
       end
     end
 
@@ -77,10 +77,10 @@ describe Job do
       let(:status) { 2 }
       subject { job.decline }
 
-      it "should delivery messages to SseEventConsumer" do
+      it "should delivery messages to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(SseEventConsumer.messages, :count).by(1)
+        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
       end
     end
 
@@ -88,10 +88,10 @@ describe Job do
       let(:status) { 2 }
       subject { job.error }
 
-      it "should delivery messages to SseEventConsumer" do
+      it "should delivery messages to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(SseEventConsumer.messages, :count).by(1)
+        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
       end
     end
   end
@@ -128,10 +128,10 @@ describe Job do
       its(:finished_at) { should be_nil }
       its(:status_name) { should eq :initialized }
 
-      it "should delivery message to SseEventConsumer" do
+      it "should delivery message to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(SseEventConsumer.messages, :count).by(1)
+        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
       end
 
       it "should delivery message to JobsConsumer" do

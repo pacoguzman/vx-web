@@ -46,8 +46,8 @@ describe Build do
   it "should publish(:created) after create" do
     expect{
       create :build
-    }.to change(SseEventConsumer.messages, :count).by(1)
-    msg = SseEventConsumer.messages.last
+    }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+    msg = ServerSideEventsConsumer.messages.last
     expect(msg[:channel]).to eq 'builds'
     expect(msg[:event]).to eq :created
   end
@@ -115,10 +115,10 @@ describe Build do
         expect(msg["status"]).to eq 2
       end
 
-      it "should delivery messages to SseEventConsumer" do
+      it "should delivery messages to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(SseEventConsumer.messages, :count).by(2)
+        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
       end
 
       it "should update last_build on project" do
@@ -140,10 +140,10 @@ describe Build do
         expect(msg["status"]).to eq 3
       end
 
-      it "should delivery messages to SseEventConsumer" do
+      it "should delivery messages to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(SseEventConsumer.messages, :count).by(2)
+        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
       end
     end
 
@@ -159,10 +159,10 @@ describe Build do
         expect(msg["status"]).to eq 4
       end
 
-      it "should delivery messages to SseEventConsumer" do
+      it "should delivery messages to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(SseEventConsumer.messages, :count).by(2)
+        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
       end
     end
 
@@ -178,10 +178,10 @@ describe Build do
         expect(msg["status"]).to eq 5
       end
 
-      it "should delivery messages to SseEventConsumer" do
+      it "should delivery messages to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(SseEventConsumer.messages, :count).by(2)
+        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
       end
     end
   end
@@ -377,12 +377,12 @@ describe Build do
       its(:finished_at) { should be_nil }
       its(:status_name) { should eq :initialized }
 
-      it "should delivery messages to SseEventConsumer" do
+      it "should delivery messages to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(SseEventConsumer.messages, :count).by(2)
-        build_m = SseEventConsumer.messages.pop
-        job_m   = SseEventConsumer.messages.pop
+        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
+        build_m = ServerSideEventsConsumer.messages.pop
+        job_m   = ServerSideEventsConsumer.messages.pop
 
         expect(job_m[:channel]).to eq 'jobs'
         expect(job_m[:event]).to eq :updated
