@@ -1,3 +1,5 @@
+require 'json'
+
 ServerSideEventLoop = Struct.new(:response) do
 
   def start
@@ -7,6 +9,7 @@ ServerSideEventLoop = Struct.new(:response) do
 
     heartbeat  = create_heartbeat_thread
     subscriber = create_subscriber
+
     begin
       heartbeat.join
     ensure
@@ -22,7 +25,7 @@ ServerSideEventLoop = Struct.new(:response) do
   end
 
   def live?
-    !closed?
+    !closed? && !Vx::Consumer.shutdown?
   end
 
   def close_stream
@@ -36,8 +39,9 @@ ServerSideEventLoop = Struct.new(:response) do
   def create_subscriber
     ActiveSupport::Notifications.subscribe(/server_side_event/) do |event, _, _, _, payload|
       begin
-        response.stream.write("event: sse_event\n")
-        response.stream.write("data: #{payload}\n\n")
+        data = JSON.dump payload
+        response.stream.write("event: event\n")
+        response.stream.write("data: #{data}\n\n")
       rescue IOError
         Rails.logger.debug ' --> [subscriber] closed sse stream'
       end

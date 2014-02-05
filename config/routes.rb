@@ -49,7 +49,7 @@ VxWeb::Application.routes.draw do
   post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'
 
-  get '/sse_events', to: 'sse_events#index'
+  get '/events', to: 'events#index'
 
   post '/build', to: 'welcome#index'
 

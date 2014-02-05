@@ -1,4 +1,4 @@
-class SseEventsController < ApplicationController
+class EventsController < ApplicationController
   include ActionController::Live
 
   def index

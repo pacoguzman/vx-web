@@ -4,7 +4,7 @@ require 'vx/instrumentation'
 $stdout.puts ' --> initializing ActiveSupport::Notifications for action_dispatch'
 
 ActiveSupport::Notifications.subscribe(/\.action_dispatch$/) do |event, started, finished, _, payload|
-  req = payload.delete(:request)
+  req = payload[:request]
   payload = {
     path:           req.fullpath,
     ip:             req.remote_ip,

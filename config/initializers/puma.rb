@@ -10,8 +10,10 @@ if defined?(::Puma)
       alias_method :orig_stop, :stop
 
       def stop(*args, &block)
-        Rails.logger.debug " --> shutdown consumers"
-        Vx::Consumer.shutdown
+        Thread.new do
+          Rails.logger.debug " --> shutdown consumers"
+          Vx::Consumer.shutdown
+        end
         orig_stop(*args, &block)
       end
     end
