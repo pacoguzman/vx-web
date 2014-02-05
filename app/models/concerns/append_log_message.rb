@@ -4,7 +4,7 @@ module AppendLogMessage
     pa         = self.proxy_association
     fkey       = pa.reflection.foreign_key
     fkey_value = pa.owner.id
-    data       = log_message.log
+    data       = log_message.log.to_safe_utf8
 
     sql = "INSERT INTO #{self.table_name}"
     sql << " (tm, data, #{fkey})"
