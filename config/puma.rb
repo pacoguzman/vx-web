@@ -1,1 +1,1 @@
-workers 4
+workers 1
