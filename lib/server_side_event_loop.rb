@@ -1,11 +1,52 @@
 require 'json'
+require 'thread'
 
-ServerSideEventLoop = Struct.new(:response) do
+class ServerSideEventLoop
+
+  @@mutex    = Mutex.new
+  @@shutdown = false
+
+  class << self
+    def consumer
+      unless @consumer
+        @@mutex.synchronize do
+          unless @consumer
+            Rails.logger.debug " --> boot ServerSideEventsConsumer"
+            @consumer = ServerSideEventsConsumer.subscribe
+          end
+        end
+      end
+      @consumer
+    end
+
+    def shutdown
+      @@mutex.synchronize do
+        @@shutdown = true
+        if @consumer
+          @consumer.cancel
+        end
+      end
+    end
+
+    def shutdown?
+      @@mutex.synchronize do
+        @@shutdown
+      end
+    end
+  end
+
+  attr_reader :response
+
+  def initialize(response)
+    @response = response
+  end
 
   def start
+    self.class.consumer
+
     send_content_type
 
-    Rails.logger.debug " --> start ServerSideEventLoop"
+    $stdout.puts " --> start ServerSideEventLoop"
 
     heartbeat  = create_heartbeat_thread
     subscriber = create_subscriber
@@ -25,7 +66,7 @@ ServerSideEventLoop = Struct.new(:response) do
   end
 
   def live?
-    !closed? && !Vx::Consumer.shutdown?
+    !closed? && !self.class.shutdown?
   end
 
   def close_stream
@@ -64,6 +105,27 @@ ServerSideEventLoop = Struct.new(:response) do
       end
     end
   end
+end
 
+
+if defined?(::Puma)
+  require 'puma/server'
+
+  $stdout.puts " --> add callback to Puma::Server#stop"
+
+  module ::Puma
+    class Server
+
+      alias_method :orig_stop, :stop
+
+      def stop(*args, &block)
+        Thread.new do
+          $stdout.puts " --> doing shutdown ServerSideEventLoop"
+          ServerSideEventLoop.shutdown
+        end.join
+        orig_stop(*args, &block)
+      end
+    end
+  end
 end
 
