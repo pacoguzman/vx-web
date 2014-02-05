@@ -28,7 +28,7 @@ module Vx
           payload: payload
         }
 
-        SseEventConsumer.publish message
+        ServerSideEventsConsumer.publish message
 
         true
       end

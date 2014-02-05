@@ -1,7 +1,9 @@
-require Rails.root.join("app/middlewares/handle_exception")
+require Rails.root.join("app/middlewares/handle_exception_middleware")
 
-Rails.application.config.middleware.insert 0, Vx::Web::HandleException
+Dir[Rails.root.join("app/instrumentations/*.rb")].each do |f|
+  load f
+end
 
-VX_COMPONENT_NAME ||= ENV['VX_COMPONENT_NAME'] || "http"
+Rails.application.config.middleware.insert 0, Vx::Web::HandleExceptionMiddleware
 
-Vx::Instrumentation.install "#{Rails.root}/log/#{VX_COMPONENT_NAME}.#{Rails.env}.json"
+Vx::Instrumentation.install "#{Rails.root}/log/vxweb-#{VX_COMPONENT_NAME}.#{Rails.env}.log.json"
