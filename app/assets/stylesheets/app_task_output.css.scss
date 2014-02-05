@@ -3,13 +3,11 @@
   font-family: 'Monaco', 'Consolas', monospace !important;
   font-size: 12px !important;
   line-height: 16px;
-  color: #ddd;
-  background: #111;
+  color: #eee8d5;
+  background: #002b36;
   padding: 1em 0;
   word-wrap: break-word;
-
   counter-reset: line-numbers;
-
 }
 
 .app-task-output-line {
@@ -17,7 +15,7 @@
   padding: .1em 1em .1em 6em;
 
   &:hover {
-    background-color: #333;
+    background-color: #073642;
   }
 
   &.ansi {
@@ -38,12 +36,14 @@
 .app-tack-output-line-number {
   text-decoration: none !important;
   color: #666 !important;
-  margin-left: -5em;
 
   &:before {
     content: counter(line-numbers);
     counter-increment: line-numbers;
     padding-right: 1em;
+    min-width: 3em;
+    margin-left: -5em;
+    display: inline-block;
     text-align: right;
   }
 }
