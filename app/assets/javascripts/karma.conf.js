@@ -15,9 +15,9 @@ module.exports = function(config) {
     files: [
       "lib/underscore-1.5.2.js",
       "lib/moment-2.2.1.js",
-      "lib/angular-1.2.1.js",
-      "lib/angular-mocks-1.2.1.js",
-      "lib/angular-route-1.2.1.js",
+      "lib/angular-1.2.11.js",
+      "lib/angular-mocks-1.2.11.js",
+      "lib/angular-route-1.2.11.js",
 
       "vx/init/*.js.coffee",
       "vx/directives/*.js.coffee",
