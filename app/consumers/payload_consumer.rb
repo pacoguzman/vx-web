@@ -1,10 +1,10 @@
 class PayloadConsumer
 
-  include Vx::Common::AMQP::Consumer
+  include Vx::Consumer
 
   exchange 'vx.web.payload'
   queue    'vx.web.payload'
-  ack      true
+  ack
 
   content_type "application/json"
 
@@ -14,7 +14,7 @@ class PayloadConsumer
     fetcher = BuildFetcher.new(payload)
     fetcher.perform
 
-    ack!
+    ack
   end
 
 end

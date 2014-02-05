@@ -1,10 +1,11 @@
 class SseEventConsumer
 
-  include Vx::Common::AMQP::Consumer
+  include Vx::Consumer
 
-  exchange 'vx.web.sse', type: :fanout # broadcast
-  queue    '', exclusive: true
-  ack      false
+  exchange 'vx.web.sse'
+  queue    exclusive: true
+  fanout
+  ack
 
   content_type "application/json"
 

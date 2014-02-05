@@ -1,6 +1,6 @@
 class JobsConsumer
 
-  include Vx::Common::AMQP::Consumer
+  include Vx::Consumer
 
   exchange 'vx.jobs'
 

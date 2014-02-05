@@ -1,16 +1,16 @@
 class JobLogsConsumer
 
-  include Vx::Common::AMQP::Consumer
+  include Vx::Consumer
 
   exchange 'vx.jobs.log'
   queue    'vx.web.jobs.log'
-  ack      true
+  ack
 
   model Vx::Message::JobLog
 
   def perform(message)
     JobLogsUpdater.new(message).perform
-    ack!
+    ack
   end
 
 end

@@ -1,16 +1,16 @@
 class JobStatusConsumer
 
-  include Vx::Common::AMQP::Consumer
+  include Vx::Consumer
 
   exchange 'vx.jobs.status'
   queue    'vx.web.jobs.status'
-  ack      true
+  ack
 
   model    Vx::Message::JobStatus
 
   def perform(message)
     JobUpdater.new(message).perform
-    ack!
+    ack
   end
 
 end

@@ -1,10 +1,10 @@
 class BuildNotifyConsumer
 
-  include Vx::Common::AMQP::Consumer
+  include Vx::Consumer
 
   exchange 'vx.web.builds.notify'
   queue    'vx.web.builds.notify'
-  ack      true
+  ack
 
   model Hash
   content_type 'application/json'
@@ -16,7 +16,7 @@ class BuildNotifyConsumer
     if build_id && status
       ::BuildNotifier.new(message).notify
     end
-    ack!
+    ack
   end
 
 end

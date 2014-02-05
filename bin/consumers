@@ -6,14 +6,31 @@ require File.expand_path("../../config/environment", __FILE__)
 
 trap('INT') {
   Thread.new do
-    Vx::Common::AMQP.shutdown
-    Vx::Common::AMQP::Supervisor::Threaded.shutdown
+    $stdout.puts " --> got INT, doing shutdown"
+    Vx::Consumer.shutdown
   end
 }
 
-Vx::Common::AMQP::Supervisor::Threaded.build(
-  BuildNotifyConsumer  => 1,
-  JobStatusConsumer    => 1,
-  JobLogsConsumer      => 1,
-  PayloadConsumer      => 1,
-).run
+trap('TERM') {
+  Thread.new do
+    $stdout.puts " --> got TERM, doing shutdown"
+    Vx::Consumer.shutdown
+  end
+}
+
+consumers = []
+
+[ BuildNotifyConsumer, 1,
+  JobStatusConsumer,   1,
+  JobLogsConsumer,     1,
+  PayloadConsumer,     1 ].each_slice(2) do |pair|
+
+  consumer, number = pair
+  number.times do |n|
+    $stdout.puts " --> boot #{consumer} #{n}"
+    consumers << consumer.subscribe
+  end
+end
+
+consumers.each(&:wait)
+

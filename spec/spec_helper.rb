@@ -5,7 +5,7 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'webmock/rspec'
 require 'vx/message/testing'
-require 'vx/common/amqp/testing'
+require 'vx/consumer/testing'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -32,7 +32,7 @@ RSpec.configure do |config|
   config.order = "random"
 
   config.before(:each) do
-    Vx::Common::AMQP::Testing.clear
+    Vx::Consumer::Testing.clear
     Rails.configuration.x = OpenStruct.new
     Rails.configuration.x.hostname = 'test.local'
   end
