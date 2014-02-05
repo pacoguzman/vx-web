@@ -1,0 +1,7 @@
+angular.module('vx.templates', []).run(function($templateCache) {
+  <% root = Rails.root.join("app", 'assets', 'templates') %>
+  <% Dir.glob("#{root}/**/*.haml").each do |f| %>
+    <% depend_on(f) %>
+    $templateCache.put("<%= f.gsub(/\.haml$/, '').gsub("#{root}/", '')  %>", <%= Haml::Engine.new(File.read(f)).render.to_json %>);
+  <% end %>
+});

@@ -2,27 +2,27 @@ Vx.config ($routeProvider, $locationProvider) ->
 
   $routeProvider.
     when('/jobs/:jobId',
-      templateUrl: "<%= asset_path 'jobs/show.html' %>",
+      templateUrl: "jobs/show.html",
       controller: "JobCtrl"
     ).
     when('/builds/:buildId',
-      templateUrl: "<%= asset_path 'builds/show.html' %>",
+      templateUrl: "builds/show.html",
       controller: "BuildCtrl"
     ).
     when('/projects/:projectId/builds',
-      templateUrl: "<%= asset_path 'builds/index.html' %>",
+      templateUrl: "builds/index.html",
       controller: "BuildsCtrl"
     ).
     when('/projects/:projectId/cached_files',
-      templateUrl: "<%= asset_path 'cached_files/index.html' %>",
+      templateUrl: "cached_files/index.html",
       controller: "CachedFilesCtrl"
     ).
     when('/user_repos',
-      templateUrl: "<%= asset_path 'user_repos/index.html' %>",
+      templateUrl: "user_repos/index.html",
       controller: "UserReposCtrl"
     ).
     when('/',
-      templateUrl: "<%= asset_path 'projects/index.html' %>",
+      templateUrl: "projects/index.html",
       controller: "ProjectsCtrl"
     )
 
