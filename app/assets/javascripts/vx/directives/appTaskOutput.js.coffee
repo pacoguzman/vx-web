@@ -15,6 +15,14 @@ angular.module('Vx').
 
       positionInCollection = 0
 
+      normalize = (str) ->
+        str.replace(/\r\n/g, '\n')
+           .replace(/\r\r/g, '\r')
+           .replace(/\033\[K\r/g, '\r')
+           .replace(/\[2K/g, '')
+           .replace(/\033\(B/g, '')
+           .replace(/\033\[\d+G/g, '')
+
       extractCurrentOutput = (newLen) ->
         output = ""
 
@@ -22,7 +30,7 @@ angular.module('Vx').
           output += scope.collection[i].data
 
         positionInCollection = newLen
-        output
+        normalize output
 
       extractLines = (output) ->
         positionInOutput = 0
@@ -30,12 +38,12 @@ angular.module('Vx').
 
         loop
           idx = output.indexOf("\n", positionInOutput)
-          idx += 1
+          idx
 
           # have new line
-          if idx > 0
-            lines.push output.substring(positionInOutput, idx)
-            positionInOutput = idx
+          if idx != -1
+            lines.push output.substring(positionInOutput, idx + 1)
+            positionInOutput = idx + 1
           # end of buffer
           else
             # tail in buffer
@@ -50,7 +58,7 @@ angular.module('Vx').
         numEl.className = 'app-tack-output-line-number'
 
         textEl = document.createElement("span")
-        textEl.appendChild document.createTextNode(if line == "" then nbsp else line)
+        textEl.innerHTML = line
 
         lineEl = document.createElement("div")
         lineEl.className = "app-task-output-line"
@@ -61,25 +69,50 @@ angular.module('Vx').
         elem[0].appendChild lineEl
         textEl
 
+      colorize = (str) ->
+        html = ""
+        fragments = ansiparse(str)
+        for fragment in fragments
+          classes = []
+          text = if fragment.text == "" then nbsp else fragment.text
+          #fragment.bold && classes.push("ansi-bold")
+          fragment.foreground && classes.push("ansi-fg-" + fragment.foreground)
+          #fragment.background && classes.push("ansi-bg-" + fragment.background)
+
+          html += "<span class=\"#{classes.join ' '}\">#{text}</span>"
+        html
+
       lastLineHasNL        = true
       lastChild            = null
 
       updateLines = (newLen, oldLen) ->
         return if _.isUndefined(newLen) || newLen == 0
 
+        elem.removeClass("hidden")
+
         #  was truncated
         if positionInCollection > newLen
           elem[0].innerHTML = ""
-
-        elem.removeClass("hidden")
 
         output = extractCurrentOutput(newLen)
         lines  = extractLines(output)
 
         idx = 0
         for line in lines
+          mode = 'newline'
+
+          rep = line.lastIndexOf("\r")
+          if rep != -1
+            mode = 'replace'
+            line = line.substring(rep + 1)
+
+          line = colorize(line)
+
           if idx == 0 and !lastLineHasNL
-            lastChild.innerHTML = lastChild.innerHTML + line
+            if mode == 'replace'
+              lastChild.innerHTML = line
+            else
+              lastChild.innerHTML = lastChild.innerHTML + line
           else
             lastChild = addLineToDom(line)
           idx += 1

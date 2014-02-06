@@ -18,17 +18,30 @@
     background-color: #073642;
   }
 
-  &.ansi {
-    .green {
-      color: #a8ff60;
+  span {
+    .ansi-fg-green {
+      color: #859900;
     }
-
-    .yellow {
-      color: #ffffb6;
+    .ansi-fg-cyan {
+      color: #2aa198;
     }
-
-    .red {
-      color: #ff6c60;
+    .ansi-fg-magenta {
+      color: #d33682;
+    }
+    .ansi-fg-yellow {
+      color: #b58900;
+    }
+    .ansi-fg-orange {
+      color: #cb4b16;
+    }
+    .ansi-fg-red {
+      color: #dc322f;
+    }
+    .ansi-fg-violet {
+      color: #6c71c4;
+    }
+    .ansi-fg-blue {
+      color: #268bd2;
     }
   }
 }
