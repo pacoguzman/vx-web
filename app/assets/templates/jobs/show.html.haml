@@ -19,11 +19,6 @@
         %dt Duration
         %dd.app-task-duration{ task: 'job' }
 
-      %dl.task-attribute.dl-horizontal
-        %dt Config
-        %dd{ 'ng-repeat' => "(key, value) in job.matrix" }
-          {{ key }} {{ value }}
-
     .col-xs-5
 
       %dl.task-attribute.dl-horizontal
@@ -39,6 +34,11 @@
       %dl.task-attribute.dl-horizontal
         %dt Message
         %dd {{ build.message }}
+
+      %dl.task-attribute.dl-horizontal
+        %dt Config
+        %dd{ 'ng-repeat' => "(key, value) in job.matrix" }
+          {{ key }} {{ value }}
 
     .col-xs-2
       .pull-right
