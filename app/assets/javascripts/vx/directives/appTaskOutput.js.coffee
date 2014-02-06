@@ -89,9 +89,11 @@ angular.module('Vx').
       lastChild            = null
 
       updateLines = (newLen, oldLen) ->
-        return if _.isUndefined(newLen) || newLen == 0
+        return if _.isUndefined(newLen)
 
         elem.removeClass("hidden")
+
+        return if newLen == 0
 
         #  was truncated
         if positionInCollection > newLen

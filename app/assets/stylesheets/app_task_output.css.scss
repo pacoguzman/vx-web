@@ -8,6 +8,7 @@
   padding: 1em 0;
   word-wrap: break-word;
   counter-reset: line-numbers;
+  min-height: 1em;
 }
 
 .app-task-output-line {
