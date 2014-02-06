@@ -1,19 +1,22 @@
 angular.module('Vx').
-  directive "appTaskStatus", () ->
+  directive "appTaskStatus", ($compile) ->
 
     restrict: 'EC'
-    replace: false
+    transclude: true
     scope: {
       task: "=task",
     }
 
-    link: (scope, elem, attrs) ->
+    compile: (tElem, tAttrs, transclude) ->
+      ($scope, elem, attrs) ->
 
-      updateTaskStatus = (newVal, _) ->
-        if newVal
-          elem.removeClass("task-status-#{scope.prevClass}") if scope.prevClass
-          elem.addClass("task-status-#{newVal}")
-          scope.prevClass = newVal
+        updateTaskStatus = (newVal, _) ->
+          if newVal
+            elem.removeClass("task-status-#{$scope.prevClass}") if $scope.prevClass
+            elem.addClass("task-status-#{newVal}")
+            $scope.prevClass = newVal
 
-      scope.$watch("task.status", updateTaskStatus)
-      elem.prepend('<i class="fa fa-circle">')
+        transclude $scope, (clone) ->
+          elem.append(clone)
+          elem.prepend('<i class="fa fa-circle">')
+          $scope.$watch "task.status", updateTaskStatus

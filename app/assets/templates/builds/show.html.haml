@@ -1,6 +1,6 @@
 .build
   .row.task-attributes{ 'ng-show' => "build" }
-    .col-5
+    .col-md-5
 
       %dl.task-attribute.dl-horizontal
         %dt  Build
@@ -20,7 +20,7 @@
         %dt Duration
         %dd.app-task-duration{ task: "build" }
 
-    .col-5
+    .col-md-5
 
       %dl.task-attribute.dl-horizontal
         %dt Commit
@@ -36,7 +36,7 @@
         %dt Message
         %dd {{ build.message }}
 
-    .col-2
+    .col-md-2
       .pull-right
         %a{ href: 'javascript://', title: "Restart Build", 'ng-click' => 'restartBuild(build)', 'ng-show' => 'isFinished(build)' }
           %i.fa.fa-refresh.fa-2x

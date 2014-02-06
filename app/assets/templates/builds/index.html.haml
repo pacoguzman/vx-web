@@ -2,11 +2,11 @@
 
   .row{ 'ng-show' => 'project' }
 
-    .col-6
+    .col-md-6
       .build-info
         {{ project.description || "[no description available]" }}
 
-    .col-6
+    .col-md-6
       .pull-right
 
         %a.project-url{ "ng-href" => "{{ project.http_url}}", "target" => "_blank" }

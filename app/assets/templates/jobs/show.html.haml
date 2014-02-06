@@ -1,6 +1,6 @@
 .job
   .row.task-attributes{ 'ng-show' => 'job' }
-    .col-5
+    .col-md-5
 
       %dl.task-attribute.dl-horizontal
         %dt Job
@@ -24,7 +24,7 @@
         %dd{ 'ng-repeat' => "(key, value) in job.matrix" }
           {{ key }} {{ value }}
 
-    .col-5
+    .col-md-5
 
       %dl.task-attribute.dl-horizontal
         %dt Commit
@@ -40,7 +40,7 @@
         %dt Message
         %dd {{ build.message }}
 
-    .col-2
+    .col-md-2
       .pull-right
         %a{'ng-href' => "{{job.text_logs_url}}", title: "Download Text Log", target: "_blank" }
           %i.fa.fa-bars.fa-2x

@@ -1,7 +1,7 @@
 .projects
   .row
 
-    .col-8
+    .col-md-8
 
       .ajax-loader{ 'ng-hide' => 'projects.length != undefined' }
 
@@ -16,9 +16,9 @@
           %br
           %small {{ project.last_build_created_at | fromNow }}
 
-    .col-4
+    .col-md-4
       .projects-add-new.pull-right
-        %a{ class: "btn btn-small btn-primary", 'ng-href' => "/user_repos" }
+        %a{ class: "btn btn-sm btn-primary", 'ng-href' => "/user_repos" }
           Manage Projects
 
 
