@@ -54,20 +54,11 @@ angular.module('Vx').
         lines
 
       addLineToDom = (line) ->
-        numEl = document.createElement("a")
-        numEl.className = 'app-tack-output-line-number'
+        el = document.createElement("p")
+        el.innerHTML = "<a></a>#{line}"
 
-        textEl = document.createElement("span")
-        textEl.innerHTML = line
-
-        lineEl = document.createElement("div")
-        lineEl.className = "app-task-output-line"
-
-        lineEl.appendChild numEl
-        lineEl.appendChild textEl
-
-        elem[0].appendChild lineEl
-        textEl
+        elem[0].appendChild el
+        el
 
       colorize = (str) ->
         html = ""
@@ -116,7 +107,7 @@ angular.module('Vx').
 
           if idx == 0 and !lastLineHasNL
             if mode == 'replace'
-              lastChild.innerHTML = line
+              lastChild.innerHTML = "<a></a>#{line}"
             else
               lastChild.innerHTML = lastChild.innerHTML + line
           else
