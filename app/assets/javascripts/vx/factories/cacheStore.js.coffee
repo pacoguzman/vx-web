@@ -79,6 +79,10 @@ angular.module('Vx').
           d.reject id.toString()
         d.promise
 
+      truncateCollection = (collectionId) ->
+        collection = collectionsCache.get(collectionId)
+        collection.length = 0 if collection
+
       updateItem = (id, collectionId, newVal) ->
         it = itemsCache.get(id.toString())
         updated = null
@@ -106,6 +110,9 @@ angular.module('Vx').
 
         addItem: (value) ->
           addItemToCollection(id, value)
+
+        truncate: ()->
+          truncateCollection(id)
 
       item = (id) ->
         put: (value) ->

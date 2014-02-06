@@ -48,6 +48,13 @@ class JobUpdater
     def truncate_job_logs
       if message.status == 2
         JobLog.where(job_id: job.id).delete_all
+
+        message = {
+          channel: "job_logs",
+          event:   "truncate",
+          payload: { event: "truncate", data: { job_id: job.id } }
+        }
+        ServerSideEventsConsumer.publish message
       end
     end
 

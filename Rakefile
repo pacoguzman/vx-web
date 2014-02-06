@@ -23,7 +23,7 @@ namespace :karma do
     end
   end
 
-  task run: :environment do
+  task run: :templates do
     exec "sh -c 'cd app/assets/javascripts && karma start --single-run --color' "
   end
 end

@@ -11,38 +11,83 @@ angular.module('Vx').
       '<div></div>'
 
     link: (scope, elem, attrs) ->
-      scope.lines  = []
-      scope.output = ""
-      nbsp         = '\u00A0'
-      currentIndex = 0
+      nbsp = '\u00A0'
+
+      positionInCollection = 0
+
+      extractCurrentOutput = (newLen) ->
+        output = ""
+
+        for i in [positionInCollection..(newLen - 1)]
+          output += scope.collection[i].data
+
+        positionInCollection = newLen
+        output
+
+      extractLines = (output) ->
+        positionInOutput = 0
+        lines = []
+
+        loop
+          idx = output.indexOf("\n", positionInOutput)
+          idx += 1
+
+          # have new line
+          if idx > 0
+            lines.push output.substring(positionInOutput, idx)
+            positionInOutput = idx
+          # end of buffer
+          else
+            # tail in buffer
+            if positionInOutput < output.length
+              lines.push output.substring(positionInOutput)
+            break
+
+        lines
+
+      addLineToDom = (line) ->
+        numEl = document.createElement("a")
+        numEl.className = 'app-tack-output-line-number'
+
+        textEl = document.createElement("span")
+        textEl.appendChild document.createTextNode(if line == "" then nbsp else line)
+
+        lineEl = document.createElement("div")
+        lineEl.className = "app-task-output-line"
+
+        lineEl.appendChild numEl
+        lineEl.appendChild textEl
+
+        elem[0].appendChild lineEl
+        textEl
+
+      lastLineHasNL        = true
+      lastChild            = null
 
       updateLines = (newLen, oldLen) ->
-        return if _.isUndefined(newLen)
+        return if _.isUndefined(newLen) || newLen == 0
+
+        #  was truncated
+        if positionInCollection > newLen
+          elem[0].innerHTML = ""
+
         elem.removeClass("hidden")
 
-        newVal = scope.collection
+        output = extractCurrentOutput(newLen)
+        lines  = extractLines(output)
 
-        container = document.createElement("div")
+        idx = 0
+        for line in lines
+          if idx == 0 and !lastLineHasNL
+            lastChild.innerHTML = lastChild.innerHTML + line
+          else
+            lastChild = addLineToDom(line)
+          idx += 1
 
-        output = _.map(newVal, (it) -> it.data).join("").split("\n")
-
-        _.each output, (it, idx) ->
-          numEl = document.createElement("a")
-          numEl.className = 'app-tack-output-line-number'
-          numEl.href = "#L#{idx + 1}"
-
-          node = document.createElement("span")
-          node.appendChild document.createTextNode(if it == "" then nbsp else it)
-
-          lineEl = document.createElement("div")
-          lineEl.className = "app-task-output-line"
-
-          lineEl.appendChild numEl
-          lineEl.appendChild node
-
-          container.appendChild(lineEl)
-
-        elem[0].innerHTML = container.innerHTML
+        if _.last(lines).indexOf("\n") >= 0
+          lastLineHasNL = true
+        else
+          lastLineHasNL = false
 
       elem.addClass("hidden")
 

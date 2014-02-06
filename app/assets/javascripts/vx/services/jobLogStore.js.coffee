@@ -10,6 +10,8 @@ Vx.service 'jobLogStore',
       switch e.event
         when 'created'
           collection(jobId).addItem value
+        when "truncate"
+          collection(jobId).truncate()
 
     eventSource.subscribe "job_logs", subscribe
 
@@ -18,4 +20,4 @@ Vx.service 'jobLogStore',
         $http.get("/api/jobs/#{jobId}/logs").then (re) ->
           re.data
 
-    all:    all
+    all: all
