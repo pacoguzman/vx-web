@@ -3,7 +3,7 @@
   font-family: 'Monaco', 'Consolas', monospace !important;
   font-size: 12px !important;
   line-height: 16px;
-  color: #eee8d5;
+  color: #E5E1D3;
   background: #002b36;
   padding: 1em 0;
   word-wrap: break-word;
@@ -12,7 +12,7 @@
 
 .app-task-output-line {
   white-space: pre-wrap;
-  padding: .1em 1em .1em 6em;
+  padding: .1em 1em .1em 5em;
 
   &:hover {
     background-color: #073642;
@@ -40,9 +40,9 @@
   &:before {
     content: counter(line-numbers);
     counter-increment: line-numbers;
-    padding-right: 1em;
+    padding-right: 1.2em;
     min-width: 3em;
-    margin-left: -5em;
+    margin-left: -3em;
     display: inline-block;
     text-align: right;
   }
