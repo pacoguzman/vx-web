@@ -79,7 +79,10 @@ angular.module('Vx').
           fragment.foreground && classes.push("ansi-fg-" + fragment.foreground)
           #fragment.background && classes.push("ansi-bg-" + fragment.background)
 
-          html += "<span class=\"#{classes.join ' '}\">#{text}</span>"
+          if classes.length > 0
+            html += "<span class=\"#{classes.join ' '}\">#{text}</span>"
+          else
+            html += "<span>#{text}</span>"
         html
 
       lastLineHasNL        = true
@@ -101,6 +104,7 @@ angular.module('Vx').
         for line in lines
           mode = 'newline'
 
+          # replace existing
           rep = line.lastIndexOf("\r")
           if rep != -1
             mode = 'replace'
@@ -117,7 +121,7 @@ angular.module('Vx').
             lastChild = addLineToDom(line)
           idx += 1
 
-        if _.last(lines).indexOf("\n") >= 0
+        if _.last(lines).indexOf("\n") != -1
           lastLineHasNL = true
         else
           lastLineHasNL = false

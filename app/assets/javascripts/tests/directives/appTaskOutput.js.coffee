@@ -41,7 +41,7 @@ describe "appTaskDuration", ->
 
       expected = '<div class="app-task-output-line">'
       expected += '<a class="app-tack-output-line-number"></a>'
-      expected += '<span>log1</span>'
+      expected += '<span><span>log1</span></span>'
       expected += '</div>'
       expect(elem.html()).toEqual expected
 
@@ -62,11 +62,11 @@ describe "appTaskDuration", ->
 
         expected = '<div class="app-task-output-line">'
         expected += '<a class="app-tack-output-line-number"></a>'
-        expected += "<span>log1log2\n</span>"
+        expected += "<span><span>log1</span><span>log2\n</span></span>"
         expected += '</div>'
         expected += '<div class="app-task-output-line">'
         expected += '<a class="app-tack-output-line-number"></a>'
-        expected += "<span>log3\n</span>"
+        expected += "<span><span>log3\n</span></span>"
         expected += '</div>'
         expect(elem.html()).toEqual expected
 
@@ -82,12 +82,27 @@ describe "appTaskDuration", ->
 
         expected = '<div class="app-task-output-line">'
         expected += '<a class="app-tack-output-line-number"></a>'
-        expected += "<span>log1\n</span>"
+        expected += "<span><span>log1\n</span></span>"
         expected += '</div>'
         expected += '<div class="app-task-output-line">'
         expected += '<a class="app-tack-output-line-number"></a>'
-        expected += "<span>log2\n</span>"
+        expected += "<span><span>log2\n</span></span>"
         expected += '</div>'
         expect(elem.html()).toEqual expected
 
+    describe "and add line with '\\r'", ->
+      it "should repalce log lines", ->
+        item2.data = "\rlog2"
+        item1.data = "log1"
+
+        $scope.collection.push item1
+        $scope.$digest()
+        $scope.collection.push item2
+        $scope.$digest()
+
+        expected = '<div class="app-task-output-line">'
+        expected += '<a class="app-tack-output-line-number"></a>'
+        expected += "<span><span>log2</span></span>"
+        expected += '</div>'
+        expect(elem.html()).toEqual expected
 
