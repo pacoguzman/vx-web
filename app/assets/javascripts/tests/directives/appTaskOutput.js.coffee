@@ -39,10 +39,10 @@ describe "appTaskDuration", ->
       $scope.collection.push item1
       $scope.$digest()
 
-      expected = '<div class="app-task-output-line">'
-      expected += '<a class="app-tack-output-line-number"></a>'
-      expected += '<span><span>log1</span></span>'
-      expected += '</div>'
+      expected = '<p>'
+      expected += '<a></a>'
+      expected += '<span>log1</span>'
+      expected += '</p>'
       expect(elem.html()).toEqual expected
 
     describe "and add line without '\\n'", ->
@@ -60,14 +60,14 @@ describe "appTaskDuration", ->
         $scope.collection.push item3
         $scope.$digest()
 
-        expected = '<div class="app-task-output-line">'
-        expected += '<a class="app-tack-output-line-number"></a>'
-        expected += "<span><span>log1</span><span>log2\n</span></span>"
-        expected += '</div>'
-        expected += '<div class="app-task-output-line">'
-        expected += '<a class="app-tack-output-line-number"></a>'
-        expected += "<span><span>log3\n</span></span>"
-        expected += '</div>'
+        expected = '<p>'
+        expected += '<a></a>'
+        expected += "<span>log1</span><span>log2\n</span>"
+        expected += '</p>'
+        expected += '<p>'
+        expected += '<a></a>'
+        expected += "<span>log3\n</span>"
+        expected += '</p>'
         expect(elem.html()).toEqual expected
 
     describe "and add line with '\\n'", ->
@@ -80,14 +80,14 @@ describe "appTaskDuration", ->
         $scope.collection.push item2
         $scope.$digest()
 
-        expected = '<div class="app-task-output-line">'
-        expected += '<a class="app-tack-output-line-number"></a>'
-        expected += "<span><span>log1\n</span></span>"
-        expected += '</div>'
-        expected += '<div class="app-task-output-line">'
-        expected += '<a class="app-tack-output-line-number"></a>'
-        expected += "<span><span>log2\n</span></span>"
-        expected += '</div>'
+        expected = '<p>'
+        expected += '<a></a>'
+        expected += "<span>log1\n</span>"
+        expected += '</p>'
+        expected += '<p>'
+        expected += '<a></a>'
+        expected += "<span>log2\n</span>"
+        expected += '</p>'
         expect(elem.html()).toEqual expected
 
     describe "and add line with '\\r'", ->
@@ -100,9 +100,9 @@ describe "appTaskDuration", ->
         $scope.collection.push item2
         $scope.$digest()
 
-        expected = '<div class="app-task-output-line">'
-        expected += '<a class="app-tack-output-line-number"></a>'
-        expected += "<span><span>log2</span></span>"
-        expected += '</div>'
+        expected = '<p>'
+        expected += '<a></a>'
+        expected += "<span>log2</span>"
+        expected += '</p>'
         expect(elem.html()).toEqual expected
 
