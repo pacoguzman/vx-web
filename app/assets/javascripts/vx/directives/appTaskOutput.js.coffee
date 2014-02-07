@@ -51,8 +51,6 @@ angular.module('Vx').
       updateLines = (newLen, unused) ->
         return unless newLen
 
-        elem.removeClass("hidden")
-
         return if newLen == 0
 
         logOutput ||= new VxLib.LogOutput(scope.collection, processFragment)
@@ -62,7 +60,5 @@ angular.module('Vx').
           logOutput.reset()
 
         logOutput.process()
-
-      elem.addClass("hidden")
 
       scope.$watch('collection.length', updateLines)

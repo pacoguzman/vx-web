@@ -45,7 +45,7 @@
         %a{'ng-href' => "{{job.text_logs_url}}", title: "Download Text Log", target: "_blank" }
           %i.fa.fa-bars.fa-2x
 
-  .app-task-output{ collection: "logs" }
+  .app-task-output{ collection: "logs", 'ng-show' => 'logs.length != undefined' }
 
   .ajax-loader{ 'ng-hide' => 'logs.length != undefined' }
 
