@@ -46,7 +46,11 @@ angular.module('Vx').
               it
           else
             d = $q.defer()
-            if _.pluck(its, "id").indexOf(value.id) == -1
+
+            if value.id
+              if _.pluck(its, "id").indexOf(value.id) == -1
+                its.push value
+            else
               its.push value
             d.resolve value
             d.promise

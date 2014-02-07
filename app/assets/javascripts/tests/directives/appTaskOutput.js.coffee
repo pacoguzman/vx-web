@@ -21,13 +21,8 @@ describe "appTaskDuration", ->
     $compile(elem)($scope)
 
   beforeEach ->
-    item1 = {
-      data: "log1"
-    }
-
-    item2 = {
-      data: "log2"
-    }
+    item1 = 'log1'
+    item2 = 'log2'
 
   describe "with empty collection", ->
     it "should have empty content", ->
@@ -50,30 +45,31 @@ describe "appTaskDuration", ->
         $scope.collection.push item1
         $scope.$digest()
 
-        item2.data = "log2\n"
+        item2 = "log2\n"
         $scope.collection.push item2
         $scope.$digest()
 
-        item3 = {
-          data: "log3\n"
-        }
+        item3 = "log3\n"
         $scope.collection.push item3
         $scope.$digest()
 
         expected = '<p>'
         expected += '<a></a>'
-        expected += "<span>log1</span><span>log2\n</span>"
+        expected += "<span>log1</span><span>log2</span>"
         expected += '</p>'
         expected += '<p>'
         expected += '<a></a>'
-        expected += "<span>log3\n</span>"
+        expected += "<span>log3</span>"
+        expected += '</p>'
+        expected += '<p>'
+        expected += '<a></a>'
         expected += '</p>'
         expect(elem.html()).toEqual expected
 
     describe "and add line with '\\n'", ->
       it "should display merged log lines", ->
-        item2.data = "log2\n"
-        item1.data = "log1\n"
+        item2 = "log2\n"
+        item1 = "log1\n"
 
         $scope.collection.push item1
         $scope.$digest()
@@ -82,18 +78,21 @@ describe "appTaskDuration", ->
 
         expected = '<p>'
         expected += '<a></a>'
-        expected += "<span>log1\n</span>"
+        expected += "<span>log1</span>"
         expected += '</p>'
         expected += '<p>'
         expected += '<a></a>'
-        expected += "<span>log2\n</span>"
+        expected += "<span>log2</span>"
+        expected += '</p>'
+        expected += '<p>'
+        expected += '<a></a>'
         expected += '</p>'
         expect(elem.html()).toEqual expected
 
     describe "and add line with '\\r'", ->
       it "should repalce log lines", ->
-        item2.data = "\rlog2"
-        item1.data = "log1"
+        item2 = "\rlog2"
+        item1 = "log1"
 
         $scope.collection.push item1
         $scope.$digest()

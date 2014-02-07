@@ -195,6 +195,13 @@ describe "cacheStore", ->
               rs.then succ, fail
             expect(succVal).toBe testObj2
 
+          describe "and item without id", ->
+            it "should add it to collection", ->
+              $apply ->
+                cache.collection(1).addItem 'objWithoutId'
+              expect(cache.cache.collections.get(1).length).toBe 2
+              expect(cache.cache.collections.get(1)[1]).toBe 'objWithoutId'
+
           describe "and item already in collection", ->
             it "cannot add", ->
               $apply ->

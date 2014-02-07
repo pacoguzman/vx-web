@@ -11,113 +11,57 @@ angular.module('Vx').
       '<div></div>'
 
     link: (scope, elem, attrs) ->
-      nbsp = '\u00A0'
-
-      positionInCollection = 0
-
-      normalize = (str) ->
-        str.replace(/\r\n/g, '\n')
-           .replace(/\r\r/g, '\r')
-           .replace(/\033\[K\r/g, '\r')
-           .replace(/\[2K/g, '')
-           .replace(/\033\(B/g, '')
-           .replace(/\033\[\d+G/g, '')
-
-      extractCurrentOutput = (newLen) ->
-        output = ""
-
-        for i in [positionInCollection..(newLen - 1)]
-          output += scope.collection[i].data
-
-        positionInCollection = newLen
-        normalize output
-
-      extractLines = (output) ->
-        positionInOutput = 0
-        lines = []
-
-        loop
-          idx = output.indexOf("\n", positionInOutput)
-          idx
-
-          # have new line
-          if idx != -1
-            lines.push output.substring(positionInOutput, idx + 1)
-            positionInOutput = idx + 1
-          # end of buffer
-          else
-            # tail in buffer
-            if positionInOutput < output.length
-              lines.push output.substring(positionInOutput)
-            break
-
-        lines
-
-      addLineToDom = (line) ->
-        el = document.createElement("p")
-        el.innerHTML = "<a></a>#{line}"
-
-        elem[0].appendChild el
-        el
+      nbsp      = '\u00A0'
+      lastChild = null
+      logOutput = null
 
       colorize = (str) ->
-        html = ""
+        html = []
         fragments = ansiparse(str)
         for fragment in fragments
           classes = []
           text = if fragment.text == "" then nbsp else fragment.text
-          #fragment.bold && classes.push("ansi-bold")
           fragment.foreground && classes.push("ansi-fg-" + fragment.foreground)
-          #fragment.background && classes.push("ansi-bg-" + fragment.background)
 
+          span = document.createElement("span")
           if classes.length > 0
-            html += "<span class=\"#{classes.join ' '}\">#{text}</span>"
-          else
-            html += "<span>#{text}</span>"
+            span.className = classes.join(" ")
+          span.appendChild document.createTextNode(text)
+          html.push span
         html
 
-      lastLineHasNL        = true
-      lastChild            = null
+      newEmptyElement = () ->
+        lastChild = document.createElement("p")
+        elem[0].appendChild lastChild
+        resetLastChild()
 
-      updateLines = (newLen, oldLen) ->
-        return if _.isUndefined(newLen)
+      resetLastChild = () ->
+        lastChild.innerHTML = '<a></a>'
+
+      processFragment = (mode, line) ->
+        switch mode
+          when 'newline'
+            newEmptyElement()
+          when 'replace'
+            resetLastChild()
+          when 'append'
+            for span in colorize(line)
+              lastChild.appendChild span
+
+      updateLines = (newLen, unused) ->
+        return unless newLen
 
         elem.removeClass("hidden")
 
         return if newLen == 0
 
-        #  was truncated
-        if positionInCollection > newLen
+        logOutput ||= new VxLib.LogOutput(scope.collection, processFragment)
+
+        if logOutput.positionInCollection > newLen
           elem[0].innerHTML = ""
+          logOutput.reset()
 
-        output = extractCurrentOutput(newLen)
-        lines  = extractLines(output)
-
-        idx = 0
-        for line in lines
-          mode = 'newline'
-
-          # replace existing
-          rep = line.lastIndexOf("\r")
-          if rep != -1
-            mode = 'replace'
-            line = line.substring(rep + 1)
-
-          line = colorize(line)
-
-          if idx == 0 and !lastLineHasNL
-            if mode == 'replace'
-              lastChild.innerHTML = "<a></a>#{line}"
-            else
-              lastChild.innerHTML = lastChild.innerHTML + line
-          else
-            lastChild = addLineToDom(line)
-          idx += 1
-
-        if _.last(lines).indexOf("\n") != -1
-          lastLineHasNL = true
-        else
-          lastLineHasNL = false
+        logOutput.process()
 
       elem.addClass("hidden")
 
