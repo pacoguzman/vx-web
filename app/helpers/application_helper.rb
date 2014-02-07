@@ -25,4 +25,16 @@ module ApplicationHelper
     @gitlab_user_session ||= Gitlab::UserSession.new
   end
 
+  def github_enabled?
+    Rails.configuration.x.github_enabled
+  end
+
+  def gitlab_enabled?
+    not ::Gitlab::UserSession.uris.empty?
+  end
+
+  def any_providers_enabled?
+    github_enabled? || gitlab_enabled?
+  end
+
 end

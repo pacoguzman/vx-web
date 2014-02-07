@@ -2,23 +2,19 @@ body.signin {
   width: 100%;
   height: 100%;
 
+  .alert {
+    margin-top: 20%;
+  }
 
   .row {
     max-width: 50em;
     margin: 10% auto 0;
   }
 
-  .row .separator {
-    border-left: 1px solid #eee;
-    height: 26em;
-  }
-
   .row > div {
-    padding: 4em 2em;
-  }
-
-  .row > div:first-child {
-    border-left: none;
+    width: 22em;
+    padding: 0 2em;
+    float: left;
   }
 
   .title {
@@ -44,6 +40,8 @@ body.signin {
 
     img {
       width: 10em;
+      display: block;
+      margin: 0 auto;
     }
 
     a {
@@ -57,7 +55,7 @@ body.signin {
     }
 
     button {
-      margin-top: 2.7em;
+      margin-top: 2.2em;
     }
   }
 
