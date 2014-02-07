@@ -1,4 +1,4 @@
-describe "Vx.Lib.LogOutput", ->
+describe "VxLib.LogOutput", ->
 
   collection = []
   record     = []
@@ -10,7 +10,7 @@ describe "Vx.Lib.LogOutput", ->
   beforeEach ->
     collection = []
     record     = []
-    logOutput  = new Vx.Lib.LogOutput(collection, callback)
+    logOutput  = new VxLib.LogOutput(collection, callback)
 
   it 'should process strings with \n', ->
     collection.push "line1\n"
