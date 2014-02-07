@@ -6,40 +6,42 @@ class root.VxLib.LogOutput
   constructor: (collection, callback) ->
     @collection = collection
     @callback   = callback
-    @debug      = 0
     @reset()
 
   reset: () ->
     @positionInCollection = 0
     @lastLineHasNL        = true
+    @replace              = false
+    @begin                = true
 
   process: () ->
     if @isCollectionChanged()
-      output = @extractOutput()
-      lines  = @extractLines(output)
-      @processLines(lines)
+      output    = @extractOutput()
+      fragments = @extractFragments(output)
+      @processFragments(fragments)
 
   isCollectionChanged: () ->
     @collection && @collection.length && @positionInCollection != @collection.length
 
-  processLines: (lines) ->
-    for line, idx in lines
-      mode = 'newline'
+  processFragments: (fragments) ->
 
-      rep = line.lastIndexOf("\r")
-      if rep != -1
-        mode = 'replace'
-        line = line.substring(rep + 1)
+    if @begin
+      @callback("newline")
+      @begin = false
 
-      if !@lastLineHasNL
-        unless mode == 'replace'
-          mode = 'append'
-      else
-        mode = 'newline'
+    for fragment in fragments
 
-      @callback(mode, line)
+      if @replace
+        @callback("replace")
+        @replace = false
 
-      @lastLineHasNL = line.indexOf("\n") != -1
+      switch fragment
+        when "\n"
+          @callback('newline')
+        when "\r"
+          @replace = true
+        else
+          @callback("append", fragment)
 
   extractOutput: () ->
     output = ""
@@ -51,25 +53,20 @@ class root.VxLib.LogOutput
     @positionInCollection = newLen
     @normalize output
 
-  extractLines: (output) ->
-    positionInOutput = 0
-    lines = []
+  extractFragments: (output) ->
+    fragments = []
+    lines = output.split(/(\n)/)
 
-    loop
-      idx = output.indexOf("\n", positionInOutput)
+    if lines.slice(-1)[0] == ""
+      lines.pop()
 
-      if idx != -1
-        # have new line
-        lines.push output.substring(positionInOutput, idx + 1)
-        positionInOutput = idx + 1
+    for line in lines
+      if line == "\n"
+        fragments.push line
       else
-        # end of buffer
-        if positionInOutput < output.length
-          # tail in buffer
-          lines.push output.substring(positionInOutput)
-        break
-
-    lines
+        for chunk in line.split(/(\r)/)
+          fragments.push chunk
+    fragments
 
   normalize: (str) ->
     str.replace(/\r\n/g, '\n')

@@ -55,11 +55,14 @@ describe "appTaskDuration", ->
 
         expected = '<p>'
         expected += '<a></a>'
-        expected += "<span>log1</span><span>log2\n</span>"
+        expected += "<span>log1</span><span>log2</span>"
         expected += '</p>'
         expected += '<p>'
         expected += '<a></a>'
-        expected += "<span>log3\n</span>"
+        expected += "<span>log3</span>"
+        expected += '</p>'
+        expected += '<p>'
+        expected += '<a></a>'
         expected += '</p>'
         expect(elem.html()).toEqual expected
 
@@ -75,11 +78,14 @@ describe "appTaskDuration", ->
 
         expected = '<p>'
         expected += '<a></a>'
-        expected += "<span>log1\n</span>"
+        expected += "<span>log1</span>"
         expected += '</p>'
         expected += '<p>'
         expected += '<a></a>'
-        expected += "<span>log2\n</span>"
+        expected += "<span>log2</span>"
+        expected += '</p>'
+        expected += '<p>'
+        expected += '<a></a>'
         expected += '</p>'
         expect(elem.html()).toEqual expected
 

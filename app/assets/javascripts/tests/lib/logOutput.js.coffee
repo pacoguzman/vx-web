@@ -5,7 +5,10 @@ describe "VxLib.LogOutput", ->
   logOutput  = []
 
   callback   = (mode, line) ->
-    record.push [mode, line]
+    if line != undefined
+      record.push [mode, line]
+    else
+      record.push mode
 
   beforeEach ->
     collection = []
@@ -15,33 +18,41 @@ describe "VxLib.LogOutput", ->
   it 'should process strings with \n', ->
     collection.push "line1\n"
     logOutput.process()
-    expect(record).toEqual [['newline', "line1\n"]]
+    expect(record).toEqual ['newline', ['append', 'line1'], 'newline']
+
+    record.length = 0
 
     collection.push "line2\n"
     logOutput.process()
-    expect(record).toEqual [['newline', "line1\n"], ['newline', "line2\n"]]
+    expect(record).toEqual [['append', 'line2'], 'newline']
 
   it 'should process strings without \n', ->
     collection.push "line1"
     logOutput.process()
-    expect(record).toEqual [['newline', "line1"]]
+    expect(record).toEqual ['newline', ['append', 'line1']]
+
+    record.length = 0
 
     collection.push "line2\n"
     logOutput.process()
-    expect(record).toEqual [['newline', "line1"], ['append', "line2\n"]]
+    expect(record).toEqual [['append', 'line2'], 'newline']
+
+    record.length = 0
 
     collection.push "line3\n"
     logOutput.process()
-    expect(record).toEqual [['newline', "line1"], ['append', "line2\n"], ['newline', "line3\n"]]
+    expect(record).toEqual [['append', 'line3'], 'newline']
 
   it 'should process strings with \r', ->
     collection.push "line1"
     logOutput.process()
-    expect(record).toEqual [['newline', "line1"]]
+    expect(record).toEqual ['newline', ['append', "line1"]]
+
+    record.length = 0
 
     collection.push "\rline2"
     logOutput.process()
-    expect(record).toEqual [['newline', "line1"], ['replace', "line2"]]
+    expect(record).toEqual [['append', ''], 'replace', ['append', 'line2']]
 
   it "should skip if not changed", ->
     logOutput.process()
@@ -49,11 +60,14 @@ describe "VxLib.LogOutput", ->
 
     collection.push "line"
     logOutput.process()
-    expect(record).toEqual [['newline', 'line']]
+    expect(record).toEqual ['newline', ['append', 'line']]
+
+    record.length = 0
 
     logOutput.process()
-    expect(record).toEqual [['newline', 'line']]
+    expect(record).toEqual []
 
     collection.push "line2"
     logOutput.process()
-    expect(record).toEqual [['newline', 'line'], ['append', 'line2']]
+    expect(record).toEqual [['append', 'line2']]
+

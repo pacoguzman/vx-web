@@ -16,39 +16,37 @@ angular.module('Vx').
       logOutput = null
 
       colorize = (str) ->
-        html = ""
+        html = []
         fragments = ansiparse(str)
         for fragment in fragments
           classes = []
           text = if fragment.text == "" then nbsp else fragment.text
-          #fragment.bold && classes.push("ansi-bold")
           fragment.foreground && classes.push("ansi-fg-" + fragment.foreground)
-          #fragment.background && classes.push("ansi-bg-" + fragment.background)
 
+          span = document.createElement("span")
           if classes.length > 0
-            html += "<span class=\"#{classes.join ' '}\">#{text}</span>"
-          else
-            html += "<span>#{text}</span>"
+            span.className = classes.join(" ")
+          span.appendChild document.createTextNode(text)
+          html.push span
         html
 
-      addLineToDom = (line) ->
-        el = document.createElement("p")
-        el.innerHTML = "<a></a>#{line}"
+      newEmptyElement = () ->
+        lastChild = document.createElement("p")
+        elem[0].appendChild lastChild
+        resetLastChild()
 
-        elem[0].appendChild el
-        el
+      resetLastChild = () ->
+        lastChild.innerHTML = '<a></a>'
 
       processFragment = (mode, line) ->
-        line = colorize(line)
-
         switch mode
+          when 'newline'
+            newEmptyElement()
           when 'replace'
-            lastChild.innerHTML = "<a></a>#{line}"
+            resetLastChild()
           when 'append'
-            lastChild.innerHTML = lastChild.innerHTML + line
-          else
-            lastChild = addLineToDom(line)
-
+            for span in colorize(line)
+              lastChild.appendChild span
 
       updateLines = (newLen, unused) ->
         return unless newLen
