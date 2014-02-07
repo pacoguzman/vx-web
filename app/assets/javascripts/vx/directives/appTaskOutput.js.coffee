@@ -27,7 +27,7 @@ angular.module('Vx').
         output = ""
 
         for i in [positionInCollection..(newLen - 1)]
-          output += scope.collection[i].data
+          output += scope.collection[i]
 
         positionInCollection = newLen
         normalize output

@@ -22,6 +22,7 @@ module.exports = function(config) {
 
       "templates.compilled.js",
       "vx/init/*.js.coffee",
+      "vx/lib/*.js.coffee",
       "vx/directives/*.js.coffee",
       "vx/filters/*.js",
       "vx/factories/*.js.coffee",

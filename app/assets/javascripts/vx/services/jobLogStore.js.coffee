@@ -6,7 +6,7 @@ Vx.service 'jobLogStore',
 
     subscribe = (e) ->
       jobId   = e.data.job_id
-      value   = e.data
+      value   = e.data.log
       switch e.event
         when 'created'
           collection(jobId).addItem value
@@ -18,6 +18,6 @@ Vx.service 'jobLogStore',
     all = (jobId) ->
       collection(jobId).get () ->
         $http.get("/api/jobs/#{jobId}/logs").then (re) ->
-          re.data
+          _.map re.data, (it) -> it.log
 
     all: all

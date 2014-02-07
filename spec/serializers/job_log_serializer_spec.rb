@@ -7,6 +7,6 @@ describe JobLogSerializer do
   context "as_json" do
     subject { serializer.as_json.keys }
 
-    it { should eq [:id, :job_id, :tm, :data] }
+    it { should eq [:id, :job_id, :tm, :log] }
   end
 end
