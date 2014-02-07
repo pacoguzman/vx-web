@@ -1,13 +1,14 @@
 .projects {
-  .projects-list {
-  }
+}
 
-  .project {
-    padding-right: 12px;
+.project.panel {
+  width: 26em;
+  display: inline-block;
+  margin-right: 1.4em;
+  border-color: #eee;
 
-    small {
-      color: #999;
-    }
+  .panel-footer {
+    border-top-color: #eee;
   }
 }
 

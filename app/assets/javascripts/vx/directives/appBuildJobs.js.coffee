@@ -13,7 +13,7 @@ angular.module('Vx').
         <th>Job</th>
         <th>Duration</th>
         <th>Finished At</th>
-        <th ng-repeat='m in matrix' class="hidden-xs hidden-sm">
+        <th ng-repeat='m in matrix' class="hidden-xs">
           {{m}}
         </th>
       </thead>
@@ -27,7 +27,7 @@ angular.module('Vx').
         </td>
         <td class="app-task-duration" task="job"></td>
         <td class="app-task-finished" task="job"></td>
-        <td ng-repeat='m in job.matrix' class="hidden-xs hidden-sm">
+        <td ng-repeat='m in job.matrix' class="hidden-xs">
           {{ m | truncate:30 }}
         </td>
       </tr>

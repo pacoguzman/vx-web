@@ -1,22 +1,23 @@
 .projects
   .row
 
-    .col-xs-8
+    .col-xs-10
 
       .ajax-loader{ 'ng-hide' => 'projects.length != undefined' }
 
-      %ul.projects-list.list-group
 
-        %li.project.list-group-item{ 'ng-repeat' => "project in projects | orderBy:'last_build_created_at':true" }
+      .project.panel.panel-default{ 'ng-repeat' => "project in projects | orderBy:'last_build_created_at':true" }
+        .panel-body
           .pull-right.app-task-status{ 'task' => 'project'}
 
           %a.medium-text{ 'ng-href' => "/projects/{{project.id}}/builds" }
             {{project.name}}
 
-          %br
+        .panel-footer
           %small {{ project.last_build_created_at | fromNow }}
 
-    .col-xs-4
+
+    .col-xs-2
       .projects-add-new.pull-right
         %a{ class: "btn btn-sm btn-primary", 'ng-href' => "/user_repos" }
           Manage Projects
