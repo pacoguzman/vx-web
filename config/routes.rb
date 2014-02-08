@@ -12,6 +12,9 @@ VxWeb::Application.routes.draw do
       resources :builds, only: [:index, :create]
       resources :cached_files, only: [:index]
       resource :subscription, only: [:create, :destroy], controller: "project_subscriptions"
+      member do
+        get "key"
+      end
     end
 
     resources :builds, only: [:show] do

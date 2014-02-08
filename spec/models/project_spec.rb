@@ -220,6 +220,14 @@ describe Project do
     end
   end
 
+  context "#public_deploy_key" do
+    subject { project.public_deploy_key }
+    before do
+      project.generate_deploy_key
+    end
+    it { should have(231).items }
+  end
+
 end
 
 # == Schema Information

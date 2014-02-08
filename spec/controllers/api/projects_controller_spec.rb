@@ -25,4 +25,14 @@ describe Api::ProjectsController do
     its(:body) { should_not be_blank }
   end
 
+  context "GET /key" do
+    before do
+      session[:user_id] = nil
+      get :key, id: project.id
+    end
+    it { should be_success }
+    its(:content_type) { should eq 'text/plain' }
+    its(:body)         { should have(231).items }
+  end
+
 end

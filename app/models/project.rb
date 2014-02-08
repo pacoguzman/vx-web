@@ -39,6 +39,10 @@ class Project < ActiveRecord::Base
     self.class.deploy_key_name
   end
 
+  def public_deploy_key
+    SSHKey.new(self.deploy_key).ssh_public_key
+  end
+
   def generate_deploy_key
     SSHKey.generate(type: "RSA", bits: 1024).tap do |key|
       self.deploy_key = key.private_key.strip
