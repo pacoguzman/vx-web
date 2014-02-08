@@ -57,7 +57,7 @@ class Job < ActiveRecord::Base
     script = to_builder_script
     ::Vx::Message::PerformJob.new(
       project_id:      build.project_id,
-      id:              build.id,
+      build_id:        build.id,
       job_id:          number,
       name:            build.project.name,
       before_script:   script.to_before_script,
