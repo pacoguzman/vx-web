@@ -36,6 +36,8 @@ class ApplicationController < ActionController::Base
     end
 
     def access_denied
+      save_location if request.format.html?
+
       respond_to do |want|
         want.html { render 'welcome/signin', layout: false }
         want.json { head 403 }
@@ -43,4 +45,16 @@ class ApplicationController < ActionController::Base
       end
       false
     end
+
+    def redirect_to_saved_location_or_root
+      redirect_to(session[:saved_location] || root_path)
+      session[:saved_location] = nil
+    end
+
+    def save_location
+      if request.fullpath != "/"
+        session[:saved_location] ||= request.fullpath
+      end
+    end
+
 end
