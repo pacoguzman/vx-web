@@ -23,17 +23,17 @@ describe Project do
     subject { project.public_deploy_key }
     before { project.generate_deploy_key }
 
-    it { should match(/\=\= Vexor \(.*\)/) }
+    it { should match(/\=\= Vexor CI \(.*\)/) }
   end
 
   context ".deploy_key_name" do
     subject { Project.deploy_key_name }
-    it { should match(/Vexor \(.*\)/) }
+    it { should match(/Vexor CI \(.*\)/) }
   end
 
   context "#deploy_key_name" do
     subject { project.deploy_key_name }
-    it { should match(/Vexor \(.*\)/) }
+    it { should match(/Vexor CI \(.*\)/) }
   end
 
   context "#generate_deploy_key" do
@@ -225,7 +225,7 @@ describe Project do
     before do
       project.generate_deploy_key
     end
-    it { should have(231).items }
+    it { should have(234).items }
   end
 
 end
