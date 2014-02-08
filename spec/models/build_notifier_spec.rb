@@ -76,22 +76,22 @@ describe BuildNotifier do
 
     context "when build is started" do
       let(:status) { 2 }
-      it { should eq 'EvroneCI build #1 started and still running' }
+      it { should eq 'Vexor: build #1 started and still running' }
     end
 
     context "when build is passed" do
       let(:status) { 3 }
-      it { should eq "EvroneCI build #1 is successfully completed in 1s" }
+      it { should eq "Vexor: build #1 is successfully completed in 1s" }
     end
 
     context "when build is failed" do
       let(:status) { 4 }
-      it { should eq "EvroneCI build #1 failed in 1s" }
+      it { should eq "Vexor: build #1 failed in 1s" }
     end
 
     context "when build is errored" do
       let(:status) { 5 }
-      it { should eq "EvroneCI build #1 broken in 1s" }
+      it { should eq "Vexor: build #1 broken in 1s" }
     end
   end
 

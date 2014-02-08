@@ -43,13 +43,13 @@ BuildNotifier = Struct.new(:message) do
       n  = build.number
       case build.status_name
       when :started
-        "EvroneCI build ##{n} started and still running"
+        "Vexor: build ##{n} started and still running"
       when :passed
-        "EvroneCI build ##{n} is successfully completed#{duration}"
+        "Vexor: build ##{n} is successfully completed#{duration}"
       when :failed
-        "EvroneCI build ##{n} failed#{duration}"
+        "Vexor: build ##{n} failed#{duration}"
       when :errored
-        "EvroneCI build ##{n} broken#{duration}"
+        "Vexor: build ##{n} broken#{duration}"
       end
     end
   end
