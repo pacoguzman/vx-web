@@ -39,6 +39,8 @@ VxWeb::Application.routes.draw do
         post :sync
       end
     end
+
+    resources :events, only: [:index]
   end
 
   get  'auth/github/callback', to: 'github/user_sessions#create'
@@ -51,10 +53,6 @@ VxWeb::Application.routes.draw do
   # TODO: remove it
   post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'
-
-  get '/events', to: 'events#index'
-
-  post '/build', to: 'welcome#index'
 
   root 'welcome#index'
 

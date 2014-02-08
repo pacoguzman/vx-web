@@ -2,7 +2,7 @@ Vx.service 'eventSource', [ '$rootScope'
   ($scope) ->
 
     $bus = $scope.$new()
-    sub  = new EventSource("/events")
+    sub  = new EventSource("/api/events")
 
     sub.addEventListener "event", (e) ->
       data    = JSON.parse(e.data)
