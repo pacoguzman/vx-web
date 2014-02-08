@@ -62,7 +62,8 @@ class Job < ActiveRecord::Base
       name:            build.project.name,
       before_script:   script.to_before_script,
       script:          script.to_script,
-      after_script:    script.to_after_script
+      after_script:    script.to_after_script,
+      image:           script.image
     )
   end
 

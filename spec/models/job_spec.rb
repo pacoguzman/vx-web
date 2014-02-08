@@ -25,6 +25,13 @@ describe Job do
     let(:job) { create :job }
     subject { job.to_perform_job_message }
     it { should be }
+
+    context "with image" do
+      before do
+        job.update!(source: ({ image: %w{ one } }).to_yaml)
+      end
+      its(:image) { should eq 'one' }
+    end
   end
 
   context "#publish_perform_job_message" do
