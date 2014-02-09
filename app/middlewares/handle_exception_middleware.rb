@@ -9,7 +9,7 @@ module Vx
       }
 
       def clean_env(env)
-        env = env.select{|k,v| k !~ /^(action_dispatch|puma|session)/ }
+        env = env.select{|k,v| k !~ /^(action_dispatch|puma|session|rack\.session|action_controller)/ }
         env['HTTP_COOKIE'] &&= env['HTTP_COOKIE'].scan(/.{80}/).join("\n")
         env
       end

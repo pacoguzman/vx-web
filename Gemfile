@@ -15,7 +15,7 @@ gem 'sshkey'
 
 gem 'vx-message',           '0.5.0'
 gem 'vx-builder',           '0.0.22'
-gem 'vx-service_connector', '0.0.8'
+gem 'vx-service_connector', '0.0.9'
 gem 'vx-consumer',          '0.0.2'
 gem 'vx-instrumentation',   '0.1.1'
 
