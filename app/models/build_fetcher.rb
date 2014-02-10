@@ -16,11 +16,11 @@ class BuildFetcher
   end
 
   def source
-    ::Vx::Builder::Source.new(build.source)
+    ::Vx::Builder::BuildConfiguration.new(build.source)
   end
 
   def matrix
-    ::Vx::Builder::Source::Matrix.new(source).configurations
+    ::Vx::Builder::Matrix.new(source).build_configurations
   end
 
   def perform
@@ -52,7 +52,7 @@ class BuildFetcher
       matrix.each_with_index do |config, idx|
         number = idx + 1
         build.jobs.create(
-          matrix: config.matrix_keys,
+          matrix: config.matrix_attributes,
           number: number,
           source: config.to_yaml
         ) || return
