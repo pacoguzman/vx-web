@@ -2,7 +2,7 @@
 
   .ajax-loader{ 'ng-hide' => 'files.length != undefined' }
 
-  %div{ 'ng-show' => 'files.length == 0' }
+  %p{ 'ng-show' => 'files.length == 0' }
     No files found.
 
   %div{ 'ng-show' => 'files.length > 0' }

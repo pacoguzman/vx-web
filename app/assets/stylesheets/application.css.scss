@@ -93,13 +93,3 @@ body > .container > .ng-view {
 .secondary-text {
   color: #999;
 }
-
-.animate-enter {
-	-webkit-transition: .3s linear all; /* Chrome */
-	transition: .3s linear all;
-	opacity: 0;
-}
-
-.animate-enter.animate-enter-active {
-	opacity: 1;
-}
