@@ -28,7 +28,7 @@ describe Job do
 
     context "with image" do
       before do
-        job.update!(source: ({ image: %w{ one } }).to_yaml)
+        job.update!(source: ({ "image" => %w{ one } }).to_yaml)
       end
       its(:image) { should eq 'one' }
     end

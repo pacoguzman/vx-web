@@ -50,7 +50,7 @@ class Job < ActiveRecord::Base
   end
 
   def to_builder_source
-    ::Vx::Builder::Source.from_yaml(source)
+    ::Vx::Builder::BuildConfiguration.from_yaml(source)
   end
 
   def to_perform_job_message
