@@ -26,22 +26,22 @@ class root.VxLib.LogOutput
   processFragments: (fragments) ->
 
     if @begin
-      @callback("newline")
       @begin = false
+      @callback("newline")
 
     for fragment in fragments
-
-      if @replace
-        @callback("replace")
-        @replace = false
-
       switch fragment
         when "\n"
+          @replace = false
           @callback('newline')
         when "\r"
           @replace = true
         else
-          @callback("append", fragment)
+          if @replace
+            @replace = false
+            @callback("replace", fragment)
+          else
+            @callback("append", fragment)
 
   extractOutput: () ->
     output = ""

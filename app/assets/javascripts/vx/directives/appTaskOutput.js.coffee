@@ -15,8 +15,7 @@ angular.module('Vx').
       lastChild = null
       logOutput = null
 
-      colorize = (str) ->
-        html = []
+      appendToLastChild = (str) ->
         fragments = ansiparse(str)
         for fragment in fragments
           classes = []
@@ -27,8 +26,7 @@ angular.module('Vx').
           if classes.length > 0
             span.className = classes.join(" ")
           span.appendChild document.createTextNode(text)
-          html.push span
-        html
+          lastChild.appendChild(span)
 
       newEmptyElement = () ->
         lastChild = document.createElement("p")
@@ -44,9 +42,9 @@ angular.module('Vx').
             newEmptyElement()
           when 'replace'
             resetLastChild()
+            appendToLastChild(line)
           when 'append'
-            for span in colorize(line)
-              lastChild.appendChild span
+            appendToLastChild(line)
 
       updateLines = (newLen, unused) ->
         return unless newLen
