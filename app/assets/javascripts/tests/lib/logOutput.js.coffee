@@ -52,7 +52,7 @@ describe "VxLib.LogOutput", ->
 
     collection.push "\rline2"
     logOutput.process()
-    expect(record).toEqual [['append', ''], 'replace', ['append', 'line2']]
+    expect(record).toEqual [['append', ''], ['replace', 'line2']]
 
   it "should skip if not changed", ->
     logOutput.process()
