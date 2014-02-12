@@ -149,6 +149,20 @@ describe Job do
     end
   end
 
+  context ".status" do
+    subject { described_class.status }
+
+    before do
+      b = create :build
+      num = 0
+      3.times { create :job, status: 0, build: b, number: num += 1 }
+      5.times { create :job, status: 2, build: b, number: num += 1 }
+      1.times { create :job, status: 3, build: b, number: num += 1 }
+    end
+
+    it { should eq(initialized: 3, started: 5) }
+  end
+
 end
 
 # == Schema Information

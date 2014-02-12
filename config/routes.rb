@@ -40,6 +40,8 @@ VxWeb::Application.routes.draw do
       end
     end
 
+    resources :status, only: [:show], id: /(jobs)/
+
     resources :events, only: [:index]
   end
 

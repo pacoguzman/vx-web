@@ -41,6 +41,18 @@ class Job < ActiveRecord::Base
     end
   end
 
+  def self.status
+    jobs = Job.where(status: [0,2])
+              .select("status, COUNT(id) AS count_ids")
+              .group("status")
+              .reorder("1")
+    jobs.inject({}) do |a, job|
+      a[job.status_name] = job.count_ids
+      a
+    end
+  end
+
+
   def finished?
     [3,4,5].include?(status)
   end
