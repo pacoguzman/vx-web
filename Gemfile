@@ -47,5 +47,4 @@ group :development do
   gem 'pry-rails'
   gem 'annotate'
   gem 'foreman'
-  gem 'httplog'
 end

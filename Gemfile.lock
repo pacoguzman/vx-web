@@ -80,7 +80,6 @@ GEM
     hashr (0.0.22)
     hike (1.2.3)
     httpauth (0.2.0)
-    httplog (0.2.4)
     i18n (0.6.9)
     json (1.8.1)
     jwt (0.1.8)
@@ -230,7 +229,6 @@ DEPENDENCIES
   foreman
   haml
   haml-rails
-  httplog
   omniauth
   omniauth-github
   pg
