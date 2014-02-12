@@ -21,6 +21,7 @@ class ServerSideEventLoop
 
     def shutdown
       @@mutex.synchronize do
+        Rails.logger.debug " --> shutdown ServerSideEventsConsumer"
         @@shutdown = true
         if @consumer
           @consumer.cancel

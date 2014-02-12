@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
     end
 
     def development_user
-      #Rails.env.development? && User.first
+      Rails.env.development? && User.first
     end
 
     def user_logged_in?
