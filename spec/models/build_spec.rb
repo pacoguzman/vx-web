@@ -41,6 +41,10 @@ describe Build do
         expect(subject).to_not change(b, :branch)
       end
     end
+
+    it "should assign token" do
+      expect(subject).to change(b, :token).from(nil)
+    end
   end
 
   it "should publish(:created) after create" do

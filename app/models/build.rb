@@ -1,3 +1,5 @@
+require 'securerandom'
+
 class Build < ActiveRecord::Base
 
   include ::PublicUrl::Build
@@ -6,12 +8,13 @@ class Build < ActiveRecord::Base
   has_many :jobs, class_name: "::Job", dependent: :destroy
   has_many :artifacts, class_name: "::Artifact", dependent: :destroy
 
-  validates :project_id, :number, :sha, :branch, :source, presence: true
+  validates :project_id, :number, :sha, :branch, :source, :token, presence: true
   validates :number, uniqueness: { scope: [:project_id] }
 
-  before_validation :assign_number, on: :create
-  before_validation :assign_sha,    on: :create
-  before_validation :assign_branch, on: :create
+  before_validation :assign_number,  on: :create
+  before_validation :assign_sha,     on: :create
+  before_validation :assign_branch,  on: :create
+  before_validation :generate_token, on: :create
 
   after_create :publish_created
 
@@ -185,6 +188,10 @@ class Build < ActiveRecord::Base
 
     def assign_branch
       self.branch ||= 'master'
+    end
+
+    def generate_token
+      self.token ||= SecureRandom.uuid
     end
 
     def publish_created
