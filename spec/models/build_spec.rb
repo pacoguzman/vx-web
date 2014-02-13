@@ -423,7 +423,7 @@ end
 #  branch          :string(255)      not null
 #  pull_request_id :integer
 #  author          :string(255)
-#  message         :string(255)
+#  message         :text
 #  status          :integer          default(0), not null
 #  started_at      :datetime
 #  finished_at     :datetime

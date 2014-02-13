@@ -125,5 +125,6 @@ end
 #  created_at         :datetime
 #  updated_at         :datetime
 #  identity_id        :integer          not null
+#  external_id        :integer          not null
 #
 
