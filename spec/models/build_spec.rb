@@ -79,7 +79,7 @@ describe Build do
     its(:sha)              { should eq 'MyString' }
     its(:deploy_key)       { should be }
     its(:branch)           { should eq 'MyString' }
-    its(:cache_url_prefix) { should be }
+    its(:cache_url_prefix) { should eq "http://test.local/f/cached_files/#{b.project.token}" }
   end
 
   context "duration" do

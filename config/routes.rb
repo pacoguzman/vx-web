@@ -49,10 +49,10 @@ VxWeb::Application.routes.draw do
   post 'auth/gitlab/session',  to: "gitlab/user_sessions#create"
   get  'auth/failure',         to: redirect('/')
 
-  put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload"
+  put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload", as: :upload_cached_file
   get "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#download"
 
-  put "/f/artifacts/:token/*file_name.:file_ext", to: "api/artifacts#upload"
+  put "/f/artifacts/:token/*file_name.:file_ext", to: "api/artifacts#upload", as: :upload_artifact
   get "/f/artifacts/:token/*file_name.:file_ext", to: "api/artifacts#download"
 
   post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,

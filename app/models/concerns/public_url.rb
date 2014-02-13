@@ -5,7 +5,7 @@ module PublicUrl
     end
 
     def cache_url_prefix
-      "http://#{Rails.configuration.x.hostname}/cached_files/u/#{project.token}"
+      "http://#{Rails.configuration.x.hostname}/f/cached_files/#{project.token}"
     end
   end
 
