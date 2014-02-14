@@ -420,6 +420,75 @@ describe Build do
       expect(subject).to eq("script" => "true")
     end
   end
+
+  context "new_deploy_from_self" do
+    let(:b) { create :build }
+    subject { b.new_deploy_from_self }
+    its(:id)              { should be_nil }
+    its(:project)         { should eq b.project }
+    its(:sha)             { should eq b.sha }
+    its(:branch)          { should eq b.branch }
+    its(:pull_request_id) { should eq b.pull_request_id }
+    its(:author)          { should eq b.author }
+    its(:message)         { should eq b.message }
+    its(:status)          { should eq 0 }
+    its(:started_at)      { should be_nil }
+    its(:finished_at)     { should be_nil }
+    its(:author_email)    { should eq b.author_email }
+    its(:http_url)        { should eq b.http_url }
+    its(:branch_label)    { should eq b.branch_label }
+    its(:source)          { should eq b.source }
+  end
+
+  context "to_build_configuration" do
+    subject { b.to_build_configuration }
+    before do
+      b.source = {"script" => "/bin/true"}.to_yaml
+    end
+    it { should be }
+    its(:attributes) { should_not be_empty }
+    its(:script)     { should eq ["/bin/true"] }
+  end
+
+  context "to_matrix_build_configurations" do
+    subject { b.to_matrix_build_configurations }
+    before do
+      b.source = {"rvm" => %w{ 1.9 2.0 }}.to_yaml
+    end
+    it { should be }
+    it { should have(2).item }
+  end
+
+  context "create_jobs_from_matrix" do
+    let(:b) { create :build }
+    subject { b.create_jobs_from_matrix }
+
+    before do
+      b.source = {"rvm" => %w{ 1.9 2.0 }}.to_yaml
+    end
+
+    it { should be }
+
+    context "created jobs" do
+      subject { b.jobs }
+      before do
+        b.create_jobs_from_matrix
+      end
+      it { should have(2).item }
+
+      it "should have true matrices" do
+        expect(subject.map(&:matrix)).to eq [{"rvm"=>"1.9"}, {"rvm"=>"2.0"}]
+      end
+
+      it "should have true numbers" do
+        expect(subject.map(&:number)).to eq [1,2]
+      end
+
+      it "should have true sources" do
+        expect(subject.map{|i| YAML.load(i.source)["rvm"] }).to eq [["1.9"], ["2.0"]]
+      end
+    end
+  end
 end
 
 # == Schema Information

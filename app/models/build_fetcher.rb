@@ -15,22 +15,14 @@ class BuildFetcher
     @build ||= project.new_build_from_payload(payload)
   end
 
-  def source
-    ::Vx::Builder::BuildConfiguration.new(build.source)
-  end
-
-  def matrix
-    ::Vx::Builder::Matrix.new(source).build_configurations
-  end
-
   def perform
     transaction do
       guard do
         (
-          build         &&
-          build.save    &&
-          create_jobs   &&
-          publish_jobs  &&
+          build                         &&
+          build.save                    &&
+          build.create_jobs_from_matrix &&
+          publish_perform_job_messages  &&
           subscribe_author_to_repo
         ).or_rollback_transaction
         build
@@ -48,19 +40,7 @@ class BuildFetcher
       true
     end
 
-    def create_jobs
-      matrix.each_with_index do |config, idx|
-        number = idx + 1
-        build.jobs.create(
-          matrix: config.matrix_attributes,
-          number: number,
-          source: config.to_yaml
-        ) || return
-      end
-      build.jobs.any?
-    end
-
-    def publish_jobs
+    def publish_perform_job_messages
       build.jobs.each(&:publish_perform_job_message)
       true
     end
@@ -73,17 +53,6 @@ class BuildFetcher
 
     def transaction
       Build.transaction { yield }
-    end
-
-    def with_sc
-      conn = project && project.sc
-      if conn && block_given?
-        yield conn
-      end
-    end
-
-    def sc_model
-      @sc_model ||= project && project.sc_model
     end
 
 end
