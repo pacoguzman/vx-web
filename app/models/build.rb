@@ -10,7 +10,7 @@ class Build < ActiveRecord::Base
     inverse_of: :build
 
   validates :project_id, :number, :sha, :branch, :source, :token, presence: true
-  validates :number, uniqueness: { scope: [:project_id] }
+  validates :number, uniqueness: { scope: [:project_id, :type] }
 
   before_validation :assign_number,  on: :create
   before_validation :assign_sha,     on: :create
@@ -19,7 +19,7 @@ class Build < ActiveRecord::Base
 
   after_create :publish_created
 
-  default_scope ->{ order 'builds.number DESC' }
+  default_scope ->{ order 'builds.id DESC' }
   scope :finished, -> { where(status: [3,4,5]) }
 
   state_machine :status, initial: :initialized do
@@ -183,7 +183,7 @@ class Build < ActiveRecord::Base
   private
 
     def assign_number
-      self.number ||= project.builds.maximum(:number).to_i + 1
+      self.number ||= project.builds.where(type: nil).maximum(:number).to_i + 1
     end
 
     def assign_sha

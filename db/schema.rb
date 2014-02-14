@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140213230747) do
+ActiveRecord::Schema.define(version: 20140214133642) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,9 +47,10 @@ ActiveRecord::Schema.define(version: 20140213230747) do
     t.string   "branch_label"
     t.text     "source",                      null: false
     t.string   "token",                       null: false
+    t.string   "type"
   end
 
-  add_index "builds", ["project_id", "number"], name: "index_builds_on_project_id_and_number", unique: true, using: :btree
+  add_index "builds", ["project_id", "type", "number"], name: "index_builds_on_project_id_and_type_and_number", unique: true, using: :btree
 
   create_table "cached_files", force: true do |t|
     t.integer  "project_id",   null: false
