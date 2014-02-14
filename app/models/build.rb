@@ -1,16 +1,21 @@
+require 'securerandom'
+
 class Build < ActiveRecord::Base
 
   include ::PublicUrl::Build
 
   belongs_to :project, class_name: "::Project", touch: true
   has_many :jobs, class_name: "::Job", dependent: :destroy
+  has_many :artifacts, class_name: "::Artifact", dependent: :destroy,
+    inverse_of: :build
 
-  validates :project_id, :number, :sha, :branch, :source, presence: true
+  validates :project_id, :number, :sha, :branch, :source, :token, presence: true
   validates :number, uniqueness: { scope: [:project_id] }
 
-  before_validation :assign_number, on: :create
-  before_validation :assign_sha,    on: :create
-  before_validation :assign_branch, on: :create
+  before_validation :assign_number,  on: :create
+  before_validation :assign_sha,     on: :create
+  before_validation :assign_branch,  on: :create
+  before_validation :generate_token, on: :create
 
   after_create :publish_created
 
@@ -68,15 +73,18 @@ class Build < ActiveRecord::Base
     sha.to_s[0..8]
   end
 
-  def to_builder_task
+  def to_builder_task(job)
     ::Vx::Builder::Task.new(
-      project.name,
-      project.clone_url,
-      sha,
+      name:             project.name,
+      src:              project.clone_url,
+      sha:              sha,
+      build_id:         id,
+      job_id:           job.number,
       deploy_key:       project.deploy_key,
       branch:           branch,
       pull_request_id:  pull_request_id,
-      cache_url_prefix: cache_url_prefix
+      cache_url_prefix: cache_url_prefix,
+      artifacts_url_prefix: artifacts_url_prefix,
     )
   end
 
@@ -184,6 +192,10 @@ class Build < ActiveRecord::Base
 
     def assign_branch
       self.branch ||= 'master'
+    end
+
+    def generate_token
+      self.token ||= SecureRandom.uuid
     end
 
     def publish_created

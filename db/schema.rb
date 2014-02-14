@@ -11,11 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140213214828) do
+ActiveRecord::Schema.define(version: 20140213230747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
+
+  create_table "artifacts", force: true do |t|
+    t.integer  "build_id",     null: false
+    t.string   "file",         null: false
+    t.string   "content_type", null: false
+    t.string   "file_size",    null: false
+    t.string   "file_name",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "artifacts", ["build_id"], name: "index_artifacts_on_build_id", using: :btree
 
   create_table "builds", force: true do |t|
     t.integer  "number",                      null: false
@@ -34,6 +46,7 @@ ActiveRecord::Schema.define(version: 20140213214828) do
     t.string   "http_url"
     t.string   "branch_label"
     t.text     "source",                      null: false
+    t.string   "token",                       null: false
   end
 
   add_index "builds", ["project_id", "number"], name: "index_builds_on_project_id_and_number", unique: true, using: :btree

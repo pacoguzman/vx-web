@@ -41,6 +41,10 @@ describe Build do
         expect(subject).to_not change(b, :branch)
       end
     end
+
+    it "should assign token" do
+      expect(subject).to change(b, :token).from(nil)
+    end
   end
 
   it "should publish(:created) after create" do
@@ -68,14 +72,18 @@ describe Build do
 
   context "to_builder_task" do
     let(:b) { create :build }
-    subject { b.to_builder_task }
+    let(:job) { create :job, build: b }
+    subject { b.to_builder_task job }
     it { should be }
-    its(:name)             { should eq "ci-worker-test-repo" }
-    its(:src)              { should eq 'MyString' }
-    its(:sha)              { should eq 'MyString' }
-    its(:deploy_key)       { should be }
-    its(:branch)           { should eq 'MyString' }
-    its(:cache_url_prefix) { should be }
+    its(:name)                 { should eq "ci-worker-test-repo" }
+    its(:src)                  { should eq 'MyString' }
+    its(:sha)                  { should eq 'MyString' }
+    its(:deploy_key)           { should be }
+    its(:branch)               { should eq 'MyString' }
+    its(:cache_url_prefix)     { should eq "http://test.local/f/cached_files/#{b.project.token}" }
+    its(:artifacts_url_prefix) { should eq "http://test.local/f/artifacts/#{b.id}/#{b.token}" }
+    its(:build_id)             { should eq b.id }
+    its(:job_id)               { should eq job.number }
   end
 
   context "duration" do

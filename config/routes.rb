@@ -22,13 +22,12 @@ VxWeb::Application.routes.draw do
         post :restart
       end
       resources :jobs, only: [:index]
+      resources :artifacts, only: [:index]
     end
 
     resources :jobs, only: [:show] do
       resources :logs, only: [:index], controller: "job_logs"
     end
-
-    resources :cached_files, only: [:destroy]
 
     resources :user_repos, only: [:index] do
       member do
@@ -40,8 +39,9 @@ VxWeb::Application.routes.draw do
       end
     end
 
+    resources :cached_files, only: [:destroy]
+    resources :artifacts, only: [:destroy]
     resources :status, only: [:show], id: /(jobs)/
-
     resources :events, only: [:index]
   end
 
@@ -49,10 +49,12 @@ VxWeb::Application.routes.draw do
   post 'auth/gitlab/session',  to: "gitlab/user_sessions#create"
   get  'auth/failure',         to: redirect('/')
 
-  put "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#upload"
-  get "cached_files/u/:token/*file_name.:file_ext", to: "api/cached_files#download"
+  put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload", as: :upload_cached_file
+  get "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#download"
 
-  # TODO: remove it
+  put "/f/artifacts/:build_id/:token/*file_name.:file_ext", to: "api/artifacts#upload", as: :upload_artifact
+  get "/f/artifacts/:build_id/:token/*file_name.:file_ext", to: "api/artifacts#download"
+
   post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'
 
