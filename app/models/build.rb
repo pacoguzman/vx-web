@@ -148,6 +148,19 @@ class Build < ActiveRecord::Base
     jobs.any?
   end
 
+  def publish_perform_job_messages
+    jobs.each(&:publish_perform_job_message)
+    true
+  end
+
+  def subscribe_author
+    email = self.author_email
+    if email
+      ProjectSubscription.subscribe_by_email(email, project)
+    end
+    true
+  end
+
   def human_status_name
     @numan_status_name ||= begin
       case status_name

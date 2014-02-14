@@ -459,6 +459,31 @@ describe Build do
     it { should have(2).item }
   end
 
+  context "publish_perform_job_messages" do
+    let(:job) { create :job }
+    subject { job.build.publish_perform_job_messages }
+
+    it "should be" do
+      expect {
+        subject
+      }.to change(JobsConsumer.messages, :count).by(1)
+    end
+  end
+
+  context "subscribe_author" do
+    let(:author)  { 'me@example.com' }
+    let!(:b)      { create :build, author_email: author }
+    let!(:user)   { create :user, email: author }
+    subject { b.subscribe_author }
+
+    it "should be" do
+      expect {
+        subject
+      }.to change(user.project_subscriptions, :count).by(1)
+    end
+
+  end
+
   context "create_jobs_from_matrix" do
     let(:b) { create :build }
     subject { b.create_jobs_from_matrix }
