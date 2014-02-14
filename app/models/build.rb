@@ -120,14 +120,6 @@ class Build < ActiveRecord::Base
       )
   end
 
-  def new_deploy_from_self
-    deploy = Deploy.new
-    deploy.attributes = self.attributes
-    deploy.status = 0
-    deploy.started_at = deploy.finished_at = deploy.number = deploy.id = nil
-    deploy
-  end
-
   def to_build_configuration
     ::Vx::Builder::BuildConfiguration.new(source)
   end
