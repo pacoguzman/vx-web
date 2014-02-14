@@ -14,8 +14,6 @@ describe BuildFetcher do
     its(:project_id) { should eq project.id }
     its(:project)    { should eq project }
     its(:payload)    { should be }
-    its(:source)     { should be }
-    its(:matrix)     { should be }
     its(:build)      { should be }
   end
 

@@ -111,6 +111,15 @@ class JobUpdater
       end
     end
 
+    def create_deploy_if_need
+      if build.passed?
+        source = ::Vx::Builder::BuildConfiguration.new(build.source)
+        if source.deploy?
+          build.new_deploy_from_self
+        end
+      end
+    end
+
     def tm
       @tm ||= Time.at(message.tm)
     end

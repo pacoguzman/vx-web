@@ -10,7 +10,7 @@ class Build < ActiveRecord::Base
     inverse_of: :build
 
   validates :project_id, :number, :sha, :branch, :source, :token, presence: true
-  validates :number, uniqueness: { scope: [:project_id] }
+  validates :number, uniqueness: { scope: [:project_id, :type] }
 
   before_validation :assign_number,  on: :create
   before_validation :assign_sha,     on: :create
@@ -19,7 +19,7 @@ class Build < ActiveRecord::Base
 
   after_create :publish_created
 
-  default_scope ->{ order 'builds.number DESC' }
+  default_scope ->{ order 'builds.id DESC' }
   scope :finished, -> { where(status: [3,4,5]) }
 
   state_machine :status, initial: :initialized do
@@ -120,6 +120,34 @@ class Build < ActiveRecord::Base
       )
   end
 
+  def new_deploy_from_self
+    deploy = Deploy.new
+    deploy.attributes = self.attributes
+    deploy.status = 0
+    deploy.started_at = deploy.finished_at = deploy.number = deploy.id = nil
+    deploy
+  end
+
+  def to_build_configuration
+    ::Vx::Builder::BuildConfiguration.new(source)
+  end
+
+  def to_matrix_build_configurations
+    ::Vx::Builder::Matrix.new(to_build_configuration).build_configurations
+  end
+
+  def create_jobs_from_matrix
+    to_matrix_build_configurations.each_with_index do |config, idx|
+      number = idx + 1
+      self.jobs.create(
+        matrix: config.matrix_attributes,
+        number: number,
+        source: config.to_yaml
+      ) || return
+    end
+    jobs.any?
+  end
+
   def human_status_name
     @numan_status_name ||= begin
       case status_name
@@ -183,7 +211,7 @@ class Build < ActiveRecord::Base
   private
 
     def assign_number
-      self.number ||= project.builds.maximum(:number).to_i + 1
+      self.number ||= project.builds.where(type: nil).maximum(:number).to_i + 1
     end
 
     def assign_sha

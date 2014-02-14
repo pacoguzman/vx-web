@@ -1,0 +1,2 @@
+class DeploySerializer < BuildSerializer
+end
