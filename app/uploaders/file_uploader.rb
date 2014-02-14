@@ -38,8 +38,12 @@ class FileUploader < CarrierWave::Uploader::Base
   private
 
     def save_content_type_and_size_in_model
-      model.content_type = file.content_type if file.content_type
-      model.file_size    = file.size
+      if file.content_type.to_s.blank?
+        model.content_type = 'application/octet-stream'
+      else
+        model.content_type = file.content_type
+      end
+      model.file_size = file.size
     end
 
 end

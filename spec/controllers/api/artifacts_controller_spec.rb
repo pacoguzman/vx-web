@@ -23,7 +23,7 @@ describe Api::ArtifactsController do
     def upload
       io = File.read("#{Rails.root}/spec/fixtures/upload.tgz")
       @request.env["RAW_POST_DATA"] = io
-      put :upload, { token: b.token, file_name: "main/foo", file_ext: "tgz" }, 'CONTENT_TYPE' => 'application/octet-stream'
+      put :upload, { build_id: b.id, token: b.token, file_name: "main/foo", file_ext: "tgz" }, 'CONTENT_TYPE' => 'application/octet-stream'
     end
   end
 
@@ -39,8 +39,27 @@ describe Api::ArtifactsController do
     def download
       FileUtils.cp "#{Rails.root}/spec/fixtures/upload.tgz", "#{Rails.root}/spec/fixtures/upload_test.tgz"
       b.artifacts.create! file: upload, file_name: "main/foo.tgz"
-      get :download, { token: b.token, file_name: "main/foo", file_ext: "tgz" }
+      get :download, { build_id: b.id, token: b.token, file_name: "main/foo", file_ext: "tgz" }
     end
+  end
+
+  context "GET /index" do
+    let(:file) {
+      f = StringIO.new
+      f.write "content"
+      f.rewind
+      f.original_filename = 'foo.txt'
+      f
+    }
+    let(:b) { create :build }
+    let!(:a) { create :artifact, build: b, file: file }
+
+    before do
+      session[:user_id] = User.first.id
+      get :index, build_id: b.id, format: :json
+    end
+
+    it { should be_success }
   end
 
 end

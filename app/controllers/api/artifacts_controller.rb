@@ -45,7 +45,7 @@ class Api::ArtifactsController < ApplicationController
     end
 
     def find_build_by_token
-      @build = Build.find_by! token: params[:token]
+      @build = Build.find_by! token: params[:token], id: params[:build_id]
     end
 
     def find_artifact_by_file_name

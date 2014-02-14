@@ -52,8 +52,8 @@ VxWeb::Application.routes.draw do
   put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload", as: :upload_cached_file
   get "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#download"
 
-  put "/f/artifacts/:token/*file_name.:file_ext", to: "api/artifacts#upload", as: :upload_artifact
-  get "/f/artifacts/:token/*file_name.:file_ext", to: "api/artifacts#download"
+  put "/f/artifacts/:build_id/:token/*file_name.:file_ext", to: "api/artifacts#upload", as: :upload_artifact
+  get "/f/artifacts/:build_id/:token/*file_name.:file_ext", to: "api/artifacts#download"
 
   post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'

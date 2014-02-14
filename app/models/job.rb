@@ -58,7 +58,7 @@ class Job < ActiveRecord::Base
   end
 
   def to_builder_script
-    ::Vx::Builder::Script.new(build.to_builder_task, to_builder_source)
+    ::Vx::Builder::Script.new(build.to_builder_task(self), to_builder_source)
   end
 
   def to_builder_source
