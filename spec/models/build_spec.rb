@@ -11,13 +11,11 @@ describe Build do
     context "assign number" do
 
       it "should be 1 when no other builds" do
-        create :deploy, number: 1, project: project
         expect(subject).to change(b, :number).to(1)
       end
 
       it "should increment when any other builds exist" do
-        create :build, number: 1, project: project
-        create :deploy, number: 1, project: project
+        create :build, project: project
         expect(subject).to change(b, :number).to(2)
       end
     end
