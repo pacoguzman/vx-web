@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe BuildFetcher do
-  let(:project) { create :project }
-  let(:payload) { Vx::ServiceConnector::Model.test_payload }
-  let(:params)  { payload.to_hash.stringify_keys.merge("project_id" => project.id) }
-  let(:fetcher) { described_class.new params }
+describe PerformBuild do
+  let(:project)       { create :project }
+  let(:payload)       { Vx::ServiceConnector::Model.test_payload }
+  let(:params)        { payload.to_hash.stringify_keys.merge("project_id" => project.id) }
+  let(:perform_build) { described_class.new params }
 
-  subject { fetcher }
+  subject { perform_build }
 
   context "just created" do
     before { mock_file_request ({script: "true"}).to_yaml }
@@ -17,12 +17,12 @@ describe BuildFetcher do
     its(:build)      { should be }
   end
 
-  context "#perform" do
+  context "#process" do
     let(:user)     { project.user_repo.user }
     let(:commit)   { Vx::ServiceConnector::Model.test_commit }
     let(:file)     { { "rvm" => "2.0.0" }.to_yaml }
 
-    subject { fetcher.perform }
+    subject { perform_build.process }
     before { mock_file_request file }
 
     context "success" do
@@ -47,7 +47,7 @@ describe BuildFetcher do
       it "should create jobs" do
         expect {
           subject
-        }.to change(fetcher.build.jobs, :count).by(1)
+        }.to change(perform_build.build.jobs, :count).by(1)
         job = subject.jobs.first
         expect(job).to be
         expect(job.number).to eq 1
@@ -71,7 +71,7 @@ describe BuildFetcher do
 
       context "when ignore payload" do
         before do
-          mock(fetcher.payload).ignore? { true }
+          mock(perform_build.payload).ignore? { true }
         end
         it { should be_nil }
       end

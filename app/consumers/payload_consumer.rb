@@ -11,8 +11,7 @@ class PayloadConsumer
   model Hash
 
   def perform(payload)
-    fetcher = BuildFetcher.new(payload)
-    fetcher.perform
+    PerformBuild.new(payload).process
 
     ack
   end

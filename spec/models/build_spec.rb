@@ -11,13 +11,11 @@ describe Build do
     context "assign number" do
 
       it "should be 1 when no other builds" do
-        create :deploy, number: 1, project: project
         expect(subject).to change(b, :number).to(1)
       end
 
       it "should increment when any other builds exist" do
-        create :build, number: 1, project: project
-        create :deploy, number: 1, project: project
+        create :build, project: project
         expect(subject).to change(b, :number).to(2)
       end
     end
@@ -457,6 +455,31 @@ describe Build do
     end
     it { should be }
     it { should have(2).item }
+  end
+
+  context "publish_perform_job_messages" do
+    let(:job) { create :job }
+    subject { job.build.publish_perform_job_messages }
+
+    it "should be" do
+      expect {
+        subject
+      }.to change(JobsConsumer.messages, :count).by(1)
+    end
+  end
+
+  context "subscribe_author" do
+    let(:author)  { 'me@example.com' }
+    let!(:b)      { create :build, author_email: author }
+    let!(:user)   { create :user, email: author }
+    subject { b.subscribe_author }
+
+    it "should be" do
+      expect {
+        subject
+      }.to change(user.project_subscriptions, :count).by(1)
+    end
+
   end
 
   context "create_jobs_from_matrix" do

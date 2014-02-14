@@ -1,4 +1,4 @@
-class BuildFetcher
+class PerformBuild
 
   attr_reader :payload, :project_id
 
@@ -15,15 +15,15 @@ class BuildFetcher
     @build ||= project.new_build_from_payload(payload)
   end
 
-  def perform
+  def process
     transaction do
       guard do
         (
-          build                         &&
-          build.save                    &&
-          build.create_jobs_from_matrix &&
-          publish_perform_job_messages  &&
-          subscribe_author_to_repo
+          build                               &&
+          build.save                          &&
+          build.create_jobs_from_matrix       &&
+          build.publish_perform_job_messages  &&
+          build.subscribe_author
         ).or_rollback_transaction
         build
       end
@@ -31,19 +31,6 @@ class BuildFetcher
   end
 
   private
-
-    def subscribe_author_to_repo
-      email = build.author_email
-      if email
-        ProjectSubscription.subscribe_by_email(email, project)
-      end
-      true
-    end
-
-    def publish_perform_job_messages
-      build.jobs.each(&:publish_perform_job_message)
-      true
-    end
 
     def guard
       if project && !payload.ignore?

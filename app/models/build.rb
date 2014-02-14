@@ -10,7 +10,7 @@ class Build < ActiveRecord::Base
     inverse_of: :build
 
   validates :project_id, :number, :sha, :branch, :source, :token, presence: true
-  validates :number, uniqueness: { scope: [:project_id, :type] }
+  validates :number, uniqueness: { scope: [:project_id] }
 
   before_validation :assign_number,  on: :create
   before_validation :assign_sha,     on: :create
@@ -19,7 +19,7 @@ class Build < ActiveRecord::Base
 
   after_create :publish_created
 
-  default_scope ->{ order 'builds.id DESC' }
+  default_scope ->{ order 'builds.number DESC' }
   scope :finished, -> { where(status: [3,4,5]) }
 
   state_machine :status, initial: :initialized do
@@ -148,6 +148,19 @@ class Build < ActiveRecord::Base
     jobs.any?
   end
 
+  def publish_perform_job_messages
+    jobs.each(&:publish_perform_job_message)
+    true
+  end
+
+  def subscribe_author
+    email = self.author_email
+    if email
+      ProjectSubscription.subscribe_by_email(email, project)
+    end
+    true
+  end
+
   def human_status_name
     @numan_status_name ||= begin
       case status_name
@@ -211,7 +224,7 @@ class Build < ActiveRecord::Base
   private
 
     def assign_number
-      self.number ||= project.builds.where(type: nil).maximum(:number).to_i + 1
+      self.number ||= project.builds.maximum(:number).to_i + 1
     end
 
     def assign_sha
