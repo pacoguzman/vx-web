@@ -55,7 +55,7 @@
       %tbody
         %tr{ 'ng-repeat' => "artifact in artifacts | orderBy:'name'" }
           %td
-            %a{ href: '{{ artifact.download_url }}' }
+            %a{ href: '{{ artifact.download_url }}', target: "_blank" }
               {{ artifact.name }}
           %td
             {{ artifact.content_type }}
