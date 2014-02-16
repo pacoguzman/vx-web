@@ -8,29 +8,29 @@ describe JobUpdater do
     job1  = create :job, build: build, number: 1, status: 0
     job2  = create :job, build: build, number: 2, status: 0
 
-    perform(job1, 2, 1)
+    perform(job1, status: 2, tm: 1)
 
     expect_task(build, status_name: :started, started_at: 1)
-    expect_task(job1, status_name: :started, started_at: 1)
-    expect_task(job2, status_name: :initialized)
+    expect_task(job1,  status_name: :started, started_at: 1)
+    expect_task(job2,  status_name: :initialized)
 
-    perform(job1, 3, 2)
-
-    expect_task(build, status_name: :started, started_at: 1)
-    expect_task(job1, status_name: :passed, started_at: 1, finished_at: 2)
-    expect_task(job2, status_name: :initialized)
-
-    perform(job2, 2, 3)
+    perform(job1, status: 3, tm: 2)
 
     expect_task(build, status_name: :started, started_at: 1)
-    expect_task(job1, status_name: :passed, started_at: 1, finished_at: 2)
-    expect_task(job2, status_name: :started, started_at: 3)
+    expect_task(job1,  status_name: :passed, started_at: 1, finished_at: 2)
+    expect_task(job2,  status_name: :initialized)
 
-    perform(job2, 3, 4)
+    perform(job2, status: 2, tm: 3)
+
+    expect_task(build, status_name: :started, started_at: 1)
+    expect_task(job1,  status_name: :passed, started_at: 1, finished_at: 2)
+    expect_task(job2,  status_name: :started, started_at: 3)
+
+    perform(job2, status: 3, tm: 4)
 
     expect_task(build, status_name: :passed, started_at: 1, finished_at: 4)
-    expect_task(job1, status_name: :passed, started_at: 1, finished_at: 2)
-    expect_task(job2, status_name: :passed, started_at: 3, finished_at: 4)
+    expect_task(job1,  status_name: :passed, started_at: 1, finished_at: 2)
+    expect_task(job2,  status_name: :passed, started_at: 3, finished_at: 4)
   end
 
   it "when any of jobs failed" do
@@ -38,29 +38,29 @@ describe JobUpdater do
     job1  = create :job, build: build, number: 1, status: 0
     job2  = create :job, build: build, number: 2, status: 0
 
-    perform(job1, 2, 1)
+    perform(job1, status: 2, tm: 1)
 
     expect_task(build, status_name: :started, started_at: 1)
-    expect_task(job1, status_name: :started, started_at: 1)
-    expect_task(job2, status_name: :initialized)
+    expect_task(job1,  status_name: :started, started_at: 1)
+    expect_task(job2,  status_name: :initialized)
 
-    perform(job1, 4, 2)
-
-    expect_task(build, status_name: :started, started_at: 1)
-    expect_task(job1, status_name: :failed, started_at: 1, finished_at: 2)
-    expect_task(job2, status_name: :initialized)
-
-    perform(job2, 2, 3)
+    perform(job1, status: 4, tm: 2)
 
     expect_task(build, status_name: :started, started_at: 1)
-    expect_task(job1, status_name: :failed, started_at: 1, finished_at: 2)
-    expect_task(job2, status_name: :started, started_at: 3)
+    expect_task(job1,  status_name: :failed, started_at: 1, finished_at: 2)
+    expect_task(job2,  status_name: :initialized)
 
-    perform(job2, 3, 4)
+    perform(job2, status: 2, tm: 3)
+
+    expect_task(build, status_name: :started, started_at: 1)
+    expect_task(job1,  status_name: :failed, started_at: 1, finished_at: 2)
+    expect_task(job2,  status_name: :started, started_at: 3)
+
+    perform(job2, status: 3, tm: 4)
 
     expect_task(build, status_name: :failed, started_at: 1, finished_at: 4)
-    expect_task(job1, status_name: :failed, started_at: 1, finished_at: 2)
-    expect_task(job2, status_name: :passed, started_at: 3, finished_at: 4)
+    expect_task(job1,  status_name: :failed, started_at: 1, finished_at: 2)
+    expect_task(job2,  status_name: :passed, started_at: 3, finished_at: 4)
   end
 
   it "when any of jobs errored" do
@@ -68,31 +68,265 @@ describe JobUpdater do
     job1  = create :job, build: build, number: 1, status: 0
     job2  = create :job, build: build, number: 2, status: 0
 
-    perform(job1, 2, 1)
+    perform(job1, status: 2, tm: 1)
 
     expect_task(build, status_name: :started, started_at: 1)
-    expect_task(job1, status_name: :started, started_at: 1)
-    expect_task(job2, status_name: :initialized)
+    expect_task(job1,  status_name: :started, started_at: 1)
+    expect_task(job2,  status_name: :initialized)
 
-    perform(job1, 5, 2)
-
-    expect_task(build, status_name: :started, started_at: 1)
-    expect_task(job1, status_name: :errored, started_at: 1, finished_at: 2)
-    expect_task(job2, status_name: :initialized)
-
-    perform(job2, 2, 3)
+    perform(job1, status: 5, tm: 2)
 
     expect_task(build, status_name: :started, started_at: 1)
-    expect_task(job1, status_name: :errored, started_at: 1, finished_at: 2)
-    expect_task(job2, status_name: :started, started_at: 3)
+    expect_task(job1,  status_name: :errored, started_at: 1, finished_at: 2)
+    expect_task(job2,  status_name: :initialized)
 
-    perform(job2, 3, 4)
+    perform(job2, status: 2, tm: 3)
+
+    expect_task(build, status_name: :started, started_at: 1)
+    expect_task(job1,  status_name: :errored, started_at: 1, finished_at: 2)
+    expect_task(job2,  status_name: :started, started_at: 3)
+
+    perform(job2, status: 3, tm: 4)
 
     expect_task(build, status_name: :errored, started_at: 1, finished_at: 4)
-    expect_task(job1, status_name: :errored, started_at: 1, finished_at: 2)
-    expect_task(job2, status_name: :passed, started_at: 3, finished_at: 4)
+    expect_task(job1,  status_name: :errored, started_at: 1, finished_at: 2)
+    expect_task(job2,  status_name: :passed, started_at: 3, finished_at: 4)
   end
 
+  context "with deploy job" do
+    it "when all jobs successfuly completed" do
+      build   = create :build, status: 0
+      job1    = create :job, build: build, number: 1, status: 0
+      job2    = create :job, build: build, number: 2, status: 0
+      deploy  = create :job, build: build, number: 3, status: 0, kind: 'deploy'
+
+      perform(job1, status: 2, tm: 1)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :started, started_at: 1)
+      expect_task(job2,   status_name: :initialized)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job1, status: 3, tm: 2)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :initialized)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job2, status: 2, tm: 3)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :started, started_at: 3)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job2, status: 3, tm: 4)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
+      expect_task(deploy, status_name: :initialized)
+
+      expect_last_perform_message(deploy)
+
+      perform(deploy, status: 2, tm: 5)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
+      expect_task(deploy, status_name: :started, started_at: 5)
+
+      perform(deploy, status: 3, tm: 6)
+
+      expect_task(build,  status_name: :passed, started_at: 1, finished_at: 6)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
+      expect_task(deploy, status_name: :passed, started_at: 5, finished_at: 6)
+    end
+
+    it "when any of regular jobs failed" do
+      build  = create :build, status: 0
+      job1   = create :job, build: build, number: 1, status: 0
+      job2   = create :job, build: build, number: 2, status: 0
+      deploy = create :job, build: build, number: 3, status: 0, kind: 'deploy'
+
+      perform(job1, status: 2, tm: 1)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :started, started_at: 1)
+      expect_task(job2,   status_name: :initialized)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job1, status: 4, tm: 2)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :failed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :initialized)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job2, status: 2, tm: 3)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :failed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :started, started_at: 3)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job2, status: 3, tm: 4)
+
+      expect_task(build,  status_name: :failed, started_at: 1, finished_at: 4)
+      expect_task(job1,   status_name: :failed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
+      expect_task(deploy, status_name: :cancelled)
+
+      expect(JobsConsumer.messages).to be_empty
+    end
+
+    it "when any of regular jobs errored" do
+      build  = create :build, status: 0
+      job1   = create :job, build: build, number: 1, status: 0
+      job2   = create :job, build: build, number: 2, status: 0
+      deploy = create :job, build: build, number: 3, status: 0, kind: 'deploy'
+
+      perform(job1, status: 2, tm: 1)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :started, started_at: 1)
+      expect_task(job2,   status_name: :initialized)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job1, status: 5, tm: 2)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :errored, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :initialized)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job2, status: 2, tm: 3)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :errored, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :started, started_at: 3)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job2, status: 3, tm: 4)
+
+      expect_task(build,  status_name: :errored, started_at: 1, finished_at: 4)
+      expect_task(job1,   status_name: :errored, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
+      expect_task(deploy, status_name: :cancelled)
+
+      expect(JobsConsumer.messages).to be_empty
+    end
+
+    it "when deploy job failed" do
+      build   = create :build, status: 0
+      job1    = create :job, build: build, number: 1, status: 0
+      job2    = create :job, build: build, number: 2, status: 0
+      deploy  = create :job, build: build, number: 3, status: 0, kind: 'deploy'
+
+      perform(job1, status: 2, tm: 1)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :started, started_at: 1)
+      expect_task(job2,   status_name: :initialized)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job1, status: 3, tm: 2)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :initialized)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job2, status: 2, tm: 3)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :started, started_at: 3)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job2, status: 3, tm: 4)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
+      expect_task(deploy, status_name: :initialized)
+
+      expect_last_perform_message(deploy)
+
+      perform(deploy, status: 2, tm: 5)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
+      expect_task(deploy, status_name: :started, started_at: 5)
+
+      perform(deploy, status: 4, tm: 6)
+
+      expect_task(build,  status_name: :failed, started_at: 1, finished_at: 6)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
+      expect_task(deploy, status_name: :failed, started_at: 5, finished_at: 6)
+    end
+
+    it "when deploy job errored" do
+      build   = create :build, status: 0
+      job1    = create :job, build: build, number: 1, status: 0
+      job2    = create :job, build: build, number: 2, status: 0
+      deploy  = create :job, build: build, number: 3, status: 0, kind: 'deploy'
+
+      perform(job1, status: 2, tm: 1)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :started, started_at: 1)
+      expect_task(job2,   status_name: :initialized)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job1, status: 3, tm: 2)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :initialized)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job2, status: 2, tm: 3)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :started, started_at: 3)
+      expect_task(deploy, status_name: :initialized)
+
+      perform(job2, status: 3, tm: 4)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
+      expect_task(deploy, status_name: :initialized)
+
+      expect_last_perform_message(deploy)
+
+      perform(deploy, status: 2, tm: 5)
+
+      expect_task(build,  status_name: :started, started_at: 1)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
+      expect_task(deploy, status_name: :started, started_at: 5)
+
+      perform(deploy, status: 5, tm: 6)
+
+      expect_task(build,  status_name: :errored, started_at: 1, finished_at: 6)
+      expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
+      expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
+      expect_task(deploy, status_name: :errored, started_at: 5, finished_at: 6)
+    end
+  end
+
+  def expect_last_perform_message(job, options = {})
+    m = JobsConsumer.messages.last
+    expect(m.job_id).to eq job.number
+    expect(m.build_id).to eq job.build_id
+  end
 
   def expect_task(task, options = {})
     task.reload
@@ -111,9 +345,9 @@ describe JobUpdater do
     end
   end
 
-  def perform(job, status, tm = nil)
+  def perform(job, options = {})
     JobUpdater.new(
-      message(job, status, tm)
+      message(job, options[:status], options[:tm])
     ).perform
   end
 
