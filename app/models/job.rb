@@ -10,7 +10,8 @@ class Job < ActiveRecord::Base
   after_create :publish_created
 
   default_scope ->{ order 'jobs.number ASC' }
-
+  scope :deploy,  ->{ where(kind: 'deploy') }
+  scope :regular, ->{ where(kind: nil) }
 
   state_machine :status, initial: :initialized do
 
@@ -19,6 +20,7 @@ class Job < ActiveRecord::Base
     state :passed,        value: 3
     state :failed,        value: 4
     state :errored,       value: 5
+    state :cancelled,     value: -1
 
     event :start do
       transition [:initialized, :started] => :started
@@ -36,7 +38,11 @@ class Job < ActiveRecord::Base
       transition [:initialized, :started] => :errored
     end
 
-    after_transition any => [:started, :passed, :failed, :errored] do |job, _|
+    event :cancel do
+      transition [:initialized] => :cancelled
+    end
+
+    after_transition any => [:started, :passed, :failed, :errored, :cancelled] do |job, _|
       job.publish
     end
   end

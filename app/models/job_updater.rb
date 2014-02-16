@@ -23,7 +23,7 @@ class JobUpdater
       update_and_save_job_status
       truncate_job_logs
       start_build? and start_build
-      all_jobs_finished? and finalize_build
+      finalize_build
       true
     end
   end
@@ -58,17 +58,6 @@ class JobUpdater
       end
     end
 
-    def new_build_status
-      if all_jobs_finished?
-        build.jobs.maximum(:status)
-      end
-    end
-
-    def all_jobs_finished?
-      statuses = [3,4,5]
-      build.jobs.where(status: statuses).count == build.jobs.count
-    end
-
     def start_build?
       message.status == 2 && build.status_name == :initialized
     end
@@ -98,7 +87,23 @@ class JobUpdater
     end
 
     def finalize_build
-      case new_build_status
+
+      if build.regular_jobs_finished?
+        if build.regular_jobs_passed?
+          build.publish_perform_deploy_messages
+        else
+          build.cancel_deploy_jobs
+          update_build_status build.regular_jobs_status
+        end
+      end
+
+      if build.all_jobs_finished?
+        update_build_status build.all_jobs_status
+      end
+    end
+
+    def update_build_status(new_status)
+      case new_status
       when 3
         build.finished_at = tm
         build.pass!
@@ -108,16 +113,6 @@ class JobUpdater
       when 5
         build.finished_at = tm
         build.error!
-      end
-    end
-
-    def create_deploy_if_need
-      if build.passed?
-        source = ::Vx::Builder::BuildConfiguration.new(build.source)
-        if source.deploy?
-          deploy = build.new_deploy_from_self
-          deploy.save
-        end
       end
     end
 

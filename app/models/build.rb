@@ -149,7 +149,12 @@ class Build < ActiveRecord::Base
   end
 
   def publish_perform_job_messages
-    jobs.each(&:publish_perform_job_message)
+    jobs.regular.each(&:publish_perform_job_message)
+    true
+  end
+
+  def publish_perform_deploy_messages
+    jobs.deploy.each(&:publish_perform_job_message)
     true
   end
 
@@ -219,6 +224,30 @@ class Build < ActiveRecord::Base
 
   def update_last_build_on_project
     project.update_last_build
+  end
+
+  def regular_jobs_finished?
+    jobs.regular.all?(&:finished?)
+  end
+
+  def regular_jobs_passed?
+    jobs.regular.all?(&:passed?)
+  end
+
+  def all_jobs_finished?
+    jobs.all?(&:finished?)
+  end
+
+  def regular_jobs_status
+    jobs.regular.maximum(:status)
+  end
+
+  def all_jobs_status
+    jobs.maximum(:status)
+  end
+
+  def cancel_deploy_jobs
+    jobs.deploy.map(&:cancel!)
   end
 
   private

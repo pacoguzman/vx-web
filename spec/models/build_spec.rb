@@ -439,8 +439,21 @@ describe Build do
   end
 
   context "publish_perform_job_messages" do
-    let(:job) { create :job }
-    subject { job.build.publish_perform_job_messages }
+    let!(:job1) { create :job }
+    let!(:job2) { create :job, :deploy, build: job1.build, number: 2 }
+    subject { job1.build.publish_perform_job_messages }
+
+    it "should be" do
+      expect {
+        subject
+      }.to change(JobsConsumer.messages, :count).by(1)
+    end
+  end
+
+  context "publish_perform_deploy_messages" do
+    let!(:job1) { create :job }
+    let!(:job2) { create :job, :deploy, build: job1.build, number: 2 }
+    subject { job1.build.publish_perform_deploy_messages }
 
     it "should be" do
       expect {
@@ -503,6 +516,99 @@ describe Build do
         expect(b).to have(3).jobs
         expect(b.jobs.map(&:kind)).to eq [nil, nil, 'deploy']
       end
+    end
+  end
+
+  context "regular_jobs_finished?" do
+    let(:b) { create :build }
+    subject { b.regular_jobs_finished? }
+
+    it "should be true when jobs status in [3,4,5]" do
+      create(:job, build: b, status: 3, number: 1)
+      create(:job, build: b, status: 4, number: 2)
+      create(:job, build: b, status: 5, number: 3)
+      create(:job, build: b, status: 2, kind: 'deploy', number: 4)
+      expect(subject).to be_true
+    end
+
+    it "should be false when jobs status not in [3,4,5]" do
+      create(:job, build: b, status: 2, number: 1)
+      create(:job, build: b, status: 4, number: 2)
+      create(:job, build: b, status: 2, kind: 'deploy', number: 4)
+      expect(subject).to be_false
+    end
+  end
+
+  context "all_jobs_finished?" do
+    let(:b) { create :build }
+    subject { b.all_jobs_finished? }
+
+    it "should be true when jobs status in [3,4,5]" do
+      create(:job, build: b, status: 3, number: 1)
+      create(:job, build: b, status: 4, number: 2)
+      create(:job, build: b, status: 5, number: 3, kind: 'deploy')
+      expect(subject).to be_true
+    end
+
+    it "should be false when jobs status not in [3,4,5]" do
+      create(:job, build: b, status: 4, number: 1)
+      create(:job, build: b, status: 2, kind: 'deploy', number: 2)
+      expect(subject).to be_false
+    end
+  end
+
+  context "regular_jobs_passed?" do
+    let(:b) { create :build }
+    subject { b.regular_jobs_passed? }
+
+    it "should be true when all regular jobs passed" do
+      create(:job, build: b, status: 3, number: 1)
+      create(:job, build: b, status: 3, number: 2)
+      create(:job, build: b, status: 2, number: 3, kind: 'deploy')
+      expect(subject).to be_true
+    end
+
+    it "should be false when any of regular jobs is not passed" do
+      create(:job, build: b, status: 2, number: 1)
+      create(:job, build: b, status: 3, number: 2)
+      create(:job, build: b, status: 2, number: 3, kind: 'deploy')
+      expect(subject).to be_false
+    end
+  end
+
+  context "regular_jobs_status" do
+    let(:b) { create :build }
+    subject { b.regular_jobs_status }
+
+    it "should be maximum status of jobs" do
+      create(:job, build: b, status: 3, number: 1)
+      create(:job, build: b, status: 4, number: 2, kind: 'deploy')
+      expect(subject).to eq 3
+    end
+  end
+
+  context "all_jobs_status" do
+    let(:b) { create :build }
+    subject { b.all_jobs_status }
+
+    it "should be maximum status of jobs" do
+      create(:job, build: b, status: 3, number: 1)
+      create(:job, build: b, status: 4, number: 2, kind: 'deploy')
+      expect(subject).to eq 4
+    end
+  end
+
+  context "cancel_deploy_jobs" do
+    let(:b) { create :build }
+    subject { b.cancel_deploy_jobs }
+
+    it "should be" do
+      j1 = create(:job, build: b, status: 0, number: 1)
+      j2 = create(:job, build: b, status: 0, number: 2, kind: 'deploy')
+
+      b.cancel_deploy_jobs
+      expect(j1.reload.status).to eq 0
+      expect(j2.reload.status).to eq(-1)
     end
   end
 end
