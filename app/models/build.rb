@@ -124,17 +124,25 @@ class Build < ActiveRecord::Base
     ::Vx::Builder::BuildConfiguration.new(source)
   end
 
-  def to_matrix_build_configurations
-    ::Vx::Builder::Matrix.new(to_build_configuration).build_configurations
+  def to_build_matrix
+    ::Vx::Builder::Matrix.new(to_build_configuration)
   end
 
   def create_jobs_from_matrix
-    to_matrix_build_configurations.each_with_index do |config, idx|
+    matrix = to_build_matrix
+    matrix.build_configurations.each_with_index do |config, idx|
       number = idx + 1
       self.jobs.create(
         matrix: config.matrix_attributes,
         number: number,
         source: config.to_yaml
+      ) || return
+    end
+    if deploy = matrix.deploy_configuration(branch)
+      self.jobs.create(
+        matrix: deploy.matrix_attributes,
+        source: deploy.to_yaml,
+        kind:   'deploy'
       ) || return
     end
     jobs.any?

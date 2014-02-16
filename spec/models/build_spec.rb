@@ -429,13 +429,13 @@ describe Build do
     its(:script)     { should eq ["/bin/true"] }
   end
 
-  context "to_matrix_build_configurations" do
-    subject { b.to_matrix_build_configurations }
+  context "to_build_matrix" do
+    subject { b.to_build_matrix }
     before do
       b.source = {"rvm" => %w{ 1.9 2.0 }}.to_yaml
     end
     it { should be }
-    it { should have(2).item }
+    it { should have(2).build_configurations }
   end
 
   context "publish_perform_job_messages" do
@@ -490,6 +490,18 @@ describe Build do
 
       it "should have true sources" do
         expect(subject.map{|i| YAML.load(i.source)["rvm"] }).to eq [["1.9"], ["2.0"]]
+      end
+    end
+
+    context "with deploy job" do
+      before do
+        b.source = {"rvm" => %w{ 1.9 2.0 }, "deploy" => "cap deploy"}.to_yaml
+        b.create_jobs_from_matrix
+      end
+
+      it "should create deploy job" do
+        expect(b).to have(3).jobs
+        expect(b.jobs.map(&:kind)).to eq [nil, nil, 'deploy']
       end
     end
   end
