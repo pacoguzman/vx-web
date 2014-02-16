@@ -515,6 +515,7 @@ describe Build do
       it "should create deploy job" do
         expect(b).to have(3).jobs
         expect(b.jobs.map(&:kind)).to eq [nil, nil, 'deploy']
+        expect(b.jobs.map(&:number)).to eq [1,2,3]
       end
     end
   end

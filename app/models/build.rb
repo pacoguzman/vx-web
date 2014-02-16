@@ -140,6 +140,7 @@ class Build < ActiveRecord::Base
     end
     if deploy = matrix.deploy_configuration(branch)
       self.jobs.create(
+        number: matrix.build_configurations.size,
         matrix: deploy.matrix_attributes,
         source: deploy.to_yaml,
         kind:   'deploy'
