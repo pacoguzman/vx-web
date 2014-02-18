@@ -63,6 +63,10 @@ class Job < ActiveRecord::Base
     [3,4,5].include?(status)
   end
 
+  def deploy?
+    kind == 'deploy'
+  end
+
   def to_builder_script
     ::Vx::Builder::Script.new(build.to_builder_task(self), to_builder_source)
   end
@@ -81,7 +85,7 @@ class Job < ActiveRecord::Base
       before_script:   script.to_before_script,
       script:          script.to_script,
       after_script:    script.to_after_script,
-      image:           script.image
+      image:           script.image,
     )
   end
 
@@ -104,7 +108,9 @@ class Job < ActiveRecord::Base
 
         self.logs.delete_all
         self.save.or_rollback_transaction
-        self.publish_perform_job_message
+        unless deploy?
+          self.publish_perform_job_message
+        end
         self.publish
         self
       end

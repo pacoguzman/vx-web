@@ -85,6 +85,7 @@ class Build < ActiveRecord::Base
       pull_request_id:  pull_request_id,
       cache_url_prefix: cache_url_prefix,
       artifacts_url_prefix: artifacts_url_prefix,
+      deploy:           job.deploy?
     )
   end
 
@@ -130,8 +131,9 @@ class Build < ActiveRecord::Base
 
   def create_jobs_from_matrix
     matrix = to_build_matrix
-    matrix.build_configurations.each_with_index do |config, idx|
-      number = idx + 1
+    number = 0
+    matrix.build_configurations.each do |config|
+      number = number + 1
       self.jobs.create(
         matrix: config.matrix_attributes,
         number: number,
@@ -140,7 +142,7 @@ class Build < ActiveRecord::Base
     end
     if deploy = matrix.deploy_configuration(branch)
       self.jobs.create(
-        number: matrix.build_configurations.size,
+        number: number + 1,
         matrix: deploy.matrix_attributes,
         source: deploy.to_yaml,
         kind:   'deploy'
@@ -154,8 +156,12 @@ class Build < ActiveRecord::Base
     true
   end
 
+  def initialized_deploy_jobs
+    jobs.deploy.where(status: 0)
+  end
+
   def publish_perform_deploy_messages
-    jobs.deploy.each(&:publish_perform_job_message)
+    initialized_deploy_jobs.each(&:publish_perform_job_message)
     true
   end
 

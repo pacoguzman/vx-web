@@ -129,6 +129,7 @@ describe JobUpdater do
       expect_task(deploy, status_name: :initialized)
 
       expect_last_perform_message(deploy)
+      JobsConsumer.messages.clear
 
       perform(deploy, status: 2, tm: 5)
 
@@ -143,6 +144,8 @@ describe JobUpdater do
       expect_task(job1,   status_name: :passed, started_at: 1, finished_at: 2)
       expect_task(job2,   status_name: :passed, started_at: 3, finished_at: 4)
       expect_task(deploy, status_name: :passed, started_at: 5, finished_at: 6)
+
+      expect(JobsConsumer.messages).to be_empty
     end
 
     it "when any of regular jobs failed" do
