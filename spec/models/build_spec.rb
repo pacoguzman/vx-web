@@ -419,25 +419,6 @@ describe Build do
     end
   end
 
-  context "new_deploy_from_self" do
-    let(:b) { create :build }
-    subject { b.new_deploy_from_self }
-    its(:id)              { should be_nil }
-    its(:project)         { should eq b.project }
-    its(:sha)             { should eq b.sha }
-    its(:branch)          { should eq b.branch }
-    its(:pull_request_id) { should eq b.pull_request_id }
-    its(:author)          { should eq b.author }
-    its(:message)         { should eq b.message }
-    its(:status)          { should eq 0 }
-    its(:started_at)      { should be_nil }
-    its(:finished_at)     { should be_nil }
-    its(:author_email)    { should eq b.author_email }
-    its(:http_url)        { should eq b.http_url }
-    its(:branch_label)    { should eq b.branch_label }
-    its(:source)          { should eq b.source }
-  end
-
   context "to_build_configuration" do
     subject { b.to_build_configuration }
     before do
