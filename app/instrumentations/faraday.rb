@@ -6,7 +6,7 @@ $stdout.puts ' --> initializing ActiveSupport::Notifications for faraday'
 ActiveSupport::Notifications.subscribe(/\.faraday$/) do |event, started, finished, _, payload|
 
   render_http_header = ->(headers) {
-    headers.map do |key,value|
+    (headers || []).map do |key,value|
       if %{ PRIVATE-TOKEN Authorization }.include?(key)
         value = value.gsub(/./, "*")
       end
