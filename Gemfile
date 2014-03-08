@@ -15,6 +15,7 @@ gem 'sshkey'
 
 gem 'vx-message',           '0.5.0'
 gem 'vx-builder',           :github => 'pacoguzman/vx-builder', :branch => 'bebanjo'
+gem 'vx-common',            :github => 'pacoguzman/vx-common',  :branch => 'bebanjo'
 gem 'vx-service_connector', '0.0.10'
 gem 'vx-consumer',          '0.1.1'
 gem 'vx-instrumentation',   '0.1.1'
