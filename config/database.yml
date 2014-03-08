@@ -1,7 +1,7 @@
 development:
   adapter: postgresql
   database: ci_web_development
-  user: postgres
+  #user: postgres
   pool: 50
   timeout: 5000
   host: localhost
@@ -9,7 +9,7 @@ development:
 production:
   adapter: postgresql
   database: ci_web_development
-  user: postgres
+  #user: postgres
   pool: 50
   timeout: 5000
   host: localhost
@@ -17,7 +17,7 @@ production:
 test:
   adapter: postgresql
   database: ci_web_test
-  user: postgres
+  #user: postgres
   pool: 50
   timeout: 5000
   host: localhost
