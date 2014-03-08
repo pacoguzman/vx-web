@@ -23,3 +23,5 @@ Capfile
 .logstash-forwarder
 log/
 app/assets/javascripts/templates.compilled.js
+
+spec/fixtures/github/bebanjo
