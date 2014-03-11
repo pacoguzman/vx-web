@@ -31,6 +31,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def builds_branch
+    builds.select("DISTINCT ON (branch) #{Build.column_names.map{|c| "builds.#{c}"}.join(", ")}").reorder(:branch, number: :desc)
+  end
+
   def to_s
     name
   end

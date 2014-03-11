@@ -32,6 +32,11 @@ Vx.service 'buildStore',
         $http.get("/api/projects/#{projectId}/pull_requests").then (re) ->
           re.data
 
+    branches = (projectId) ->
+      collection("branches" + projectId).get () ->
+        $http.get("/api/projects/#{projectId}/branches").then (re) ->
+          re.data
+
     one = (buildId) ->
       item(buildId).get () ->
         $http.get("/api/builds/#{buildId}").then (re) ->
@@ -48,6 +53,7 @@ Vx.service 'buildStore',
 
     all:          all
     pullRequests: pullRequests
+    branches:     branches
     one:          one
     create:       create
     restart:      restart
