@@ -21,6 +21,7 @@ class Build < ActiveRecord::Base
 
   default_scope ->{ order 'builds.number DESC' }
   scope :finished, -> { where(status: [3,4,5]) }
+  scope :with_pull_request, -> { where(arel_table[:pull_request_id].not_eq(nil)) }
 
   state_machine :status, initial: :initialized do
 

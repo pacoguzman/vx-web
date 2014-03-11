@@ -13,6 +13,10 @@ Vx.config ($routeProvider, $locationProvider) ->
       templateUrl: "builds/index.html",
       controller: "BuildsCtrl"
     ).
+    when('/projects/:projectId/pull_requests',
+    templateUrl: "pull_requests/index.html",
+    controller: "PullRequestsCtrl"
+    ).
     when('/projects/:projectId/cached_files',
       templateUrl: "cached_files/index.html",
       controller: "CachedFilesCtrl"

@@ -26,6 +26,12 @@
         %dt Commit
         %dd.app-build-http-url{ build: 'build', branch: 'true' }
 
+      %dl.task-attribute.dl-horizontal{ 'ng-show' => 'build.pull_request_id != undefined' }
+        %dt Pull Request
+        %dd
+          %a{ 'ng-href' => "{{ project.http_url}}/pull/{{build.pull_request_id}}", "target" => "_blank" }
+            {{ build.pull_request_id }}
+
       %dl.task-attribute.dl-horizontal
         %dt Author
         %dd

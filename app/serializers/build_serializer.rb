@@ -2,7 +2,7 @@ class BuildSerializer < ActiveModel::Serializer
   cached
 
   attributes :id, :project_id, :number, :status, :started_at, :finished_at,
-             :sha, :branch, :author, :author_email, :message, :http_url
+             :sha, :branch, :author, :author_email, :message, :http_url, :pull_request_id
 
   def status
     object.status_name

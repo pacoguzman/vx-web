@@ -13,6 +13,8 @@ Vx.service 'buildStore',
       switch e.event
         when 'created'
           collection(projectId).addItem value
+          if value.pull_request_id
+            collection("pulls" + projectId).addItem value
         when 'updated'
           item(buildId).update value, projectId
         when 'destroyed'
@@ -23,6 +25,11 @@ Vx.service 'buildStore',
     all = (projectId) ->
       collection(projectId).get () ->
         $http.get("/api/projects/#{projectId}/builds").then (re) ->
+          re.data
+
+    pullRequests = (projectId) ->
+      collection("pulls" + projectId).get () ->
+        $http.get("/api/projects/#{projectId}/pull_requests").then (re) ->
           re.data
 
     one = (buildId) ->
@@ -39,8 +46,9 @@ Vx.service 'buildStore',
         item(buildId).update re.data, re.data.project_id
         re.data
 
-    all:     all
-    one:     one
-    create:  create
-    restart: restart
+    all:          all
+    pullRequests: pullRequests
+    one:          one
+    create:       create
+    restart:      restart
 

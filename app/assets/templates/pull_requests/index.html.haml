@@ -9,9 +9,6 @@
     .col-xs-6
       .pull-right
 
-        %a.project-pull-requests{ "ng-href" => "/projects/{{project.id}}/pull_requests" }
-          Pull Requests
-
         %a.project-cached-files{ "ng-href" => "/projects/{{project.id}}/cached_files" }
           Cached Files
 
@@ -26,6 +23,7 @@
       %th No.
       %th Commit
       %th Committer
+      %th PR
       %th Branch
       %th Duration
       %th Finished At
@@ -37,6 +35,9 @@
           %span {{ build.number }}
       %td.app-build-http-url{ build: 'build' }
       %td {{ build.author }}
+      %td
+        %a{ 'ng-href' => "{{ project.http_url}}/pull/{{build.pull_request_id}}", "target" => "_blank" }
+          %span {{ build.pull_request_id }}
       %td {{ build.branch }}
       %td.app-task-duration{ task: 'build' }
       %td.app-task-finished{ task: 'build' }

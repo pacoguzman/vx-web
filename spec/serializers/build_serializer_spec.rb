@@ -9,6 +9,6 @@ describe BuildSerializer do
 
     it { should eq [:id, :project_id, :number, :status, :started_at,
                     :finished_at, :sha, :branch, :author, :author_email,
-                    :message, :http_url] }
+                    :message, :http_url, :pull_request_id] }
   end
 end
