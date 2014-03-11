@@ -13,9 +13,9 @@ describe BuildsMailer do
 
   subject { mail }
 
-  its(:subject) { should eq '[Passed] ci-worker-test-repo#1 (MyString - MyString)' }
+  its(:subject) { should eq "[Passed] ci-worker-test-repo##{build.number} (MyString - MyString)" }
   its(:to)      { should eq ["example@exaple.com"] }
-  its(:body)    { should match(/#1/) }
+  its(:body)    { should match(/##{build.number}/) }
   its(:body)    { should match(/#{ build.project }/) }
   its(:body)    { should match(/#{ build.author }/) }
   its(:body)    { should match(/#{ build.short_sha }/) }
