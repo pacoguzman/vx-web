@@ -50,7 +50,9 @@ class UserIdentity < ActiveRecord::Base
       when "github"
         "github"
       when "gitlab"
-        "gitlab_v5"
+        version = self.version || "5"
+        gitlab_version = version.split(".", 2).first
+        "gitlab_v#{gitlab_version}"
       end
     end
 
