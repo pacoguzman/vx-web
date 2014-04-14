@@ -21,6 +21,9 @@ VxWeb::Application.routes.draw do
       member do
         post :restart
       end
+      collection do
+        get "sha/:sha", action: :sha, as: :sha
+      end
       resources :jobs, only: [:index]
       resources :artifacts, only: [:index]
     end

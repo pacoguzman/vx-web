@@ -10,6 +10,11 @@ class ::Api::BuildsController < ::Api::BaseController
     respond_with build
   end
 
+  def sha
+    build = ::Build.find_by!(sha: params[:sha])
+    respond_with build
+  end
+
   def restart
     if build.restart
       respond_with build, location: [:api, build]

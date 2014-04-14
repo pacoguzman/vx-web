@@ -28,6 +28,13 @@ describe Api::BuildsController do
     its(:body) { should_not be_blank }
   end
 
+  context "GET /sha/show (commit SHA1)" do
+    before { get :sha, sha: build.sha, format: :json }
+
+    it { should be_success }
+    its(:body) { should_not be_blank }
+  end
+
   context "POST /restart" do
     before do
       any_instance_of(Build) do |b|
