@@ -1,6 +1,7 @@
 class ::Api::BuildsController < ::Api::BaseController
 
   respond_to :json
+  skip_before_filter :authorize_user, if: :show_build_status_with_token
 
   def index
     respond_with(@builds = project.builds.limit(20))
@@ -31,6 +32,12 @@ class ::Api::BuildsController < ::Api::BaseController
 
     def build
       @build ||= ::Build.find params[:id]
+    end
+
+    def show_build_status_with_token
+      correct_action = action_name.to_s.in?(%w(sha show))
+      correct_token = Project.where(token: params[:token]).exists?
+      correct_action && correct_token
     end
 
 end
