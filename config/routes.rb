@@ -63,5 +63,7 @@ VxWeb::Application.routes.draw do
 
   root 'welcome#index'
 
+  get "builds/sha/:sha" => "builds#sha"
+
   get "*path", to: "welcome#index", constraints: ->(req) { req.format == Mime::HTML }
 end
