@@ -20,7 +20,7 @@ GIT
 
 GIT
   remote: git://github.com/pacoguzman/vx-service_connector.git
-  revision: 45b9c8d1c881b45868f06422ff50bfb78b44d590
+  revision: 8ccc5f3d4d6dbbafc5b171eb5f1ef8af462f5fd1
   branch: bebanjo
   specs:
     vx-service_connector (0.0.11)
