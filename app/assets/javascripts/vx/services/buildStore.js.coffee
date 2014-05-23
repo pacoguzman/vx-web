@@ -13,12 +13,18 @@ Vx.service 'buildStore',
       switch e.event
         when 'created'
           collection(projectId).addItem value
+          collection("branches" + projectId).addItem value
+          collection("queued" + projectId).addItem value
           if value.pull_request_id
             collection("pulls" + projectId).addItem value
         when 'updated'
           item(buildId).update value, projectId
+          item(buildId).update value, "branches" + projectId
+          item(buildId).update value, "queued" + projectId
         when 'destroyed'
           item(buildId).remove projectId
+          item(buildId).update value, "branches" + projectId
+          item(buildId).update value, "queued" + projectId
 
     eventSource.subscribe "builds", subscribe
 
