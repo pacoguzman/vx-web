@@ -28,6 +28,26 @@ describe Api::BuildsController do
     its(:body) { should_not be_blank }
   end
 
+  context "GET /queued" do
+    before do
+      create(:build, project: project, number: nil, branch: "MyInitialized") # pending build or initialized by default
+      create(:build_errored, project: project, number: nil)
+
+      get :queued, format: :json
+    end
+
+    it { should be_success }
+    its(:body) { should_not be_blank }
+
+    it "returns the pending build" do
+      subject.body.should include("branch\":\"MyInitialized")
+    end
+
+    it "returns only one build" do
+      ActiveSupport::JSON.decode(subject.body).size.should == 1 # one build
+    end
+  end
+
   context "GET /sha/show (commit SHA1)" do
     before { get :sha, sha: build.sha, format: :json }
 

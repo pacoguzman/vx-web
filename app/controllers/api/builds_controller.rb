@@ -11,6 +11,10 @@ class ::Api::BuildsController < ::Api::BaseController
     respond_with build
   end
 
+  def queued
+    respond_with(@builds = Build.pending.limit(20))
+  end
+
   def sha
     build = ::Build.find_by!(sha: params[:sha])
     respond_with build

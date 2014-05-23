@@ -37,6 +37,11 @@ Vx.service 'buildStore',
         $http.get("/api/projects/#{projectId}/branches").then (re) ->
           re.data
 
+    queued = () ->
+      collection("queued").get () ->
+        $http.get("/api/builds/queued").then (re) ->
+          re.data
+
     one = (buildId) ->
       item(buildId).get () ->
         $http.get("/api/builds/#{buildId}").then (re) ->
@@ -54,6 +59,7 @@ Vx.service 'buildStore',
     all:          all
     pullRequests: pullRequests
     branches:     branches
+    queued:       queued
     one:          one
     create:       create
     restart:      restart

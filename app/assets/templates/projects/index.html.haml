@@ -1,10 +1,39 @@
 .projects
   .row
 
-    .col-xs-10
+    .col-xs-8
+      %table.tasks-table.table{ 'ng-show' => 'builds.length > 0' }
+        %thead
+          %th No.
+          %th Commit
+          %th Committer
+          %th PR
+          %th Branch
+          %th Duration
+
+        %tr.tasks-table-item.app-task-status-class{ 'ng-repeat' => "build in builds | orderBy:'updated_at':true | limitTo:20", 'status' => "build.status" }
+          %td
+            %a{ 'ng-href' => "/builds/{{build.id}}" }
+              %i.fa.fa-circle
+              %span {{ build.number }}
+          %td.app-build-http-url{ build: 'build' }
+          %td {{ build.author }}
+          %td
+            %a{ 'ng-href' => "{{ project.http_url}}/pull/{{build.pull_request_id}}", "target" => "_blank" }
+              %span {{ build.pull_request_id }}
+          %td {{ build.branch }}
+          %td.app-task-duration{ task: 'build' }
+
+      =#= Show a message about we're waiting for the builds - or the whole page if we don't have projects either don't need to show this
+
+      .ajax-loader{ 'ng-hide' => 'builds.length != undefined' }
+
+    .col-xs-4
+      .projects-add-new.pull-right
+        %a{ class: "btn btn-sm btn-primary", 'ng-href' => "/user_repos" }
+          Manage Projects
 
       .ajax-loader{ 'ng-hide' => 'projects.length != undefined' }
-
 
       .project.panel.panel-default{ 'ng-repeat' => "project in projects | orderBy:'last_build_created_at':true" }
         .panel-body
@@ -15,12 +44,3 @@
 
         .panel-footer
           %small {{ project.last_build_created_at | fromNow }}
-
-
-    .col-xs-2
-      .projects-add-new.pull-right
-        %a{ class: "btn btn-sm btn-primary", 'ng-href' => "/user_repos" }
-          Manage Projects
-
-
-

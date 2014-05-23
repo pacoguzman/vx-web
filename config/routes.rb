@@ -24,6 +24,7 @@ VxWeb::Application.routes.draw do
         post :restart
       end
       collection do
+        get :queued
         get "sha/:sha", action: :sha, as: :sha
       end
       resources :jobs, only: [:index]
