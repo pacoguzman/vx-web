@@ -7,7 +7,7 @@
           %th No.
           %th Commit
           %th Committer
-          %th PR
+          %th Project
           %th Branch
           %th Duration
 
@@ -19,8 +19,8 @@
           %td.app-build-http-url{ build: 'build' }
           %td {{ build.author }}
           %td
-            %a{ 'ng-href' => "{{ project.http_url}}/pull/{{build.pull_request_id}}", "target" => "_blank" }
-              %span {{ build.pull_request_id }}
+            %a{ 'ng-href' => "/projects/{{ build.project_id }}/builds" }
+              %span {{ build.project_name }}
           %td {{ build.branch }}
           %td.app-task-duration{ task: 'build' }
 
