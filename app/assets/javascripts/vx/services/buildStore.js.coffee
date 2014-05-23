@@ -20,11 +20,14 @@ Vx.service 'buildStore',
         when 'updated'
           item(buildId).update value, projectId
           item(buildId).update value, "branches" + projectId
-          item(buildId).update value, "queued"
+          if !value.finished_at # still pending
+            item(buildId).update value, "queued"
+          else
+            item(buildId).remove "queued"
         when 'destroyed'
           item(buildId).remove projectId
-          item(buildId).update value, "branches" + projectId
-          item(buildId).update value, "queued"
+          item(buildId).remove "branches" + projectId
+          item(buildId).remove "queued"
 
     eventSource.subscribe "builds", subscribe
 
