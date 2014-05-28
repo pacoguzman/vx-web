@@ -7,9 +7,14 @@ module.exports = function(config) {
     // base path, that will be used to resolve files and exclude
     basePath: '',
 
+    plugins: [
+      'karma-jasmine',
+      'karma-phantomjs-launcher',
+      'karma-coffee-preprocessor'
+    ],
+
     // frameworks to use
     frameworks: ["jasmine"],
-
 
     // list of files / patterns to load in the browser
     files: [
@@ -80,7 +85,7 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: false,
+    singleRun: true,
 
     coffeePreprocessor: {
       // options passed to the coffee compiler

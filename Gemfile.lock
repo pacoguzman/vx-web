@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/pacoguzman/vx-builder.git
-  revision: cada6b93f6e1302390c33d8e9f27bc4b5a533664
+  revision: 58a09c7a7ec1654961f2c1e4338e33ee49d642bb
   branch: bebanjo
   specs:
     vx-builder (0.1.8)
@@ -58,7 +58,7 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
     addressable (2.3.6)
-    airbrake (3.1.16)
+    airbrake (3.1.17)
       builder
       multi_json
     amq-protocol (1.9.2)
