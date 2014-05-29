@@ -36,7 +36,7 @@ class JobUpdater
           begin
             yield
           # TODO: save and compare messages
-          rescue StateMachine::InvalidTransition => e
+          rescue AASM::InvalidTransition => e
             Rails.logger.error "ERROR: #{e.inspect}"
             Airbrake.notify(e)
             :invalid_transition
@@ -60,12 +60,14 @@ class JobUpdater
 
     def new_build_status
       if all_jobs_finished?
-        build.jobs.maximum(:status)
+        # build.jobs.maximum(:status) - we haven't integers anymore
+        existing = build.jobs.pluck(:status).map(&:to_sym).uniq
+        build.aasm.states.select { |state| existing.include?(state.name) }.max_by { |state| state.options[:value] }.name
       end
     end
 
     def all_jobs_finished?
-      statuses = [3,4,5]
+      statuses = ["passed", "failed", "errored"]
       build.jobs.where(status: statuses).count == build.jobs.count
     end
 
@@ -98,14 +100,14 @@ class JobUpdater
     end
 
     def finalize_build
-      case new_build_status
-      when 3
+      case new_build_status.to_s
+      when "passed"
         build.finished_at = tm
         build.pass!
-      when 4
+      when "failed"
         build.finished_at = tm
         build.decline!
-      when 5
+      when "errored"
         build.finished_at = tm
         build.error!
       end

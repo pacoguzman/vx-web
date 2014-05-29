@@ -6,9 +6,9 @@ describe Api::StatusController do
   before do
     b = create :build
     num = 0
-    3.times { create :job, status: 0, build: b, number: num += 1 }
-    5.times { create :job, status: 2, build: b, number: num += 1 }
-    1.times { create :job, status: 3, build: b, number: num += 1 }
+    3.times { create :job, status: "initialized", build: b, number: num += 1 }
+    5.times { create :job, status: "started",     build: b, number: num += 1 }
+    1.times { create :job, status: "passed",      build: b, number: num += 1 }
   end
 
   context "GET /status/jobs" do

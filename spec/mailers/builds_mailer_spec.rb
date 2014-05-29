@@ -5,7 +5,7 @@ describe BuildsMailer do
     create(:build,
       started_at: 3.minutes.ago,
       finished_at: 1.minute.ago,
-      status: 3,
+      status: "passed",
       http_url: "http://exmaple.com",
     )
   }

@@ -59,7 +59,7 @@ describe Job do
     let!(:job) { create :job, status: status }
 
     context "after transition to started" do
-      let(:status) { 0 }
+      let(:status) { "initialized" }
       subject { job.start }
 
       it "should delivery messages to ServerSideEventsConsumer" do
@@ -70,7 +70,7 @@ describe Job do
     end
 
     context "after transition to passed" do
-      let(:status) { 2 }
+      let(:status) { "started" }
       subject { job.pass }
 
       it "should delivery messages to ServerSideEventsConsumer" do
@@ -81,7 +81,7 @@ describe Job do
     end
 
     context "after transition to failed" do
-      let(:status) { 2 }
+      let(:status) { "started" }
       subject { job.decline }
 
       it "should delivery messages to ServerSideEventsConsumer" do
@@ -92,7 +92,7 @@ describe Job do
     end
 
     context "after transition to errored" do
-      let(:status) { 2 }
+      let(:status) { "started" }
       subject { job.error }
 
       it "should delivery messages to ServerSideEventsConsumer" do
@@ -105,14 +105,14 @@ describe Job do
 
   context "#finished?" do
     subject { job.finished? }
-    [0,2].each do |s|
+    ["initialized", "started"].each do |s|
       context "when status is #{s}" do
         before { job.status = s }
         it { should be_false }
       end
     end
 
-    [3,4,5].each do |s|
+    ["passed", "failed", "errored"].each do |s|
       context "when status is #{s}" do
         before { job.status = s }
         it { should be_true }
@@ -126,7 +126,7 @@ describe Job do
 
     context "when job is finished" do
       before do
-        job.update! status: 3
+        job.update! status: "passed"
       end
 
       it { should eq job }
@@ -155,9 +155,9 @@ describe Job do
     before do
       b = create :build
       num = 0
-      3.times { create :job, status: 0, build: b, number: num += 1 }
-      5.times { create :job, status: 2, build: b, number: num += 1 }
-      1.times { create :job, status: 3, build: b, number: num += 1 }
+      3.times { create :job, status: "initialized", build: b, number: num += 1 }
+      5.times { create :job, status: "started", build: b, number: num += 1 }
+      1.times { create :job, status: "passed", build: b, number: num += 1 }
     end
 
     it { should eq(initialized: 3, started: 5) }

@@ -76,7 +76,7 @@ describe JobUpdater do
 
       context "when have failed job" do
         before do
-          create :job, build: b, status: 4
+          create :job, build: b, status: "failed"
         end
 
         it "should fail build" do
@@ -89,7 +89,7 @@ describe JobUpdater do
 
       context "when have pending jobs" do
         before do
-          create :job, build: b, status: 2
+          create :job, build: b, status: "started"
         end
 
         it "should keep build" do

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140213230747) do
+ActiveRecord::Schema.define(version: 20140529073743) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,14 +30,13 @@ ActiveRecord::Schema.define(version: 20140213230747) do
   add_index "artifacts", ["build_id"], name: "index_artifacts_on_build_id", using: :btree
 
   create_table "builds", force: true do |t|
-    t.integer  "number",                      null: false
-    t.integer  "project_id",                  null: false
-    t.string   "sha",                         null: false
-    t.string   "branch",                      null: false
+    t.integer  "number",          null: false
+    t.integer  "project_id",      null: false
+    t.string   "sha",             null: false
+    t.string   "branch",          null: false
     t.integer  "pull_request_id"
     t.string   "author"
     t.text     "message"
-    t.integer  "status",          default: 0, null: false
     t.datetime "started_at"
     t.datetime "finished_at"
     t.datetime "created_at"
@@ -45,8 +44,9 @@ ActiveRecord::Schema.define(version: 20140213230747) do
     t.string   "author_email"
     t.string   "http_url"
     t.string   "branch_label"
-    t.text     "source",                      null: false
-    t.string   "token",                       null: false
+    t.text     "source",          null: false
+    t.string   "token",           null: false
+    t.string   "status"
   end
 
   add_index "builds", ["project_id", "number"], name: "index_builds_on_project_id_and_number", unique: true, using: :btree
@@ -74,13 +74,13 @@ ActiveRecord::Schema.define(version: 20140213230747) do
   create_table "jobs", force: true do |t|
     t.integer  "build_id",    null: false
     t.integer  "number",      null: false
-    t.integer  "status",      null: false
     t.hstore   "matrix"
     t.datetime "started_at"
     t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "source",      null: false
+    t.string   "status"
   end
 
   add_index "jobs", ["build_id", "number"], name: "index_jobs_on_build_id_and_number", unique: true, using: :btree

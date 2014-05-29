@@ -68,7 +68,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_build
-    builds.where.not(status: [0,1]).first
+    builds.where.not(status: ["initialized"]).first
   end
 
   def update_last_build

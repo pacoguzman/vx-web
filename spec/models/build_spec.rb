@@ -112,15 +112,15 @@ describe Build do
     let!(:b) { create :build, status: status }
 
     context "after transition to started" do
-      let(:status) { 0 }
-      subject { b.start }
+      let(:status) { "initialized" }
+      subject { b.start! } # Bang so the last build has its status persisted when search for the last_build_id
 
       it "should delivery message to BuildNotifyConsumer" do
         expect{
           subject
         }.to change(BuildNotifyConsumer.messages, :count).by(1)
         msg = BuildNotifyConsumer.messages.last
-        expect(msg["status"]).to eq 2
+        expect(msg["status"]).to eq "started"
       end
 
       it "should delivery messages to ServerSideEventsConsumer" do
@@ -137,7 +137,7 @@ describe Build do
     end
 
     context "after transition to passed" do
-      let(:status) { 2 }
+      let(:status) { "started" }
       subject { b.pass }
 
       it "should delivery message to BuildNotifyConsumer" do
@@ -145,7 +145,7 @@ describe Build do
           subject
         }.to change(BuildNotifyConsumer.messages, :count).by(1)
         msg = BuildNotifyConsumer.messages.last
-        expect(msg["status"]).to eq 3
+        expect(msg["status"]).to eq "passed"
       end
 
       it "should delivery messages to ServerSideEventsConsumer" do
@@ -156,7 +156,7 @@ describe Build do
     end
 
     context "after transition to failed" do
-      let(:status) { 2 }
+      let(:status) { "started" }
       subject { b.decline }
 
       it "should delivery message to BuildNotifyConsumer" do
@@ -164,7 +164,7 @@ describe Build do
           subject
         }.to change(BuildNotifyConsumer.messages, :count).by(1)
         msg = BuildNotifyConsumer.messages.last
-        expect(msg["status"]).to eq 4
+        expect(msg["status"]).to eq "failed"
       end
 
       it "should delivery messages to ServerSideEventsConsumer" do
@@ -175,7 +175,7 @@ describe Build do
     end
 
     context "after transition to errored" do
-      let(:status) { 2 }
+      let(:status) { "started" }
       subject { b.error }
 
       it "should delivery message to BuildNotifyConsumer" do
@@ -183,7 +183,7 @@ describe Build do
           subject
         }.to change(BuildNotifyConsumer.messages, :count).by(1)
         msg = BuildNotifyConsumer.messages.last
-        expect(msg["status"]).to eq 5
+        expect(msg["status"]).to eq "errored"
       end
 
       it "should delivery messages to ServerSideEventsConsumer" do
@@ -195,20 +195,20 @@ describe Build do
   end
 
   context "#prev_finished_build_in_branch" do
-    let(:b) { create :build, number: 2, branch: 'foo', status: 3 }
+    let(:b) { create :build, number: 2, branch: 'foo', status: "passed" }
     subject { b.prev_finished_build_in_branch }
 
     context "when build exists" do
-      let!(:prev_build) { create :build, number: 1, branch: 'foo', project: b.project, status: 3 }
-      let!(:next_build) { create :build, number: 3, branch: 'foo', project: b.project, status: 3 }
+      let!(:prev_build) { create :build, number: 1, branch: 'foo', project: b.project, status: "passed" }
+      let!(:next_build) { create :build, number: 3, branch: 'foo', project: b.project, status: "passed" }
 
       it { should eq prev_build }
     end
 
     context "when build is not exists" do
-      let!(:p1) { create :build, number: 1, branch: 'bar', project_id: b.project_id, status: 3 }
-      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: b.project_id + 1, status: 3 }
-      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: b.project_id, status: 2 }
+      let!(:p1) { create :build, number: 1, branch: 'bar', project_id: b.project_id, status: "passed" }
+      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: b.project_id + 1, status: "passed" }
+      let!(:p1) { create :build, number: 1, branch: 'foo', project_id: b.project_id, status: "started" }
 
       it { should be_nil }
     end
@@ -216,14 +216,14 @@ describe Build do
 
   context "#finished?" do
     subject { b.finished? }
-    [0,2].each do |s|
+    ["initialized", "started"].each do |s|
       context "when status is #{s}" do
         before { b.status = s }
         it { should be_false }
       end
     end
 
-    [3,4,5].each do |s|
+    ["passed", "failed", "errored"].each do |s|
       context "when status is #{s}" do
         before { b.status = s }
         it { should be_true }
@@ -240,20 +240,20 @@ describe Build do
     end
 
     context "when status is different" do
-      let(:prev_status) { 3 }
+      let(:prev_status) { "passed" }
 
       before do
-        b.status = 4
+        b.status = "failed"
       end
 
       it { should be_true }
     end
 
     context "when status is same" do
-      let(:prev_status) { 3 }
+      let(:prev_status) { "passed" }
 
       before do
-        b.status = 3
+        b.status = "passed"
       end
 
       it { should be_false }
@@ -263,7 +263,7 @@ describe Build do
       let(:prev) { nil }
 
       before do
-        b.status = 3
+        b.status = "passed"
       end
 
       it { should be_true }
@@ -275,21 +275,21 @@ describe Build do
 
     subject { b.human_status_name }
 
-    [0,2,4,5].each do |s|
+    ["initialized", "started", "failed", "errored"].each do |s|
       context "when status is #{s}" do
         before { b.status = s }
         it { should eq b.human_status_name.to_s.capitalize }
       end
     end
 
-    context "when status is 3" do
+    context "when status is 'started'" do
       before do
-        b.status = 3
+        b.status = "passed"
         stub(b).prev_finished_build_in_branch { prev }
       end
 
       context "and previous build is not passed" do
-        let(:prev_status) { 4 }
+        let(:prev_status) { "failed" }
         it { should eq 'Fixed' }
       end
 
@@ -299,41 +299,41 @@ describe Build do
       end
 
       context "and previous build is passed" do
-        let(:prev_status) { 3 }
+        let(:prev_status) { "passed" }
         it { should eq 'Passed' }
       end
     end
 
-    context "when status is 4" do
+    context "when status is 'failed'" do
       before do
-        b.status = 4
+        b.status = "failed"
         stub(b).prev_finished_build_in_branch { prev }
       end
 
       context "and previous build is failed" do
-        let(:prev_status) { 4 }
+        let(:prev_status) { "failed" }
         it { should eq 'Still Failing' }
       end
 
       context "and previous build is not failed" do
-        let(:prev_status) { 3 }
+        let(:prev_status) { "passed" }
         it { should eq 'Failed' }
       end
     end
 
-    context "when status is 5" do
+    context "when status is 'errored'" do
       before do
-        b.status = 5
+        b.status = "errored"
         stub(b).prev_finished_build_in_branch { prev }
       end
 
       context "and previous build is errored" do
-        let(:prev_status) { 5 }
+        let(:prev_status) { "errored" }
         it { should eq 'Still Broken' }
       end
 
       context "and previous build is not errored" do
-        let(:prev_status) { 3 }
+        let(:prev_status) { "passed" }
         it { should eq 'Broken' }
       end
     end
@@ -343,7 +343,7 @@ describe Build do
     let(:b) { build :build }
     subject { b.notify? }
     before do
-      b.status = 2
+      b.status = "started"
     end
 
     context "when status failed" do
@@ -375,8 +375,8 @@ describe Build do
 
     context "when build is finished" do
       before do
-        job.update! status: 3
-        b.update! status: 3
+        job.update! status: "passed"
+        b.update! status: "passed"
       end
 
       it { should eq b }

@@ -73,10 +73,10 @@ describe Project do
 
     context "with builds" do
       before do
-        create :build, status: 0, project: project, number: 1
-        create :build, status: 2, project: project, number: 2
-        create :build, status: 3, project: project, number: 3
-        create :build, status: 4, project: project, number: 4
+        create :build, status: "initialized", project: project, number: 1
+        create :build, status: "started",     project: project, number: 2
+        create :build, status: "passed",      project: project, number: 3
+        create :build, status: "failed",      project: project, number: 4
       end
       its(:number) { should eq 4 }
     end

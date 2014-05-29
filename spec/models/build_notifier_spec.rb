@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe BuildNotifier do
-  let(:status) { 3 }
+  let(:status) { "passed" }
   let(:b)      { create :build, status: status, number: 1 }
   let(:attrs)  { JSON.parse(b.attributes.to_json) }
   let(:notifier) { described_class.new attrs }
@@ -75,22 +75,22 @@ describe BuildNotifier do
     end
 
     context "when build is started" do
-      let(:status) { 2 }
+      let(:status) { "started" }
       it { should eq 'Vexor CI: build #1 started and still running' }
     end
 
     context "when build is passed" do
-      let(:status) { 3 }
+      let(:status) { "passed" }
       it { should eq "Vexor CI: build #1 is successfully completed in 1s" }
     end
 
     context "when build is failed" do
-      let(:status) { 4 }
+      let(:status) { "failed" }
       it { should eq "Vexor CI: build #1 failed in 1s" }
     end
 
     context "when build is errored" do
-      let(:status) { 5 }
+      let(:status) { "errored" }
       it { should eq "Vexor CI: build #1 broken in 1s" }
     end
   end

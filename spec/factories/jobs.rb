@@ -4,7 +4,7 @@ FactoryGirl.define do
   factory :job do
     build
     number 1
-    status 0
+    status "initialized"
     source({"script" => "true"}.to_yaml)
   end
 end

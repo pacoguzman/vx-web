@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.0.5'
+gem 'rails', '4.1.1'
 gem 'pg'
 
 gem 'haml'
@@ -8,7 +8,7 @@ gem 'haml-rails'
 gem 'omniauth'
 gem 'omniauth-github'
 gem 'puma'
-gem 'state_machine'
+gem 'aasm'
 gem 'active_model_serializers'
 gem 'carrierwave'
 gem 'sshkey'

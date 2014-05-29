@@ -2,6 +2,7 @@ require 'securerandom'
 
 class Build < ActiveRecord::Base
 
+  include AASM
   include ::PublicUrl::Build
 
   belongs_to :project, class_name: "::Project", touch: true
@@ -20,41 +21,47 @@ class Build < ActiveRecord::Base
   after_create :publish_created
 
   default_scope ->{ order 'builds.number DESC' }
-  scope :finished, -> { where(status: [3,4,5]) }
-  scope :pending, -> { where(status: [0,2]).reorder('builds.updated_at DESC') } # TODO next Rails version allow not
+  scope :finished, -> { where(status: ["passed", "failed", "errored"]) }
+  scope :pending, -> { where(status: ["started", "initialized"]).reorder('builds.updated_at DESC') } # TODO next Rails version allow not
   scope :with_pull_request, -> { where(arel_table[:pull_request_id].not_eq(nil)) }
 
-  state_machine :status, initial: :initialized do
+  aasm column: :status do
 
-    state :initialized,   value: 0
+    state :initialized,   value: 0, initial: true
     state :started,       value: 2
     state :passed,        value: 3
     state :failed,        value: 4
     state :errored,       value: 5
 
     event :start do
-      transition :initialized => :started
+      transitions from: :initialized, to: :started
     end
 
     event :pass do
-      transition :started => :passed
+      transitions from: :started, to: :passed
     end
 
     event :decline do
-      transition :started => :failed
+      transitions from: :started, to: :failed
     end
 
     event :error do
-      transition [:initialized, :started] => :errored
+      transitions from: [:initialized, :started], to: :errored
     end
+  end
 
-    after_transition any => [:started, :passed, :failed, :errored] do |build, transition|
-      build.delivery_to_notifier
+  def aasm_event_fired(event, from, to)
+    return unless [:started, :passed, :failed, :errored].include?(to)
 
-      build.publish
-      build.update_last_build_on_project
-      build.project.publish
-    end
+    self.delivery_to_notifier
+
+    self.publish
+    self.update_last_build_on_project
+    self.project.publish
+  end
+
+  def status_name
+    status.to_sym
   end
 
   def source
@@ -101,7 +108,7 @@ class Build < ActiveRecord::Base
   end
 
   def finished?
-    [3,4,5].include?(status)
+    ["passed", "failed", "errored"].include?(status)
   end
 
   def status_has_changed?
@@ -117,7 +124,7 @@ class Build < ActiveRecord::Base
   def notify?
     finished? &&
       (
-        [4,5].include?(status) ||
+        ["failed", "errored"].include?(status) ||
         (status_name == :passed && status_has_changed?)
       )
   end
@@ -188,7 +195,7 @@ class Build < ActiveRecord::Base
         Project.lock(true).find_by(id: project_id)
         self.started_at  = nil
         self.finished_at = nil
-        self.status      = 0
+        self.status      = "initialized" # AASM initial state (self.class.aasm.initial_state)
 
         self.save.or_rollback_transaction
 

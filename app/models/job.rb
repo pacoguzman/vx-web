@@ -1,5 +1,7 @@
 class Job < ActiveRecord::Base
 
+  include AASM
+
   belongs_to :build, class_name: "::Build"
   has_many :logs, class_name: "::JobLog", dependent: :delete_all,
     extend: AppendLogMessage
@@ -11,38 +13,43 @@ class Job < ActiveRecord::Base
 
   default_scope ->{ order 'jobs.number ASC' }
 
+  aasm column: :status do
 
-  state_machine :status, initial: :initialized do
-
-    state :initialized,   value: 0
+    state :initialized,   value: 0, initial: true
     state :started,       value: 2
     state :passed,        value: 3
     state :failed,        value: 4
     state :errored,       value: 5
 
     event :start do
-      transition [:initialized, :started] => :started
+      transitions from: [:initialized, :started], to: :started
     end
 
     event :pass do
-      transition :started => :passed
+      transitions from: :started, to: :passed
     end
 
     event :decline do
-      transition :started => :failed
+      transitions from: :started, to: :failed
     end
 
     event :error do
-      transition [:initialized, :started] => :errored
-    end
-
-    after_transition any => [:started, :passed, :failed, :errored] do |job, _|
-      job.publish
+      transitions from: [:initialized, :started], to: :errored
     end
   end
 
+  def aasm_event_fired(event, from, to)
+    return unless [:started, :passed, :failed, :errored].include?(to)
+
+    self.publish
+  end
+
+  def status_name
+    status.to_sym
+  end
+
   def self.status
-    jobs = Job.where(status: [0,2])
+    jobs = Job.where(status: ["initialized", "started"])
               .select("status, COUNT(id) AS count_ids")
               .group("status")
               .reorder("1")
@@ -54,7 +61,7 @@ class Job < ActiveRecord::Base
 
 
   def finished?
-    [3,4,5].include?(status)
+    ["passed", "failed", "errored"].include?(status)
   end
 
   def to_builder_script
@@ -94,7 +101,7 @@ class Job < ActiveRecord::Base
       transaction do
         self.started_at  = nil
         self.finished_at = nil
-        self.status      = 0
+        self.status      = "initialized" # AASM initial state (self.class.aasm.initial_state)
 
         self.logs.delete_all
         self.save.or_rollback_transaction
