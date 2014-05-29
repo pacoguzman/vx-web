@@ -1,5 +1,5 @@
-//= require lib/underscore-1.5.2
-//= require lib/moment-2.2.1
+//= require lib/underscore-1.6.0
+//= require lib/moment-2.6.0
 //= require lib/ansiparse
-//= require lib/angular-1.2.11
-//= require lib/angular-route-1.2.11
+//= require lib/angular-1.2.16
+//= require lib/angular-route-1.2.16
