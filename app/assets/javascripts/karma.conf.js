@@ -34,7 +34,7 @@ module.exports = function(config) {
       "vx/services/*.js.coffee",
 
       "tests/support/*.js.coffee",
-      "tests/**/*.js.coffee",
+      "tests/**/*.js.coffee"
     ],
 
 
@@ -97,7 +97,7 @@ module.exports = function(config) {
       transformPath: function(path) {
         return path.replace(/\.js$/, '.coffee');
       }
-    },
+    }
 
   });
 };
