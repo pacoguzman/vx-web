@@ -146,5 +146,5 @@ angular.module('Vx').
       #
       # imap.item(postId).update newVal
       #
-      # imap.item(postId).delete()
+      # imap.item(postId).remove()
 
