@@ -175,6 +175,9 @@ describe "buildStore", ->
       describe "branches()", ->
 
         beforeEach ->
+          testObj.branch = "master"
+          testObj2.branch = "stable"
+
           $http.expectGET('/api/projects/1/branches').respond(angular.copy [testObj, testObj2])
           $scope.$apply ->
             builds.branches(1).then succ, fail
@@ -188,13 +191,27 @@ describe "buildStore", ->
               id: 1
               project_id: 1
               name: "Created"
+              branch: "topic-branch"
           f(e)
           $scope.$apply ->
             builds.branches(1).then succ, fail
           expect(succVal.length).toBe 3
           expect(succVal[2]).toEqual e.data
 
-        # TODO Add an example where substitute existing item because it's in an existing branch
+        it "should substitute existing build for the branch if in same project", ->
+          e =
+            event: 'created',
+            data:
+              id: 1
+              project_id: 1
+              name: "Created"
+              branch: "master"
+          f(e)
+          $scope.$apply ->
+            builds.branches(1).then succ, fail
+          expect(succVal.length).toBe 2
+          expect(succVal[0]).toEqual testObj2
+          expect(succVal[1]).toEqual e.data
 
       describe "queued()", ->
 
@@ -221,6 +238,9 @@ describe "buildStore", ->
       describe "pullRequests()", ->
 
         beforeEach ->
+          testObj.pull_request_id = 99
+          testObj2.pull_request_id = 101
+
           $http.expectGET('/api/projects/1/pull_requests').respond(angular.copy [testObj, testObj2])
           $scope.$apply ->
             builds.pullRequests(1).then succ, fail
@@ -241,7 +261,20 @@ describe "buildStore", ->
           expect(succVal.length).toBe 3
           expect(succVal[2]).toEqual e.data
 
-        # TODO Add an example where substitue existing item because it's in an existing pull_request
+        it "should substitute existing build for the branch if in same project", ->
+          e =
+            event: 'created',
+            data:
+              id: 1
+              project_id: 1
+              pull_request_id: 99
+              name: "Created"
+          f(e)
+          $scope.$apply ->
+            builds.pullRequests(1).then succ, fail
+          expect(succVal.length).toBe 2
+          expect(succVal[0]).toEqual testObj2
+          expect(succVal[1]).toEqual e.data
 
     describe "destroy build from event", ->
 
