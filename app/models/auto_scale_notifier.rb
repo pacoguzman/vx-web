@@ -1,7 +1,8 @@
 class AutoScaleNotifier
 
   def self.notify
-    n = Job.status[:initialized] || 0
+    s = Job.status
+    n =  (s[:initialized] || 0) + (s[:started] || 0)
     if n > 0
       m = {
         key:  key,
