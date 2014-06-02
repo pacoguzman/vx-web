@@ -16,11 +16,11 @@ describe UserIdentity do
     before { identity.save! }
 
     it "should be true if provider exists" do
-      expect(described_class.provider? "github").to be_true
+      expect(described_class.provider? "github").to be(true)
     end
 
     it "should be false unless provider" do
-      expect(described_class.provider? "not-exists").to be_false
+      expect(described_class.provider? "not-exists").to be(false)
     end
   end
 

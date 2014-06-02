@@ -219,14 +219,14 @@ describe Build do
     ["initialized", "started"].each do |s|
       context "when status is #{s}" do
         before { b.status = s }
-        it { should be_false }
+        it { should be(false) }
       end
     end
 
     ["passed", "failed", "errored"].each do |s|
       context "when status is #{s}" do
         before { b.status = s }
-        it { should be_true }
+        it { should be(true) }
       end
     end
   end
@@ -246,7 +246,7 @@ describe Build do
         b.status = "failed"
       end
 
-      it { should be_true }
+      it { should be(true) }
     end
 
     context "when status is same" do
@@ -256,7 +256,7 @@ describe Build do
         b.status = "passed"
       end
 
-      it { should be_false }
+      it { should be(false) }
     end
 
     context "when prev build is nil" do
@@ -266,7 +266,7 @@ describe Build do
         b.status = "passed"
       end
 
-      it { should be_true }
+      it { should be(true) }
     end
   end
 
@@ -350,21 +350,21 @@ describe Build do
       before do
         b.decline
       end
-      it { should be_true }
+      it { should be(true) }
     end
 
     context "when status errored" do
       before do
         b.error
       end
-      it { should be_true }
+      it { should be(true) }
     end
 
     context "when status passed" do
       before do
         b.pass
       end
-      it { should be_true }
+      it { should be(true) }
     end
   end
 
@@ -435,7 +435,7 @@ describe Build do
       b.source = {"rvm" => %w{ 1.9 2.0 }}.to_yaml
     end
     it { should be }
-    it { should have(2).item }
+    it { subject.size.should eq 2 }
   end
 
   context "publish_perform_job_messages" do
@@ -478,7 +478,7 @@ describe Build do
       before do
         b.create_jobs_from_matrix
       end
-      it { should have(2).item }
+      it { subject.size.should eq 2 }
 
       it "should have true matrices" do
         expect(subject.map(&:matrix)).to eq [{"rvm"=>"1.9"}, {"rvm"=>"2.0"}]

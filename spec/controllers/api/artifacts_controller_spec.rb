@@ -34,7 +34,10 @@ describe Api::ArtifactsController do
 
     it { should be_success }
     its(:content_type) { should eq 'application/x-gtar' }
-    its(:body) { should have(5403).items }
+
+    it "has a body of the correct size" do
+      subject.body.size.should eq 5403
+    end
 
     def download
       FileUtils.cp "#{Rails.root}/spec/fixtures/upload.tgz", "#{Rails.root}/spec/fixtures/upload_test.tgz"

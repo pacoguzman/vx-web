@@ -108,14 +108,14 @@ describe Job do
     ["initialized", "started"].each do |s|
       context "when status is #{s}" do
         before { job.status = s }
-        it { should be_false }
+        it { should be(false) }
       end
     end
 
     ["passed", "failed", "errored"].each do |s|
       context "when status is #{s}" do
         before { job.status = s }
-        it { should be_true }
+        it { should be(true) }
       end
     end
   end

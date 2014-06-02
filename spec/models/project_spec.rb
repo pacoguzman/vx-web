@@ -95,18 +95,18 @@ describe Project do
       before do
         create :project_subscription, user: user, project: project
       end
-      it { should be_true }
+      it { should be(true) }
     end
 
     context "when user is not subscribed" do
       before do
         create :project_subscription, user: user, project: project, subscribe: false
       end
-      it { should be_false }
+      it { should be(false) }
     end
 
     context "when subscription does not exists" do
-      it { should be_false }
+      it { should be(false) }
     end
   end
 
@@ -117,7 +117,7 @@ describe Project do
 
     context "when subscription exists" do
       let!(:sub) { create :project_subscription, user: user, project: project, subscribe: false }
-      it { should be_true }
+      it { should be(true) }
       it "should subscribe user" do
         expect {
           subject
@@ -126,12 +126,12 @@ describe Project do
     end
 
     context "when subscription does not exists" do
-      it { should be_true }
+      it { should be(true) }
       it "should subscribe user" do
         expect {
           subject
         }.to change(project.subscriptions, :count).by(1)
-        expect(project.subscriptions.first.subscribe).to be_true
+        expect(project.subscriptions.first.subscribe).to be(true)
         expect(project.subscriptions.first.user).to eq user
       end
     end
@@ -144,7 +144,7 @@ describe Project do
 
     context "when subscription exists" do
       let!(:sub) { create :project_subscription, user: user, project: project, subscribe: true }
-      it { should be_true }
+      it { should be(true) }
       it "should unsubscribe user" do
         expect {
           subject
@@ -153,12 +153,12 @@ describe Project do
     end
 
     context "when subscription does not exists" do
-      it { should be_true }
+      it { should be(true) }
       it "should unsubscribe user" do
         expect {
           subject
         }.to change(project.subscriptions, :count).by(1)
-        expect(project.subscriptions.first.subscribe).to be_false
+        expect(project.subscriptions.first.subscribe).to be(false)
         expect(project.subscriptions.first.user).to eq user
       end
     end
@@ -225,7 +225,7 @@ describe Project do
     before do
       project.generate_deploy_key
     end
-    it { should have(234).items }
+    it { subject.size.should eq 234 }
   end
 
 end

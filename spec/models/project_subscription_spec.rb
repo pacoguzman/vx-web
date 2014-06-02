@@ -14,14 +14,14 @@ describe ProjectSubscription do
     subject { described_class.subscribe_by_email email, project }
 
     context "when subscription is not exists" do
-      it { should be_true }
+      it { should be_a(ProjectSubscription) }
 
       it "should subscribe user to project" do
         expect {
           subject
         }.to change(project.subscriptions, :count).by(1)
         expect(project.subscriptions.first.user).to eq user
-        expect(project.subscriptions.first.subscribe).to be_true
+        expect(project.subscriptions.first.subscribe).to be(true)
       end
     end
 

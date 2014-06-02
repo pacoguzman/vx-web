@@ -33,6 +33,7 @@ end
 group :development, :test do
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'rspec-its', :require => false
   gem 'factory_girl'
   gem 'factory_girl_rails'
 end

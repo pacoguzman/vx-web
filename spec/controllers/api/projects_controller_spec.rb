@@ -32,7 +32,10 @@ describe Api::ProjectsController do
     end
     it { should be_success }
     its(:content_type) { should eq 'text/plain' }
-    its(:body)         { should have(234).items }
+
+    it "has a body of the correct size" do
+      subject.body.size.should eq 234
+    end
   end
 
 end

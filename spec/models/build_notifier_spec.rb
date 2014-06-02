@@ -17,7 +17,7 @@ describe BuildNotifier do
     subject { notifier.build }
 
     its(:status)  { should eq b.status }
-    its(:frozen?) { should be_true }
+    its(:frozen?) { should be(true) }
   end
 
   context "#project" do
@@ -55,7 +55,7 @@ describe BuildNotifier do
       mock(notifier.build).notify? { true }
     end
 
-    it { should be_true }
+    it { should be_a(Mail::Message) }
 
     it "should delivery email" do
       expect {
