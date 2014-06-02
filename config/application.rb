@@ -48,6 +48,7 @@ module VxWeb
       (ENV['VX_HOSTNAME'] || sys_hostname || "example.com")
     config.x.github_restriction =
       ENV['GITHUB_RESTRICTION'] && ENV["GITHUB_RESTRICTION"].split(",").map(&:strip)
+    config.x.scheme = ENV['VX_SCHEME'] || "http"
 
     config.middleware.delete "Rack::Lock"
 

@@ -32,7 +32,9 @@ class Project < ActiveRecord::Base
   end
 
   def builds_branch
-    builds.select("DISTINCT ON (branch) #{Build.column_names.map{|c| "builds.#{c}"}.join(", ")}").reorder(:branch, number: :desc)
+    # http://stackoverflow.com/questions/9795660/postgresql-distinct-on-without-ordering
+    subquery = builds.select("DISTINCT ON (branch) *").reorder(:branch, number: :desc)
+    builds.from("(#{subquery.to_sql}) builds")
   end
 
   def to_s
@@ -59,7 +61,7 @@ class Project < ActiveRecord::Base
 
   def hook_url
     if identity
-      "http://#{Rails.configuration.x.hostname}/callbacks/#{identity.provider}/#{token}"
+      "#{Rails.configuration.x.scheme}://#{Rails.configuration.x.hostname}/callbacks/#{identity.provider}/#{token}"
     end
   end
 

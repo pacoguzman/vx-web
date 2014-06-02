@@ -10,6 +10,7 @@ module.exports = function(config) {
     plugins: [
       'karma-jasmine',
       'karma-phantomjs-launcher',
+      'karma-chrome-launcher',
       'karma-coffee-preprocessor'
     ],
 
@@ -18,12 +19,12 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      "lib/underscore-1.5.2.js",
-      "lib/moment-2.2.1.js",
+      "lib/underscore-1.6.0.js",
+      "lib/moment-2.6.0.js",
       "lib/ansiparse.js",
-      "lib/angular-1.2.11.js",
-      "lib/angular-mocks-1.2.11.js",
-      "lib/angular-route-1.2.11.js",
+      "lib/angular-1.2.16.js",
+      "lib/angular-mocks-1.2.16.js",
+      "lib/angular-route-1.2.16.js",
 
       "templates.compilled.js",
       "vx/init/*.js.coffee",
