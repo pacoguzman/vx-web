@@ -5,10 +5,10 @@
       %table.tasks-table.table{ 'ng-show' => 'builds.length > 0' }
         %thead
           %th No.
-          %th Commit
-          %th Committer
           %th Project
           %th Branch
+          %th Commit
+          %th Committer
           %th Duration
 
         %tr.tasks-table-item.app-task-status-class{ 'ng-repeat' => "build in builds | orderBy:'updated_at':true | limitTo:20", 'status' => "build.status" }
@@ -16,12 +16,12 @@
             %a{ 'ng-href' => "/builds/{{build.id}}" }
               %i.fa.fa-circle
               %span {{ build.number }}
-          %td.app-build-http-url{ build: 'build' }
-          %td {{ build.author }}
           %td
             %a{ 'ng-href' => "/projects/{{ build.project_id }}/builds" }
               %span {{ build.project_name }}
           %td {{ build.branch }}
+          %td.app-build-http-url{ build: 'build' }
+          %td {{ build.author }}
           %td.app-task-duration{ task: 'build' }
 
       %div{ 'ng-show' => 'builds.length === 0 && projects.length > 0' }

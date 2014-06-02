@@ -1,4 +1,22 @@
 .projects {
+  .tasks-table {
+    table-layout: fixed;
+  }
+
+  .tasks-table th:nth-child(1),
+  .tasks-table th:nth-child(4),
+  .tasks-table th:nth-child(6){
+    width: 6em !important;
+  }
+  .tasks-table th:nth-child(2),
+  .tasks-table th:nth-child(3){
+    width: 10em !important;
+  }
+  .tasks-table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 .projects-add-new {
