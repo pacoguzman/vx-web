@@ -61,7 +61,7 @@ class Project < ActiveRecord::Base
 
   def hook_url
     if identity
-      "http://#{Rails.configuration.x.hostname}/callbacks/#{identity.provider}/#{token}"
+      "#{Rails.configuration.x.scheme}://#{Rails.configuration.x.hostname}/callbacks/#{identity.provider}/#{token}"
     end
   end
 
