@@ -13,10 +13,9 @@ Vx.service 'buildStore',
       switch e.event
         when 'created'
           collection(projectId).addItem value
-          collection("branches" + projectId).addItem value
+          _onBranchesForCreate(projectId, e.data.id, value)
           collection("queued").addItem value
-          if value.pull_request_id
-            collection("pulls" + projectId).addItem value
+          _onPullRequestsForCreate(projectId, e.data.id, value)
         when 'updated'
           item(buildId).update value, projectId
           item(buildId).update value, "branches" + projectId
@@ -28,6 +27,32 @@ Vx.service 'buildStore',
           item(buildId).remove projectId
           item(buildId).remove "branches" + projectId
           item(buildId).remove "queued"
+
+    _onBranchesForCreate = (projectId, buildId, value) ->
+      if value.branch
+        collection("branches" + projectId).get().then (its) ->
+          d = $q.defer()
+
+          idx = _.pluck(its, "branch").indexOf(value.branch)
+          if idx >= 0
+            its.splice(idx, 1)
+
+          its.push value
+          d.resolve value
+          d.promise
+
+    _onPullRequestsForCreate = (projectId, buildId, value) ->
+      if value.pull_request_id
+        collection("pulls" + projectId).get().then (its) ->
+          d = $q.defer()
+
+          idx = _.pluck(its, "pull_request_id").indexOf(value.pull_request_id)
+          if idx >= 0
+            its.splice(idx, 1)
+
+          its.push value
+          d.resolve value
+          d.promise
 
     eventSource.subscribe "builds", subscribe
 

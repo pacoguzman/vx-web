@@ -24,7 +24,8 @@
           %td {{ build.branch }}
           %td.app-task-duration{ task: 'build' }
 
-      =#= Show a message about we're waiting for the builds - or the whole page if we don't have projects either don't need to show this
+      %div{ 'ng-show' => 'builds.length === 0 && projects.length > 0' }
+        No pending jobs - Please get your hands dirty
 
       .ajax-loader{ 'ng-hide' => 'builds.length != undefined' }
 
