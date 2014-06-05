@@ -21,6 +21,10 @@ Vx.config ($routeProvider, $locationProvider) ->
       templateUrl: "user_repos/index.html",
       controller: "UserReposCtrl"
     ).
+    when("/profile",
+      templateUrl: "profile/show.html",
+      controller: "ProfileCtrl"
+    ).
     when('/',
       templateUrl: "projects/index.html",
       controller: "ProjectsCtrl"

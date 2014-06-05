@@ -1,5 +1,7 @@
 class CreateJobs < ActiveRecord::Migration
   def change
+    enable_extension 'hstore'
+
     create_table :jobs do |t|
       t.integer   :build_id,   null: false
       t.integer   :number,     null: false

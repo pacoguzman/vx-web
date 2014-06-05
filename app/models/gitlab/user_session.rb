@@ -6,6 +6,7 @@ require 'json'
 
 module Gitlab
 
+  # TODO: add specs
   class UserSession
 
     ENV_RE = /^GITLAB_URL[0-9]*$/
@@ -42,8 +43,38 @@ module Gitlab
     def create
       if valid?
         if response = authenticate
-          Rails.logger.debug "Got response: #{response.inspect}"
           find_user(response) || create_user(response)
+        end
+      end
+    end
+
+    def update_identity(identity)
+      if valid?
+        if response = authenticate
+          if version = gitlab_version(response.private_token)
+            identity.update(
+              login:   response.login,
+              token:   response.private_token,
+              uid:     response.id,
+              version: version
+            )
+          end
+        end
+      end
+    end
+
+    def create_identity(user)
+      if valid?
+        if response = authenticate
+          if version = gitlab_version(response.private_token)
+            identity = user.identities.build(
+              login:   response.login,
+              token:   response.private_token,
+              uid:     response.id,
+              version: version
+            )
+            identity.save
+          end
         end
       end
     end

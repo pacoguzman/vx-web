@@ -8,6 +8,10 @@ VxWeb::Application.routes.draw do
       end
     end
 
+    namespace :user_identities do
+      resources :gitlab, only: [:update, :create]
+    end
+
     resources :projects do
       resources :builds, only: [:index, :create]
       resources :cached_files, only: [:index]

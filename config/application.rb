@@ -9,6 +9,7 @@ require 'ostruct'
 Bundler.require(:default, Rails.env)
 
 require 'dotenv'
+
 Dotenv.load "#{File.expand_path("../../", __FILE__)}/.env.#{Rails.env}", "/etc/vexor/Envfile"
 
 VX_COMPONENT_NAME ||= ENV['VX_COMPONENT_NAME'] || "http"
