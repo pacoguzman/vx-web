@@ -3,21 +3,23 @@ angular.module('Vx').
 
     restrict: 'EC'
     replace: true
+    scope: {}
 
     template: """
-    <div ng-show="display" class="dropdown">
-      <a ng-click="togglePopup()" role="button" class="app-title" href="javascript://">
+    <div class="dropdown">
+      <a role="button" class="app-title dropdown-toggle" href="javascript://">
         {{title}}
         <span class="caret"></span>
       </a>
 
-      <ul class="dropdown-menu app-popup" role="menu" ng-show="isPopup">
+      <ul class="dropdown-menu app-popup">
         <li>
-          <a role="menuitem" href="/profile">Profile</a>
+          <a href="/profile/user">User Profile</a>
+          <a href="/profile/identities">User Identities</a>
         </li>
         <li class="divider"></li>
         <li>
-          <a role="menuitem" href="javascript://">Logout</a>
+          <a href="javascript://">Logout</a>
         </li>
       </ul>
     </div>
@@ -25,13 +27,8 @@ angular.module('Vx').
 
     link: (scope, elem) ->
 
-      scope.display       = true
-      scope.title         = 'aaaa'
+      scope.title         = null
       scope.user          = null
-      scope.isPopup       = false
-
-      scope.togglePopup = () ->
-        scope.isPopup = !scope.isPopup
 
       currentUserStore.get().then (me) ->
         scope.user = me

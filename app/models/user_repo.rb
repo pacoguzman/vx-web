@@ -76,13 +76,16 @@ class UserRepo < ActiveRecord::Base
     PROVIDER_TITLE[provider.to_s]
   end
 
-  private
-
-    def unsubscribe_project
+  # TODO: test it
+  def unsubscribe_project
+    if project
       sc = identity.sc
       sc.hooks(project.sc_model).destroy(Rails.configuration.x.hostname)
       sc.deploy_keys(project.sc_model).destroy(project.deploy_key_name)
     end
+  end
+
+  private
 
     def subscribe_project
       sc = identity.sc

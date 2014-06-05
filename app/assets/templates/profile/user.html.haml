@@ -1,0 +1,15 @@
+.user_profile
+
+  %form{ role: "form", class: "form-horizontal" }
+    .form-group
+      %label{ for: "user_email", class: "col-sm-1 control-label" } Email
+      .col-sm-5
+        %input{ type: "email", class: "form-control", id: "user_email", "ng-model" => "user.email" }
+    .form-group
+      %label{ for: "user_name", class: "col-sm-1 control-label" } Name
+      .col-sm-5
+        %input{ type: "text", class: "form-control", id: "user_name", "ng-model" => "user.name" }
+
+    .form-group
+      .col-sm-offset-1.col-sm-5
+        %buttom{ type: "submit", class: "btn btn-primary btn-sm" } Update Profile

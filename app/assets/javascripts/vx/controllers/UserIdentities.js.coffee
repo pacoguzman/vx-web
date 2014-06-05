@@ -1,4 +1,4 @@
-Vx.controller 'ProfileCtrl', ['$scope', 'appMenu', 'currentUserStore',
+Vx.controller 'UserIdentitiesCtrl', ['$scope', 'appMenu', 'currentUserStore',
   "userIdentitiesStore",
   ($scope, appMenu, currentUserStore, userIdentitiesStore) ->
 
@@ -16,12 +16,12 @@ Vx.controller 'ProfileCtrl', ['$scope', 'appMenu', 'currentUserStore',
       $scope.gitlab_identities = _(me.identities).filter (it) ->
         it.provider == 'gitlab'
 
-    $scope.updateGitlabIdentity = (identity) ->
+    $scope.updateGitlab = (identity) ->
       userIdentitiesStore.gitlab.update(identity)
 
-    $scope.createGitlabIdentity = () ->
-      identity = _.clone($scope.newGitlab)
-      userIdentitiesStore.gitlab.create(identity).success (data) ->
+    $scope.createGitlab = () ->
+      userIdentitiesStore.gitlab.create($scope.newGitlab).success (data) ->
+        identity = _.clone($scope.newGitlab)
         gitlab_identities.push identity
         $scope.newGitlab = {}
 
@@ -33,5 +33,5 @@ Vx.controller 'ProfileCtrl', ['$scope', 'appMenu', 'currentUserStore',
       identity.editable = false
 
     appMenu.define ->
-      appMenu.add "Profile", "/profile"
+      appMenu.add "User Identities", "/profile/identities"
   ]

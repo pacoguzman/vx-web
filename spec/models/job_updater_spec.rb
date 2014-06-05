@@ -14,11 +14,6 @@ describe JobUpdater do
   let(:updater) { described_class.new message }
   subject { updater }
 
-  before(:all) do
-    puts Project.all.inspect
-  end
-
-
   context "just created" do
     its(:project) { should eq project }
     its(:build)   { should eq b }

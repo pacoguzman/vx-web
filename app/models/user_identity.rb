@@ -43,6 +43,10 @@ class UserIdentity < ActiveRecord::Base
     end
   end
 
+  def unsubscribe_projects
+    user_repos.map(&:unsubscribe_project)
+  end
+
   private
 
     def real_provider_name

@@ -1,3 +1,4 @@
+# TODO: add specs
 class Api::UserIdentities::GitlabController < Api::BaseController
 
   respond_to :json
