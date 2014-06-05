@@ -1,4 +1,3 @@
-# TODO: add specs
 Vx.service 'userIdentitiesStore', [ "$http",
   ($http) ->
 
@@ -19,6 +18,7 @@ Vx.service 'userIdentitiesStore', [ "$http",
       identity.wait = true
       req(identity, "PATCH", "/api/user_identities/gitlab/#{identity.id}")
         .success (data) ->
+          identity.editable = false
           identity.wait = false
           identity.error = false
         .error (data) ->
@@ -29,6 +29,7 @@ Vx.service 'userIdentitiesStore', [ "$http",
       identity.wait = true
       req(identity, "POST", "/api/user_identities/gitlab")
         .success (data) ->
+          identity.editable = false
           identity.wait = false
           identity.error = false
           angular.extend identity, data
@@ -36,7 +37,19 @@ Vx.service 'userIdentitiesStore', [ "$http",
           identity.error = "Authentication Failed"
           identity.wait = false
 
+    destroyGitlab = (identity, collection) ->
+      identity.wait = true
+      $http.delete("/api/user_identities/gitlab/#{identity.id}")
+        .success (data) ->
+          identity.wait = false
+          idx = _.indexOf collection, identity
+          unless idx < 0
+            collection.splice(idx, 1)
+        .error (data) ->
+          identity.wait = false
+
     gitlab:
       update: updateGitlab
       create: createGitlab
+      destroy: destroyGitlab
   ]

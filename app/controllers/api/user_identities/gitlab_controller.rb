@@ -17,10 +17,16 @@ class Api::UserIdentities::GitlabController < Api::BaseController
     @session  = Gitlab::UserSession.new(identity_params)
     @identity = @session.create_identity(current_user)
     if @identity
-      respond_with(@identity)
+      respond_with(@identity, location: api_user_identities_gitlab_url(@identity))
     else
       head 422
     end
+  end
+
+  def destroy
+    @identity = current_user.identities.find(params[:id])
+    @identity.unsubscribe_and_destroy
+    head :ok
   end
 
   private

@@ -9,7 +9,7 @@ VxWeb::Application.routes.draw do
     end
 
     namespace :user_identities do
-      resources :gitlab, only: [:update, :create]
+      resources :gitlab, only: [:update, :create, :destroy]
     end
 
     resources :projects do
@@ -53,7 +53,6 @@ VxWeb::Application.routes.draw do
   end
 
   get  'auth/github/callback', to: 'github/user_sessions#create'
-  post 'auth/gitlab/session',  to: "gitlab/user_sessions#create"
   get  'auth/failure',         to: redirect('/')
 
   put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload", as: :upload_cached_file

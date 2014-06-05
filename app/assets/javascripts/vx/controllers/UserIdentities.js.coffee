@@ -22,7 +22,7 @@ Vx.controller 'UserIdentitiesCtrl', ['$scope', 'appMenu', 'currentUserStore',
     $scope.createGitlab = () ->
       userIdentitiesStore.gitlab.create($scope.newGitlab).success (data) ->
         identity = _.clone($scope.newGitlab)
-        gitlab_identities.push identity
+        $scope.gitlab_identities.push identity
         $scope.newGitlab = {}
 
     $scope.edit = (identity) ->
@@ -31,6 +31,9 @@ Vx.controller 'UserIdentitiesCtrl', ['$scope', 'appMenu', 'currentUserStore',
 
     $scope.cancel = (identity) ->
       identity.editable = false
+
+    $scope.destroy = (identity) ->
+      userIdentitiesStore.gitlab.destroy(identity, $scope.gitlab_identities)
 
     appMenu.define ->
       appMenu.add "User Identities", "/profile/identities"

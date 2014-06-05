@@ -14,7 +14,6 @@ class User < ActiveRecord::Base
           UserRepo.find_or_create_by_sc identity, external_repo
         end
         UserRepo.where("id NOT IN (?)", synced_repos.map(&:id)).where(identity: identity).each do |user_repo|
-          user_repo.unsubscribe_project
           user_repo.destroy
         end
         synced_repos
