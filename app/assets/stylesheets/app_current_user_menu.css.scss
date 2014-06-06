@@ -1,10 +1,14 @@
 .app-current-user-menu {
   position: absolute;
   right: 1em;
-  top: 2.5em;
+  top: 4em;
   margin-right: 1.8em;
 
   .app-title {
     text-decoration: none;
+  }
+
+  .app-popup {
+    font-size: 13px;
   }
 }
