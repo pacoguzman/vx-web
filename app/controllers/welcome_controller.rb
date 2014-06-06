@@ -2,7 +2,7 @@ class WelcomeController < ApplicationController
 
   skip_before_filter :authorize_user, except: [:show]
 
-  def sign_up
+  def invite
     @email   = params[:email]
     @company = Company.find_by! name: params[:company]
     @invite  = @company.invites.find_by! token: params[:token], email: @email

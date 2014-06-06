@@ -67,7 +67,8 @@ VxWeb::Application.routes.draw do
 
   get "builds/sha/:sha" => "builds#sha"
 
-  get '/welcome/sign_up', to: "welcome#sign_up", as: :sign_up
+  get '/welcome/invite',  to: "welcome#invite",  as: :invite
+  get '/welcome/sign_up', to: 'welcome#sign_up', as: :sign_up
 
   scope constraints: ->(req){ req.format == Mime::HTML } do
     get "/",         to: redirect("/ui")
