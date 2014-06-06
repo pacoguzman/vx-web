@@ -61,7 +61,7 @@ class UserIdentity < ActiveRecord::Base
   end
 
   def major_version
-    version.to_s.split(".", 2).first
+    @major_version ||= version.to_s.split(".", 2).first
   end
 
   private
@@ -71,7 +71,7 @@ class UserIdentity < ActiveRecord::Base
       when "github"
         "github"
       when "gitlab"
-        if major_version
+        if major_version && %w{ 6 }.include?(major_version)
           "gitlab_v#{major_version}"
         end
       end

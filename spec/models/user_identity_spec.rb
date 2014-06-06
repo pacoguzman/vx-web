@@ -56,8 +56,13 @@ describe UserIdentity do
     end
 
     it "should be false when gitlab v6" do
-      id = create :user_identity, :gitlab
+      id = create :user_identity, :gitlab, version: '6.4.3'
       expect(id).to_not be_ignored
+    end
+
+    it "should be false when gitlab v5" do
+      id = create :user_identity, :gitlab, version: '5.4.3'
+      expect(id).to be_ignored
     end
   end
 end
