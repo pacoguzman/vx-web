@@ -4,8 +4,8 @@ FactoryGirl.define do
   factory :user_identity, aliases: [:identity] do
     user
     provider   "github"
-    token      "MyString"
-    uid        "MyString"
+    token      "token"
+    uid        "uid"
     login      "login"
     url        "https://example.com"
 

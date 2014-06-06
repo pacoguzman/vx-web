@@ -6,17 +6,20 @@ class ApplicationController < ActionController::Base
   before_filter :authorize_user
 
   helper_method :current_user,
-                :user_logged_in?
+                :user_logged_in?,
+                :omniauth_authorize_url
 
   serialization_scope :current_user
 
   private
 
+    def omniauth_authorize_url(provider, action)
+      root = Rails.configuration.x.hostname
+      "/auth/#{provider}?origin=http://#{root}/auth/#{provider}/#{action}"
+    end
+
     def current_user
-      @current_user ||= (
-        development_user ||
-        ::User.find_by(id: current_user_id.to_i)
-      )
+      @current_user ||= ::User.find_by(id: current_user_id.to_i)
     end
 
     def current_company
@@ -25,10 +28,6 @@ class ApplicationController < ActionController::Base
 
     def current_user_id
       session[:user_id]
-    end
-
-    def development_user
-      Rails.env.development? && User.first
     end
 
     def user_logged_in?
@@ -43,7 +42,7 @@ class ApplicationController < ActionController::Base
       save_location if request.format.html?
 
       respond_to do |want|
-        want.html { render 'welcome/signin', layout: false, status: 403 }
+        want.html { render 'welcome/sign_in', layout: false, status: 403 }
         want.json { head 403 }
         want.all  { head 403 }
       end

@@ -11,7 +11,7 @@
     .container
       - unless any_providers_enabled?
         .alert.alert-danger
-          Cannout found conguration for Github or Gitlab.
+          Cannout found conguration for Github
 
       .row
 
@@ -19,7 +19,7 @@
 
           .github
 
-            %a{ href: "/auth/github", title: "Login with Github" }
+            %a{ href: omniauth_authorize_url(:github, :sign_in), title: "Sign in via Github" }
 
               %h3.title
                 Github

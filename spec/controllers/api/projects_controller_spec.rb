@@ -34,7 +34,7 @@ describe Api::ProjectsController do
     end
     it { should be_success }
     its(:content_type) { should eq 'text/plain' }
-    its(:body)         { should have(234).items }
+    its(:body)         { should have(233).items }
   end
 
 end

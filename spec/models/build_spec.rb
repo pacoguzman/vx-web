@@ -80,8 +80,8 @@ describe Build do
     its(:sha)                  { should eq 'MyString' }
     its(:deploy_key)           { should be }
     its(:branch)               { should eq 'MyString' }
-    its(:cache_url_prefix)     { should eq "http://test.local/f/cached_files/#{b.project.token}" }
-    its(:artifacts_url_prefix) { should eq "http://test.local/f/artifacts/#{b.id}/#{b.token}" }
+    its(:cache_url_prefix)     { should eq "http://test.host/f/cached_files/#{b.project.token}" }
+    its(:artifacts_url_prefix) { should eq "http://test.host/f/artifacts/#{b.id}/#{b.token}" }
     its(:build_id)             { should eq b.id }
     its(:job_id)               { should eq job.number }
   end

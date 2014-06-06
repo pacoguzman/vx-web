@@ -3,6 +3,7 @@ require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 require 'socket'
 require 'ostruct'
+require 'uri'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -45,8 +46,13 @@ module VxWeb
         Socket.gethostname
       end
 
-    config.x.hostname =
-      (ENV['VX_HOSTNAME'] || sys_hostname || "example.com")
+    config.x.hostname = (ENV['VX_HOSTNAME'] || sys_hostname || "example.com")
+    if ENV['VX_HTTPS']
+      config.x.hostname = URI.parse("https://#{config.x.hostname}")
+    else
+      config.x.hostname = URI.parse("http://#{config.x.hostname}")
+    end
+
     config.x.github_restriction =
       ENV['GITHUB_RESTRICTION'] && ENV["GITHUB_RESTRICTION"].split(",").map(&:strip)
 
