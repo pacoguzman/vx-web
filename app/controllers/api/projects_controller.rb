@@ -4,7 +4,7 @@ class Api::ProjectsController < Api::BaseController
   skip_before_filter :authorize_user, only: [:key]
 
   def index
-    @projects = current_companny.projects.includes(user_repo: :identity)
+    @projects = current_company.projects.includes(user_repo: :identity)
     respond_with(@projects)
   end
 
@@ -13,7 +13,8 @@ class Api::ProjectsController < Api::BaseController
   end
 
   def key
-    render text: project.public_deploy_key, content_type: "text/plain"
+    @project = Project.find params[:id]
+    render text: @project.public_deploy_key, content_type: "text/plain"
   end
 
   private
