@@ -25,19 +25,3 @@
                 Github
               = image_tag 'octokat.svg', alt: "Octokat", title: "Octokat"
               = button_tag "With Github", class: "btn btn-success"
-
-        - if gitlab_enabled?
-
-          .gitlab
-            %h3.title
-              Gitlab
-
-            = form_tag auth_gitlab_session_path, class: "form" do
-              - user = gitlab_user_session
-              .form-group
-                = email_field_tag "gitlab_user_session[email]", user.email, class: "form-control email", placeholder: "Email"
-                = password_field_tag "gitlab_user_session[password]", user.password, class: "form-control password", placeholder: "Password"
-              .form-group
-                = select_tag "gitlab_user_session[host]", options_for_select(user.hosts, user.host), class: "form-control"
-              .form-group
-                = submit_tag "With Gitlab", class: "btn btn-success"

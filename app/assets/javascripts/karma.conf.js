@@ -19,6 +19,7 @@ module.exports = function(config) {
       "lib/angular-1.2.11.js",
       "lib/angular-mocks-1.2.11.js",
       "lib/angular-route-1.2.11.js",
+      "lib/ui-bootstrap-0.11.0.js",
 
       "templates.compilled.js",
       "vx/init/*.js.coffee",
