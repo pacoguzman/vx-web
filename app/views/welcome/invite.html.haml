@@ -8,7 +8,7 @@
 
     .sign-in-github-provider
 
-      %a{ href: omniauth_authorize_url(:github, :sign_up, email: @email, company: @company) }
+      %a{ href: omniauth_authorize_url(:github, :sign_up, email: @email, company: @company.name, token: @invite.token) }
 
         = image_tag 'octokat.svg', alt: "Octokat", title: "Octokat"
         %span

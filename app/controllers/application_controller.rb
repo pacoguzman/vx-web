@@ -11,7 +11,25 @@ class ApplicationController < ActionController::Base
 
   serialization_scope :current_user
 
+  rescue_from "ActiveRecord::RecordNotFound",   with: :render_not_found
+  rescue_from "ActionController::RoutingError", with: :render_not_found
+
   private
+
+    def render_not_found
+      respond_to do |want|
+        want.html {
+          render file: 'public/404.html', status: 404, layout: false
+        }
+        want.json {
+          render body: "{}", status: 404
+        }
+        want.all {
+          render nothing: true, status: 404
+        }
+      end
+    end
+
 
     def omniauth_authorize_url(provider, action, options = {})
       options[:do] = action
@@ -43,7 +61,7 @@ class ApplicationController < ActionController::Base
       save_location if request.format.html?
 
       respond_to do |want|
-        want.html { render 'user_session/session/sign_in', layout: 'session', status: 403 }
+        want.html { render 'user_session/session/new', layout: 'session', status: 403 }
         want.json { head 403 }
         want.all  { head 403 }
       end
@@ -51,13 +69,13 @@ class ApplicationController < ActionController::Base
     end
 
     def redirect_to_saved_location_or_root
-      redirect_to(session[:saved_location] || "/ui")
-      session[:saved_location] = nil
+      loc = session[:saved_location]
+      redirect_to(loc || "/ui")
     end
 
     def save_location
-      if request.fullpath != "/"
-        session[:saved_location] ||= request.fullpath
+      if request.fullpath != "/ui"
+        session[:saved_location] = request.fullpath
       end
     end
 

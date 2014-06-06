@@ -1,16 +1,15 @@
 module UserSession
   Github = Struct.new(:auth_info) do
 
-    def create
-      if auth_info.try(:uid)
-        find_user || create_user
-      end
-    end
-
     def find_user
       if auth_info_uid?
+
         identity = UserIdentity.provider(:github).find_by(uid: auth_info.uid)
-        identity && identity.user
+        token    = auth_info.credentials.token
+        login    = auth_info.info.nickname
+        if identity.update(token: token, login: login)
+          identity && identity.user
+        end
       end
     end
 

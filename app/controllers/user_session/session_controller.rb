@@ -1,6 +1,6 @@
 class UserSession::SessionController < ApplicationController
 
-  skip_before_filter :authorize_user, except: [:new]
+  skip_before_filter :authorize_user, except: [:show]
 
   def destroy
     session.delete(:user_id)
@@ -14,11 +14,4 @@ class UserSession::SessionController < ApplicationController
     end
   end
 
-  def sign_up
-    render layout: "session"
-  end
-
-  def new
-    render layout: "application"
-  end
 end
