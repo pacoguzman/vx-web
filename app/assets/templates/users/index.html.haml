@@ -1,14 +1,35 @@
-%table.table.users
-  %thead
-    %tr
-      %th Name
-      %th Email
-      %th Role
-      %th Project count
-  %tbody
-    %tr{ 'ng-repeat' => 'user in users' }
-      %td {{ user.name }}
-      %td {{ user.email }}
-      %td
-        %select{ 'ng-model' => 'user.role', 'ng-change' => 'update(user)', 'ng-options' => 'role for role in user.available_roles', 'ng-disabled' => 'user.id == current_user.id', class: 'form-control input-sm' }
-      %td {{ user.project_count }}
+%div{ 'ng-show' => 'currentUser.isAdmin', 'ng-controller' => 'UsersCtrl' }
+  .row{ 'ng-show' => 'canShowNotice()' }
+    .col-xs-12
+      .alert.alert-success
+        %button{ type: 'button', class: 'close', 'ng-click' => 'hideNotice(); showInviteForm()' } &times;
+        {{ notice }}
+
+  .row{ 'ng-show' => 'canShowInviteForm()' }
+    %form{ method: 'post', name: 'inviteForm', 'ng-submit' => 'submitForm()', class: 'invite' }
+      .col-xs-11
+        .input-group
+          %input{ name: 'invite[emails]', type: 'text', class: 'form-control', required: true, 'ng-model' => 'inviteForm.emails', placeholder: 'Invite email addresses separated by space: "user1@example.com user2@example.com user3@example.com"' }
+          %span{ class: 'input-group-btn' }
+            %button{ type: 'submit', class: 'btn btn-success', 'ng-disabled' => 'inviteForm.$invalid', 'ng-click' => 'hideInviteForm()' } Send
+      .col-xs-1
+        %button{ type: 'button', class: 'close', 'ng-click' => 'hideInviteForm(); showInviteLink()' } &times;
+
+  .row{ 'ng-show' => 'canShowInviteLink()' }
+    .col-xs-12.create-invite
+      %a{ href: '', 'ng-click' => 'hideInviteLink(); showInviteForm()' } Create new Invite
+
+  .row
+    .col-xs-12
+      %table.table.users
+        %thead
+          %tr
+            %th Name
+            %th Email
+            %th Role
+        %tbody
+          %tr{ 'ng-repeat' => 'user in users' }
+            %td {{ user.name }}
+            %td {{ user.email }}
+            %td
+              %select{ 'ng-model' => 'user.role', 'ng-change' => 'update(user)', 'ng-options' => 'role for role in user.available_roles', 'ng-disabled' => 'user.id == currentUser.id', class: 'form-control input-sm' }

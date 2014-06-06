@@ -16,7 +16,7 @@ angular.module('Vx').
         <li role="presentation">
           <a href="/ui/profile/user">Account Information</a>
           <a href="/ui/profile/identities">Services</a>
-          <a href="/ui/users" ng-if="user.role == 'admin'">Users</a>
+          <a href="/ui/users" ng-show="user.isAdmin">Users</a>
         </li>
         <li role="presentation" class="divider" ng-show="companies"></li>
         <li role="presentation" class="dropdown-header" ng-show="companies">Companies</li>
