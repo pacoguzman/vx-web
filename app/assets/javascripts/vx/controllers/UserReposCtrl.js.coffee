@@ -2,7 +2,7 @@ Vx.controller 'UserReposCtrl', ['$scope', 'appMenu', 'userRepoStore'
   ($scope, menu, userRepos) ->
 
     menu.define ->
-      menu.add 'Manage Projects', '/user_repos'
+      menu.add 'Manage Projects', '/ui/user_repos'
 
     $scope.inProgress = false
     $scope.repos      = userRepos.all()
@@ -10,9 +10,9 @@ Vx.controller 'UserReposCtrl', ['$scope', 'appMenu', 'userRepoStore'
     $scope.processing = {}
 
     $scope.changeSubscription = (repo) ->
-      repo.inProgress = true
+      repo.wait = true
       userRepos.toggleSubscribtion(repo).finally ->
-        repo.inProgress = false
+        repo.wait = false
 
     $scope.syncUserRepos = () ->
       $scope.inProgress = true

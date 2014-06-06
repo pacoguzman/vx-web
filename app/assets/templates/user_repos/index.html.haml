@@ -14,11 +14,11 @@
 
     .ajax-loader{ 'ng-hide' => 'repos.length != undefined' }
 
-    .user-repo{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30", 'ng-class' => "repo.inProgress ? 'in-progress' : ''" }
+    .user-repo{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30", 'ng-class' => "repo.wait ? 'in-progress' : ''" }
 
       %a.octocat{ href: '{{repo.settings_url}}', title: "View on {{repo.provider_title}}", "target" => "blank" }
         %i.fa.fa-wrench
 
       %label
-        %input{ type: 'checkbox', 'ng-disabled' => 'repo.disabled || repo.inProgress', 'ng-model' => 'repo.subscribed', 'ng-change' => "changeSubscription(repo)" }
+        %input{ type: 'checkbox', 'ng-disabled' => 'repo.disabled || repo.wait', 'ng-model' => 'repo.subscribed', 'ng-change' => "changeSubscription(repo)" }
           %span {{repo.full_name}}
