@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
       options[:foo] = 'bar'
       options[:baz] = '1'
       p =  options.map{|k,v| "#{k}=#{v}" }.join("&")
-      "/auth/#{provider}?#{p}"
+      "/user_session/#{provider}?#{p}"
     end
 
     def current_user
