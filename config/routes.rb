@@ -1,6 +1,7 @@
 VxWeb::Application.routes.draw do
 
   namespace :api do
+    resources :invites, only: [:create]
 
     resources :users, only: [:index, :update] do
       collection do
