@@ -1,45 +1,44 @@
 require 'spec_helper'
 
-describe Github::UserSessionController do
+describe UserSession::GithubController do
+  let(:env) { {
+    uid: "uid",
+    info: {
+      name:     "name",
+      email:    "email",
+      nickname: "nickname",
+    },
+    credentials: {
+      token: "token"
+    }
+  } }
+  let(:auth_hash) {
+    OmniAuth::AuthHash.new(env.merge(provider: "github"))
+  }
 
   subject { response }
 
+  before do
+    OmniAuth.config.mock_auth[:github] = auth_hash
+    request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:github]
+  end
+
   context "GET /sign_in" do
-    let(:env) { {
-      uid: "uid",
-      info: {
-        name: "name",
-        email: "me@example.com",
-        nickname: "nickname",
-      },
-      credentials: {
-        token: "token"
-      }
-    } }
-    let(:auth_hash) {
-      OmniAuth::AuthHash.new(env.merge(provider: "github"))
-    }
-
-    before do
-      OmniAuth.config.mock_auth[:github] = auth_hash
-      request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:github]
-    end
-
     context "when user and identity exists" do
       let!(:user)     { create :user, email: "me@example.com" }
       let!(:identity) { create :user_identity, :github, user: user, url: "https://github.com" }
 
       it "should redirect to /ui" do
-        get :sign_in
+        sign_in
         should redirect_to("/ui")
       end
 
       it "cannot create any users" do
-        expect { get :sign_in }.to_not change(User, :count)
+        expect { sign_in }.to_not change(User, :count)
       end
 
       it "cannot create any identities" do
-        expect { get :sign_in }.to_not change(UserIdentity, :count)
+        expect { sign_in }.to_not change(UserIdentity, :count)
       end
     end
 
@@ -47,37 +46,24 @@ describe Github::UserSessionController do
       let(:auth_hash) { :invalid_credentials }
 
       it "should redirect to /auth/failure" do
-        get :sign_in
+        sign_in
         should redirect_to("/auth/failure")
       end
 
       it "cannot create any users" do
-        expect { get :sign_in }.to_not change(User, :count)
+        expect { sign_in }.to_not change(User, :count)
       end
+    end
+
+    def sign_in
+      request.env['omniauth.params'] = { "do" => "sign_in" }
+      get :callback
     end
   end
 
   context "GET /sign_up" do
     let!(:company) { create :company }
     let(:email)   { 'me@example.com' }
-    let(:env) { {
-      uid: "uid",
-      info: {
-        name: "name",
-        nickname: "nickname",
-      },
-      credentials: {
-        token: "token"
-      }
-    } }
-    let(:auth_hash) {
-      OmniAuth::AuthHash.new(env.merge(provider: "github"))
-    }
-
-    before do
-      OmniAuth.config.mock_auth[:github] = auth_hash
-      request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:github]
-    end
 
     context "when user in restricted organization" do
       before do
@@ -225,7 +211,12 @@ describe Github::UserSessionController do
     end
 
     def sign_up(o = {})
-      get :sign_up, { email: (o[:email] || "me@example.com"), company: (o[:company] || company.name) }
+      request.env['omniauth.params'] = {
+        'do'      => "sign_up",
+        "email"   => o[:email] || "me@example.com",
+        "company" => o[:company] || company.name
+      }
+      get :callback
     end
 
   end

@@ -13,9 +13,12 @@ class ApplicationController < ActionController::Base
 
   private
 
-    def omniauth_authorize_url(provider, action)
-      root = Rails.configuration.x.hostname
-      "/auth/#{provider}?origin=http://#{root}/auth/#{provider}/#{action}"
+    def omniauth_authorize_url(provider, action, options = {})
+      options[:do] = action
+      options[:foo] = 'bar'
+      options[:baz] = '1'
+      p =  options.map{|k,v| "#{k}=#{v}" }.join("&")
+      "/auth/#{provider}?#{p}"
     end
 
     def current_user

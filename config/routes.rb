@@ -52,8 +52,7 @@ VxWeb::Application.routes.draw do
     resources :events, only: [:index]
   end
 
-  get '/auth/github/sign_in', to: 'github/user_session#sign_in'
-  get '/auth/github/sign_up', to: 'github/user_session#sign_up'
+  get '/auth/github/callback', to: "user_session/github#callback"
   get '/auth/failure',         to: redirect('/')
 
   put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload", as: :upload_cached_file
