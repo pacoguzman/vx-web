@@ -14,8 +14,8 @@ angular.module('Vx').
 
       <ul class="dropdown-menu app-popup">
         <li>
-          <a href="/ui/profile/user">Profile</a>
-          <a href="/ui/profile/identities">Accounts</a>
+          <a href="/ui/profile/user">Account Information</a>
+          <a href="/ui/profile/identities">Services</a>
         </li>
         <li class="divider"></li>
         <li>

@@ -36,5 +36,5 @@ Vx.controller 'UserIdentitiesCtrl', ['$scope', 'appMenu', 'currentUserStore',
       userIdentitiesStore.gitlab.destroy(identity, $scope.gitlab_identities)
 
     appMenu.define ->
-      appMenu.add "User Identities", "/ui/profile/identities"
+      appMenu.add "Services", "/ui/profile/identities"
   ]
