@@ -61,7 +61,7 @@ class ApplicationController < ActionController::Base
       save_location if request.format.html?
 
       respond_to do |want|
-        want.html { render 'user_session/session/sign_in', layout: 'session', status: 403 }
+        want.html { render 'user_session/session/new', layout: 'session', status: 403 }
         want.json { head 403 }
         want.all  { head 403 }
       end
