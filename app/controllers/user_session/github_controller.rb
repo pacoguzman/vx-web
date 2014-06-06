@@ -15,8 +15,8 @@ class UserSession::GithubController < ApplicationController
   private
 
     def sign_in
-      @github_user_session = UserSession::Github.new request.env["omniauth.auth"]
-      @user                = @github_user_session.find_user
+      @session = UserSession::Github.new request.env["omniauth.auth"]
+      @user    = @session.find_user
       if @user
         session[:user_id] = @user.id
         redirect_to_saved_location_or_root
@@ -26,13 +26,15 @@ class UserSession::GithubController < ApplicationController
     end
 
     def sign_up
-      @company             = Company.find_by! name: o_params["company"]
-      @github_user_session = UserSession::Github.new request.env["omniauth.auth"]
-      @user                = @github_user_session.create_user(
-        o_params["email"],
-        @company
-      )
+      @email   = o_params["email"]
+      @token   = o_params["token"]
+      @company = Company.find_by! name: o_params["company"]
+      @invite  = @company.invites.find_by! token: @token, email: @email
+      @session = UserSession::Github.new request.env["omniauth.auth"]
+      @user    = @session.create_user(@email, @company)
+
       if @user
+        @invite.destroy
         session[:user_id] = @user.id
         redirect_to_saved_location_or_root
       else

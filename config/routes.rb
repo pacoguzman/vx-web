@@ -70,7 +70,7 @@ VxWeb::Application.routes.draw do
 
   scope constraints: ->(req){ req.format == Mime::HTML } do
     get "/",         to: redirect("/ui")
-    get "/ui",       to: "user_session/session#new"
-    get "/ui/*path", to: "user_session/session#new"
+    get "/ui",       to: "user_session/session#show"
+    get "/ui/*path", to: "user_session/session#show"
   end
 end

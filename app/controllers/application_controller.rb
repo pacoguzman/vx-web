@@ -11,7 +11,25 @@ class ApplicationController < ActionController::Base
 
   serialization_scope :current_user
 
+  rescue_from "ActiveRecord::RecordNotFound",   with: :render_not_found
+  rescue_from "ActionController::RoutingError", with: :render_not_found
+
   private
+
+    def render_not_found
+      respond_to do |want|
+        want.html {
+          render file: 'public/404.html', status: 404, layout: false
+        }
+        want.json {
+          render body: "{}", status: 404
+        }
+        want.all {
+          render nothing: true, status: 404
+        }
+      end
+    end
+
 
     def omniauth_authorize_url(provider, action, options = {})
       options[:do] = action

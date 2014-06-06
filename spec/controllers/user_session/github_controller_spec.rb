@@ -62,8 +62,9 @@ describe UserSession::GithubController do
   end
 
   context "GET /sign_up" do
-    let!(:company) { create :company }
-    let(:email)   { 'me@example.com' }
+    let(:email)    { 'me@example.com' }
+    let!(:invite)  { create :invite, email: email }
+    let!(:company) { create :company  }
 
     context "when user in restricted organization" do
       before do
@@ -173,9 +174,15 @@ describe UserSession::GithubController do
 
     context "when company not found" do
       it "should redirect to /auth/failure" do
-        expect {
-          sign_up company: "not found"
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        sign_up company: "not found"
+        should be_not_found
+      end
+    end
+
+    context "when invite not found" do
+      it "should redirect to /auth/failure" do
+        sign_up token: "not found"
+        should be_not_found
       end
     end
 
@@ -208,12 +215,17 @@ describe UserSession::GithubController do
       it "should store user_id into session" do
         expect(session[:user_id]).to eq user.id
       end
+
+      it "should destroy invite" do
+        expect{ invite.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
 
     def sign_up(o = {})
       request.env['omniauth.params'] = {
         'do'      => "sign_up",
-        "email"   => o[:email] || "me@example.com",
+        "email"   => o[:email]   || "me@example.com",
+        "token"   => o[:token]   || invite.token,
         "company" => o[:company] || company.name
       }
       get :callback
