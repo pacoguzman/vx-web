@@ -19,7 +19,10 @@ module Gitlab
     end
 
     def uri
-      @uri ||= URI(host)
+      begin
+        @uri ||= URI(host)
+      rescue URI::BadURIError
+      end
     end
 
     def update_identity(identity)
@@ -58,7 +61,7 @@ module Gitlab
     end
 
     def valid?
-      login && password && host && true
+      login && password && host && uri && true
     end
 
     def authenticate
