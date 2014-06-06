@@ -3,12 +3,14 @@ require 'spec_helper'
 describe Api::ProjectsController do
   let(:project) { create :project }
   let(:user)    { project.user_repo.user }
+  let(:company) { create :company }
 
   subject { response }
 
   before do
     project
     session[:user_id] = user.id
+    user.companies << company
   end
 
   context "GET /index" do

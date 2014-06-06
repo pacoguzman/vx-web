@@ -4,7 +4,7 @@ class Api::ProjectsController < Api::BaseController
   skip_before_filter :authorize_user, only: [:key]
 
   def index
-    @projects = Project.includes(user_repo: :identity)
+    @projects = current_companny.projects.includes(user_repo: :identity)
     respond_with(@projects)
   end
 
@@ -18,7 +18,7 @@ class Api::ProjectsController < Api::BaseController
 
   private
     def project
-      @project ||= Project.find params[:id]
+      @project ||= current_company.projects.find params[:id]
     end
 
 end
