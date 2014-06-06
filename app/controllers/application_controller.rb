@@ -69,13 +69,13 @@ class ApplicationController < ActionController::Base
     end
 
     def redirect_to_saved_location_or_root
-      redirect_to(session[:saved_location] || "/ui")
-      session[:saved_location] = nil
+      loc = session[:saved_location]
+      redirect_to(loc || "/ui")
     end
 
     def save_location
-      if request.fullpath != "/"
-        session[:saved_location] ||= request.fullpath
+      if request.fullpath != "/ui"
+        session[:saved_location] = request.fullpath
       end
     end
 

@@ -14,15 +14,4 @@ class UserSession::SessionController < ApplicationController
     end
   end
 
-  def sign_up
-    @email   = params[:email]
-    @company = Company.find_by! name: params[:company]
-    @invite  = @company.invites.find_by! token: params[:token], email: @email
-
-    render layout: "session"
-  end
-
-  def show
-    render layout: "application"
-  end
 end
