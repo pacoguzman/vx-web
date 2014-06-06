@@ -5,12 +5,13 @@ describe User do
   subject { user }
 
   context "sync_repos" do
+    let(:company)       { create :company }
     let(:external_repo) { Vx::ServiceConnector::Model.test_repo }
     let(:user_repo)     { create :user_repo, external_id: external_repo.id }
     let(:identity)      { user_repo.identity }
     let(:user)          { identity.user }
 
-    subject { user.sync_repos }
+    subject { user.sync_repos(company) }
 
     before do
       any_instance_of(Vx::ServiceConnector::Github) do |g|
@@ -40,6 +41,19 @@ describe User do
       expect(user_repo.reload.description).to eq 'description'
     end
 
+  end
+
+  context "default_company" do
+    let(:user) { create :user }
+
+    let(:c1)  { create :company, name: "c1", id: 1 }
+    let(:c2)  { create :company, name: "c2", id: 2 }
+    let!(:uc1) { create :user_company, user: user, company: c1, default: 0 }
+    let!(:uc2) { create :user_company, user: user, company: c2, default: 1 }
+
+    it "should return first default company" do
+      expect(user.default_company).to eq c1
+    end
   end
 end
 

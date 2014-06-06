@@ -2,6 +2,7 @@
 
 FactoryGirl.define do
   factory :project do
+    company_id    1
     name          "ci-worker-test-repo"
     http_url      "MyString"
     clone_url     "MyString"

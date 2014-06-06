@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140213230747) do
+ActiveRecord::Schema.define(version: 20140606140415) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,6 +63,14 @@ ActiveRecord::Schema.define(version: 20140213230747) do
 
   add_index "cached_files", ["project_id", "file_name"], name: "index_cached_files_on_project_id_and_file_name", unique: true, using: :btree
 
+  create_table "companies", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "companies", ["name"], name: "index_companies_on_name", unique: true, using: :btree
+
   create_table "job_logs", force: true do |t|
     t.integer "job_id"
     t.integer "tm"
@@ -109,10 +117,22 @@ ActiveRecord::Schema.define(version: 20140213230747) do
     t.integer  "last_build_id"
     t.string   "last_build_status_name"
     t.datetime "last_build_at"
+    t.integer  "company_id",             null: false
   end
 
-  add_index "projects", ["name"], name: "index_projects_on_name", unique: true, using: :btree
+  add_index "projects", ["company_id", "name"], name: "index_projects_on_company_id_and_name", unique: true, using: :btree
+  add_index "projects", ["company_id"], name: "index_projects_on_company_id", using: :btree
   add_index "projects", ["token"], name: "index_projects_on_token", unique: true, using: :btree
+
+  create_table "user_companies", force: true do |t|
+    t.integer  "user_id",                null: false
+    t.integer  "company_id",             null: false
+    t.integer  "default",    default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_companies", ["user_id", "company_id"], name: "index_user_companies_on_user_id_and_company_id", unique: true, using: :btree
 
   create_table "user_identities", force: true do |t|
     t.integer  "user_id",    null: false
@@ -140,10 +160,11 @@ ActiveRecord::Schema.define(version: 20140213230747) do
     t.datetime "updated_at"
     t.integer  "identity_id",                        null: false
     t.integer  "external_id",                        null: false
+    t.integer  "company_id"
   end
 
-  add_index "user_repos", ["full_name", "identity_id"], name: "index_user_repos_on_full_name_and_identity_id", unique: true, using: :btree
-  add_index "user_repos", ["identity_id", "external_id"], name: "index_user_repos_on_identity_id_and_external_id", unique: true, using: :btree
+  add_index "user_repos", ["company_id", "full_name", "identity_id"], name: "index_user_repos_on_company_id_and_full_name_and_identity_id", unique: true, using: :btree
+  add_index "user_repos", ["company_id", "identity_id", "external_id"], name: "index_user_repos_on_company_id_and_identity_id_and_external_id", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",      null: false

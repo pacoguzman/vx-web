@@ -4,21 +4,32 @@ class User < ActiveRecord::Base
   has_many :user_repos, through: :identities
   has_many :project_subscriptions, class_name: "::ProjectSubscription", dependent: :destroy
 
+  has_many :user_companies, dependent: :destroy
+  has_many :companies, through: :user_companies
+
   validates :name, :email, presence: true
   validates :email, uniqueness: true
 
-  def sync_repos
+  def default_company
+    companies.order("user_companies.default").first
+  end
+
+  def sync_repos(company)
     transaction do
-      identities.map do |identity|
+      active_identities.map do |identity|
         synced_repos = identity.sc.repos.map do |external_repo|
-          UserRepo.find_or_create_by_sc identity, external_repo
+          UserRepo.find_or_create_by_sc company, identity, external_repo
         end
-        UserRepo.where("id NOT IN (?)", synced_repos.map(&:id)).where(identity: identity).each do |user_repo|
+        identity.user_repos.where("id NOT IN (?)", synced_repos.map(&:id)).each do |user_repo|
           user_repo.destroy
         end
         synced_repos
       end
     end
+  end
+
+  def active_identities
+    identities.to_a.select{|i| not i.ignored? }
   end
 
 end

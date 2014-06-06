@@ -8,10 +8,12 @@ class Project < ActiveRecord::Base
   has_many :builds, dependent: :destroy, class_name: "::Build"
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
   has_many :cached_files, dependent: :destroy
+  belongs_to :company
 
   validates :name, :http_url, :clone_url, :token,
     :deploy_key, presence: true
-  validates :name, :token, uniqueness: true
+  validates :token, uniqueness: true
+  validates :name, uniqueness: { scope: :company_id }
 
   delegate :identity, to: :user_repo, allow_nil: true
 
