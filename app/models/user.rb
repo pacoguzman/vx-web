@@ -8,12 +8,16 @@ class User < ActiveRecord::Base
   validates :email, uniqueness: true
 
   def sync_repos
-    identities.map do |identity|
-      synced_repos = identity.sc.repos.map do |external_repo|
-        UserRepo.find_or_create_by_sc identity, external_repo
+    transaction do
+      identities.map do |identity|
+        synced_repos = identity.sc.repos.map do |external_repo|
+          UserRepo.find_or_create_by_sc identity, external_repo
+        end
+        UserRepo.where("id NOT IN (?)", synced_repos.map(&:id)).where(identity: identity).each do |user_repo|
+          user_repo.destroy
+        end
+        synced_repos
       end
-      UserRepo.where("id NOT IN (?)", synced_repos.map(&:id)).where(identity: identity).destroy_all
-      synced_repos
     end
   end
 

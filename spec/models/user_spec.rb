@@ -29,6 +29,7 @@ describe User do
 
     it "should remove unupdated user_repos" do
       user_repo.update! external_id: -1
+
       expect(subject).to be
       expect{user_repo.reload}.to raise_error(ActiveRecord::RecordNotFound)
     end

@@ -3,3 +3,4 @@
 //= require lib/ansiparse
 //= require lib/angular-1.2.16
 //= require lib/angular-route-1.2.16
+//= require lib/ui-bootstrap-0.11.0

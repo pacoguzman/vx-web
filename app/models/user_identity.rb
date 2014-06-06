@@ -1,8 +1,6 @@
 class UserIdentity < ActiveRecord::Base
 
   belongs_to :user
-  has_many :projects, dependent: :nullify, foreign_key: :identity_id,
-    class_name: "::Project"
   has_many :user_repos, dependent: :destroy, foreign_key: :identity_id,
     class_name: "::UserRepo"
 
@@ -40,6 +38,17 @@ class UserIdentity < ActiveRecord::Base
       when "gitlab"
         sc_class.new(url, token)
       end
+    end
+  end
+
+  def unsubscribe_projects
+    user_repos.map(&:unsubscribe_project)
+  end
+
+  def unsubscribe_and_destroy
+    transaction do
+      unsubscribe_projects
+      destroy
     end
   end
 
