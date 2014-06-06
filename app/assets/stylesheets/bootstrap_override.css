@@ -12,10 +12,6 @@ small {
   font-weight: normal;
 }
 
-.form-control {
-  font-size: 13px !important;
-}
-
 .table>thead>tr>th {
   border-bottom: 0 !important;
   font-weight: 500 !important;
