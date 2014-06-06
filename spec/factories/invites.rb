@@ -2,8 +2,7 @@
 
 FactoryGirl.define do
   factory :invite do
-    company_id 1
-    token "MyString"
-    email "MyString"
+    company
+    email 'invite@example.com'
   end
 end

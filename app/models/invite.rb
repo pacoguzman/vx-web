@@ -1,9 +1,13 @@
 class Invite < ActiveRecord::Base
-  validates :company_id, :email, :token, presence: true
-
   belongs_to :company
 
   before_validation :generate_token
+
+  validates :company, :email, :token, presence: true
+
+  def deliver
+    UserMailer.invite_email(self).deliver if valid?
+  end
 
   private
 

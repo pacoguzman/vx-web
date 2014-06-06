@@ -63,8 +63,8 @@ describe Users::GithubController do
 
   context "GET /invite" do
     let(:email)    { 'me@example.com' }
-    let!(:invite)  { create :invite, email: email }
     let!(:company) { create :company  }
+    let!(:invite)  { create :invite, email: email, company: company }
 
     context "authorization failed" do
       let(:auth_hash) { :invalid_credentials }
