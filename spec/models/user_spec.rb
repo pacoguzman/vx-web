@@ -41,6 +41,19 @@ describe User do
     end
 
   end
+
+  context "default_company" do
+    let(:user) { create :user }
+
+    let(:c1)  { create :company, name: "c1" }
+    let(:c2)  { create :company, name: "c2" }
+    let!(:uc1) { create :user_company, user: user, company: c1, default: 0 }
+    let!(:uc2) { create :user_company, user: user, company: c2, default: 1 }
+
+    it "should return first default company" do
+      expect(user.default_company).to eq c1
+    end
+  end
 end
 
 # == Schema Information

@@ -4,8 +4,15 @@ class User < ActiveRecord::Base
   has_many :user_repos, through: :identities
   has_many :project_subscriptions, class_name: "::ProjectSubscription", dependent: :destroy
 
+  has_many :user_companies, dependent: :destroy
+  has_many :companies, through: :user_companies
+
   validates :name, :email, presence: true
   validates :email, uniqueness: true
+
+  def default_company
+    companies.order("user_companies.default").first
+  end
 
   def sync_repos
     transaction do
