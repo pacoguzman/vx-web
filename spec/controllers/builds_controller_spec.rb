@@ -14,7 +14,7 @@ describe BuildsController do
   context "GET /sha/:sha (commit SHA1)" do
     before { get :sha, sha: build.sha, format: :json }
 
-    it { should redirect_to("/builds/#{build.id}") }
+    it { should redirect_to("http://test.host/ui/builds/#{build.id}") }
   end
 
 end

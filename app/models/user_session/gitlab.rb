@@ -2,13 +2,10 @@ require 'faraday'
 require 'json'
 require 'uri'
 
-#HttpLog.options[:log_headers] = true
-
-module Gitlab
+module UserSession
 
   # TODO: add specs
-  # TODO: cleanup
-  class UserSession
+  class Gitlab
 
     attr_reader :login, :password, :host
 

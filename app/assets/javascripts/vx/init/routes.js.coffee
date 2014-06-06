@@ -1,35 +1,37 @@
 Vx.config ($routeProvider, $locationProvider) ->
 
+  p = "/ui"
+
   $routeProvider.
-    when('/jobs/:jobId',
+    when(p + '/jobs/:jobId',
       templateUrl: "jobs/show.html",
       controller: "JobCtrl"
     ).
-    when('/builds/:buildId',
+    when(p + '/builds/:buildId',
       templateUrl: "builds/show.html",
       controller: "BuildCtrl"
     ).
-    when('/projects/:projectId/builds',
+    when(p + '/projects/:projectId/builds',
       templateUrl: "builds/index.html",
       controller: "BuildsCtrl"
     ).
-    when('/projects/:projectId/cached_files',
+    when(p + '/projects/:projectId/cached_files',
       templateUrl: "cached_files/index.html",
       controller: "CachedFilesCtrl"
     ).
-    when('/user_repos',
+    when(p + '/user_repos',
       templateUrl: "user_repos/index.html",
       controller: "UserReposCtrl"
     ).
-    when("/profile/user",
+    when(p + "/profile/user",
       templateUrl: "profile/user.html",
       controller: "UserProfileCtrl"
     ).
-    when("/profile/identities",
+    when(p + "/profile/identities",
       templateUrl: "profile/identities.html",
       controller: "UserIdentitiesCtrl"
     ).
-    when('/',
+    when(p + '/',
       templateUrl: "projects/index.html",
       controller: "ProjectsCtrl"
     )

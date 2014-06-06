@@ -25,7 +25,7 @@ class Project < ActiveRecord::Base
 
   class << self
     def deploy_key_name
-      "Vexor CI (#{Rails.configuration.x.hostname})"
+      "Vexor CI (#{Rails.configuration.x.hostname.host})"
     end
 
     def find_by_token(token)
@@ -57,7 +57,7 @@ class Project < ActiveRecord::Base
 
   def hook_url
     if identity
-      "http://#{Rails.configuration.x.hostname}/callbacks/#{identity.provider}/#{token}"
+      "#{Rails.configuration.x.hostname}/callbacks/#{identity.provider}/#{token}"
     end
   end
 

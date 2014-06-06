@@ -7,5 +7,5 @@ Vx.controller 'CachedFilesCtrl', ($scope, appMenu, projectStore, cachedFilesStor
     cachedFilesStore.destroy(file)
 
   appMenu.define $scope.project, (p) ->
-    appMenu.add p.name, "/projects/#{p.id}/builds"
-    appMenu.add "Cached Files", "/projects/#{p.id}/cached_files"
+    appMenu.add p.name, "/ui/projects/#{p.id}/builds"
+    appMenu.add "Cached Files", "/ui/projects/#{p.id}/cached_files"

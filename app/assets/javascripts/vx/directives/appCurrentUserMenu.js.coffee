@@ -1,5 +1,5 @@
 angular.module('Vx').
-  directive "appCurrentUserMenu", (currentUserStore) ->
+  directive "appCurrentUserMenu", (currentUserStore, $window) ->
 
     restrict: 'EC'
     replace: true
@@ -14,12 +14,12 @@ angular.module('Vx').
 
       <ul class="dropdown-menu app-popup">
         <li>
-          <a href="/profile/user">User Profile</a>
-          <a href="/profile/identities">User Identities</a>
+          <a href="/ui/profile/user">Profile</a>
+          <a href="/ui/profile/identities">Accounts</a>
         </li>
         <li class="divider"></li>
         <li>
-          <a href="javascript://">Logout</a>
+          <a ng-click="signOut()" href="javascript://">Sign Out</a>
         </li>
       </ul>
     </div>
@@ -33,3 +33,8 @@ angular.module('Vx').
       currentUserStore.get().then (me) ->
         scope.user = me
         scope.title = me.name
+
+      scope.signOut = () ->
+        currentUserStore.signOut().success (data) ->
+          $window.location.href = data.location
+

@@ -52,8 +52,10 @@ VxWeb::Application.routes.draw do
     resources :events, only: [:index]
   end
 
-  get  'auth/github/callback', to: 'github/user_sessions#create'
-  get  'auth/failure',         to: redirect('/')
+  get    '/auth/github/callback', to: "user_session/github#callback"
+  get    '/auth/failure',         to: redirect('/')
+  delete '/auth/session',         to: "user_session/session#destroy"
+  get    '/auth/sign_up',         to: "user_session/session#sign_up"
 
   put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload", as: :upload_cached_file
   get "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#download"
@@ -64,9 +66,11 @@ VxWeb::Application.routes.draw do
   post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'
 
-  root 'welcome#index'
-
   get "builds/sha/:sha" => "builds#sha"
 
-  get "*path", to: "welcome#index", constraints: ->(req) { req.format == Mime::HTML }
+  scope constraints: ->(req){ req.format == Mime::HTML } do
+    get "/",         to: redirect("/ui")
+    get "/ui",       to: "user_session/session#new"
+    get "/ui/*path", to: "user_session/session#new"
+  end
 end

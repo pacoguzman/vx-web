@@ -13,6 +13,6 @@ Vx.controller 'JobCtrl',
       jobLogStore.all(job.id)
 
     appMenu.define $scope.job, $scope.build, $scope.project, (j,b,p) ->
-      appMenu.add p.name, "/projects/#{p.id}/builds"
-      appMenu.add "Build #{b.number}", "/builds/#{b.id}"
-      appMenu.add "Job #{j.number}", "/jobs/#{j.id}"
+      appMenu.add p.name, "/ui/projects/#{p.id}/builds"
+      appMenu.add "Build #{b.number}", "/ui/builds/#{b.id}"
+      appMenu.add "Job #{j.number}", "/ui/jobs/#{j.id}"

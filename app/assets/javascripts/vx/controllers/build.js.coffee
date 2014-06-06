@@ -1,4 +1,4 @@
-Vx.controller 'BuildCtrl', ($scope, appMenu, artifactsStore, projectStore, buildStore, jobStore, $routeParams, $timeout) ->
+Vx.controller 'BuildCtrl', ($scope, appMenu, artifactsStore, projectStore, buildStore, jobStore, $routeParams) ->
 
   $scope.build     = buildStore.one $routeParams.buildId
   $scope.jobs      = jobStore.all $routeParams.buildId
@@ -14,5 +14,5 @@ Vx.controller 'BuildCtrl', ($scope, appMenu, artifactsStore, projectStore, build
     build && ["passed", 'failed', 'errored'].indexOf(build.status) != -1
 
   appMenu.define $scope.build, $scope.project, (b,p) ->
-    appMenu.add p.name, "/projects/#{p.id}/builds"
-    appMenu.add "Build #{b.number}", "/builds/#{b.id}"
+    appMenu.add p.name, "/ui/projects/#{p.id}/builds"
+    appMenu.add "Build #{b.number}", "/ui/builds/#{b.id}"

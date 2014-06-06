@@ -17,7 +17,7 @@ describe Api::UserIdentities::GitlabController do
 
   context "PATCH /update" do
     before do
-      mock(Gitlab::UserSession).new(attrs) { gitlab }
+      mock(UserSession::Gitlab).new(attrs) { gitlab }
     end
 
     context "successfuly update identity" do
@@ -40,7 +40,7 @@ describe Api::UserIdentities::GitlabController do
 
   context "POST /create" do
     before do
-      mock(Gitlab::UserSession).new(attrs) { gitlab }
+      mock(UserSession::Gitlab).new(attrs) { gitlab }
     end
 
     context "successfuly create identity" do
