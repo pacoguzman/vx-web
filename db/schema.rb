@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140606133719) do
+ActiveRecord::Schema.define(version: 20140606140415) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,7 +89,6 @@ ActiveRecord::Schema.define(version: 20140606133719) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "source",      null: false
-    t.string   "kind"
   end
 
   add_index "jobs", ["build_id", "number"], name: "index_jobs_on_build_id_and_number", unique: true, using: :btree
@@ -118,9 +117,11 @@ ActiveRecord::Schema.define(version: 20140606133719) do
     t.integer  "last_build_id"
     t.string   "last_build_status_name"
     t.datetime "last_build_at"
+    t.integer  "company_id",             null: false
   end
 
-  add_index "projects", ["name"], name: "index_projects_on_name", unique: true, using: :btree
+  add_index "projects", ["company_id", "name"], name: "index_projects_on_company_id_and_name", unique: true, using: :btree
+  add_index "projects", ["company_id"], name: "index_projects_on_company_id", using: :btree
   add_index "projects", ["token"], name: "index_projects_on_token", unique: true, using: :btree
 
   create_table "user_companies", force: true do |t|
@@ -159,10 +160,11 @@ ActiveRecord::Schema.define(version: 20140606133719) do
     t.datetime "updated_at"
     t.integer  "identity_id",                        null: false
     t.integer  "external_id",                        null: false
+    t.integer  "company_id"
   end
 
-  add_index "user_repos", ["full_name", "identity_id"], name: "index_user_repos_on_full_name_and_identity_id", unique: true, using: :btree
-  add_index "user_repos", ["identity_id", "external_id"], name: "index_user_repos_on_identity_id_and_external_id", unique: true, using: :btree
+  add_index "user_repos", ["company_id", "full_name", "identity_id"], name: "index_user_repos_on_company_id_and_full_name_and_identity_id", unique: true, using: :btree
+  add_index "user_repos", ["company_id", "identity_id", "external_id"], name: "index_user_repos_on_company_id_and_identity_id_and_external_id", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",      null: false

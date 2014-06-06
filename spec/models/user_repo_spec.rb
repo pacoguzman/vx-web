@@ -21,9 +21,10 @@ describe UserRepo do
   end
 
   context ".find_or_create_by_sc" do
+    let(:company)  { create :company }
     let(:identity) { repo.identity }
     let(:model)    { Vx::ServiceConnector::Model.test_repo }
-    subject { described_class.find_or_create_by_sc identity, model }
+    subject { described_class.find_or_create_by_sc company, identity, model }
 
     it { should be }
 

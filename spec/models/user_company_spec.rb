@@ -9,7 +9,7 @@ describe UserCompany do
   context "#default!" do
     let(:user_company)      { create :user_company, default: 0 }
     let(:user)              { user_company.user }
-    let(:other_company)     { create :company, name: "other" }
+    let(:other_company)     { create :company, name: "other", id: 2 }
     let!(:other_user_company) { create :user_company, user: user, company: other_company, default: 1 }
 
     subject { user_company.default! }

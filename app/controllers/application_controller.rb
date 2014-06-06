@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
     end
 
     def current_company
-      user_logged_in? and user.default_company
+      user_logged_in? and current_user.default_company
     end
 
     def current_user_id

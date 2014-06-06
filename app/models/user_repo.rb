@@ -11,21 +11,30 @@ class UserRepo < ActiveRecord::Base
   }
 
   belongs_to :identity, class_name: "::UserIdentity", foreign_key: :identity_id
+  belongs_to :company
+
   has_one :project, dependent: :nullify
-  has_many :same_name_projects, ->{ readonly }, class_name: "::Project",
+  has_many :same_name_projects,
+    ->(owner){
+      readonly.where(company_id: owner.company_id)
+    },
+    class_name: "::Project",
     foreign_key: :name, primary_key: :full_name
 
   validates :full_name, :ssh_url, :html_url, :external_id, presence: true
   validates :is_private, inclusion: { in: [true, false] }
-  validates :identity_id, uniqueness: { scope: [:external_id] }
 
   delegate :provider, :user, to: :identity
 
   default_scope ->{ order("user_repos.full_name ASC") }
 
   class << self
-    def find_or_create_by_sc(identity, model)
-      repo = find_or_initialize_by(external_id: model.id, identity: identity)
+    def find_or_create_by_sc(company, identity, model)
+      repo = find_or_initialize_by(
+        external_id: model.id,
+        identity:    identity,
+        company:     company
+      )
       repo.assign_attributes(
         full_name:    model.full_name,
         is_private:   model.is_private,
@@ -105,7 +114,8 @@ class UserRepo < ActiveRecord::Base
         name:        full_name,
         http_url:    html_url,
         clone_url:   ssh_url,
-        description: description
+        description: description,
+        company_id:  company_id
       }
       build_project attrs
       project.save && project

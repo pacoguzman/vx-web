@@ -4,13 +4,13 @@ class Api::UserReposController < Api::BaseController
 
   def index
     respond_with(
-      user_repos.includes(:same_name_projects, :project, :identity),
+      user_repos.includes(:project, :identity),
       each_serializer: UserRepoSerializer
     )
   end
 
   def sync
-    current_user.sync_repos
+    current_user.sync_repos current_company
     respond_with(user_repos, each_serializer: UserRepoSerializer, location: nil)
   end
 
@@ -33,7 +33,7 @@ class Api::UserReposController < Api::BaseController
     end
 
     def user_repos
-      @user_repos ||= current_user.user_repos
+      @user_repos ||= current_user.user_repos.where(company: current_company)
     end
 
 end

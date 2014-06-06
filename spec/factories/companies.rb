@@ -2,6 +2,7 @@
 
 FactoryGirl.define do
   factory :company do
+    id   1
     name "MyString"
   end
 end

@@ -14,11 +14,11 @@ class User < ActiveRecord::Base
     companies.order("user_companies.default").first
   end
 
-  def sync_repos
+  def sync_repos(company)
     transaction do
       identities.map do |identity|
         synced_repos = identity.sc.repos.map do |external_repo|
-          UserRepo.find_or_create_by_sc identity, external_repo
+          UserRepo.find_or_create_by_sc company, identity, external_repo
         end
         UserRepo.where("id NOT IN (?)", synced_repos.map(&:id)).where(identity: identity).each do |user_repo|
           user_repo.destroy
