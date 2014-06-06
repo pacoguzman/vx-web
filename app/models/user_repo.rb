@@ -47,19 +47,21 @@ class UserRepo < ActiveRecord::Base
   end
 
   def subscribe
-    transaction do
+    unless identity.ignored?
+      transaction do
 
-      update_attribute(:subscribed, true).or_rollback_transaction
+        update_attribute(:subscribed, true).or_rollback_transaction
 
-      unless project
-        new_project = create_project.or_rollback_transaction
-        yield new_project if block_given?
+        unless project
+          new_project = create_project.or_rollback_transaction
+          yield new_project if block_given?
+        end
+
+        unsubscribe_project
+        subscribe_project
+
+        true
       end
-
-      unsubscribe_project
-      subscribe_project
-
-      true
     end
   end
 
@@ -69,7 +71,9 @@ class UserRepo < ActiveRecord::Base
       update_attribute(:subscribed, false).or_rollback_transaction
 
       if project
-        unsubscribe_project
+        unless identity.ignored?
+          unsubscribe_project
+        end
         project.destroy
       end
 
