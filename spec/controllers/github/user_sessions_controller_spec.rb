@@ -30,7 +30,7 @@ describe Github::UserSessionsController do
         Rails.configuration.x.github_restriction = ["foo", "github"]
         mock_user_orgs
       end
-      it { get :create ; should redirect_to("/") }
+      it { get :create ; should redirect_to("/ui") }
       it "should create user" do
         expect { get :create }.to change(User, :count).by(1)
       end
@@ -61,7 +61,7 @@ describe Github::UserSessionsController do
       let!(:user) { create :user, email: "me@example.com" }
       let(:identity) { user.identities.find_by(provider: "github", url: "https://github.com") }
 
-      it { get :create ; should redirect_to("/") }
+      it { get :create ; should redirect_to("/ui") }
 
       it "cannot create any users" do
         expect { get :create }.to_not change(User, :count)
@@ -81,7 +81,7 @@ describe Github::UserSessionsController do
       let!(:user)     { create :user, email: "me@example.com" }
       let!(:identity) { create :user_identity, :github, user: user, url: "https://github.com" }
 
-      it { get :create ; should redirect_to("/") }
+      it { get :create ; should redirect_to("/ui") }
 
       it "cannot create any users" do
         expect { get :create }.to_not change(User, :count)
@@ -98,7 +98,7 @@ describe Github::UserSessionsController do
 
       before { get :create }
 
-      it { should redirect_to("/") }
+      it { should redirect_to("/ui") }
 
       it "should create user" do
         expect(user).to be

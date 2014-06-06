@@ -64,9 +64,11 @@ VxWeb::Application.routes.draw do
   post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'
 
-  root 'welcome#index'
-
   get "builds/sha/:sha" => "builds#sha"
 
-  get "*path", to: "welcome#index", constraints: ->(req) { req.format == Mime::HTML }
+  scope constraints: ->(req){ req.format == Mime::HTML } do
+    get "/",         to: redirect("/ui")
+    get "/ui",       to: "welcome#index"
+    get "/ui/*path", to: "welcome#index"
+  end
 end

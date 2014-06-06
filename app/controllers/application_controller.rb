@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
     end
 
     def redirect_to_saved_location_or_root
-      redirect_to(session[:saved_location] || root_path)
+      redirect_to(session[:saved_location] || "/ui")
       session[:saved_location] = nil
     end
 

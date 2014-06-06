@@ -10,7 +10,7 @@
         .panel-body
           .pull-right.app-task-status{ 'task' => 'project'}
 
-          %a.medium-text{ 'ng-href' => "/projects/{{project.id}}/builds" }
+          %a.medium-text{ 'ng-href' => "/ui/projects/{{project.id}}/builds" }
             {{project.name}}
 
         .panel-footer
@@ -19,7 +19,7 @@
 
     .col-xs-2
       .projects-add-new.pull-right
-        %a{ class: "btn btn-sm btn-primary", 'ng-href' => "/user_repos" }
+        %a{ class: "btn btn-sm btn-primary", 'ng-href' => "/ui/user_repos" }
           Manage Projects
 
 

@@ -7,5 +7,5 @@ Vx.controller 'UserProfileCtrl', ['$scope', 'appMenu', 'currentUserStore',
       $scope.user = me
 
     appMenu.define ->
-      appMenu.add "User Profile", "/profile/user"
+      appMenu.add "User Profile", "/ui/profile/user"
   ]

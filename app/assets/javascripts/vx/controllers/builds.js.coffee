@@ -4,5 +4,5 @@ Vx.controller 'BuildsCtrl', ($scope, appMenu, buildStore, projectStore, $routePa
   $scope.builds  = buildStore.all $routeParams.projectId
 
   appMenu.define $scope.project, (p) ->
-    appMenu.add p.name, "/projects/#{p.id}/builds"
+    appMenu.add p.name, "/ui/projects/#{p.id}/builds"
 
