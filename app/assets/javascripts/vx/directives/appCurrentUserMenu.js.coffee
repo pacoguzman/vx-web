@@ -35,6 +35,6 @@ angular.module('Vx').
         scope.title = me.name
 
       scope.signOut = () ->
-        currentUserStore.signOut.success (data) ->
+        currentUserStore.signOut().success (data) ->
           $window.location.href = data.location
 

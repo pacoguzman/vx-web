@@ -55,6 +55,7 @@ VxWeb::Application.routes.draw do
   get    '/auth/github/callback', to: "user_session/github#callback"
   get    '/auth/failure',         to: redirect('/')
   delete '/auth/session',         to: "user_session/session#destroy"
+  get    '/auth/sign_up',         to: "user_session/session#sign_up"
 
   put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload", as: :upload_cached_file
   get "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#download"
@@ -69,7 +70,7 @@ VxWeb::Application.routes.draw do
 
   scope constraints: ->(req){ req.format == Mime::HTML } do
     get "/",         to: redirect("/ui")
-    get "/ui",       to: "welcome#index"
-    get "/ui/*path", to: "welcome#index"
+    get "/ui",       to: "user_session/session#new"
+    get "/ui/*path", to: "user_session/session#new"
   end
 end

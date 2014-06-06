@@ -15,10 +15,8 @@ class ApplicationController < ActionController::Base
 
     def omniauth_authorize_url(provider, action, options = {})
       options[:do] = action
-      options[:foo] = 'bar'
-      options[:baz] = '1'
       p =  options.map{|k,v| "#{k}=#{v}" }.join("&")
-      "/user_session/#{provider}?#{p}"
+      "/auth/#{provider}?#{p}"
     end
 
     def current_user
@@ -45,7 +43,7 @@ class ApplicationController < ActionController::Base
       save_location if request.format.html?
 
       respond_to do |want|
-        want.html { render 'welcome/sign_in', layout: false, status: 403 }
+        want.html { render 'user_session/session/sign_in', layout: 'session', status: 403 }
         want.json { head 403 }
         want.all  { head 403 }
       end
