@@ -1,15 +1,2 @@
-.sign-in-providers
-
-  - unless any_providers_enabled?
-    .alert.alert-danger
-      Cannout found any conguration for Github
-
-  - if github_enabled?
-
-    .sign-in-github-provider
-
-      %a{ href: omniauth_authorize_url(:github, :sign_up, email: @email, company: @company.name, token: @invite.token) }
-
-        = image_tag 'octokat.svg', alt: "Octokat", title: "Octokat"
-        %span
-          Sign up via Github
+- options = email: @email, company: @company.name, token: @invote.token
+= render partial: "shared/session", locals: { operation: :invite, options: options, title: "Sign up" }

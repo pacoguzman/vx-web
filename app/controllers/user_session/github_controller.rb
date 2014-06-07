@@ -7,8 +7,8 @@ class UserSession::GithubController < ApplicationController
     case @do
     when "sign_in"
       sign_in
-    when "sign_up"
-      sign_up
+    when "invite"
+      invite
     end
   end
 
@@ -25,7 +25,7 @@ class UserSession::GithubController < ApplicationController
       end
     end
 
-    def sign_up
+    def invite
       @email   = o_params["email"]
       @token   = o_params["token"]
       @company = Company.find_by! name: o_params["company"]
