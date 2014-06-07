@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserSession::GithubController do
+describe Users::GithubController do
   let(:env) { {
     uid: "uid",
     info: {
@@ -45,9 +45,9 @@ describe UserSession::GithubController do
     context "authorization failed" do
       let(:auth_hash) { :invalid_credentials }
 
-      it "should redirect to /auth/failure" do
+      it "should redirect to /users/failure" do
         sign_in
-        should redirect_to("/auth/failure")
+        should redirect_to("/users/failure")
       end
 
       it "cannot create any users" do
@@ -61,7 +61,7 @@ describe UserSession::GithubController do
     end
   end
 
-  context "GET /sign_up" do
+  context "GET /invite" do
     let(:email)    { 'me@example.com' }
     let!(:invite)  { create :invite, email: email }
     let!(:company) { create :company  }
@@ -72,12 +72,12 @@ describe UserSession::GithubController do
         mock_user_orgs
       end
       it "should redirect to /ui" do
-        sign_up
+        get_invite
         should redirect_to("/ui")
       end
 
       it "should create user" do
-        expect { sign_up }.to change(User, :count).by(1)
+        expect { get_invite }.to change(User, :count).by(1)
       end
     end
 
@@ -87,26 +87,26 @@ describe UserSession::GithubController do
         mock_user_orgs
       end
 
-      it "should redirect to /auth/failure" do
-        sign_up
-        should redirect_to("/auth/failure")
+      it "should redirect to /users/failure" do
+        get_invite
+        should redirect_to("/users/failure")
       end
 
       it "cannot create any users" do
-        expect { sign_up }.to_not change(User, :count)
+        expect { get_invite }.to_not change(User, :count)
       end
     end
 
     context "authorization failed" do
       let(:auth_hash) { :invalid_credentials }
 
-      it "should redirect to /auth/failure" do
-        sign_up
-        should redirect_to("/auth/failure")
+      it "should redirect to /users/failure" do
+        get_invite
+        should redirect_to("/users/failure")
       end
 
       it "cannot create any users" do
-        expect { sign_up }.to_not change(User, :count)
+        expect { get_invite }.to_not change(User, :count)
       end
     end
 
@@ -115,16 +115,16 @@ describe UserSession::GithubController do
       let(:identity) { user.identities(true).find_by(provider: 'github') }
 
       it "should redirect to /ui" do
-        sign_up
+        get_invite
         should redirect_to("/ui")
       end
 
       it "cannot create any users" do
-        expect { sign_up }.to_not change(User, :count)
+        expect { get_invite }.to_not change(User, :count)
       end
 
       it "should create identity" do
-        sign_up
+        get_invite
         expect(identity).to       be
         expect(identity.uid).to   eq 'uid'
         expect(identity.token).to eq 'token'
@@ -141,16 +141,16 @@ describe UserSession::GithubController do
       end
 
       it "should redirect to /ui" do
-        sign_up
+        get_invite
         should redirect_to("/ui")
       end
 
       it "cannot create any users" do
-        expect { sign_up }.to_not change(User, :count)
+        expect { get_invite }.to_not change(User, :count)
       end
 
       it "cannot create any user_copanies" do
-        expect { sign_up }.to_not change(UserCompany, :count)
+        expect { get_invite }.to_not change(UserCompany, :count)
       end
     end
 
@@ -159,29 +159,29 @@ describe UserSession::GithubController do
       let!(:identity) { create :user_identity, :github, user: user }
 
       it "should redirect to /ui" do
-        sign_up
+        get_invite
         should redirect_to("/ui")
       end
 
       it "cannot create any users" do
-        expect { sign_up }.to_not change(User, :count)
+        expect { get_invite }.to_not change(User, :count)
       end
 
       it "cannot create any identities" do
-        expect { sign_up }.to_not change(UserIdentity, :count)
+        expect { get_invite }.to_not change(UserIdentity, :count)
       end
     end
 
     context "when company not found" do
-      it "should redirect to /auth/failure" do
-        sign_up company: "not found"
+      it "should redirect to /users/failure" do
+        get_invite company: "not found"
         should be_not_found
       end
     end
 
     context "when invite not found" do
-      it "should redirect to /auth/failure" do
-        sign_up token: "not found"
+      it "should redirect to /users/failure" do
+        get_invite token: "not found"
         should be_not_found
       end
     end
@@ -190,7 +190,7 @@ describe UserSession::GithubController do
       let(:user)     { User.find_by(email: email) }
       let(:identity) { user && user.identities.find_by(provider: 'github') }
 
-      before { sign_up }
+      before { get_invite }
 
       it { should redirect_to("/ui") }
 
@@ -221,9 +221,9 @@ describe UserSession::GithubController do
       end
     end
 
-    def sign_up(o = {})
+    def get_invite(o = {})
       request.env['omniauth.params'] = {
-        'do'      => "sign_up",
+        'do'      => "invite",
         "email"   => o[:email]   || "me@example.com",
         "token"   => o[:token]   || invite.token,
         "company" => o[:company] || company.name

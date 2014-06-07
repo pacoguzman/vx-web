@@ -1,11 +1,11 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
-  if ENV['GITHUB_KEY'] && ENV['GITHUB_SECRET']
-    provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET'], scope: "user:email,repo"
+  configure do |config|
+    config.path_prefix = '/users'
+    config.logger = Rails.logger
   end
 
-  configure do |config|
-    config.path_prefix = '/auth'
-    config.logger = Rails.logger
+  if ENV['GITHUB_KEY'] && ENV['GITHUB_SECRET']
+    provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET'], scope: "user:email,repo"
   end
 end
 

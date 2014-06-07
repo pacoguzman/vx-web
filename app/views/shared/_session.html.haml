@@ -1,4 +1,4 @@
-.sign-in-providers
+.session-providers
 
   - unless any_providers_enabled?
     .alert.alert-danger
@@ -6,10 +6,11 @@
 
   - if github_enabled?
 
-    .sign-in-github-provider
+    .session-github-provider
 
-      %a{ href: omniauth_authorize_url(:github, :sign_up, email: @email, company: @company.name, token: @invite.token) }
+      %a{ href: omniauth_authorize_url(:github, operation, options) }
 
         = image_tag 'octokat.svg', alt: "Octokat", title: "Octokat"
         %span
-          Sign up via Github
+          = title
+          via Github

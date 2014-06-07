@@ -1,4 +1,4 @@
-class UserSession::GithubController < ApplicationController
+class Users::GithubController < ApplicationController
 
   skip_before_filter :authorize_user
 
@@ -7,8 +7,8 @@ class UserSession::GithubController < ApplicationController
     case @do
     when "sign_in"
       sign_in
-    when "sign_up"
-      sign_up
+    when "invite"
+      invite
     end
   end
 
@@ -21,11 +21,11 @@ class UserSession::GithubController < ApplicationController
         session[:user_id] = @user.id
         redirect_to_saved_location_or_root
       else
-        redirect_to '/auth/failure'
+        redirect_to '/users/failure'
       end
     end
 
-    def sign_up
+    def invite
       @email   = o_params["email"]
       @token   = o_params["token"]
       @company = Company.find_by! name: o_params["company"]
@@ -38,7 +38,7 @@ class UserSession::GithubController < ApplicationController
         session[:user_id] = @user.id
         redirect_to_saved_location_or_root
       else
-        redirect_to '/auth/failure'
+        redirect_to '/users/failure'
       end
     end
 
