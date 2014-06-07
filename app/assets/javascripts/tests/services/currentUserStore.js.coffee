@@ -38,7 +38,7 @@ describe "currentUserStore", ->
       location: "/ui"
 
     beforeEach ->
-      $http.expectDELETE('/auth/session').respond(res)
+      $http.expectDELETE('/users/session').respond(res)
 
     it "should send DELETE request", ->
       $scope.$apply ->

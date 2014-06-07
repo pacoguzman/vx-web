@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserSession::GithubController do
+describe Users::GithubController do
   let(:env) { {
     uid: "uid",
     info: {
@@ -45,9 +45,9 @@ describe UserSession::GithubController do
     context "authorization failed" do
       let(:auth_hash) { :invalid_credentials }
 
-      it "should redirect to /auth/failure" do
+      it "should redirect to /users/failure" do
         sign_in
-        should redirect_to("/auth/failure")
+        should redirect_to("/users/failure")
       end
 
       it "cannot create any users" do
@@ -87,9 +87,9 @@ describe UserSession::GithubController do
         mock_user_orgs
       end
 
-      it "should redirect to /auth/failure" do
+      it "should redirect to /users/failure" do
         get_invite
-        should redirect_to("/auth/failure")
+        should redirect_to("/users/failure")
       end
 
       it "cannot create any users" do
@@ -100,9 +100,9 @@ describe UserSession::GithubController do
     context "authorization failed" do
       let(:auth_hash) { :invalid_credentials }
 
-      it "should redirect to /auth/failure" do
+      it "should redirect to /users/failure" do
         get_invite
-        should redirect_to("/auth/failure")
+        should redirect_to("/users/failure")
       end
 
       it "cannot create any users" do
@@ -173,14 +173,14 @@ describe UserSession::GithubController do
     end
 
     context "when company not found" do
-      it "should redirect to /auth/failure" do
+      it "should redirect to /users/failure" do
         get_invite company: "not found"
         should be_not_found
       end
     end
 
     context "when invite not found" do
-      it "should redirect to /auth/failure" do
+      it "should redirect to /users/failure" do
         get_invite token: "not found"
         should be_not_found
       end

@@ -1,4 +1,4 @@
-class UserSession::GithubController < ApplicationController
+class Users::GithubController < ApplicationController
 
   skip_before_filter :authorize_user
 
@@ -21,7 +21,7 @@ class UserSession::GithubController < ApplicationController
         session[:user_id] = @user.id
         redirect_to_saved_location_or_root
       else
-        redirect_to '/auth/failure'
+        redirect_to '/users/failure'
       end
     end
 
@@ -38,7 +38,7 @@ class UserSession::GithubController < ApplicationController
         session[:user_id] = @user.id
         redirect_to_saved_location_or_root
       else
-        redirect_to '/auth/failure'
+        redirect_to '/users/failure'
       end
     end
 

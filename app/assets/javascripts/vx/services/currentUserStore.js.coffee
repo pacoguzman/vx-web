@@ -20,7 +20,7 @@ Vx.service 'currentUserStore',
     signOut = () ->
       $http(
         method: "DELETE",
-        url:    "/auth/session"
+        url:    "/users/session"
       )
 
     get: get

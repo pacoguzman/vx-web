@@ -1,4 +1,4 @@
-class UserSession::SessionController < ApplicationController
+class Users::SessionController < ApplicationController
 
   skip_before_filter :authorize_user, except: [:show]
 
@@ -12,6 +12,10 @@ class UserSession::SessionController < ApplicationController
         redirect_to "/ui"
       }
     end
+  end
+
+  def show
+    render layout: "application"
   end
 
 end

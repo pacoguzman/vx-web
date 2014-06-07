@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserSession::SessionController do
+describe Users::SessionController do
   subject { response }
 
   context "DELETE /destroy" do
@@ -28,5 +28,15 @@ describe UserSession::SessionController do
       end
     end
 
+  end
+
+  context "GET /show" do
+    before do
+      session[:user_id] = create(:user).id
+      get :show
+    end
+
+    it { should be_success }
+    it { should render_template("show") }
   end
 end
