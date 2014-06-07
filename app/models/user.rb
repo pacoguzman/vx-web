@@ -10,8 +10,10 @@ class User < ActiveRecord::Base
   validates :name, :email, presence: true
   validates :email, uniqueness: true
 
+  validates_associated :identities, :user_companies
+
   def default_company
-    companies.order("user_companies.default").first
+    companies.order("user_companies.default DESC").first
   end
 
   def sync_repos(company)
@@ -29,7 +31,17 @@ class User < ActiveRecord::Base
   end
 
   def active_identities
-    identities.to_a.select{|i| not i.ignored? }
+    identities(true).to_a.select{|i| not i.ignored? }
+  end
+
+  def add_to_company(company)
+    user_company = user_companies.find_or_initialize_by(
+      company_id: company.id
+    )
+    if user_company.save
+      user_company.default!
+      user_company
+    end
   end
 
 end

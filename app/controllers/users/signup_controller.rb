@@ -9,28 +9,22 @@ class Users::SignupController < ApplicationController
   end
 
   def new
-    @email        = params[:email] || @omniauth.info.email
-    @company_name = params[:company] || @omniauth.info.nickname
+    @signup = UserSignup.new(
+      @omniauth.info.nickname,
+      @omniauth.info.email
+    )
   end
 
   def create
-    @email        = params[:email]
-    @company_name = params[:company]
+    @signup = UserSignup.new(
+      params[:company_name],
+      params[:email],
+      @omniauth
+    )
 
-    User.transaction do
-      @company = Company.new(name: @company_name)
-      @company.save.or_rollback_transaction
-
-      github_session = UserSession::Github.new(@omniauth)
-      @user = github_session.create_user(
-        @email,
-        @company
-      )
-    end
-
-    if @user && @user.valid?
+    if @signup.create
       session.delete(:signup_omniauth)
-      session[:user_id] = @user.id
+      session[:user_id] = @signup.user.id
       redirect_to "/ui"
     else
       render :new
