@@ -143,5 +143,6 @@ end
 #  updated_at         :datetime
 #  identity_id        :integer          not null
 #  external_id        :integer          not null
+#  company_id         :integer          not null
 #
 

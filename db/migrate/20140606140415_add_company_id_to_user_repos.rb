@@ -4,6 +4,7 @@ class AddCompanyIdToUserRepos < ActiveRecord::Migration
     execute %{
       UPDATE user_repos SET company_id = (SELECT companies.id FROM companies LIMIT 1)
     }.compact
+    change_column :user_repos, :company_id, :integer, null: false
 
     remove_index :user_repos, [:full_name, :identity_id]
     add_index :user_repos, [:company_id, :full_name, :identity_id],

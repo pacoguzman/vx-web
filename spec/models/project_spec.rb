@@ -247,5 +247,6 @@ end
 #  last_build_id          :integer
 #  last_build_status_name :string(255)
 #  last_build_at          :datetime
+#  company_id             :integer          not null
 #
 

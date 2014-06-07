@@ -169,7 +169,7 @@ ActiveRecord::Schema.define(version: 20140606220001) do
     t.datetime "updated_at"
     t.integer  "identity_id",                        null: false
     t.integer  "external_id",                        null: false
-    t.integer  "company_id"
+    t.integer  "company_id",                         null: false
   end
 
   add_index "user_repos", ["company_id", "full_name", "identity_id"], name: "index_user_repos_on_company_id_and_full_name_and_identity_id", unique: true, using: :btree

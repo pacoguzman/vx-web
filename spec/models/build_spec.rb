@@ -516,5 +516,6 @@ end
 #  http_url        :string(255)
 #  branch_label    :string(255)
 #  source          :text             not null
+#  token           :string(255)      not null
 #
 
