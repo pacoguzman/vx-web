@@ -7,6 +7,8 @@ class Users::GithubController < ApplicationController
     case @do
     when "sign_in"
       sign_in
+    when "sign_up"
+      sign_up
     when "invite"
       invite
     end
@@ -14,11 +16,17 @@ class Users::GithubController < ApplicationController
 
   private
 
+    def sign_up
+      omniauth = request.env["omniauth.auth"]
+      session[:signup_omniauth] = omniauth.except('extra')
+      redirect_to new_users_signup_path
+    end
+
     def sign_in
-      @session = UserSession::Github.new request.env["omniauth.auth"]
-      @user    = @session.find_user
-      if @user
-        session[:user_id] = @user.id
+      github_session = UserSession::Github.new request.env["omniauth.auth"]
+      user           = github_session.find_user
+      if user
+        session[:user_id] = user.id
         redirect_to_saved_location_or_root
       else
         redirect_to '/users/failure'
@@ -26,16 +34,16 @@ class Users::GithubController < ApplicationController
     end
 
     def invite
-      @email   = o_params["email"]
-      @token   = o_params["token"]
-      @company = Company.find_by! name: o_params["company"]
-      @invite  = @company.invites.find_by! token: @token, email: @email
-      @session = UserSession::Github.new request.env["omniauth.auth"]
-      @user    = @session.create_user(@email, @company)
+      email          = o_params["email"]
+      token          = o_params["token"]
+      company        = Company.find_by! name: o_params["company"]
+      invite         = company.invites.find_by! token: token, email: email
+      github_session = UserSession::Github.new request.env["omniauth.auth"]
+      user           = github_session.create_user(email, company, trust_email: true)
 
-      if @user
-        @invite.destroy
-        session[:user_id] = @user.id
+      if user.valid?
+        invite.destroy
+        session[:user_id] = user.id
         redirect_to_saved_location_or_root
       else
         redirect_to '/users/failure'

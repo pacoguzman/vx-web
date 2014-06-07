@@ -58,6 +58,7 @@ VxWeb::Application.routes.draw do
 
     resource :session, only: [:destroy, :show], controller: "session"
     resource :invite,  only: [:new]
+    resource :signup,  only: [:show, :new, :create], controller: "signup"
   end
 
   put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload", as: :upload_cached_file

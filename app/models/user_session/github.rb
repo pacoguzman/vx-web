@@ -3,17 +3,26 @@ module UserSession
 
     def find_user
       if auth_info_uid?
-
         identity = UserIdentity.provider(:github).find_by(uid: auth_info.uid)
-        token    = auth_info.credentials.token
-        login    = auth_info.info.nickname
-        if identity.update(token: token, login: login)
-          identity && identity.user
+        if identity
+          token    = auth_info.credentials.token
+          login    = auth_info.info.nickname
+          if identity.update(token: token, login: login)
+            identity && identity.user
+          end
         end
       end
     end
 
-    def create_user(email, company)
+    def create_user(email, company, options = {})
+
+      user = find_user
+
+      if options[:trust_email]
+        user ||= ::User.find_by email: email
+      end
+      user ||= ::User.new
+
       if auth_info_uid?
         User.transaction do
 
@@ -22,10 +31,8 @@ module UserSession
           token = auth_info.credentials.token
           login = auth_info.info.nickname
 
-          user = ::User.find_or_initialize_by(email: email)
-          if user.new_record?
-            user.name = name
-          end
+          user.email = email
+          user.name  = name
           user.save.or_rollback_transaction
 
           user_company = user.user_companies.find_or_initialize_by(
@@ -47,20 +54,21 @@ module UserSession
             login:    login,
           ).or_rollback_transaction
 
-          if orgs = Rails.configuration.x.github_restriction
-            orgs.any? do |org|
-              identity.sc.organizations.include?(org)
-            end.or_rollback_transaction
-          end
-
-          user
         end
       end
+
+      user
     end
 
     def auth_info_uid?
       auth_info.respond_to?(:uid)
     end
+
+    private
+
+      def rollback
+        raise ActiveRecord::Rollback
+      end
 
   end
 end

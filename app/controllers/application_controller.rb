@@ -30,7 +30,6 @@ class ApplicationController < ActionController::Base
       end
     end
 
-
     def omniauth_authorize_url(provider, action, options = {})
       options[:do] = action
       p =  options.map{|k,v| "#{k}=#{v}" }.join("&")
