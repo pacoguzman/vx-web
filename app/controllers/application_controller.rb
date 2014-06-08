@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
           render file: 'public/404.html', status: 404, layout: false
         }
         want.json {
-          render body: "{}", status: 404
+          render json: "{}", status: 404
         }
         want.all {
           render nothing: true, status: 404
