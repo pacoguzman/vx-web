@@ -2,12 +2,20 @@ UserSignup = Struct.new(:company_name, :email, :omniauth) do
 
   def create
     User.transaction do
-      if user.valid? and company.valid?
+      if user and company and valid?
         user.add_to_company(company)
       else
         rollback
       end
     end
+  end
+
+  def user_exists?
+    !!github.find
+  end
+
+  def github
+    @github ||= UserSession::Github.new(omniauth)
   end
 
   def valid?
@@ -27,7 +35,6 @@ UserSignup = Struct.new(:company_name, :email, :omniauth) do
 
   def user
     @user ||= begin
-      github = UserSession::Github.new(omniauth)
       github.create email
     end
   end

@@ -25,17 +25,34 @@ describe Users::SignupController do
   end
 
   context "GET /new" do
+
     context "successfuly" do
       before do
         session[:signup_omniauth] = auth_hash
         get :new
       end
-      it { should be_success }
 
+      it { should be_success }
       context "@signup" do
         subject { assigns(:signup) }
         its(:company_name) { should eq 'nickname' }
         its(:email)        { should eq 'email' }
+        it { should_not be_user_exists }
+      end
+    end
+
+    context "when user with same identity exists" do
+      before do
+        user = create :user
+        create :user_identity, user: user, provider: "github", uid: "uid"
+        session[:signup_omniauth] = auth_hash
+        get :new
+      end
+
+      it { should be_success }
+      context "@signup" do
+        subject { assigns(:signup) }
+        it { should be_user_exists }
       end
     end
 
@@ -89,7 +106,7 @@ describe Users::SignupController do
       end
 
       it { should_not be_success }
-      it { should render_template("new") }
+      it { should render_template("create") }
 
       it "cannot create company" do
         expect(company).to be_nil
@@ -121,7 +138,7 @@ describe Users::SignupController do
       end
 
       it { should_not be_success }
-      it { should render_template("new") }
+      it { should render_template("create") }
 
       it "cannot create user" do
         expect(user).to be_nil
@@ -216,7 +233,7 @@ describe Users::SignupController do
 
     def post_create(options = {})
       session[:signup_omniauth] = auth_hash if options[:session] != false
-      post :create, email: email, company_name: company_name
+      post :create, email: email, company: company_name
     end
   end
 end

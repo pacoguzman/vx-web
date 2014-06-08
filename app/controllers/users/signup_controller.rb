@@ -11,13 +11,14 @@ class Users::SignupController < ApplicationController
   def new
     @signup = UserSignup.new(
       @omniauth.info.nickname,
-      @omniauth.info.email
+      @omniauth.info.email,
+      @omniauth
     )
   end
 
   def create
     @signup = UserSignup.new(
-      params[:company_name],
+      params[:company],
       params[:email],
       @omniauth
     )
@@ -27,7 +28,7 @@ class Users::SignupController < ApplicationController
       session[:user_id] = @signup.user.id
       redirect_to "/ui"
     else
-      render :new, status: 422
+      render :create, status: 422
     end
   end
 

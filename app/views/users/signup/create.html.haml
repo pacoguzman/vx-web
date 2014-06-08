@@ -2,9 +2,7 @@
 
   - unless @signup.valid?
     .alert.alert-danger
-      - @singup.company.errors.full_messages.each do |e|
-        %p= "Company: #{e}"
-      - @signup.user.errors.full_messages.each do |e|
-        %p= "User: #{e}"
+      - @signup.errors.each do |e|
+        %p= e
 
   = render 'form'
