@@ -1,8 +1,11 @@
 Vx.controller 'BuildCtrl', ($scope, appMenu, artifactsStore, projectStore, buildStore, jobStore, $routeParams) ->
 
-  $scope.build     = buildStore.one $routeParams.buildId
-  $scope.jobs      = jobStore.all $routeParams.buildId
+  $scope.waitJobs  = true
+
   $scope.artifacts = artifactsStore.all $routeParams.buildId
+  $scope.build     = buildStore.one($routeParams.buildId)
+  $scope.jobs      = jobStore.all($routeParams.buildId).finally ->
+    $scope.waitJobs = false
 
   $scope.project = $scope.build.then (it) ->
     projectStore.one it.project_id
