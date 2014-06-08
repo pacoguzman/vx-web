@@ -194,7 +194,7 @@ describe Users::SignupController do
     context "when user with same identity exists and already in company" do
       before do
         user    = create :user
-        company = create :company
+        company = create :company, id: nil
         create :user_identity, uid: "uid", user: user
         user.add_to_company(company)
         post_create

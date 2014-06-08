@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
     end
 
     def redirect_to_saved_location_or_root
-      loc = session[:saved_location]
+      loc = session.delete(:saved_location)
       redirect_to(loc || "/ui")
     end
 
