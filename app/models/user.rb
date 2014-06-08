@@ -10,8 +10,6 @@ class User < ActiveRecord::Base
   validates :name, :email, presence: true
   validates :email, uniqueness: true
 
-  validates_associated :identities, :user_companies
-
   def default_company
     companies.order("user_companies.default DESC").first
   end

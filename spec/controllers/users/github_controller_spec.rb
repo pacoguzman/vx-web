@@ -202,6 +202,37 @@ describe Users::GithubController do
 
   end
 
+  context "GET /sign_up" do
+    context "successfuly" do
+
+      before do
+        sign_up
+      end
+
+      it { should redirect_to("/users/signup/new") }
+
+      it "should cretae signup_omniauth session key" do
+        expect(session[:signup_omniauth]).to eq(
+          "credentials" => {
+            "token" => "token"
+          },
+          "info" => {
+            "name"    => "name",
+            "email"   => "email",
+            "nickname"=> "nickname"
+          },
+          "provider" => "github",
+          "uid"      => "uid"
+        )
+      end
+    end
+
+    def sign_up
+      request.env['omniauth.params'] = { "do" => "sign_up" }
+      get :callback
+    end
+  end
+
   def mock_user_orgs
     stub_request(:get, "https://api.github.com/user/orgs").
       with(:headers => {'Accept'=>'application/vnd.github.beta+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'token token', 'User-Agent'=>'Octokit Ruby Gem 2.2.0'}).

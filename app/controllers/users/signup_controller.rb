@@ -27,7 +27,7 @@ class Users::SignupController < ApplicationController
       session[:user_id] = @signup.user.id
       redirect_to "/ui"
     else
-      render :new
+      render :new, status: 422
     end
   end
 

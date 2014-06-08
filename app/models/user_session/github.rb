@@ -17,7 +17,7 @@ module UserSession
         user ||= ::User.new
 
         user.transaction do
-          user.update(email: email, name: name)
+          user.update(email: email, name: name).or_rollback_transaction
           user.identities.build(
             provider: "github",
             url:      'https://github.com',

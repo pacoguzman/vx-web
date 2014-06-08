@@ -14,6 +14,17 @@ UserSignup = Struct.new(:company_name, :email, :omniauth) do
     user.valid? and company.valid?
   end
 
+  def errors
+    rs = []
+    user.errors.full_messages.each do |e|
+      rs << "User #{e}"
+    end
+    company.errors.full_messages.each do |e|
+      rs << "Company #{e}"
+    end
+    rs
+  end
+
   def user
     @user ||= begin
       github = UserSession::Github.new(omniauth)
