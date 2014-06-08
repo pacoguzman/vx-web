@@ -1,6 +1,6 @@
 rvm:
 - 2.0.0
-- 2.1.0
+- 2.1.2
 
 env:
   global:
@@ -13,7 +13,7 @@ env:
 matrix:
   exclude:
     - env: PROJECT=frontend
-      rvm: 2.1.0
+      rvm: 2.1.2
 
 before_script:
 - mkdir -p log
