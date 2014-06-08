@@ -38,7 +38,16 @@ module VxWeb
       Rails.root.join("app/consumers").to_s,
     ]
 
+    config.i18n.enforce_available_locales = true
+    config.middleware.delete "Rack::Lock"
+
+    config.assets.precompile += %w( lib.js )
+
+    config.preload_frameworks = true
+    config.allow_concurrency = true
+
     config.x = OpenStruct.new
+
     sys_hostname =
       begin
         Socket.gethostbyname(Socket.gethostname).first
@@ -53,13 +62,9 @@ module VxWeb
       config.x.hostname = URI.parse("http://#{config.x.hostname}")
     end
 
-    config.i18n.enforce_available_locales = true
-    config.middleware.delete "Rack::Lock"
+    config.x.github_restriction =
+    ENV['GITHUB_RESTRICTION'] && ENV["GITHUB_RESTRICTION"].split(",").map(&:strip)
 
-    config.assets.precompile += %w( lib.js )
-
-    config.preload_frameworks = true
-    config.allow_concurrency = true
   end
 end
 

@@ -99,6 +99,66 @@ describe Users::SignupController do
       end
     end
 
+    context "when github restriction" do
+      context "failed" do
+        before do
+          mock_orgs_request
+          Rails.configuration.x.github_restriction = ["bar"]
+          post_create
+        end
+
+        after(:all) do
+          Rails.configuration.x.github_restriction = nil
+        end
+
+        it { should_not be_success }
+
+        it "cannot create user" do
+          expect(user).to_not be
+        end
+
+        it "cannot create company" do
+          expect(company).to_not be
+        end
+
+        it "should have error on identity" do
+          expect(assigns(:signup).errors).to eq ["User Identities is invalid"]
+        end
+      end
+
+      context "success" do
+        before do
+          mock_orgs_request
+          Rails.configuration.x.github_restriction = ["foo"]
+          post_create
+        end
+
+        after(:all) do
+          Rails.configuration.x.github_restriction = nil
+        end
+
+        it { should redirect_to("/ui") }
+
+        it "should create user" do
+          expect(user).to be
+        end
+
+        it "should create company" do
+          expect(company).to be
+          expect(user.default_company).to eq company
+        end
+
+        it "should create identity for user" do
+          expect(user.identities.where(provider: "github")).to have(1).item
+        end
+      end
+
+      def mock_orgs_request
+        stub_request(:get, "https://api.github.com/user/orgs").
+          to_return(:status => 200, :body => '[{"login": "foo"}]', headers: { "Content-Type" => 'application/json' })
+      end
+    end
+
     context "when user with same email exists" do
       before do
         create :user, email: email

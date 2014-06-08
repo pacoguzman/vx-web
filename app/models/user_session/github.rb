@@ -25,6 +25,7 @@ module UserSession
             token:    token,
             login:    login,
           ).save.or_rollback_transaction
+
         end
         user
       end
