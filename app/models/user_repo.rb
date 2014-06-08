@@ -93,7 +93,7 @@ class UserRepo < ActiveRecord::Base
   def unsubscribe_project
     if project
       sc = identity.sc
-      sc.hooks(project.sc_model).destroy(Rails.configuration.x.hostname)
+      sc.hooks(project.sc_model).destroy(Rails.configuration.x.hostname.host)
       sc.deploy_keys(project.sc_model).destroy(project.deploy_key_name)
     end
   end
