@@ -179,5 +179,6 @@ end
 #  created_at  :datetime
 #  updated_at  :datetime
 #  source      :text             not null
+#  kind        :string(255)
 #
 

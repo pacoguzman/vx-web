@@ -53,9 +53,7 @@ module VxWeb
       config.x.hostname = URI.parse("http://#{config.x.hostname}")
     end
 
-    config.x.github_restriction =
-      ENV['GITHUB_RESTRICTION'] && ENV["GITHUB_RESTRICTION"].split(",").map(&:strip)
-
+    config.i18n.enforce_available_locales = true
     config.middleware.delete "Rack::Lock"
 
     config.assets.precompile += %w( lib.js )

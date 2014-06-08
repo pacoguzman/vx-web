@@ -43,7 +43,7 @@
 
   %pre.app-build-jobs{ jobs: 'jobs' }
 
-  .ajax-loader{ 'ng-hide' => 'jobs.length != undefined' }
+  .ajax-loader{ 'ng-show' => 'waitJobs' }
 
   .artifacts{ 'ng-show' => 'artifacts.length > 0'}
 

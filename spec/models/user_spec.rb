@@ -52,7 +52,24 @@ describe User do
     let!(:uc2) { create :user_company, user: user, company: c2, default: 1 }
 
     it "should return first default company" do
+      expect(user.default_company).to eq c2
+    end
+  end
+
+  context "add_to_company" do
+    let(:user) { create :user }
+    let(:c1)   { create :company, id: 1, name: "c1" }
+    let(:c2)   { create :company, id: 2, name: "c2" }
+
+    it "should crate user_company and set is default" do
+      expect(user.add_to_company c1).to be
       expect(user.default_company).to eq c1
+
+      expect(user.add_to_company c2).to be
+      expect(user.default_company).to eq c2
+
+      expect(user.add_to_company c2).to be
+      expect(user.default_company).to eq c2
     end
   end
 end

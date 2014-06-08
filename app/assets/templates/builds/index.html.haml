@@ -22,6 +22,7 @@
     %thead
       %th No.
       %th Commit
+      %th.visible-md.visible-lg
       %th Branch
       %th Duration
       %th Finished At
@@ -32,8 +33,9 @@
           %i.fa.fa-circle
           %span {{ build.number }}
       %td.app-build-http-url{ build: 'build' }
+      %td.visible-md.visible-lg{ title: "{{ build.message }}" } {{ build.message | truncate: 30 }}
       %td {{ build.branch }}
       %td.app-task-duration{ task: 'build' }
       %td.app-task-finished{ task: 'build' }
 
-  .ajax-loader{ 'ng-hide' => 'builds.length != undefined' }
+  .ajax-loader{ 'ng-show' => 'waitBuilds' }

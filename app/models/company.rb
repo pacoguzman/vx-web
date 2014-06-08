@@ -8,3 +8,14 @@ class Company < ActiveRecord::Base
   has_many :users, through: :user_companies
   has_many :invites, dependent: :destroy
 end
+
+# == Schema Information
+#
+# Table name: companies
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#
+

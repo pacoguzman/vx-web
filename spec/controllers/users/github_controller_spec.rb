@@ -66,37 +66,6 @@ describe Users::GithubController do
     let!(:invite)  { create :invite, email: email }
     let!(:company) { create :company  }
 
-    context "when user in restricted organization" do
-      before do
-        Rails.configuration.x.github_restriction = ["foo", "github"]
-        mock_user_orgs
-      end
-      it "should redirect to /ui" do
-        get_invite
-        should redirect_to("/ui")
-      end
-
-      it "should create user" do
-        expect { get_invite }.to change(User, :count).by(1)
-      end
-    end
-
-    context "when user is not in restricted organization" do
-      before do
-        Rails.configuration.x.github_restriction = ["foo", "bar"]
-        mock_user_orgs
-      end
-
-      it "should redirect to /users/failure" do
-        get_invite
-        should redirect_to("/users/failure")
-      end
-
-      it "cannot create any users" do
-        expect { get_invite }.to_not change(User, :count)
-      end
-    end
-
     context "authorization failed" do
       let(:auth_hash) { :invalid_credentials }
 
@@ -231,6 +200,37 @@ describe Users::GithubController do
       get :callback
     end
 
+  end
+
+  context "GET /sign_up" do
+    context "successfuly" do
+
+      before do
+        sign_up
+      end
+
+      it { should redirect_to("/users/signup/new") }
+
+      it "should cretae signup_omniauth session key" do
+        expect(session[:signup_omniauth]).to eq(
+          "credentials" => {
+            "token" => "token"
+          },
+          "info" => {
+            "name"    => "name",
+            "email"   => "email",
+            "nickname"=> "nickname"
+          },
+          "provider" => "github",
+          "uid"      => "uid"
+        )
+      end
+    end
+
+    def sign_up
+      request.env['omniauth.params'] = { "do" => "sign_up" }
+      get :callback
+    end
   end
 
   def mock_user_orgs

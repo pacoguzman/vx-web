@@ -1,66 +1,58 @@
 module UserSession
   Github = Struct.new(:auth_info) do
 
-    def find_user
-      if auth_info_uid?
-
-        identity = UserIdentity.provider(:github).find_by(uid: auth_info.uid)
-        token    = auth_info.credentials.token
-        login    = auth_info.info.nickname
-        if identity.update(token: token, login: login)
-          identity && identity.user
-        end
-      end
+    def find
+      identity = UserIdentity.provider(:github).find_by(uid: uid)
+      identity && identity.user
     end
 
-    def create_user(email, company)
-      if auth_info_uid?
-        User.transaction do
+    def create(email, options = {})
 
-          uid   = auth_info.uid
-          name  = auth_info.info.name
-          token = auth_info.credentials.token
-          login = auth_info.info.nickname
+      if user = find
+        user.email = email if options[:trust_email]
+        user.save
+        user
+      else
+        user =   ::User.find_by(email: email) if options[:trust_email]
+        user ||= ::User.new
 
-          user = ::User.find_or_initialize_by(email: email)
-          if user.new_record?
-            user.name = name
-          end
-          user.save.or_rollback_transaction
-
-          user_company = user.user_companies.find_or_initialize_by(
-            company_id: company.id
-          )
-          if user_company.new_record?
-            user_company.save.or_rollback_transaction
-          end
-          user_company.default!
-
-          identity = user.identities.find_or_initialize_by(
+        user.transaction do
+          user.update(email: email, name: name).or_rollback_transaction
+          user.identities.build(
             provider: "github",
             url:      'https://github.com',
-            uid:      uid
-          )
-          identity.update_attributes(
+            uid:      uid,
             token:    token,
-            user:     user,
             login:    login,
-          ).or_rollback_transaction
-
-          if orgs = Rails.configuration.x.github_restriction
-            orgs.any? do |org|
-              identity.sc.organizations.include?(org)
-            end.or_rollback_transaction
-          end
-
-          user
+          ).save.or_rollback_transaction
         end
+        user
       end
     end
 
-    def auth_info_uid?
-      auth_info.respond_to?(:uid)
-    end
+    private
+
+      def uid
+        auth_info.respond_to?(:uid) && auth_info.uid
+      end
+
+      def name
+        if auth_info.respond_to?(:info) && auth_info.info.respond_to?(:name)
+          auth_info.info.name
+        end
+      end
+
+      def token
+        if auth_info.respond_to?(:credentials) && auth_info.credentials.respond_to?(:token)
+          auth_info.credentials.token
+        end
+      end
+
+      def login
+        if auth_info.respond_to?(:info) && auth_info.info.respond_to?(:nickname)
+          auth_info.info.nickname
+        end
+      end
 
   end
 end

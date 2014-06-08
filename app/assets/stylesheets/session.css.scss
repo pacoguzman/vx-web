@@ -3,14 +3,22 @@ body.session {
   height: 100%;
 
   .alert {
-    margin-top: 20%;
+
+    font-size: 14px;
+
+    p {
+      margin: 0;
+    }
   }
 
+  p.form-control-static {
+    font-size: 14px;
+  }
 }
 
 .session-header {
 
-  width: 24em;
+  width: 26em;
   margin: 3em auto;
 
   h1 {
@@ -25,7 +33,7 @@ body.session {
 }
 
 .session-providers {
-  width: 24em;
+  width: 26em;
   margin: 3em auto;
 }
 

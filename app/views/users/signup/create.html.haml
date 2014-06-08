@@ -1,0 +1,8 @@
+.session-providers
+
+  - unless @signup.valid?
+    .alert.alert-danger
+      - @signup.errors.each do |e|
+        %p= e
+
+  = render 'form'
