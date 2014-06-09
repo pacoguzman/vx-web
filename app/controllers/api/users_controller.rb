@@ -1,18 +1,20 @@
 class Api::UsersController < Api::BaseController
+  serialization_scope :current_company
+
   before_filter :authorize_admin, only: [:index, :update]
 
   respond_to :json
 
   def index
     @users = current_company.users
-    render json: @users.map { |user| UserSerializer.new(user, company: current_company) }
+    respond_with(@users)
   end
 
   def update
     @user = current_company.users.find(params[:id])
 
     if @user.update_role(user_params[:role], current_company)
-      render json: UserSerializer.new(@user, company: current_company)
+      render json: @user
     else
       render nothing: true, status: :unprocessable_entity
     end
@@ -20,7 +22,7 @@ class Api::UsersController < Api::BaseController
 
   def me
     @user = current_user
-    render json: UserSerializer.new(@user, company: current_company)
+    respond_with(@user)
   end
 
 private

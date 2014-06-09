@@ -8,7 +8,7 @@ class UserSerializer < ActiveModel::Serializer
   has_many :companies
 
   def role
-    object.role(options[:company]) if options[:company]
+    object.role(scope) if scope
   end
 
   def available_roles

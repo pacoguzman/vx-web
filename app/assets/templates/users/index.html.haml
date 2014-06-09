@@ -1,0 +1,14 @@
+%table.table.users
+  %thead
+    %tr
+      %th Name
+      %th Email
+      %th Role
+      %th Project count
+  %tbody
+    %tr{ 'ng-repeat' => 'user in users' }
+      %td {{ user.name }}
+      %td {{ user.email }}
+      %td
+        %select{ 'ng-model' => 'user.role', 'ng-change' => 'update(user)', 'ng-options' => 'role for role in user.available_roles', 'ng-disabled' => 'user.id == current_user.id', class: 'form-control input-sm' }
+      %td {{ user.project_count }}
