@@ -12,7 +12,7 @@ class UserCompany < ActiveRecord::Base
   def default!
     transaction do
       user.user_companies.where("id <> ?", id).update_all(default: 0)
-      update_attribute :default, 1
+      update default: 1
     end
   end
 end

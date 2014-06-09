@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   validates :email, uniqueness: true
 
   def default_company
-    companies.order("user_companies.default DESC").first
+    companies.reorder("user_companies.default DESC").first
   end
 
   def sync_repos(company)
@@ -40,6 +40,11 @@ class User < ActiveRecord::Base
       user_company.default!
       user_company
     end
+  end
+
+  def set_default_company(company)
+    user_companies.where(company_id: company.id).map(&:default!)
+    touch
   end
 
 end
