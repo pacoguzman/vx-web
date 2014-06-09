@@ -1,9 +1,19 @@
 class UserCompany < ActiveRecord::Base
-  validates :user_id, :company_id, :default, presence: true
-  validates :user_id, uniqueness: { scope: [:company_id] }
+  ADMIN_ROLE = 'admin'
+  DEVELOPER_ROLE = 'developer'
+
+  before_validation :assign_default_role
 
   belongs_to :user
   belongs_to :company
+
+  def self.roles
+    [ADMIN_ROLE, DEVELOPER_ROLE]
+  end
+
+  validates :user, :company, :default, :role, presence: true
+  validates :user_id, uniqueness: { scope: [:company_id] }
+  validates :role, inclusion: { in: UserCompany.roles }
 
   def default?
     default == 1
@@ -14,6 +24,12 @@ class UserCompany < ActiveRecord::Base
       user.user_companies.where("id <> ?", id).update_all(default: 0)
       update default: 1
     end
+  end
+
+private
+
+  def assign_default_role
+    self.role ||= (company.users.any? ? DEVELOPER_ROLE : ADMIN_ROLE)
   end
 end
 

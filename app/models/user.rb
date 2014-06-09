@@ -10,8 +10,21 @@ class User < ActiveRecord::Base
   validates :name, :email, presence: true
   validates :email, uniqueness: true
 
+  def update_role(role, company)
+    user_company = user_companies.find_by(company: company)
+    user_company.update(role: role)
+  end
+
   def default_company
     companies.reorder("user_companies.default DESC").first
+  end
+
+  def role(company)
+    user_companies.find_by(company: company).try(:role)
+  end
+
+  def admin?(company)
+    role(company) == UserCompany::ADMIN_ROLE
   end
 
   def sync_repos(company)
