@@ -18,7 +18,7 @@ angular.module('Vx').
         </th>
       </thead>
       <tr class='app-build-jobs-job app-task-status-class tasks-table-item'
-          ng-repeat="job in jobs | orderBy:'number'" status="job.status">
+          ng-repeat="job in jobs | orderBy:'natural_number'" status="job.status">
         <td>
           <a ng-href='/ui/jobs/{{job.id}}'>
             <i class='fa fa-circle'></i>
