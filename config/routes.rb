@@ -2,7 +2,7 @@ VxWeb::Application.routes.draw do
 
   namespace :api do
 
-    resources :users do
+    resources :users, only: [:index, :update] do
       collection do
         get :me
       end

@@ -9,4 +9,9 @@ class ::Api::BaseController < ::ApplicationController
     end
   end
 
+  def authorize_admin
+    if !user_logged_in? || !current_user.admin?(current_company)
+      render nothing: true, status: :forbidden
+    end
+  end
 end

@@ -30,6 +30,8 @@ group :assets do
 end
 
 group :development, :test do
+  gem 'pry'
+  gem 'pry-rails'
   gem 'rspec'
   gem 'rspec-rails'
   gem 'factory_girl'
@@ -43,8 +45,6 @@ group :test do
 end
 
 group :development do
-  gem 'pry'
-  gem 'pry-rails'
   gem 'annotate'
   gem 'foreman'
 end
