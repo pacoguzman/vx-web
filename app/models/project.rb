@@ -5,17 +5,17 @@ class Project < ActiveRecord::Base
   include ::PublicUrl::Project
 
   belongs_to :user_repo, class_name: "::UserRepo", foreign_key: :user_repo_id
+  belongs_to :company
+
+  has_one :identity, through: :user_repo
   has_many :builds, dependent: :destroy, class_name: "::Build"
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
   has_many :cached_files, dependent: :destroy
-  belongs_to :company
 
   validates :name, :http_url, :clone_url, :token,
     :deploy_key, presence: true
   validates :token, uniqueness: true
   validates :name, uniqueness: { scope: :company_id }
-
-  delegate :identity, to: :user_repo, allow_nil: true
 
   before_validation :generate_token,      on: :create
   before_validation :generate_deploy_key, on: :create
