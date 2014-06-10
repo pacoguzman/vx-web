@@ -37,6 +37,14 @@ describe BuildNotifier do
       )
     end
     it { should be }
+
+    context "when exception in service" do
+      before do
+        mock(notifier.project.sc).notices(anything).mock!.create(anything) { raise Exception, "ignore me" }
+      end
+
+      it { should be }
+    end
   end
 
   context "#subscribed_emails" do

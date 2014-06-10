@@ -59,13 +59,20 @@ BuildNotifier = Struct.new(:message) do
     def create_commit_status
       sc  = project.sc
       if sc
-        Rails.logger.warn "create commit status notification for #{sc.inspect}"
-        sc.notices(project.sc_model).create(
-          build.sha,
-          build.status_name,
-          build.public_url,
-          description
-        )
+        begin
+          sc.notices(project.sc_model).create(
+            build.sha,
+            build.status_name,
+            build.public_url,
+            description
+          )
+        rescue Exception => exception
+          Vx::Instrumentation.handle_exception(
+            'consumer.web.vx',
+            exception,
+            build.attributes
+          )
+        end
       end
     end
 
