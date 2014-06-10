@@ -28,21 +28,28 @@ describe BuildNotifier do
 
   context "#notify" do
     subject { notifier.notify }
-    before do
-      mock(notifier.project.sc).notices(anything).mock!.create(
-        b.sha,
-        :passed,
-        b.public_url,
-        anything
-      )
+
+    context "successfuly" do
+      before do
+        mock(notifier.project.sc).notices(anything).mock!.create(
+          b.sha,
+          :passed,
+          b.public_url,
+          anything
+        )
+      end
+      it { should be }
     end
-    it { should be }
 
     context "when exception in service" do
       before do
-        mock(notifier.project.sc).notices(anything).mock!.create(anything) { raise Exception, "ignore me" }
+        mock(notifier.project.sc).notices(anything).mock!.create(
+          b.sha,
+          :passed,
+          b.public_url,
+          anything
+        ) { raise Exception, 'ignore me' }
       end
-
       it { should be }
     end
   end

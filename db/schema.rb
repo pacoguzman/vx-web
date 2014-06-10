@@ -97,7 +97,6 @@ ActiveRecord::Schema.define(version: 20140606220001) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "source",      null: false
-    t.string   "kind"
   end
 
   add_index "jobs", ["build_id", "number"], name: "index_jobs_on_build_id_and_number", unique: true, using: :btree
