@@ -18,7 +18,9 @@
 tags
 Capfile
 /private
-.env.*
+.env.test
+.env.development
+.env.production
 .logstash-forwarder
 log/
 app/assets/javascripts/templates.compilled.js
