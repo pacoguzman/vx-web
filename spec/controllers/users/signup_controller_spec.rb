@@ -22,6 +22,10 @@ describe Users::SignupController do
   context "GET /show" do
     before { get :show }
     it { should be_success }
+
+    include_examples "when signup disabled" do
+      let(:req) { get :show }
+    end
   end
 
   context "GET /new" do
@@ -58,9 +62,14 @@ describe Users::SignupController do
 
     context "when signup_omniauth key does not exists in session" do
       before do
+        session[:signup_omniauth] = nil
         get :new
       end
       it { should redirect_to("/users/signup") }
+    end
+
+    include_examples "when signup disabled" do
+      let(:req) { get :new }
     end
   end
 
@@ -96,66 +105,6 @@ describe Users::SignupController do
 
       it "should authorize user" do
         expect(session[:user_id]).to eq user.id
-      end
-    end
-
-    context "when github restriction" do
-      context "failed" do
-        before do
-          mock_orgs_request
-          Rails.configuration.x.github_restriction = ["bar"]
-          post_create
-        end
-
-        after(:all) do
-          Rails.configuration.x.github_restriction = nil
-        end
-
-        it { should_not be_success }
-
-        it "cannot create user" do
-          expect(user).to_not be
-        end
-
-        it "cannot create company" do
-          expect(company).to_not be
-        end
-
-        it "should have error on identity" do
-          expect(assigns(:signup).errors).to eq ["User Identities is invalid"]
-        end
-      end
-
-      context "success" do
-        before do
-          mock_orgs_request
-          Rails.configuration.x.github_restriction = ["foo"]
-          post_create
-        end
-
-        after(:all) do
-          Rails.configuration.x.github_restriction = nil
-        end
-
-        it { should redirect_to("/ui") }
-
-        it "should create user" do
-          expect(user).to be
-        end
-
-        it "should create company" do
-          expect(company).to be
-          expect(user.default_company).to eq company
-        end
-
-        it "should create identity for user" do
-          expect(user.identities.where(provider: "github")).to have(1).item
-        end
-      end
-
-      def mock_orgs_request
-        stub_request(:get, "https://api.github.com/user/orgs").
-          to_return(:status => 200, :body => '[{"login": "foo"}]', headers: { "Content-Type" => 'application/json' })
       end
     end
 
@@ -289,6 +238,10 @@ describe Users::SignupController do
     context "when signup_omniauth key does not exists in session" do
       before { post_create session: false }
       it { should redirect_to("/users/signup") }
+    end
+
+    include_examples "when signup disabled" do
+      let(:req) { get :new }
     end
 
     def post_create(options = {})

@@ -8,8 +8,6 @@ class UserIdentity < ActiveRecord::Base
   validates :user_id, uniqueness: { scope: [:provider, :url] }
   validates :provider, inclusion: { in: ["github", "gitlab"] }
 
-  validate :github_restriction, if: :github?
-
   scope :provider, ->(provider) { where provider: provider }
 
   class << self
@@ -67,18 +65,6 @@ class UserIdentity < ActiveRecord::Base
   end
 
   private
-
-    def github_restriction
-      if orgs = Rails.configuration.x.github_restriction
-        check = orgs.any? do |org|
-          sc.organizations.include?(org)
-        end
-
-        unless check
-          errors.add :base, "invalid github origanization"
-        end
-      end
-    end
 
     def real_provider_name
       case provider.to_s

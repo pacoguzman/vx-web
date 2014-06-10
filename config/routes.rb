@@ -50,6 +50,12 @@ VxWeb::Application.routes.draw do
     resources :artifacts, only: [:destroy]
     resources :status, only: [:show], id: /(jobs)/
     resources :events, only: [:index]
+
+    resources :companies, only: [] do
+      member do
+        post :default
+      end
+    end
   end
 
   namespace :users do
