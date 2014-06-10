@@ -62,6 +62,8 @@ module VxWeb
       config.x.hostname = URI.parse("http://#{config.x.hostname}")
     end
 
+    config.x.disable_signup = !!ENV['VX_WEB_DISABLE_SIGNUP']
+
   end
 end
 

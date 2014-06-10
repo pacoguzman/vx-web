@@ -22,6 +22,10 @@ describe Users::SignupController do
   context "GET /show" do
     before { get :show }
     it { should be_success }
+
+    include_examples "when signup disabled" do
+      let(:req) { get :show }
+    end
   end
 
   context "GET /new" do
@@ -58,9 +62,14 @@ describe Users::SignupController do
 
     context "when signup_omniauth key does not exists in session" do
       before do
+        session[:signup_omniauth] = nil
         get :new
       end
       it { should redirect_to("/users/signup") }
+    end
+
+    include_examples "when signup disabled" do
+      let(:req) { get :new }
     end
   end
 
@@ -229,6 +238,10 @@ describe Users::SignupController do
     context "when signup_omniauth key does not exists in session" do
       before { post_create session: false }
       it { should redirect_to("/users/signup") }
+    end
+
+    include_examples "when signup disabled" do
+      let(:req) { get :new }
     end
 
     def post_create(options = {})
