@@ -57,16 +57,16 @@ class Job < ActiveRecord::Base
     [3,4,5].include?(status)
   end
 
-  def to_builder_script
-    ::Vx::Builder::Script.new(build.to_builder_task(self), to_builder_source)
-  end
-
   def to_builder_source
     ::Vx::Builder::BuildConfiguration.from_yaml(source)
   end
 
+  def to_script_builder
+    ::Vx::Builder.script(build.to_builder_task(self), to_builder_source)
+  end
+
   def to_perform_job_message
-    script = to_builder_script
+    script = to_script_builder
     ::Vx::Message::PerformJob.new(
       project_id:      build.project_id,
       build_id:        build.id,

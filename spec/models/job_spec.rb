@@ -15,9 +15,9 @@ describe Job do
     it { should be }
   end
 
-  context "#to_builder_script" do
+  context "#to_script_builder" do
     let(:job) { create :job }
-    subject { job.to_builder_script }
+    subject { job.to_script_builder }
     it { should be }
   end
 

@@ -6,8 +6,6 @@ class Build < ActiveRecord::Base
 
   belongs_to :project, class_name: "::Project", touch: true
   has_many :jobs, class_name: "::Job", dependent: :destroy
-  has_many :artifacts, class_name: "::Artifact", dependent: :destroy,
-    inverse_of: :build
 
   validates :project_id, :number, :sha, :branch, :source, :token, presence: true
   validates :number, uniqueness: { scope: [:project_id] }
@@ -73,21 +71,6 @@ class Build < ActiveRecord::Base
     sha.to_s[0..8]
   end
 
-  def to_builder_task(job)
-    ::Vx::Builder::Task.new(
-      name:             project.name,
-      src:              project.clone_url,
-      sha:              sha,
-      build_id:         id,
-      job_id:           job.number,
-      deploy_key:       project.deploy_key,
-      branch:           branch,
-      pull_request_id:  pull_request_id,
-      cache_url_prefix: cache_url_prefix,
-      artifacts_url_prefix: artifacts_url_prefix,
-    )
-  end
-
   def prev_finished_build_in_branch
     @prev_finished_build_in_branch ||=
       self.class.finished
@@ -120,16 +103,30 @@ class Build < ActiveRecord::Base
       )
   end
 
+  def to_builder_task(job)
+    ::Vx::Builder::Task.new(
+      name:             project.name,
+      src:              project.clone_url,
+      sha:              sha,
+      build_id:         id,
+      job_id:           job.number,
+      deploy_key:       project.deploy_key,
+      branch:           branch,
+      pull_request_id:  pull_request_id,
+      cache_url_prefix: cache_url_prefix
+    )
+  end
+
   def to_build_configuration
     ::Vx::Builder::BuildConfiguration.new(source)
   end
 
-  def to_matrix_build_configurations
-    ::Vx::Builder::Matrix.new(to_build_configuration).build_configurations
+  def to_matrix
+    ::Vx::Builder.matrix(to_build_configuration).build
   end
 
   def create_jobs_from_matrix
-    to_matrix_build_configurations.each_with_index do |config, idx|
+    to_matrix.each_with_index do |config, idx|
       number = idx + 1
       self.jobs.create(
         matrix: config.matrix_attributes,

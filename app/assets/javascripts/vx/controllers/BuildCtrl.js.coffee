@@ -1,8 +1,7 @@
-Vx.controller 'BuildCtrl', ($scope, appMenu, artifactsStore, projectStore, buildStore, jobStore, $routeParams) ->
+Vx.controller 'BuildCtrl', ($scope, appMenu, projectStore, buildStore, jobStore, $routeParams) ->
 
   $scope.waitJobs  = true
 
-  $scope.artifacts = artifactsStore.all $routeParams.buildId
   $scope.build     = buildStore.one($routeParams.buildId)
   $scope.jobs      = jobStore.all($routeParams.buildId).finally ->
     $scope.waitJobs = false
