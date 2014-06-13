@@ -9,7 +9,7 @@
     .col-xs-6
       .pull-right
 
-        %a.project-cached-files{ "ng-href" => "/projects/{{project.id}}/cached_files" }
+        %a.project-cached-files{ "ng-href" => "/ui/projects/{{project.id}}/cached_files" }
           Cached Files
 
         %a.project-url{ "ng-href" => "{{ project.http_url}}", "target" => "_blank" }
@@ -29,7 +29,7 @@
 
     %tr.tasks-table-item.app-task-status-class{ 'ng-repeat' => "build in builds | orderBy:'number':true | limitTo:20", 'status' => "build.status" }
       %td
-        %a{ 'ng-href' => "/builds/{{build.id}}" }
+        %a{ 'ng-href' => "/ui/builds/{{build.id}}" }
           %i.fa.fa-circle
           %span {{ build.number }}
       %td.app-build-http-url{ build: 'build' }
