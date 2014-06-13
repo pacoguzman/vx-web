@@ -12,8 +12,8 @@ describe AutoScaleNotifier do
     let(:messages) { AutoScaleConsumer.messages }
     it "should be" do
       b = create :build
-      create :job, status: 0, build: b, number: 1
-      create :job, status: 2, build: b, number: 2
+      create :job, status: 'initialized', build: b, number: 1
+      create :job, status: 'started',     build: b, number: 2
       expect {
         notifier.notify
       }.to change(messages, :count).by(1)

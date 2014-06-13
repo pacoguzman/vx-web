@@ -96,7 +96,7 @@ describe Users::SignupController do
       end
 
       it "should create identity for user" do
-        expect(user.identities.where(provider: "github")).to have(1).item
+        expect(user.identities.where(provider: "github").size).to eq 1
       end
 
       it "should remove key signup_omniauth from session" do
@@ -188,7 +188,7 @@ describe Users::SignupController do
       end
 
       it "should keep identity for user" do
-        expect(user.identities).to have(1).item
+        expect(user.identities.size).to eq 1
       end
 
       it "should remove key signup_omniauth from session" do
@@ -219,11 +219,11 @@ describe Users::SignupController do
       it "should create company" do
         expect(company).to be
         expect(user.default_company).to eq company
-        expect(user.companies).to have(2).items
+        expect(user.companies.size).to eq 2
       end
 
       it "should keep identity for user" do
-        expect(user.identities).to have(1).item
+        expect(user.identities.size).to eq 1
       end
 
       it "should remove key signup_omniauth from session" do

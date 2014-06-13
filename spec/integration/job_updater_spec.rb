@@ -4,9 +4,9 @@ describe JobUpdater do
   let(:updater) { described_class.new }
 
   it "when all jobs successfuly completed" do
-    build = create :build, status: 0
-    job1  = create :job, build: build, number: 1, status: 0
-    job2  = create :job, build: build, number: 2, status: 0
+    build = create :build, status: 'initialized'
+    job1  = create :job, build: build, number: 1, status: 'initialized'
+    job2  = create :job, build: build, number: 2, status: 'initialized'
 
     perform(job1, status: 2, tm: 1)
 
@@ -34,9 +34,9 @@ describe JobUpdater do
   end
 
   it "when any of jobs failed" do
-    build = create :build, status: 0
-    job1  = create :job, build: build, number: 1, status: 0
-    job2  = create :job, build: build, number: 2, status: 0
+    build = create :build, status: 'initialized'
+    job1  = create :job, build: build, number: 1, status: 'initialized'
+    job2  = create :job, build: build, number: 2, status: 'initialized'
 
     perform(job1, status: 2, tm: 1)
 
@@ -64,9 +64,9 @@ describe JobUpdater do
   end
 
   it "when any of jobs errored" do
-    build = create :build, status: 0
-    job1  = create :job, build: build, number: 1, status: 0
-    job2  = create :job, build: build, number: 2, status: 0
+    build = create :build, status: 'initialized'
+    job1  = create :job, build: build, number: 1, status: 'initialized'
+    job2  = create :job, build: build, number: 2, status: 'initialized'
 
     perform(job1, status: 2, tm: 1)
 

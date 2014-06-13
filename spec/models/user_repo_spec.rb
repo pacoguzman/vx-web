@@ -95,7 +95,7 @@ describe UserRepo do
         end
 
         it "should return true value" do
-          expect(subject).to be_true
+          expect(subject).to be(true)
         end
       end
 

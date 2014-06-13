@@ -24,6 +24,8 @@ describe JobSerializer do
       object.number = 12345
     end
     it { should eq "1.0000012345" }
-    it { should have(12).items }
+    it "has to be of the requested length" do
+      subject.length.should eq(12)
+    end
   end
 end
