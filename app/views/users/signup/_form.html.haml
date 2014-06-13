@@ -1,0 +1,18 @@
+= form_tag users_signup_path, role: "form" do
+  .form-group
+    %label.control-label{ for: "user_email" } Email
+    - if @signup.user_exists?
+      %p.form-control-static
+        = @signup.email
+        = hidden_field_tag "email", @signup.email
+    - else
+      = text_field_tag "email", @signup.email, placeholder: "me@example.com", class: "form-control", id: "user_email", autofocus: true
+
+  .form-group
+    %label.control-label{ for: "company_name" } Company
+    = text_field_tag "company", @signup.company_name, placeholder: "Company Name", class: "form-control", id: "company_name", autofocus: true
+
+  %hr
+
+  .form-group
+    = submit_tag "Continue Sing Up", class: "btn btn-sm btn-primary"

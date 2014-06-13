@@ -1,0 +1,49 @@
+body.session {
+  width: 100%;
+  height: 100%;
+
+  .alert {
+
+    font-size: 14px;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  p.form-control-static {
+    font-size: 14px;
+  }
+}
+
+.session-header {
+
+  width: 26em;
+  margin: 3em auto;
+
+  h1 {
+    font-weight: 200;
+    color: #333;
+  }
+
+  p {
+    margin-left: .2em;
+    color: #999;
+  }
+}
+
+.session-providers {
+  width: 26em;
+  margin: 3em auto;
+}
+
+.session-github-provider {
+  img {
+    width: 5em;
+  }
+
+  a {
+    font-size: 16px;
+    font-weight: normal;
+  }
+}

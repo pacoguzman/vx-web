@@ -80,8 +80,7 @@ describe Build do
     its(:sha)                  { should eq 'MyString' }
     its(:deploy_key)           { should be }
     its(:branch)               { should eq 'MyString' }
-    its(:cache_url_prefix)     { should eq "http://test.local/f/cached_files/#{b.project.token}" }
-    its(:artifacts_url_prefix) { should eq "http://test.local/f/artifacts/#{b.id}/#{b.token}" }
+    its(:cache_url_prefix)     { should eq "http://test.host/f/cached_files/#{b.project.token}" }
     its(:build_id)             { should eq b.id }
     its(:job_id)               { should eq job.number }
   end
@@ -429,8 +428,8 @@ describe Build do
     its(:script)     { should eq ["/bin/true"] }
   end
 
-  context "to_matrix_build_configurations" do
-    subject { b.to_matrix_build_configurations }
+  context "to_matrix" do
+    subject { b.to_matrix }
     before do
       b.source = {"rvm" => %w{ 1.9 2.0 }}.to_yaml
     end
@@ -516,5 +515,6 @@ end
 #  http_url        :string(255)
 #  branch_label    :string(255)
 #  source          :text             not null
+#  token           :string(255)      not null
 #
 

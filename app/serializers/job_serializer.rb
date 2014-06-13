@@ -1,7 +1,7 @@
 class JobSerializer < ActiveModel::Serializer
   cached
 
-  attributes :id, :build_id, :project_id, :number, :status,
+  attributes :id, :build_id, :project_id, :number, :natural_number, :status,
     :matrix, :started_at, :finished_at, :text_logs_url
 
   def project_id
@@ -18,5 +18,10 @@ class JobSerializer < ActiveModel::Serializer
 
   def text_logs_url
     api_job_logs_path(object, format: "txt")
+  end
+
+  def natural_number
+    n = object.number.to_s.rjust(10, '0')
+    "#{object.build.number}.#{n}"
   end
 end

@@ -6,6 +6,10 @@ describe "appCurrentUserMenu", ->
   elem     = null
   user     = {
     name: "user_name"
+    companies: [
+      {id: 1, name: "c1"},
+      {id: 2, name: "c2"}
+    ]
   }
 
   beforeEach ->

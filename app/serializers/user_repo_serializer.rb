@@ -9,6 +9,6 @@ class UserRepoSerializer < ActiveModel::Serializer
   end
 
   def subscribed
-    !!(object.subscribed || object.project)
+    !!(object.subscribed || object.project || object.same_name_projects.any?)
   end
 end

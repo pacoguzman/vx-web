@@ -31,10 +31,12 @@ RSpec.configure do |config|
 
   config.order = "random"
 
+  config.render_views = true
+
   config.before(:each) do
     Vx::Consumer::Testing.clear
     Rails.configuration.x = OpenStruct.new
-    Rails.configuration.x.hostname = 'test.local'
+    Rails.configuration.x.hostname = URI('http://test.host')
   end
 
 end

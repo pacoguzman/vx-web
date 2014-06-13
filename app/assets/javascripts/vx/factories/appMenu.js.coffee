@@ -11,7 +11,7 @@ angular.module('Vx').
       items
 
     obj.reset = () ->
-      items = [{ title: 'Dashboard', path: '/' }]
+      items = [{ title: 'Dashboard', path: '/ui/' }]
 
     obj.define = (args...) ->
       promises = _.initial(args)

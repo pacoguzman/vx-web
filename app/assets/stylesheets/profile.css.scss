@@ -1,3 +1,14 @@
 .user_profile, .user_identities {
 }
 
+.user_identities {
+  .label {
+    font-size: 100%;
+  }
+
+  .user_identity_name {
+    width: 4em;
+    display: inline-block;
+  }
+}
+

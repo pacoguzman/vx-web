@@ -28,17 +28,41 @@ describe UserIdentity do
     subject { identity.sc }
 
     context "for github" do
-      before { identity.provider = 'github' }
+      before do
+        identity.provider = 'github'
+      end
       it { should be_an_instance_of(Vx::ServiceConnector::Github) }
       its(:login)        { should eq identity.login }
       its(:access_token) { should eq identity.token }
     end
 
     context "for gitlab" do
-      before { identity.provider = 'gitlab' }
-      it { should be_an_instance_of(Vx::ServiceConnector::GitlabV5) }
+      before do
+        identity.provider = 'gitlab'
+        identity.version  = '6.4.3'
+      end
+      it { should be_an_instance_of(Vx::ServiceConnector::GitlabV6) }
       its(:endpoint)      { should eq identity.url }
       its(:private_token) { should eq identity.token }
+    end
+  end
+
+  context "ignored?" do
+    subject { identity.ignored? }
+
+    it "should be false when gitlab" do
+      id = create :user_identity, :github
+      expect(id).to_not be_ignored
+    end
+
+    it "should be false when gitlab v6" do
+      id = create :user_identity, :gitlab, version: '6.4.3'
+      expect(id).to_not be_ignored
+    end
+
+    it "should be false when gitlab v5" do
+      id = create :user_identity, :gitlab, version: '5.4.3'
+      expect(id).to be_ignored
     end
   end
 end

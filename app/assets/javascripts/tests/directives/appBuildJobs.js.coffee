@@ -16,11 +16,11 @@ describe "appBuildJobs", ->
 
   beforeEach ->
     job1 = {
-      matrix: {"rvm": "2.0.0"}
+      matrix: {"rvm": "2.0.0", 'natural_number': "1"}
     }
 
     job2 = {
-      matrix: {"rvm": "1.9.3"}
+      matrix: {"rvm": "1.9.3", 'natural_number': "2"}
     }
 
   beforeEach ->

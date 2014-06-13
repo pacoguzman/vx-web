@@ -1,0 +1,16 @@
+.session-providers
+
+  - unless any_providers_enabled?
+    .alert.alert-danger
+      Cannout found any conguration for Github
+
+  - if github_enabled?
+
+    .session-github-provider
+
+      %a{ href: omniauth_authorize_url(:github, operation, options) }
+
+        = image_tag 'octokat.svg', alt: "Octokat", title: "Octokat"
+        %span
+          = title
+          via Github

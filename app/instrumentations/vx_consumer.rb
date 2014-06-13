@@ -13,7 +13,3 @@ ActiveSupport::Notifications.subscribe(/\.consumer\.vx/) do |event, started, fin
     Vx::Instrumentation.delivery event, payload, event.split("."), started, finished
   end
 end
-
-ActiveSupport::Notifications.subscribe(/\.consumer\.web\.vx/) do |event, started, finished, _, payload|
-  Vx::Instrumentation.delivery event, payload, event.split("."), started, finished
-end

@@ -4,11 +4,13 @@
 
       .panel.panel-default
         .panel-body{ 'ng-show' => "github_identity" }
-          Github:
+          %span.user_identity_name
+            Github
+
           %a{ "ng-href" => "{{ github_identity.url }}/{{ github_identity.login }}", target: "_blank" }
             {{ github_identity.url }}/{{ github_identity.login }}
         .panel-body{ 'ng-hide' => "github_identity" }
-          %a{ "ng-href" => "/auth/github", class: "btn btn-success" }
+          %a{ "ng-href" => "/users/github", class: "btn btn-success" }
             %i.fa.fa-plus
             Add Github Account
 
@@ -23,7 +25,8 @@
               %a{ 'ng-click' => "edit(id)", "href" => "javascript://", title: "Edit Gitlab Identity" }
                 %i.fa.fa-edit
 
-            Gitlab:
+            %span.user_identity_name
+              Gitlab
             %a{ "ng-href" => "{{ id.url }}", target: "_blank" }
               {{ id.url }}
 

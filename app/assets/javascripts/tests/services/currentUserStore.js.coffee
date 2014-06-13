@@ -17,21 +17,34 @@ describe "currentUserStore", ->
     name: "MyName"
   }
 
-  beforeEach module("Vx")
-
   beforeEach ->
+
+    module "Vx"
+
     inject ['$rootScope',
       (_$scope_) ->
         $scope   = _$scope_.$new()
     ]
 
-  beforeEach ->
-    inject ['$injector',
-      ($injector) ->
-        $http     = $injector.get("$httpBackend")
-        currentUserStore = $injector.get("currentUserStore")
+    inject ['$injector', ($injector) ->
+      $http     = $injector.get("$httpBackend")
+      currentUserStore = $injector.get("currentUserStore")
     ]
     succVal = failVal = null
+
+  describe "signOut()", ->
+
+    res =
+      location: "/ui"
+
+    beforeEach ->
+      $http.expectDELETE('/users/session').respond(res)
+
+    it "should send DELETE request", ->
+      $scope.$apply ->
+        currentUserStore.signOut().then succ, fail
+      $http.flush()
+      expect(succVal.data.location).toEqual '/ui'
 
   describe "get()", ->
 

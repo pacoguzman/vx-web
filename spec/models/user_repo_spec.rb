@@ -21,9 +21,10 @@ describe UserRepo do
   end
 
   context ".find_or_create_by_sc" do
+    let(:company)  { create :company }
     let(:identity) { repo.identity }
     let(:model)    { Vx::ServiceConnector::Model.test_repo }
-    subject { described_class.find_or_create_by_sc identity, model }
+    subject { described_class.find_or_create_by_sc company, identity, model }
 
     it { should be }
 
@@ -72,22 +73,39 @@ describe UserRepo do
 
     context "when asscociated project exists" do
       before do
+=begin
         any_instance_of(Vx::ServiceConnector::Github) do |g|
           mock(g).hooks(anything).mock!.destroy('test.local') { true }
           mock(g).deploy_keys(anything).mock!.destroy(project.deploy_key_name) { true }
         end
+=end
       end
 
-      it "should change 'subscribed' to false" do
-        expect{ subject }.to change(repo, :subscribed).to(false)
+      context "and identity is valid" do
+        before do
+          mock(repo).unsubscribe_project { true }
+        end
+
+        it "should change 'subscribed' to false" do
+          expect{ subject }.to change(repo, :subscribed).to(false)
+        end
+
+        it "should destroy project" do
+          expect { subject }.to change(repo.project, :persisted?).to(false)
+        end
+
+        it "should return true value" do
+          expect(subject).to be_true
+        end
       end
 
-      it "should destroy project" do
-        expect { subject }.to change(repo.project, :persisted?).to(false)
-      end
+      context "and identity ignored" do
+        before do
+          dont_allow(repo).unsubscribe_project
+          mock(repo.identity).ignored? { true }
+        end
 
-      it "should return true value" do
-        expect(subject).to be_true
+        it { should be }
       end
     end
   end
@@ -95,6 +113,18 @@ describe UserRepo do
   context "#subscribe" do
     let(:user) { repo.user }
     subject { repo.subscribe }
+
+    context "when identity ignored" do
+      before do
+        mock(repo.identity).ignored? { true }
+      end
+
+      it { should_not be }
+
+      it "cannot touch any projects" do
+        expect{ subject }.to_not change(Project, :count)
+      end
+    end
 
     context "when associated project exists" do
       let!(:project) { create :project, user_repo: repo }
@@ -198,5 +228,6 @@ end
 #  updated_at         :datetime
 #  identity_id        :integer          not null
 #  external_id        :integer          not null
+#  company_id         :integer          not null
 #
 

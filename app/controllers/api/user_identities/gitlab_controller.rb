@@ -5,7 +5,7 @@ class Api::UserIdentities::GitlabController < Api::BaseController
 
   def update
     @identity = current_user.identities.find(params[:id])
-    @session  = Gitlab::UserSession.new(identity_params)
+    @session  = UserSession::Gitlab.new(identity_params)
     if @session.update_identity(@identity)
       head 204
     else
@@ -14,7 +14,7 @@ class Api::UserIdentities::GitlabController < Api::BaseController
   end
 
   def create
-    @session  = Gitlab::UserSession.new(identity_params)
+    @session  = UserSession::Gitlab.new(identity_params)
     @identity = @session.create_identity(current_user)
     if @identity
       respond_with(@identity, location: api_user_identities_gitlab_url(@identity))

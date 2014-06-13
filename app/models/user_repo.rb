@@ -11,21 +11,30 @@ class UserRepo < ActiveRecord::Base
   }
 
   belongs_to :identity, class_name: "::UserIdentity", foreign_key: :identity_id
+  belongs_to :company
+
   has_one :project, dependent: :nullify
-  has_many :same_name_projects, ->{ readonly }, class_name: "::Project",
+  has_many :same_name_projects,
+    ->(owner){
+      readonly.where(company_id: owner.company_id)
+    },
+    class_name: "::Project",
     foreign_key: :name, primary_key: :full_name
 
   validates :full_name, :ssh_url, :html_url, :external_id, presence: true
   validates :is_private, inclusion: { in: [true, false] }
-  validates :identity_id, uniqueness: { scope: [:external_id] }
 
   delegate :provider, :user, to: :identity
 
   default_scope ->{ order("user_repos.full_name ASC") }
 
   class << self
-    def find_or_create_by_sc(identity, model)
-      repo = find_or_initialize_by(external_id: model.id, identity: identity)
+    def find_or_create_by_sc(company, identity, model)
+      repo = find_or_initialize_by(
+        external_id: model.id,
+        identity:    identity,
+        company:     company
+      )
       repo.assign_attributes(
         full_name:    model.full_name,
         is_private:   model.is_private,
@@ -38,19 +47,26 @@ class UserRepo < ActiveRecord::Base
   end
 
   def subscribe
-    transaction do
+    unless identity.ignored?
+      transaction do
 
-      update_attribute(:subscribed, true).or_rollback_transaction
+        update_attribute(:subscribed, true).or_rollback_transaction
 
-      unless project
-        new_project = create_project.or_rollback_transaction
-        yield new_project if block_given?
+        new_project = nil
+
+        unless project
+          new_project = create_project.or_rollback_transaction
+        end
+
+        unsubscribe_project
+        subscribe_project
+
+        if new_project and block_given?
+          yield new_project
+        end
+
+        true
       end
-
-      unsubscribe_project
-      subscribe_project
-
-      true
     end
   end
 
@@ -60,7 +76,9 @@ class UserRepo < ActiveRecord::Base
       update_attribute(:subscribed, false).or_rollback_transaction
 
       if project
-        unsubscribe_project
+        unless identity.ignored?
+          unsubscribe_project
+        end
         project.destroy
       end
 
@@ -80,7 +98,7 @@ class UserRepo < ActiveRecord::Base
   def unsubscribe_project
     if project
       sc = identity.sc
-      sc.hooks(project.sc_model).destroy(Rails.configuration.x.hostname)
+      sc.hooks(project.sc_model).destroy(Rails.configuration.x.hostname.host)
       sc.deploy_keys(project.sc_model).destroy(project.deploy_key_name)
     end
   end
@@ -105,7 +123,8 @@ class UserRepo < ActiveRecord::Base
         name:        full_name,
         http_url:    html_url,
         clone_url:   ssh_url,
-        description: description
+        description: description,
+        company_id:  company_id
       }
       build_project attrs
       project.save && project
@@ -129,5 +148,6 @@ end
 #  updated_at         :datetime
 #  identity_id        :integer          not null
 #  external_id        :integer          not null
+#  company_id         :integer          not null
 #
 

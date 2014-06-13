@@ -17,6 +17,10 @@ small {
   font-weight: 500 !important;
 }
 
+.label {
+  font-weight: 500;
+}
+
 h4 {
   margin: 0;
   padding: 0;
