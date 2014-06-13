@@ -67,6 +67,12 @@ module VxWeb
     Rails.application.routes.default_url_options[:host] = config.x.hostname.host
     Rails.application.routes.default_url_options[:protocol] = "https://" if ENV['VX_HTTPS']
 
+    if f = ENV['VX_WEB_FORCE_BUILD_CONFIGURATION']
+      config.x.force_build_configuration = File.read(f)
+    else
+      config.x.force_build_configuration = nil
+    end
+
   end
 end
 

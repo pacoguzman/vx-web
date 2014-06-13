@@ -69,6 +69,17 @@ describe Job do
       end
     end
 
+    context "after transition to cancelled" do
+      let(:status) { 0 }
+      subject { job.cancel }
+
+      it "should delivery messages to ServerSideEventsConsumer" do
+        expect{
+          subject
+        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+      end
+    end
+
     context "after transition to passed" do
       let(:status) { 2 }
       subject { job.pass }

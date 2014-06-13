@@ -12,6 +12,10 @@ class JobSerializer < ActiveModel::Serializer
     object.status_name
   end
 
+  def matrix
+    object.matrix || []
+  end
+
   def number
     [object.build.number, object.number].join('.')
   end
