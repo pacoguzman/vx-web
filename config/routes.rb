@@ -8,6 +8,10 @@ VxWeb::Application.routes.draw do
       end
     end
 
+    namespace :user_identities do
+      resources :gitlab, only: [:update, :create, :destroy]
+    end
+
     resources :projects do
       resources :builds, only: [:index, :create]
       resources :cached_files, only: [:index]
@@ -28,7 +32,6 @@ VxWeb::Application.routes.draw do
         get "sha/:sha", action: :sha, as: :sha
       end
       resources :jobs, only: [:index]
-      resources :artifacts, only: [:index]
     end
 
     resources :jobs, only: [:show] do
@@ -46,27 +49,36 @@ VxWeb::Application.routes.draw do
     end
 
     resources :cached_files, only: [:destroy]
-    resources :artifacts, only: [:destroy]
     resources :status, only: [:show], id: /(jobs)/
     resources :events, only: [:index]
+
+    resources :companies, only: [] do
+      member do
+        post :default
+      end
+    end
   end
 
-  get  'auth/github/callback', to: 'github/user_sessions#create'
-  post 'auth/gitlab/session',  to: "gitlab/user_sessions#create"
-  get  'auth/failure',         to: redirect('/')
+  namespace :users do
+    get    'github/callback', to: "github#callback"
+    get    'failure',         to: redirect('/ui')
+
+    resource :session, only: [:destroy, :show], controller: "session"
+    resource :invite,  only: [:new]
+    resource :signup,  only: [:show, :new, :create], controller: "signup"
+  end
 
   put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload", as: :upload_cached_file
   get "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#download"
 
-  put "/f/artifacts/:build_id/:token/*file_name.:file_ext", to: "api/artifacts#upload", as: :upload_artifact
-  get "/f/artifacts/:build_id/:token/*file_name.:file_ext", to: "api/artifacts#download"
-
   post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'
 
-  root 'welcome#index'
-
   get "builds/sha/:sha" => "builds#sha"
 
-  get "*path", to: "welcome#index", constraints: ->(req) { req.format == Mime::HTML }
+  scope constraints: ->(req){ req.format == Mime::HTML } do
+    get "/",         to: redirect("/ui")
+    get "/ui",       to: "users/session#show"
+    get "/ui/*path", to: "users/session#show"
+  end
 end

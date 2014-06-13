@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+ENV['VX_COMPONENT_NAME'] = 'as-notifier'
+
+require File.expand_path("../../config/environment", __FILE__)
+
+$shutdown = false
+
+$th = Thread.new do
+  loop do
+    break if $shutdown
+
+    AutoScaleNotifier.notify
+
+    break if $shutdown
+
+    sleep 15
+  end
+end
+
+trap('INT')  do
+  $shutdown = true
+  $th.wakeup
+end
+
+trap('TERM') do
+  $shutdown = true
+  $th.wakeup
+end
+
+$th.join

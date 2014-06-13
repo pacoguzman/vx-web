@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe Api::UserReposController do
-  let(:repo) { create :user_repo }
-  let(:user) { repo.user }
+  let(:company) { create :company }
+  let(:repo)    { create :user_repo }
+  let(:user)    { repo.user }
   subject { response }
 
   before do
     session[:user_id] = user.id
+    user.companies << company
   end
 
   context "GET /index" do
@@ -22,7 +24,7 @@ describe Api::UserReposController do
     before do
       repo
       mock(User).find_by(id: user.id) { user }
-      mock(user).sync_repos { true }
+      mock(user).sync_repos(company) { true }
       post :sync, format: :json
     end
     it { should be_success }

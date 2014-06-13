@@ -1,0 +1,20 @@
+!!!
+%html
+  %head
+    %title Vexor CI
+    = stylesheet_link_tag "//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css"
+    = stylesheet_link_tag "//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"
+    = stylesheet_link_tag "application", media: "all"
+    = csrf_meta_tags
+
+  %body.session
+    .container
+
+      .session-header
+        %h1 Vexor CI
+        %p
+          Vexor CI is continius integration and deploy service.
+
+      %hr
+
+      = yield

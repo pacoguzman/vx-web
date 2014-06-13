@@ -1,7 +1,8 @@
 angular.module('vx.templates', []).run(function($templateCache) {
   <% root = Rails.root.join("app", 'assets', 'templates') %>
   <% Dir.glob("#{root}/**/*.haml").each do |f| %>
+    <%= puts f.inspect %>
     <% begin ; depend_on(f) rescue NoMethodError ; nil ; end %>
-    $templateCache.put("<%= f.gsub(/\.haml$/, '').gsub("#{root}/", '')  %>", <%= Haml::Engine.new(File.read(f)).render.to_json %>);
+      $templateCache.put("<%= f.gsub(/\.haml$/, '').gsub("#{root}/", '')  %>", <%= Haml::Engine.new(File.read(f)).render.to_json %>);
   <% end %>
 });

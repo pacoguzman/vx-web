@@ -1,8 +1,6 @@
 class UserIdentity < ActiveRecord::Base
 
   belongs_to :user
-  has_many :projects, dependent: :nullify, foreign_key: :identity_id,
-    class_name: "::Project"
   has_many :user_repos, dependent: :destroy, foreign_key: :identity_id,
     class_name: "::UserRepo"
 
@@ -33,6 +31,10 @@ class UserIdentity < ActiveRecord::Base
 
   def sc
     @sc ||= begin
+      if ignored?
+        raise RuntimeError, "provider #{provider.inspect} with version #{version.inspect} ignored"
+      end
+
       sc_class = Vx::ServiceConnector.to(real_provider_name)
       case provider.to_s
       when "github"
@@ -43,6 +45,25 @@ class UserIdentity < ActiveRecord::Base
     end
   end
 
+  def unsubscribe_projects
+    user_repos.map(&:unsubscribe_project)
+  end
+
+  def unsubscribe_and_destroy
+    transaction do
+      unsubscribe_projects
+      destroy
+    end
+  end
+
+  def ignored?
+    not real_provider_name
+  end
+
+  def major_version
+    @major_version ||= version.to_s.split(".", 2).first
+  end
+
   private
 
     def real_provider_name
@@ -50,9 +71,9 @@ class UserIdentity < ActiveRecord::Base
       when "github"
         "github"
       when "gitlab"
-        version = self.version || "5"
-        gitlab_version = version.split(".", 2).first
-        "gitlab_v#{gitlab_version}"
+        if major_version && %w{ 6 }.include?(major_version)
+          "gitlab_v#{major_version}"
+        end
       end
     end
 

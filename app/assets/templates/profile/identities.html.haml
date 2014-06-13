@@ -1,0 +1,87 @@
+.user_identities
+  .row
+    .col-md-7
+
+      .panel.panel-default
+        .panel-body{ 'ng-show' => "github_identity" }
+          %span.user_identity_name
+            Github
+
+          %a{ "ng-href" => "{{ github_identity.url }}/{{ github_identity.login }}", target: "_blank" }
+            {{ github_identity.url }}/{{ github_identity.login }}
+        .panel-body{ 'ng-hide' => "github_identity" }
+          %a{ "ng-href" => "/users/github", class: "btn btn-success" }
+            %i.fa.fa-plus
+            Add Github Account
+
+  .row
+    .col-md-7
+
+      .panel.panel-default{ 'ng-repeat' => 'id in gitlab_identities | orderBy:"id"' }
+        .panel-body
+
+          %div{ 'ng-hide' => "id.editable" }
+            .pull-right
+              %a{ 'ng-click' => "edit(id)", "href" => "javascript://", title: "Edit Gitlab Identity" }
+                %i.fa.fa-edit
+
+            %span.user_identity_name
+              Gitlab
+            %a{ "ng-href" => "{{ id.url }}", target: "_blank" }
+              {{ id.url }}
+
+            (v{{ id.version }})
+
+          %div{ 'ng-show' => "id.editable" }
+
+            .alert.alert-danger{ 'ng-show' => 'id.error' }
+              {{ id.error }}
+
+            %form{ role: "form", class: "", "ng-submit" => "updateGitlab(id)" }
+              .form-group
+                %input{ type: "text", class: "form-control", "ng-model" => "id.login", placeholder: "Email" }
+              .form-group
+                %input{ type: "password", class: "form-control", "ng-model" => "id.password", placeholder: "Password" }
+              .form-group
+                %input{ type: "text", class: "form-control", id: "gitlab_id_url", "ng-model" => "id.url", placeholder: "Url" }
+
+              .form-group
+
+                %hr
+
+                .pull-right
+                  %button{ class: "btn btn-danger btn-sm", "ng-click" => "destroy(id)", "ng-disabled" => "id.wait" } Destroy
+
+                %input{ type: "submit", class: "btn btn-primary btn-sm", value: "Update Gitlab Identity", "ng-disabled" => "id.wait" }
+                or
+                %a{ 'ng-click' => "cancel(id)", href: "javascript://" } Cancel
+
+  .row
+    .col-md-7
+
+      %a{ "ng-click" => "edit(newGitlab)", class: "btn btn-success btn-sm", href: "javascript://", 'ng-hide' => "newGitlab.editable" }
+        %i.fa.fa-plus
+        New Gitlab Identity
+
+      .panel.panel-default{ 'ng-show' => 'newGitlab.editable' }
+        .panel-body
+
+          .alert.alert-danger{ 'ng-show' => 'newGitlab.error' }
+            {{ newGitlab.error }}
+
+          %form{ role: "form", class: "", "ng-submit" => "createGitlab()" }
+            .form-group
+              %input{ type: "text", class: "form-control", "ng-model" => "newGitlab.login", placeholder: "Email" }
+            .form-group
+              %input{ type: "password", class: "form-control", "ng-model" => "newGitlab.password", placeholder: "Password" }
+            .form-group
+              %input{ type: "text", class: "form-control", id: "gitlab_id_url", "ng-model" => "newGitlab.url", placeholder: "Url" }
+
+            .form-group
+
+              %hr
+
+              %input{ type: "submit", class: "btn btn-success btn-sm", value: "Create Gitlab Identity", "ng-disabled" => "newGitlab.wait" }
+              or
+              %a{ 'ng-click' => "cancel(newGitlab)", href: "javascript://" } Cancel
+

@@ -17,4 +17,11 @@ Vx.service 'currentUserStore',
         $http.get("/api/users/me").then(resolve, reject)
       me
 
+    signOut = () ->
+      $http(
+        method: "DELETE",
+        url:    "/users/session"
+      )
+
     get: get
+    signOut: signOut

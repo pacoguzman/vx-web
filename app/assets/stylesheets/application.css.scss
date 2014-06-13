@@ -11,6 +11,7 @@ body, head, html {
 
 body > .container {
   padding-bottom: 3em;
+  position: relative;
 }
 
 body > .container > .ng-view {

@@ -3,12 +3,14 @@ require 'spec_helper'
 describe Api::ProjectsController do
   let(:project) { create :project }
   let(:user)    { project.user_repo.user }
+  let(:company) { create :company }
 
   subject { response }
 
   before do
     project
     session[:user_id] = user.id
+    user.companies << company
   end
 
   context "GET /index" do
@@ -34,7 +36,7 @@ describe Api::ProjectsController do
     its(:content_type) { should eq 'text/plain' }
 
     it "has a body of the correct size" do
-      subject.body.size.should eq 234
+      subject.body.size.should eq 233
     end
   end
 

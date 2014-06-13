@@ -56,7 +56,7 @@ describe Project do
     it "should return secure hook url for project" do
       project.user_repo = create(:user_repo)
       token = project.generate_token
-      expect(project.hook_url).to eq "#{Rails.configuration.x.scheme}://#{Rails.configuration.x.hostname}/callbacks/github/#{token}"
+      expect(project.hook_url).to eq "http://test.host/callbacks/github/#{token}"
     end
 
     context "when user_repo is not exits" do
@@ -225,7 +225,7 @@ describe Project do
     before do
       project.generate_deploy_key
     end
-    it { subject.size.should eq 234 }
+    it { subject.size.should eq 233 }
   end
 
 end
@@ -247,5 +247,6 @@ end
 #  last_build_id          :integer
 #  last_build_status_name :string(255)
 #  last_build_at          :datetime
+#  company_id             :integer          not null
 #
 

@@ -1,18 +1,6 @@
 .build {
   .row {
   }
-
-  .artifacts {
-    margin-top: 2em;
-
-    td {
-      border-width: 0;
-    }
-
-    tr:first-child td {
-      border-width: 1px;
-    }
-  }
 }
 
 .builds {
