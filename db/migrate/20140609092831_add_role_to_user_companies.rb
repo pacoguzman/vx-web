@@ -1,14 +1,20 @@
 class AddRoleToUserCompanies < ActiveRecord::Migration
-  def change
+  def up
     add_column :user_companies, :role, :string
 
-    first_user_company_id = execute('SELECT id FROM user_companies ORDER BY user_companies.id ASC LIMIT 1').first.try(:[], 'id')
-
-    if first_user_company_id
-      execute("UPDATE user_companies SET role = 'developer' WHERE id <> '#{ first_user_company_id }'")
-      execute("UPDATE user_companies SET role = 'admin' WHERE id = '#{ first_user_company_id }'")
-    end
+    execute "UPDATE user_companies SET role = 'developer'"
+    execute %{
+      UPDATE user_companies SET role = 'admin'
+      FROM (
+        SELECT MIN(user_id) AS user_id, company_id FROM user_companies GROUP BY company_id
+      ) AS q
+      WHERE q.user_id = user_companies.user_id AND q.company_id = user_companies.company_id
+    }.compact
 
     change_column :user_companies, :role, :string, null: false
+  end
+
+  def down
+    remove_column :user_companies, :role
   end
 end

@@ -9,8 +9,8 @@ describe Api::ProjectsController do
 
   before do
     project
-    session[:user_id] = user.id
-    user.companies << company
+    sign_in user
+    user.add_to_company company
   end
 
   context "GET /index" do

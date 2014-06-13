@@ -71,6 +71,16 @@ describe User do
       expect(user.add_to_company c2).to be
       expect(user.default_company).to eq c2
     end
+
+    it "should create with developer role by default" do
+      expect(user.add_to_company c1).to be
+      expect(user).to_not be_admin(c1)
+    end
+
+    it "should create with admin role" do
+      expect(user.add_to_company c1, 'admin').to be
+      expect(user).to be_admin(c1)
+    end
   end
 end
 

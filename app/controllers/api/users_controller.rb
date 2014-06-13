@@ -6,7 +6,11 @@ class Api::UsersController < Api::BaseController
   respond_to :json
 
   def index
-    @users = current_company.users
+    @users = current_company.users.includes(
+      :identities,
+      :companies,
+      :active_project_subscriptions
+    )
     respond_with(@users)
   end
 
@@ -14,9 +18,9 @@ class Api::UsersController < Api::BaseController
     @user = current_company.users.find(params[:id])
 
     if @user.update_role(user_params[:role], current_company)
-      render json: @user
+      head :ok
     else
-      render nothing: true, status: :unprocessable_entity
+      head :unprocessable_entity
     end
   end
 

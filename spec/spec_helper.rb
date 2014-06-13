@@ -39,6 +39,7 @@ RSpec.configure do |config|
     Vx::Consumer::Testing.clear
     Rails.configuration.x = OpenStruct.new
     Rails.configuration.x.hostname = URI('http://test.host')
+    ActionMailer::Base.deliveries = []
   end
 
 end

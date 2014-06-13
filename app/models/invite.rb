@@ -5,8 +5,17 @@ class Invite < ActiveRecord::Base
 
   validates :company, :email, :token, presence: true
 
-  def deliver
-    UserMailer.invite_email(self).deliver if valid?
+  class << self
+    def mass_create(emails, company)
+      list = emails.to_s.split(" ")
+      transaction do
+        list.map do |email|
+          invite = create(company: company, email: email)
+          invite.persisted?.or_rollback_transaction
+          invite
+        end
+      end
+    end
   end
 
   private

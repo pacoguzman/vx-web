@@ -11,6 +11,37 @@ describe Invite do
     invite.save!
     expect(invite.token).to_not be_empty
   end
+
+  context ".mass_create" do
+    let(:company) { create :company }
+    subject {
+      Invite.mass_create "user2@example.com user1@example.com", company
+    }
+
+    context "successfuly" do
+      it "should be" do
+        expect(subject).to have(2).items
+      end
+
+      it "should create invites" do
+        expect{ subject }.to change(company.invites, :count).by(2)
+      end
+    end
+
+    context "failed" do
+      before do
+        mock(SecureRandom).uuid { nil }
+      end
+
+      it "should be nil" do
+        expect(subject).to be_nil
+      end
+
+      it "cannot create any invites" do
+        expect{ subject }.to_not change(company.invites, :count)
+      end
+    end
+  end
 end
 
 # == Schema Information

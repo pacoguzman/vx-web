@@ -23,23 +23,6 @@ describe UserCompany do
     end
   end
 
-  context 'role' do
-    it 'has admin role if user is the first one in company' do
-      user_company = create(:user_company)
-
-      expect(user_company.role).to eq(UserCompany::ADMIN_ROLE)
-    end
-
-    it 'has developer role if company already has user' do
-      company = create(:company)
-      user1 = create(:user, email: 'user1@example.com')
-      user_company1 = create(:user_company, company: company, user: user1)
-      user2 = create(:user, email: 'user2@example.com')
-      user_company2 = create(:user_company, company: company, user: user2)
-
-      expect(user_company2.role).to eq(UserCompany::DEVELOPER_ROLE)
-    end
-  end
 end
 
 # == Schema Information

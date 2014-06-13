@@ -1,19 +1,15 @@
 class UserCompany < ActiveRecord::Base
-  ADMIN_ROLE = 'admin'
-  DEVELOPER_ROLE = 'developer'
-
-  before_validation :assign_default_role
+  ROLES = %w{
+    admin
+    developer
+  }
 
   belongs_to :user
   belongs_to :company
 
-  def self.roles
-    [ADMIN_ROLE, DEVELOPER_ROLE]
-  end
-
   validates :user, :company, :default, :role, presence: true
   validates :user_id, uniqueness: { scope: [:company_id] }
-  validates :role, inclusion: { in: UserCompany.roles }
+  validates :role, inclusion: { in: ROLES }
 
   def default?
     default == 1
@@ -26,11 +22,6 @@ class UserCompany < ActiveRecord::Base
     end
   end
 
-private
-
-  def assign_default_role
-    self.role ||= (company.users.any? ? DEVELOPER_ROLE : ADMIN_ROLE)
-  end
 end
 
 # == Schema Information

@@ -93,6 +93,7 @@ describe Users::SignupController do
       it "should create company" do
         expect(company).to be
         expect(user.default_company).to eq company
+        expect(user).to be_admin(company)
       end
 
       it "should create identity for user" do

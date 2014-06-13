@@ -1,29 +1,32 @@
 Vx.controller 'UsersCtrl', ($scope, appMenu, userStore, currentUserStore, inviteStore) ->
+
   appMenu.define ->
     appMenu.add 'Users', '/ui/users'
 
-  $scope.update = userStore.update
-  $scope.users = userStore.all()
+  $scope.users           = []
+  $scope.currentUser     = null
+  $scope.showInvitesForm = false
+  $scope.invite          = { wait: false, emails: null }
 
-  currentUserStore.get().then (currentUser) ->
-    $scope.currentUser = currentUser
+  userStore.all().then (users) ->
+    $scope.users = users
+
+  currentUserStore.get().then (user) ->
+    $scope.currentUser = user
 
   #############################################################################
 
-  $scope.submitForm = () ->
-    if $scope.inviteForm.$valid
-      inviteStore.create($scope.inviteForm.emails).success ->
-        $scope.notice = "Your invite for #{ $scope.inviteForm.emails } was successfully send"
+  $scope.update = userStore.update
 
-  $scope.showInviteLink = -> $scope.isVisibleInviteLink = true
-  $scope.hideInviteLink = -> $scope.isVisibleInviteLink = false
-  $scope.canShowInviteLink = -> $scope.isVisibleInviteLink
+  $scope.disableEdit = (user) ->
+    user.id == $scope.currentUser.id
 
-  $scope.showInviteForm = -> $scope.isVisibleInviteForm = true
-  $scope.hideInviteForm = -> $scope.isVisibleInviteForm = false
-  $scope.canShowInviteForm = -> $scope.isVisibleInviteForm
+  $scope.toggleInvitesForm = () ->
+    $scope.showInvitesForm = !$scope.showInvitesForm
 
-  $scope.hideNotice = -> $scope.notice = null
-  $scope.canShowNotice = -> $scope.notice && !$scope.canShowInviteForm() && $scope.hideInviteLink
-
-  $scope.showInviteLink()
+  $scope.createInvites = () ->
+    $scope.invite.wait = true
+    inviteStore.create($scope.invite.emails).finally ->
+      $scope.invite.emails = null
+      $scope.invite.wait   = false
+      $scope.toggleInvitesForm()

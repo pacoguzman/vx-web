@@ -1,59 +1,72 @@
 require 'spec_helper'
 
 describe Api::UsersController do
-  let!(:admin) { create(:user, email: 'admin@example.com') }
-  let!(:user) { create(:user, email: 'user@example.com') }
-  let!(:company) { create(:company) }
-  let!(:admin_company) { create(:user_company, company: company, user: admin, role: UserCompany::ADMIN_ROLE) }
-  let!(:user_company) { create(:user_company, company: company, user: user, role: UserCompany::DEVELOPER_ROLE) }
+  let(:user)    { create(:user) }
+  let(:company) { create(:company) }
+  subject { response }
 
   context 'GET /me' do
-    it 'returns status 200' do
-      sign_in(user)
-      get :me
-
-      expect(response).to be_success
+    context "successfuly" do
+      before do
+        sign_in user
+        get :me
+      end
+      it { should be_success }
+    end
+    context "failed" do
+      it "when user is not logged in" do
+        get :me
+        should be_forbidden
+      end
     end
   end
 
-  describe 'GET index' do
-    it 'returns company\'s users' do
-      sign_in(admin)
-      get :index
+  context 'GET index' do
+    before { sign_in user }
 
-      ids = json_response.map { |u| u['id'] }
-      expect(ids).to match_array([admin.id, user.id])
+    context "successfuly" do
+      before do
+        user.add_to_company company, 'admin'
+        get :index
+      end
+      it { should be_success }
     end
 
-    it 'returns status 403 if not admin' do
-      sign_in(user)
-      get :index
+    context "failed" do
+      it "when user is not admin" do
+        user.add_to_company company
+        get :index
+        should be_forbidden
+      end
+    end
+  end
 
-      expect(response).to be_forbidden
+  context "PATCH /update" do
+    before { sign_in user }
+    context "successfuly" do
+      before do
+        user.add_to_company company, 'admin'
+        patch :update, id: user.id, user: { role: "admin" }
+      end
+      it { should be_success }
+      it "should update user role" do
+        expect(user).to be_admin(company)
+      end
+    end
+
+    context "failed" do
+      it "when role invalid" do
+        user.add_to_company company, 'admin'
+        patch :update, id: user.id, user: { role: "invalid" }
+        expect(response.status).to eq 422
+      end
+
+      it "when user is not admin in current company" do
+        user.add_to_company company
+        patch :update, id: user.id, user: { role: "admin" }
+        should be_forbidden
+      end
     end
   end
 
-  describe 'PATCH update' do
-    it 'returns company\'s users' do
-      sign_in(admin)
-      patch :update, id: user.id, user: { role: UserCompany::ADMIN_ROLE }
-
-      expect(json_response['id']).to eq(user.id)
-      expect(json_response['role']).to eq(UserCompany::ADMIN_ROLE)
-    end
-
-    it 'returns status 422 if not valid params' do
-      sign_in(admin)
-      patch :update, id: user.id, user: { role: 'not valid role' }
-
-      expect(response.status).to eq(422)
-    end
-
-    it 'returns status 403 if not admin' do
-      sign_in(user)
-      patch :update, id: user.id, user: {}
-
-      expect(response).to be_forbidden
-    end
-  end
 end

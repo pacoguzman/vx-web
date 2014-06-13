@@ -14,8 +14,8 @@ describe UserSerializer do
     subject { serializer.as_json.keys }
 
     it { should eq [:id, :email, :name, :project_subscriptions,
-                    :default_company, :identities, :companies,
-                    :available_roles, :role ] }
+                    :default_company, :available_roles, :role,
+                    :identities, :companies] }
   end
 
   context "default_company" do

@@ -7,8 +7,8 @@ describe Api::UserReposController do
   subject { response }
 
   before do
-    session[:user_id] = user.id
-    user.companies << company
+    sign_in user
+    user.add_to_company(company)
   end
 
   context "GET /index" do

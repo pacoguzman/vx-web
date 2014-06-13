@@ -34,14 +34,12 @@ class Users::GithubController < ApplicationController
     end
 
     def invite
-      company = Company.find_by! name: company_name
+      company = Company.find company_id
       invite  = company.invites.find_by! token: token, email: email
       github  = UserSession::Github.new request.env["omniauth.auth"]
       user    = github.create(email, trust_email: true)
 
-      if user.valid?
-        # TODO: check add_to_company result
-        user.add_to_company company
+      if user.valid? and user.add_to_company(company, company.default_user_role)
         invite.destroy
         session[:user_id] = user.id
         redirect_to_saved_location_or_root
@@ -62,7 +60,7 @@ class Users::GithubController < ApplicationController
       o_params["token"]
     end
 
-    def company_name
+    def company_id
       o_params["company"]
     end
 

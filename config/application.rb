@@ -64,6 +64,8 @@ module VxWeb
 
     config.x.disable_signup = !!ENV['VX_WEB_DISABLE_SIGNUP']
 
+    Rails.application.routes.default_url_options[:host] = config.x.hostname.host
+
   end
 end
 

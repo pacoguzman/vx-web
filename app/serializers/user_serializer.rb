@@ -12,11 +12,11 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def available_roles
-    UserCompany.roles
+    UserCompany::ROLES
   end
 
   def project_subscriptions
-    object.project_subscriptions.active.map do |s|
+    object.active_project_subscriptions.map do |s|
       s.project_id
     end
   end

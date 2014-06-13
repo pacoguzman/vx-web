@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(version: 20140612212856) do
     t.integer  "default",    default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "role",                   null: false
   end
 
   add_index "user_companies", ["user_id", "company_id"], name: "index_user_companies_on_user_id_and_company_id", unique: true, using: :btree

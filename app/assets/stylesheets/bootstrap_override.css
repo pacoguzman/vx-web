@@ -17,7 +17,7 @@ small {
   font-weight: 500 !important;
 }
 
-.label {
+.label, label {
   font-weight: 500;
 }
 
