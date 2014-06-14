@@ -16,7 +16,8 @@
       %p{ 'ng-show' => 'invite.wait' }
         %span.ajax-loader-inline
 
-  %table.table.table-striped
+  .ajax-loader{ 'ng-show' => "wait" }
+  %table.table.table-striped{ 'ng-show' => "users.length > 0" }
     %thead
       %tr
         %th Name

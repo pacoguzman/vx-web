@@ -7,9 +7,13 @@ Vx.controller 'UsersCtrl', ($scope, appMenu, userStore, currentUserStore, invite
   $scope.currentUser     = null
   $scope.showInvitesForm = false
   $scope.invite          = { wait: false, emails: null }
+  $scope.wait            = true
 
-  userStore.all().then (users) ->
-    $scope.users = users
+  userStore.all()
+    .then (users) ->
+      $scope.users = users
+    .finally ->
+      $scope.wait = false
 
   currentUserStore.get().then (user) ->
     $scope.currentUser = user
