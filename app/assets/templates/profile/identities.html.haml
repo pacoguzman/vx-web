@@ -17,10 +17,9 @@
   .row
     .col-md-7
 
-      .panel.panel-default{ 'ng-repeat' => 'id in gitlab_identities | orderBy:"id"' }
-        .panel-body
-
-          %div{ 'ng-hide' => "id.editable" }
+      %div{ 'ng-repeat' => 'id in gitlab_identities | orderBy:"id"' }
+        .panel.panel-default{ 'ng-hide' => 'id.editable' }
+          .panel-body
             .pull-right
               %a{ 'ng-click' => "edit(id)", "href" => "javascript://", title: "Edit Gitlab Identity" }
                 %i.fa.fa-edit
@@ -32,29 +31,26 @@
 
             (v{{ id.version }})
 
-          %div{ 'ng-show' => "id.editable" }
+        .well{ 'ng-show' => "id.editable" }
 
-            .alert.alert-danger{ 'ng-show' => 'id.error' }
-              {{ id.error }}
+          .alert.alert-danger{ 'ng-show' => 'id.error' }
+            {{ id.error }}
 
-            %form{ role: "form", class: "", "ng-submit" => "updateGitlab(id)" }
-              .form-group
-                %input{ type: "text", class: "form-control", "ng-model" => "id.login", placeholder: "Email" }
-              .form-group
-                %input{ type: "password", class: "form-control", "ng-model" => "id.password", placeholder: "Password" }
-              .form-group
-                %input{ type: "text", class: "form-control", id: "gitlab_id_url", "ng-model" => "id.url", placeholder: "Url" }
+          %form{ role: "form", class: "", "ng-submit" => "updateGitlab(id)" }
+            .form-group
+              %input{ type: "text", class: "form-control", "ng-model" => "id.login", placeholder: "Email" }
+            .form-group
+              %input{ type: "password", class: "form-control", "ng-model" => "id.password", placeholder: "Password" }
+            .form-group
+              %input{ type: "text", class: "form-control", id: "gitlab_id_url", "ng-model" => "id.url", placeholder: "Url" }
 
-              .form-group
+            %p
+              .pull-right
+                %button{ class: "btn btn-danger btn-sm", "ng-click" => "destroy(id)", "ng-disabled" => "id.wait" } Destroy
 
-                %hr
-
-                .pull-right
-                  %button{ class: "btn btn-danger btn-sm", "ng-click" => "destroy(id)", "ng-disabled" => "id.wait" } Destroy
-
-                %input{ type: "submit", class: "btn btn-primary btn-sm", value: "Update Gitlab Identity", "ng-disabled" => "id.wait" }
-                or
-                %a{ 'ng-click' => "cancel(id)", href: "javascript://" } Cancel
+              %input{ type: "submit", class: "btn btn-primary btn-sm", value: "Update Gitlab Identity", "ng-disabled" => "id.wait" }
+              or
+              %a{ 'ng-click' => "cancel(id)", href: "javascript://" } Cancel
 
   .row
     .col-md-7
@@ -63,25 +59,21 @@
         %i.fa.fa-plus
         New Gitlab Identity
 
-      .panel.panel-default{ 'ng-show' => 'newGitlab.editable' }
-        .panel-body
+      .well{ 'ng-show' => 'newGitlab.editable' }
 
-          .alert.alert-danger{ 'ng-show' => 'newGitlab.error' }
-            {{ newGitlab.error }}
+        .alert.alert-danger{ 'ng-show' => 'newGitlab.error' }
+          {{ newGitlab.error }}
 
-          %form{ role: "form", class: "", "ng-submit" => "createGitlab()" }
-            .form-group
-              %input{ type: "text", class: "form-control", "ng-model" => "newGitlab.login", placeholder: "Email" }
-            .form-group
-              %input{ type: "password", class: "form-control", "ng-model" => "newGitlab.password", placeholder: "Password" }
-            .form-group
-              %input{ type: "text", class: "form-control", id: "gitlab_id_url", "ng-model" => "newGitlab.url", placeholder: "Url" }
+        %form{ role: "form", class: "", "ng-submit" => "createGitlab()" }
+          .form-group
+            %input{ type: "text", class: "form-control", "ng-model" => "newGitlab.login", placeholder: "Email" }
+          .form-group
+            %input{ type: "password", class: "form-control", "ng-model" => "newGitlab.password", placeholder: "Password" }
+          .form-group
+            %input{ type: "text", class: "form-control", id: "gitlab_id_url", "ng-model" => "newGitlab.url", placeholder: "Url" }
 
-            .form-group
-
-              %hr
-
-              %input{ type: "submit", class: "btn btn-success btn-sm", value: "Create Gitlab Identity", "ng-disabled" => "newGitlab.wait" }
-              or
-              %a{ 'ng-click' => "cancel(newGitlab)", href: "javascript://" } Cancel
+          %p
+            %input{ type: "submit", class: "btn btn-success btn-sm", value: "Create Gitlab Identity", "ng-disabled" => "newGitlab.wait" }
+            or
+            %a{ 'ng-click' => "cancel(newGitlab)", href: "javascript://" } Cancel
 

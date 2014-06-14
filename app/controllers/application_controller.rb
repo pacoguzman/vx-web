@@ -56,12 +56,16 @@ class ApplicationController < ActionController::Base
       user_logged_in? || access_denied
     end
 
+    def authorize_admin
+      (user_logged_in? and current_user.admin?(current_company)) || access_denied
+    end
+
     def access_denied
       save_location if request.format.html?
 
       respond_to do |want|
         want.html { render 'users/session/new', layout: 'session', status: 403 }
-        want.json { head 403 }
+        want.json { render json: "{}", status: 403 }
         want.all  { head 403 }
       end
       false

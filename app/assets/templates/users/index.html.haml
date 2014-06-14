@@ -1,0 +1,30 @@
+.users
+
+  %p.create-invites{ 'ng-hide' => "showInvitesForm" }
+    %a.btn.btn-sm.btn-success{ 'href' => "javascript://", 'ng-click' => "toggleInvitesForm()" } Create Invites
+
+  .well{ 'ng-show' => "showInvitesForm" }
+    %form{ role: "form", 'ng-submit' => "createInvites()", name: "form", novalidate: true }
+      .form-group
+        %span.help-block
+          Invite email addresses separated by space
+        %textarea.form-control{ name: "emails", 'ng-model' => "invite.emails", 'required' => true, placeholder: "user1@example.com user2@example.com user3@example.com" }
+      %p{ 'ng-hide' => "invite.wait" }
+        %input.btn.btn-sm.btn-success{ type: "submit", value: "Create Invites", 'ng-disabled' => "form.$invalid" }
+        or
+        %a{ href: "javascript://", 'ng-click' => "toggleInvitesForm()" } Cancel
+      %p{ 'ng-show' => 'invite.wait' }
+        %span.ajax-loader-inline
+
+  %table.table.table-striped
+    %thead
+      %tr
+        %th Name
+        %th Email
+        %th Role
+    %tbody
+      %tr{ 'ng-repeat' => 'user in users' }
+        %td {{ user.name }}
+        %td {{ user.email }}
+        %td
+          %select.form-control.input-sm{ 'ng-model' => 'user.role', 'ng-change' => 'update(user)', 'ng-options' => 'role for role in user.available_roles', 'ng-disabled' => 'disableEdit(user)' }

@@ -63,8 +63,8 @@ describe Users::GithubController do
 
   context "GET /invite" do
     let(:email)    { 'me@example.com' }
-    let!(:invite)  { create :invite, email: email }
     let!(:company) { create :company  }
+    let!(:invite)  { create :invite, email: email, company: company }
 
     context "authorization failed" do
       let(:auth_hash) { :invalid_credentials }
@@ -106,7 +106,7 @@ describe Users::GithubController do
       let!(:user)    { create :user, email: email}
 
       before do
-        user.companies << company
+        user.add_to_company company
       end
 
       it "should redirect to /ui" do
@@ -167,6 +167,7 @@ describe Users::GithubController do
         expect(user).to be
         expect(user.name).to eq 'name'
         expect(user.email).to eq email
+        expect(user).to be_admin(company)
       end
 
       it "should create identity" do
@@ -195,7 +196,7 @@ describe Users::GithubController do
         'do'      => "invite",
         "email"   => o[:email]   || "me@example.com",
         "token"   => o[:token]   || invite.token,
-        "company" => o[:company] || company.name
+        "company" => o[:company] || company.id
       }
       get :callback
     end

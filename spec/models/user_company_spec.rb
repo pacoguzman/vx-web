@@ -22,6 +22,7 @@ describe UserCompany do
       expect(other_user_company.reload).to_not be_default
     end
   end
+
 end
 
 # == Schema Information

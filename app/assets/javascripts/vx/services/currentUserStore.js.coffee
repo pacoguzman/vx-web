@@ -6,7 +6,9 @@ Vx.service 'currentUserStore',
     loaded  = false
 
     resolve = (re) ->
-      deferMe.resolve(re.data)
+      currentUser = re.data
+      currentUser['isAdmin'] = currentUser.role == 'admin'
+      deferMe.resolve(currentUser)
 
     reject  = () ->
       deferMe.reject()

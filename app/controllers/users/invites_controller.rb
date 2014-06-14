@@ -4,7 +4,7 @@ class Users::InvitesController < ApplicationController
 
   def new
     @email   = params[:email]
-    @company = Company.find_by! name: params[:company]
+    @company = Company.find params[:company]
     @invite  = @company.invites.find_by! token: params[:token], email: @email
 
     render layout: "session"
