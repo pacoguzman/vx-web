@@ -57,7 +57,6 @@ module VxWeb
 
     config.x.hostname = (ENV['VX_HOSTNAME'] || sys_hostname || "example.com")
     if ENV['VX_HTTPS']
-      config.force_ssl  = true
       config.x.hostname = URI.parse("https://#{config.x.hostname}")
     else
       config.x.hostname = URI.parse("http://#{config.x.hostname}")
