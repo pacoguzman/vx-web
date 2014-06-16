@@ -57,6 +57,7 @@ module VxWeb
 
     config.x.hostname = (ENV['VX_HOSTNAME'] || sys_hostname || "example.com")
     if ENV['VX_HTTPS']
+      config.force_ssl  = true
       config.x.hostname = URI.parse("https://#{config.x.hostname}")
     else
       config.x.hostname = URI.parse("http://#{config.x.hostname}")
@@ -65,6 +66,7 @@ module VxWeb
     config.x.disable_signup = !!ENV['VX_WEB_DISABLE_SIGNUP']
 
     Rails.application.routes.default_url_options[:host] = config.x.hostname.host
+    Rails.application.routes.default_url_options[:protocol] = "https://" if ENV['VX_HTTPS']
 
   end
 end
