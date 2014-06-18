@@ -151,12 +151,6 @@ describe Job do
           subject
         }.to change(ServerSideEventsConsumer.messages, :count).by(1)
       end
-
-      it "should delivery message to JobsConsumer" do
-        expect{
-          subject
-        }.to change(JobsConsumer.messages, :count).by(1)
-      end
     end
   end
 

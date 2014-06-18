@@ -387,13 +387,15 @@ describe Build do
   end
 
   context "#restart" do
-    let(:job) { create :job, build: b }
-    let(:b)   { create :build }
-    subject   { b.restart.try(:reload) }
+    let(:job1) { create :job, build: b, number: 1 }
+    let(:job2) { create :job, :deploy, build: b, number: 2 }
+    let(:b)    { create :build }
+    subject    { b.restart.try(:reload) }
 
     context "when build is finished" do
       before do
-        job.update! status: 3
+        job1.update! status: 3
+        job2.update! status: 3
         b.update! status: 3
       end
 
@@ -406,13 +408,13 @@ describe Build do
       it "should delivery messages to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
+        }.to change(ServerSideEventsConsumer.messages, :count).by(3)
         build_m = ServerSideEventsConsumer.messages.pop
-        job_m   = ServerSideEventsConsumer.messages.pop
+        job2_m  = ServerSideEventsConsumer.messages.pop
 
-        expect(job_m[:channel]).to eq 'jobs'
-        expect(job_m[:event]).to eq :updated
-        expect(job_m[:payload][:id]).to eq job.id
+        expect(job2_m[:channel]).to eq 'jobs'
+        expect(job2_m[:event]).to eq :updated
+        expect(job2_m[:payload][:id]).to eq job2.id
 
         expect(build_m[:channel]).to eq 'builds'
         expect(build_m[:event]).to eq :updated
@@ -561,8 +563,8 @@ describe Build do
       end
       it { should have(1).item }
 
-      it "should have empty matrixes" do
-        expect(subject.map(&:matrix)).to eq [nil]
+      it "should have matrixes" do
+        expect(subject.map(&:matrix)).to eq [{}]
       end
 
       it "should have true numbers" do

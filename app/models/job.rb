@@ -113,7 +113,6 @@ class Job < ActiveRecord::Base
 
         self.logs.delete_all
         self.save.or_rollback_transaction
-        self.publish_perform_job_message
         self.publish
         self
       end

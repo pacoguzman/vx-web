@@ -151,6 +151,7 @@ class Build < ActiveRecord::Base
     to_deploy.build.each_with_index do |config, idx|
       number = self.jobs.count + idx + 1
       job = self.jobs.deploy.create(
+        matrix: config.matrix_attributes,
         number: number,
         source: config.to_yaml
       )
@@ -220,6 +221,8 @@ class Build < ActiveRecord::Base
         self.jobs.each do |job|
           job.restart.or_rollback_transaction
         end
+
+        publish_perform_job_messages
 
         self.publish
         self

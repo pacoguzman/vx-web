@@ -62,7 +62,7 @@ describe PerformBuild do
         job = subject.jobs.last
         expect(job).to be_deploy
         expect(job.number).to eq 2
-        expect(job.matrix).to eq(nil)
+        expect(job.matrix).to eq("rvm" => "2.0.0")
         expect(job.source).to be
       end
 

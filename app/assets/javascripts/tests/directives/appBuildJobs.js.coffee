@@ -21,6 +21,7 @@ describe "appBuildJobs", ->
 
     job2 = {
       matrix: {"rvm": "1.9.3", 'natural_number': "2"}
+      kind: "deploy"
     }
 
   beforeEach ->
