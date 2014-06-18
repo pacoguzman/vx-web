@@ -3,7 +3,7 @@
   to { opacity: 0.0; }
 }
 
-.task-status-errored {
+.task-status-errored, .task-status-cancelled {
   background-color: #fbfbfb;
   a {
     color: #666;

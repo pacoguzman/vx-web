@@ -22,8 +22,9 @@ class JobUpdater
     guard do
       update_and_save_job_status
       truncate_job_logs
-      start_build? and start_build
-      all_jobs_finished? and finalize_build
+      start_build?               and start_build
+      all_regular_jobs_finished? and start_deploy
+      all_jobs_finished?         and finalize_build
       true
     end
   end
@@ -37,8 +38,7 @@ class JobUpdater
             yield
           # TODO: save and compare messages
           rescue StateMachine::InvalidTransition => e
-            Rails.logger.error "ERROR: #{e.inspect}"
-            Airbrake.notify(e)
+            Vx::Instrumentation.handle_exception "job_updater.consumer.web.vx", e, message: message
             :invalid_transition
           end
         end
@@ -60,13 +60,35 @@ class JobUpdater
 
     def new_build_status
       if all_jobs_finished?
-        build.jobs.maximum(:status)
+        build.jobs.where("status <> ?", 6).maximum(:status) # ignore cancelled jobs
       end
     end
 
     def all_jobs_finished?
-      statuses = [3,4,5]
+      statuses = [3,4,5,6]
       build.jobs.where(status: statuses).count == build.jobs.count
+    end
+
+    def all_regular_jobs_finished?
+      statuses = [3,4,5]
+      build.jobs.regular.where(status: statuses).count == build.jobs.regular.count
+    end
+
+    def start_deploy
+      return true if build.deploying?
+      return true if build.jobs.deploy.empty?
+
+      status = build.jobs.regular.maximum(:status)
+
+      if status == 3 or status == nil # passed
+        build.publish_perform_deploy_job_messages
+      else
+        build.jobs.deploy.map(&:cancel)
+      end
+
+      build.deploy!
+
+      true
     end
 
     def start_build?
@@ -108,16 +130,6 @@ class JobUpdater
       when 5
         build.finished_at = tm
         build.error!
-      end
-    end
-
-    def create_deploy_if_need
-      if build.passed?
-        source = ::Vx::Builder::BuildConfiguration.new(build.source)
-        if source.deploy?
-          deploy = build.new_deploy_from_self
-          deploy.save
-        end
       end
     end
 

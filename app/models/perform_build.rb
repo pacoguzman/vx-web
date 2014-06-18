@@ -13,6 +13,7 @@ class PerformBuild
 
   def build
     @build ||= project.new_build_from_payload(payload)
+    @build
   end
 
   def process
@@ -21,7 +22,9 @@ class PerformBuild
         (
           build                               &&
           build.save                          &&
-          build.create_jobs_from_matrix       &&
+          build.create_regular_jobs           &&
+          build.create_deploy_jobs            &&
+          build.jobs.any?                     &&
           build.publish_perform_job_messages  &&
           build.subscribe_author
         ).or_rollback_transaction

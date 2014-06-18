@@ -4,13 +4,16 @@ class Job < ActiveRecord::Base
   has_many :logs, class_name: "::JobLog", dependent: :delete_all,
     extend: AppendLogMessage
 
-  validates :build_id, :number, :status, :source, presence: true
+  validates :build_id, :number, :status, :source, :kind, presence: true
   validates :number, uniqueness: { scope: [:build_id] }
+  validates :kind, inclusion: { in: %w{ regular deploy } }
 
   after_create :publish_created
 
   default_scope ->{ order 'jobs.number ASC' }
 
+  scope :regular, ->{ where(kind: "regular") }
+  scope :deploy,  ->{ where(kind: "deploy") }
 
   state_machine :status, initial: :initialized do
 
@@ -19,6 +22,7 @@ class Job < ActiveRecord::Base
     state :passed,        value: 3
     state :failed,        value: 4
     state :errored,       value: 5
+    state :cancelled,     value: 6
 
     event :start do
       transition [:initialized, :started] => :started
@@ -36,9 +40,21 @@ class Job < ActiveRecord::Base
       transition [:initialized, :started] => :errored
     end
 
-    after_transition any => [:started, :passed, :failed, :errored] do |job, _|
+    event :cancel do
+      transition [:initialized] => :cancelled
+    end
+
+    after_transition any => [:started, :passed, :failed, :errored, :cancelled] do |job, _|
       job.publish
     end
+  end
+
+  def regular?
+    kind == 'regular'
+  end
+
+  def deploy?
+    kind == 'deploy'
   end
 
   def self.status
@@ -51,7 +67,6 @@ class Job < ActiveRecord::Base
       a
     end
   end
-
 
   def finished?
     [3,4,5].include?(status)

@@ -96,7 +96,12 @@ class Project < ActiveRecord::Base
   def new_build_from_payload(payload)
     return unless sc
 
-    file = sc.files(sc_model).get(payload.sha, ".travis.yml")
+    file = nil
+    if f = Rails.application.config.x.force_build_configuration
+      file = f
+    else
+      file = sc.files(sc_model).get(payload.sha, ".travis.yml")
+    end
 
     attrs = {
       pull_request_id:  payload.pull_request_number,
