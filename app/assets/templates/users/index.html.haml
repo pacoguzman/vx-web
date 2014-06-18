@@ -1,7 +1,7 @@
 .users
 
   %p.create-invites{ 'ng-hide' => "showInvitesForm" }
-    %a.btn.btn-sm.btn-success{ 'href' => "javascript://", 'ng-click' => "toggleInvitesForm()" } Create Invites
+    %a.btn.btn-sm.btn-default{ 'href' => "javascript://", 'ng-click' => "toggleInvitesForm()" } Create Invites
 
   .well{ 'ng-show' => "showInvitesForm" }
     %form{ role: "form", 'ng-submit' => "createInvites()", name: "form", novalidate: true }
@@ -17,15 +17,24 @@
         %span.ajax-loader-inline
 
   .ajax-loader{ 'ng-show' => "wait" }
-  %table.table.table-striped{ 'ng-show' => "users.length > 0" }
+
+  %table.table.table-hover{ 'ng-show' => "users.length > 0" }
     %thead
       %tr
+        %th
         %th Name
         %th Email
         %th Role
+        %th
     %tbody
       %tr{ 'ng-repeat' => 'user in users' }
+        %td
+          %img{ 'ng-src' => "{{ user.avatar_url }}" }
         %td {{ user.name }}
         %td {{ user.email }}
         %td
           %select.form-control.input-sm{ 'ng-model' => 'user.role', 'ng-change' => 'update(user)', 'ng-options' => 'role for role in user.available_roles', 'ng-disabled' => 'disableEdit(user)' }
+        %td
+          %a.btn.btn-sm.btn-default{ 'href' => 'javascript://', 'ng-hide' => 'disableEdit(user)', 'ng-click' => 'destroy(user)' }
+            %i.fa.fa-remove
+            Destroy

@@ -1,7 +1,8 @@
 class Api::UsersController < Api::BaseController
   serialization_scope :current_company
 
-  before_filter :authorize_admin, only: [:index, :update]
+  before_action :authorize_admin, only: [:index, :update, :destroy]
+  before_action :authorize_to_destroy, only: :destroy
 
   respond_to :json
 
@@ -29,9 +30,27 @@ class Api::UsersController < Api::BaseController
     respond_with(@user)
   end
 
-private
-
-  def user_params
-    params.require(:user).permit(:role)
+  def destroy
+    user.delete_from_company(current_company)
+    head :ok
   end
+
+  private
+
+    def authorize_to_destroy
+      if current_user == user
+        render nothing: true, status: :method_not_allowed
+        false
+      else
+        true
+      end
+    end
+
+    def user
+      @user ||= User.find(params[:id])
+    end
+
+    def user_params
+      params.require(:user).permit(:role)
+    end
 end

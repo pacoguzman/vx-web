@@ -49,15 +49,26 @@ class User < ActiveRecord::Base
     identities(true).to_a.select{|i| not i.ignored? }
   end
 
-  def add_to_company(company, role = nil)
-    role ||= "developer"
-    user_company = user_companies.find_or_initialize_by(
-      company_id: company.id,
-      role: role
-    )
+  def add_to_company(company, role = 'developer')
+    user_company = user_companies.find_or_initialize_by(company_id: company.id)
+    user_company.role = role
     if user_company.save
       user_company.default!
       user_company
+    end
+  end
+
+  def delete_from_company(company)
+    user_company = user_companies.find_by(company: company)
+
+    if user_company
+      transaction do
+        user_repos.where(company: company).find_each do |user_repo|
+          user_repo.unsubscribe
+          user_repo.destroy
+        end
+        user_company.destroy
+      end
     end
   end
 

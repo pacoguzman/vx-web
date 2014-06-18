@@ -21,6 +21,7 @@ Vx.controller 'UsersCtrl', ($scope, appMenu, userStore, currentUserStore, invite
   #############################################################################
 
   $scope.update = userStore.update
+  $scope.destroy = userStore.destroy
 
   $scope.disableEdit = (user) ->
     user.id == $scope.currentUser.id
