@@ -1,6 +1,6 @@
 class Users::SessionController < ApplicationController
-
   skip_before_filter :authorize_user, except: [:show]
+  before_action :authorize_back_office_user, only: :become
 
   def destroy
     session.delete(:user_id)
@@ -18,4 +18,9 @@ class Users::SessionController < ApplicationController
     render layout: "application"
   end
 
+  def become
+    user = User.find(params[:id])
+    session[:user_id] = user.id
+    redirect_to '/ui'
+  end
 end

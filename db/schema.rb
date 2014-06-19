@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20140620193806) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "billing_started_at"
   end
 
   add_index "companies", ["name"], name: "index_companies_on_name", unique: true, using: :btree
@@ -67,6 +68,19 @@ ActiveRecord::Schema.define(version: 20140620193806) do
     t.datetime "updated_at"
     t.uuid     "company_id", null: false
   end
+
+  create_table "invoices", force: true do |t|
+    t.integer  "company_id",  null: false
+    t.decimal  "amount",      null: false
+    t.string   "state",       null: false
+    t.string   "description"
+    t.datetime "started_at",  null: false
+    t.datetime "finished_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "invoices", ["company_id"], name: "index_invoices_on_company_id", using: :btree
 
   create_table "job_logs", force: true do |t|
     t.integer "job_id"
@@ -165,10 +179,11 @@ ActiveRecord::Schema.define(version: 20140620193806) do
   add_index "user_repos", ["company_id", "identity_id", "external_id"], name: "index_user_repos_on_company_id_and_identity_id_and_external_id", unique: true, using: :btree
 
   create_table "users", force: true do |t|
-    t.string   "email",      null: false
-    t.string   "name",       null: false
+    t.string   "email",                       null: false
+    t.string   "name",                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "back_office", default: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

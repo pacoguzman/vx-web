@@ -17,6 +17,7 @@ angular.module('Vx').
           <a href="/ui/profile/user">Edit Profile</a>
           <a href="/ui/profile/identities">Linked Accounts</a>
           <a href="/ui/users" ng-show="user.isAdmin">Users</a>
+          <a href="/ui/billing" ng-show="user.isAdmin">Billing</a>
         </li>
         <li role="presentation" class="divider" ng-show="companies"></li>
         <li role="presentation" class="dropdown-header" ng-show="companies">Companies</li>
