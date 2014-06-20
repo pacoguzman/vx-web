@@ -31,6 +31,15 @@ describe 'userStore', ->
         userStore.update(user)
       $http.flush()
 
+  describe 'destroy()', ->
+    it 'sends DELETE request', ->
+      user = { id: 1, role: 'developer' }
+      $http.expectDELETE("/api/users/#{ user.id }").respond('success')
+
+      $scope.$apply ->
+        userStore.destroy(user)
+      $http.flush()
+
   describe 'all()', ->
     it 'sends GET request', ->
       expected_users = null

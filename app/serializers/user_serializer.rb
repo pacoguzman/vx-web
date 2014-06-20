@@ -1,8 +1,10 @@
+require 'digest/md5'
+
 class UserSerializer < ActiveModel::Serializer
   cached
 
   attributes :id, :email, :name, :project_subscriptions, :default_company,
-    :available_roles, :role, :sse_path
+    :available_roles, :role, :sse_path, :avatar_url
 
   has_many :identities
   has_many :companies
@@ -27,5 +29,10 @@ class UserSerializer < ActiveModel::Serializer
 
   def sse_path
     "/api/events/#{object.default_company.id}"
+  end
+
+  def avatar_url
+    m = Digest::MD5.hexdigest(object.email)
+    "//www.gravatar.com/avatar/#{m}"
   end
 end

@@ -81,6 +81,43 @@ describe User do
       expect(user.add_to_company c1, 'admin').to be
       expect(user).to be_admin(c1)
     end
+
+    it 'does not create another user_company if association already exists' do
+      user.add_to_company(c1, 'admin')
+      user.add_to_company(c1, 'admin')
+
+      expect(user.companies).to eq([c1])
+    end
+
+    it 'overrides role if company already exists' do
+      user.add_to_company(c1, 'admin')
+      user.add_to_company(c1, 'developer')
+
+      expect(user.role(c1)).to eq('developer')
+    end
+  end
+
+  describe '#delete_from_company' do
+    it 'deletes user from company' do
+      company = create(:company)
+      user = create(:user)
+      user.add_to_company(company)
+
+      user.delete_from_company(company)
+
+      expect(user.companies).to be_blank
+    end
+
+    it 'deletes user_repos' do
+      company = create(:company)
+      user_repo = create(:user_repo, company: company)
+      user = user_repo.user
+      user.add_to_company(company)
+
+      user.delete_from_company(company)
+
+      expect(user.user_repos).to be_blank
+    end
   end
 end
 

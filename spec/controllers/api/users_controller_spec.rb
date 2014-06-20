@@ -69,4 +69,58 @@ describe Api::UsersController do
     end
   end
 
+  describe 'DELETE destroy' do
+    context 'successfully' do
+      it 'returns status 200' do
+        another_user = create(:user, email: 'another.user@example.com')
+        another_user.add_to_company(company, 'admin')
+        user.add_to_company(company, 'admin')
+        sign_in(user)
+
+        delete :destroy, id: another_user
+
+        expect(response).to be_success
+      end
+
+      it 'deletes user from company' do
+        another_user = create(:user, email: 'another.user@example.com')
+        another_user.add_to_company(company, 'admin')
+        user.add_to_company(company, 'admin')
+        sign_in(user)
+
+        delete :destroy, id: another_user
+
+        expect(another_user.companies).to be_empty
+      end
+    end
+
+    context 'when failed' do
+      it 'returns status 403 if user is not an admin' do
+        user.add_to_company(company, 'developer')
+        sign_in(user)
+
+        delete :destroy, id: user
+
+        expect(response).to be_forbidden
+      end
+
+      it 'returns status 405 if it is current user' do
+        user.add_to_company(company, 'admin')
+        sign_in(user)
+
+        delete :destroy, id: user
+
+        expect(response).to be_method_not_allowed
+      end
+
+      it 'does not allow to delete current user from current company' do
+        user.add_to_company(company, 'admin')
+        sign_in(user)
+
+        delete :destroy, id: user
+
+        expect(user.companies).not_to be_empty
+      end
+    end
+  end
 end
