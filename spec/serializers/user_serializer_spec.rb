@@ -13,9 +13,9 @@ describe UserSerializer do
   context "as_json" do
     subject { serializer.as_json.keys.sort }
 
-    it { should eq [:available_roles, :avatar_url, :companies, :default_company,
-                    :email, :id, :identities, :name, :project_subscriptions,
-                    :role, :sse_path] }
+    it { should eq [:active_projects, :available_roles, :avatar_url, :companies,
+                    :default_company, :email, :id, :identities, :name,
+                    :project_subscriptions, :role, :sse_path] }
   end
 
   context "default_company" do

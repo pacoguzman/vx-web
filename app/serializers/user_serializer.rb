@@ -4,7 +4,7 @@ class UserSerializer < ActiveModel::Serializer
   cached
 
   attributes :id, :email, :name, :project_subscriptions, :default_company,
-    :available_roles, :role, :sse_path, :avatar_url
+    :available_roles, :role, :sse_path, :avatar_url, :active_projects
 
   has_many :identities
   has_many :companies
@@ -34,5 +34,9 @@ class UserSerializer < ActiveModel::Serializer
   def avatar_url
     m = Digest::MD5.hexdigest(object.email)
     "//www.gravatar.com/avatar/#{m}"
+  end
+
+  def active_projects
+    object.user_repos.where(subscribed: true).count
   end
 end

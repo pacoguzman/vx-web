@@ -84,4 +84,6 @@ VxWeb::Application.configure do
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
+
+  config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect'
 end

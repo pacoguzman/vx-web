@@ -46,7 +46,8 @@
 
             %p
               .pull-right
-                %button{ class: "btn btn-danger btn-sm", "ng-click" => "destroy(id)", "ng-disabled" => "id.wait" } Destroy
+                %button{ class: "btn btn-danger btn-sm", "ng-click" => "destroy(id)", "ng-disabled" => "id.wait" }
+                  Destroy
 
               %input{ type: "submit", class: "btn btn-primary btn-sm", value: "Update Gitlab Identity", "ng-disabled" => "id.wait" }
               or
@@ -55,7 +56,7 @@
   .row
     .col-md-7
 
-      %a{ "ng-click" => "edit(newGitlab)", class: "btn btn-success btn-sm", href: "javascript://", 'ng-hide' => "newGitlab.editable" }
+      %a{ "ng-click" => "edit(newGitlab)", class: "btn btn-default btn-sm", href: "javascript://", 'ng-hide' => "newGitlab.editable" }
         %i.fa.fa-plus
         New Gitlab Identity
 
