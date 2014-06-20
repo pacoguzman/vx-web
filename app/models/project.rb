@@ -21,7 +21,9 @@ class Project < ActiveRecord::Base
   before_validation :generate_deploy_key, on: :create
 
   after_destroy :publish_destroyed
+  after_create  :publish_created
 
+  delegate :channel, to: :company, allow_nil: true
 
   class << self
     def deploy_key_name
@@ -132,6 +134,10 @@ class Project < ActiveRecord::Base
     identity.sc.payload(sc_model, params)
   end
 
+  def publish(event = nil)
+    super(event, channel: channel)
+  end
+
   private
 
     def find_or_build_subscription_for_user(user)
@@ -141,6 +147,10 @@ class Project < ActiveRecord::Base
 
     def publish_destroyed
       publish :destroyed
+    end
+
+    def publish_created
+      publish :created
     end
 
 end

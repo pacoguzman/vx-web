@@ -13,6 +13,10 @@ class Company < ActiveRecord::Base
   def default_user_role
     users.any? ? "developer" : "admin"
   end
+
+  def channel
+    @channel ||= "company/#{id}"
+  end
 end
 
 # == Schema Information

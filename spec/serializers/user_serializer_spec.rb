@@ -15,7 +15,7 @@ describe UserSerializer do
 
     it { should eq [:id, :email, :name, :project_subscriptions,
                     :default_company, :available_roles, :role,
-                    :identities, :companies] }
+                    :sse_path, :identities, :companies] }
   end
 
   context "default_company" do
@@ -24,7 +24,7 @@ describe UserSerializer do
   end
 
   context "#project_subscriptions" do
-    let(:project) { create :project, user_repo: nil }
+    let(:project) { create :project, user_repo: nil, company: company }
     let(:sub)     { create :project_subscription, user: user, project: project }
     subject       { serializer.project_subscriptions }
 

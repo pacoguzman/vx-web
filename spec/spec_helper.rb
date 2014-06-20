@@ -20,6 +20,7 @@ OmniAuth.config.test_mode = true
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include ReadFixtureSpecSupport
+  config.include UuidHelper
   config.include ResponseHelper, type: :controller
   config.include UserHelper, type: :controller
 

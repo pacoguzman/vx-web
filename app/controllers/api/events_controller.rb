@@ -3,7 +3,13 @@ class Api::EventsController < Api::BaseController
 
   skip_before_filter :default_format_json
 
-  def index
-    ServerSideEventLoop.new(response).start
+  def show
+    ServerSideEventLoop.new(response, channel).start
   end
+
+  private
+
+    def channel
+      "company/#{params[:id]}"
+    end
 end

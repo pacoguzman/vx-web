@@ -8,7 +8,7 @@ describe Api::UsersController do
   context 'GET /me' do
     context "successfuly" do
       before do
-        sign_in user
+        sign_in user, company
         get :me
       end
       it { should be_success }

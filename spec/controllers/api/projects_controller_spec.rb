@@ -3,14 +3,12 @@ require 'spec_helper'
 describe Api::ProjectsController do
   let(:project) { create :project }
   let(:user)    { project.user_repo.user }
-  let(:company) { create :company }
 
   subject { response }
 
   before do
     project
-    sign_in user
-    user.add_to_company company
+    sign_in user, project.company
   end
 
   context "GET /index" do

@@ -1,14 +1,13 @@
 require 'spec_helper'
 
 describe Api::UserReposController do
-  let(:company) { create :company }
+  let(:company) { repo.company }
   let(:repo)    { create :user_repo }
   let(:user)    { repo.user }
   subject { response }
 
   before do
-    sign_in user
-    user.add_to_company(company)
+    sign_in user, company
   end
 
   context "GET /index" do

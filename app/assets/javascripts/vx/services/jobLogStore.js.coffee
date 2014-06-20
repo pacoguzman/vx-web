@@ -4,16 +4,11 @@ Vx.service 'jobLogStore',
     cache      = cacheStore()
     collection = cache.collection
 
-    subscribe = (e) ->
-      jobId   = e.data.job_id
-      value   = e.data.log
-      switch e.event
-        when 'created'
-          collection(jobId).addItem value
-        when "truncate"
-          collection(jobId).truncate()
+    eventSource.subscribe "job_log:created", (payload) ->
+      collection(payload.job_id).addItem payload.log
 
-    eventSource.subscribe "job_logs", subscribe
+    eventSource.subscribe "job:logs_truncated", (payload) ->
+      collection(payload.id).truncate()
 
     all = (jobId) ->
       collection(jobId).get () ->

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Api::UserIdentities::GitlabController do
   let(:identity) { create :user_identity, :gitlab }
   let(:user)     { identity.user }
+  let(:company)  { create :company }
   let(:gitlab)   { 'session' }
   let(:attrs)   { {
     "login"    => "login",
@@ -12,7 +13,7 @@ describe Api::UserIdentities::GitlabController do
   subject { response }
 
   before do
-    session[:user_id] = user.id
+    sign_in user, company
   end
 
   context "PATCH /update" do

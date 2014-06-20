@@ -48,12 +48,27 @@ describe Build do
   end
 
   it "should publish(:created) after create" do
+    project = create :project, company: create(:company)
     expect{
-      create :build
+      create :build, project: project
     }.to change(ServerSideEventsConsumer.messages, :count).by(1)
     msg = ServerSideEventsConsumer.messages.last
-    expect(msg[:channel]).to eq 'builds'
-    expect(msg[:event]).to eq :created
+    expect(msg.keys).to eq [:channel, :event, :event_name, :payload]
+    expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
+    expect(msg[:event_name]).to eq "build:created"
+    expect(msg[:payload]).to_not be_empty
+  end
+
+  it "should publish updated" do
+    b.save!
+    expect{
+      b.publish
+    }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+    msg = ServerSideEventsConsumer.messages.last
+    expect(msg.keys).to eq [:channel, :event, :event_name, :payload]
+    expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
+    expect(msg[:event_name]).to eq "build:updated"
+    expect(msg[:payload]).to_not be_empty
   end
 
   context "(messages)" do
@@ -387,9 +402,9 @@ describe Build do
   end
 
   context "#restart" do
+    let(:b)    { create :build }
     let(:job1) { create :job, build: b, number: 1 }
     let(:job2) { create :job, :deploy, build: b, number: 2 }
-    let(:b)    { create :build }
     subject    { b.restart.try(:reload) }
 
     context "when build is finished" do
@@ -412,12 +427,12 @@ describe Build do
         build_m = ServerSideEventsConsumer.messages.pop
         job2_m  = ServerSideEventsConsumer.messages.pop
 
-        expect(job2_m[:channel]).to eq 'jobs'
-        expect(job2_m[:event]).to eq :updated
+        expect(job2_m[:channel]).to eq "company/00000000-0000-0000-0000-000000000000"
+        expect(job2_m[:event_name]).to eq "job:updated"
         expect(job2_m[:payload][:id]).to eq job2.id
 
-        expect(build_m[:channel]).to eq 'builds'
-        expect(build_m[:event]).to eq :updated
+        expect(job2_m[:channel]).to eq "company/00000000-0000-0000-0000-000000000000"
+        expect(build_m[:event_name]).to eq "build:updated"
       end
 
       it "should delivery message to JobsConsumer" do

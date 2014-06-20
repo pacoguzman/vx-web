@@ -51,8 +51,8 @@ describe Job do
       create :job, build: b
     }.to change(ServerSideEventsConsumer.messages, :count).by(1)
     msg = ServerSideEventsConsumer.messages.last
-    expect(msg[:channel]).to eq 'jobs'
-    expect(msg[:event]).to eq :created
+    expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
+    expect(msg[:event_name]).to eq "job:created"
   end
 
   context "(state machine)" do

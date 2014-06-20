@@ -143,7 +143,7 @@ describe Users::GithubController do
 
     context "when company not found" do
       it "should redirect to /users/failure" do
-        get_invite company: "not found"
+        get_invite company: uuid_for(9)
         should be_not_found
       end
     end

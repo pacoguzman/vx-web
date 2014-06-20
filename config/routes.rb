@@ -48,7 +48,7 @@ VxWeb::Application.routes.draw do
 
     resources :cached_files, only: [:destroy]
     resources :status, only: [:show], id: /(jobs)/
-    resources :events, only: [:index]
+    resources :events, show: [:index]
 
     resources :companies, only: [] do
       member do

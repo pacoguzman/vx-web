@@ -8,7 +8,7 @@ describe Api::ProjectSubscriptionsController do
 
   before do
     project
-    session[:user_id] = user.id
+    sign_in user, project.company
   end
 
   context "POST /create" do
