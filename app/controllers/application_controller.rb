@@ -60,6 +60,10 @@ class ApplicationController < ActionController::Base
       (user_logged_in? and current_user.admin?(current_company)) || access_denied
     end
 
+    def authorize_back_office_user
+      (user_logged_in? and current_user.back_office) || access_denied
+    end
+
     def access_denied
       save_location if request.format.html?
 

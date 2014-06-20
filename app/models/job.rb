@@ -1,6 +1,8 @@
 class Job < ActiveRecord::Base
 
   belongs_to :build, class_name: "::Build"
+  has_one :project, through: :build
+  has_one :company, through: :project
   has_many :logs, class_name: "::JobLog", dependent: :delete_all,
     extend: AppendLogMessage
 

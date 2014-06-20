@@ -21,6 +21,7 @@ describe JobSerializer do
     subject { serializer.natural_number }
 
     before do
+      object.build.number = 1
       object.number = 12345
     end
     it { should eq "1.0000012345" }

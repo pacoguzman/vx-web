@@ -51,6 +51,7 @@ VxWeb::Application.routes.draw do
     resources :events, show: [:index]
 
     resources :companies, only: [] do
+      get :usage, on: :collection
       member do
         post :default
       end
@@ -58,8 +59,9 @@ VxWeb::Application.routes.draw do
   end
 
   namespace :users do
-    get    'github/callback', to: "github#callback"
-    get    'failure',         to: redirect('/ui')
+    get 'github/callback', to: "github#callback"
+    get 'failure',         to: redirect('/ui')
+    get '/:id/become',     to: 'session#become'
 
     resource :session, only: [:destroy, :show], controller: "session"
     resource :invite,  only: [:new]

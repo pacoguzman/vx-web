@@ -15,8 +15,8 @@ describe Build do
       end
 
       it "should increment when any other builds exist" do
-        create :build, project: project
-        expect(subject).to change(b, :number).to(2)
+        other_build = create(:build, project: project)
+        expect{ b.save! }.to change{ b.number }.to(other_build.number + 1)
       end
     end
 
