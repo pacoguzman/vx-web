@@ -1,22 +1,17 @@
 .builds
 
-  .row{ 'ng-show' => 'project' }
+  .bs-callout.bs-callout-notice
+    .pull-right{ 'ng-show' => "project" }
 
-    .col-xs-6
-      .build-info
-        {{ project.description || "[no description available]" }}
+      %a.project-url{ "ng-href" => "{{ project.http_url}}", "target" => "_blank" }
+        On {{ project.provider_title }}
 
-    .col-xs-6
-      .pull-right
+      %a.project-cached-files{ "ng-href" => "/ui/projects/{{project.id}}/cached_files" }
+        Cached Files
 
-        %a.project-url{ "ng-href" => "{{ project.http_url}}", "target" => "_blank" }
-          On {{ project.provider_title }}
-
-        %a.project-cached-files{ "ng-href" => "/ui/projects/{{project.id}}/cached_files" }
-          Cached Files
-
-        .project-subscribe.app-project-subscribe{ project: "project", title: "Watch Project" }
-
+      .project-subscribe.app-project-subscribe{ project: "project", title: "Watch Project" }
+    %p
+      {{ project.description || "[no description available]" }}
 
   %table.tasks-table.table{ 'ng-show' => 'builds.length > 0' }
     %thead
