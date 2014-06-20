@@ -46,10 +46,13 @@ angular.module('Vx').
           when 'append'
             appendToLastChild(line)
 
-      updateLines = (newLen, unused) ->
-        return unless newLen
+      updateLines = (newLen, oldLen) ->
 
-        return if newLen == 0
+        if _.isUndefined(newLen)
+          return
+
+        if (newLen == 0 && _.isUndefined(oldLen))
+          return
 
         logOutput ||= new VxLib.LogOutput(scope.collection, processFragment)
 

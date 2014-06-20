@@ -2,7 +2,7 @@ class UserSerializer < ActiveModel::Serializer
   cached
 
   attributes :id, :email, :name, :project_subscriptions, :default_company,
-    :available_roles, :role
+    :available_roles, :role, :sse_path
 
   has_many :identities
   has_many :companies
@@ -23,5 +23,9 @@ class UserSerializer < ActiveModel::Serializer
 
   def default_company
     object.default_company.try(:id)
+  end
+
+  def sse_path
+    "/api/events/#{object.default_company.id}"
   end
 end

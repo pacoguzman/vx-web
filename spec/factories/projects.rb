@@ -2,13 +2,17 @@
 
 FactoryGirl.define do
   factory :project do
-    company_id    1
+    company
     name          "ci-worker-test-repo"
     http_url      "MyString"
     clone_url     "MyString"
     description   ""
     token         'token'
     deploy_key    'deploy key'
-    user_repo
+    user_repo     { create(:user_repo, company: company) }
+
+    after(:build) do |project|
+
+    end
   end
 end

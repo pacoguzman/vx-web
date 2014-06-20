@@ -108,17 +108,13 @@ describe "buildStore", ->
 
   describe "with eventSource", ->
 
-    f      = null
-    before = null
+    f        = null
+    before   = null
+    createEv = null
+    updateEv = null
 
     beforeEach ->
-      [[_, f]] = evSource.subscriptions()
-
-    it "should subscribe to 'builds'", ->
-      [[name, _]] = evSource.subscriptions()
-      expect(name).toEqual 'builds'
-      expect(f).toBeDefined()
-
+      [[_, createEv], [_, updateEv]] = evSource.subscriptions()
 
     describe "new build from event", ->
 
@@ -128,43 +124,34 @@ describe "buildStore", ->
           builds.all(1).then succ, fail
         $http.flush()
         expect(succVal.length).toBe 2
+        f = createEv
+
+      it "should subscribe to 'build:created'", ->
+        [[name, _]] = evSource.subscriptions()
+        expect(name).toEqual 'build:created'
+        expect(f).toBeDefined()
 
       it "should add to collection if in same project", ->
         e =
-          event: 'created',
-          data:
-            id: 1
-            project_id: 1
-            name: "Created"
+          id: 1
+          project_id: 1
+          name: "Created"
         f(e)
         $scope.$apply ->
           builds.all(1).then succ, fail
         expect(succVal.length).toBe 3
-        expect(succVal[2]).toEqual e.data
+        expect(succVal[2]).toEqual e
 
-
-    describe "destroy build from event", ->
-
-      beforeEach ->
-        $http.expectGET('/api/projects/1/builds').respond(angular.copy [testObj, testObj2])
-        $scope.$apply ->
-          builds.all(1).then succ, fail
-        $http.flush()
-        expect(succVal.length).toBe 2
-
-      it "should delete from collection if in same project", ->
-        e =
-          event: 'destroyed',
-          id: 12
-          data:
-            project_id: 1
-        f(e)
-        $scope.$apply ->
-          builds.all(1).then succ, fail
-        expect(succVal.length).toBe 1
-        expect(succVal[0].id).toEqual 14
 
     describe "updated build from event", ->
+
+      beforeEach ->
+        f = updateEv
+
+      it "should subscribe to 'build:updated'", ->
+        [[_, _],[name, _]] = evSource.subscriptions()
+        expect(name).toEqual 'build:updated'
+        expect(f).toBeDefined()
 
       describe "(model)", ->
         beforeEach ->
@@ -176,11 +163,9 @@ describe "buildStore", ->
 
         it "should update if found", ->
           e =
-            event: 'updated',
             id: 12
-            data:
-              project_id: 1
-              name: "xUpdated"
+            project_id: 1
+            name: "xUpdated"
           f(e)
           $scope.$apply ->
             builds.one(12).then succ, fail
@@ -196,11 +181,9 @@ describe "buildStore", ->
 
         it "should update if build found in collection", ->
           e =
-            event: 'updated',
             id: 12
-            data:
-              project_id: 1
-              name: "sUpdated"
+            project_id: 1
+            name: "sUpdated"
           f(e)
           $scope.$apply ->
             builds.all(1).then succ, fail

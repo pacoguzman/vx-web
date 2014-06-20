@@ -20,6 +20,8 @@ class Build < ActiveRecord::Base
   default_scope ->{ order 'builds.number DESC' }
   scope :finished, -> { where(status: [3,4,5]) }
 
+  delegate :channel, to: :project, allow_nil: true
+
   state_machine :status, initial: :initialized do
 
     state :initialized,   value: 0
@@ -243,6 +245,10 @@ class Build < ActiveRecord::Base
     project.update_last_build
   end
 
+  def publish(name = nil)
+    super(name, channel: channel)
+  end
+
   private
 
     def assign_number
@@ -264,7 +270,6 @@ class Build < ActiveRecord::Base
     def publish_created
       publish :created
     end
-
 
 end
 

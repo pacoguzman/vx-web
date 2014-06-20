@@ -15,13 +15,13 @@ describe UserRepo do
   let(:repo) { create :user_repo }
 
   context "same_name_projects association" do
-    let(:project) { create :project, name: repo.full_name, user_repo: nil }
+    let(:project) { create :project, name: repo.full_name, user_repo: nil, company: repo.company }
     subject { repo.same_name_projects }
     it { should eq [project] }
   end
 
   context ".find_or_create_by_sc" do
-    let(:company)  { create :company }
+    let(:company)  { repo.company }
     let(:identity) { repo.identity }
     let(:model)    { Vx::ServiceConnector::Model.test_repo }
     subject { described_class.find_or_create_by_sc company, identity, model }
@@ -53,7 +53,7 @@ describe UserRepo do
 
   context "#unsubscribe" do
     let(:user)     { repo.user   }
-    let!(:project) { create :project, user_repo: repo }
+    let!(:project) { create :project, user_repo: repo, company: repo.company }
     subject { repo.unsubscribe }
 
     before do
@@ -127,7 +127,7 @@ describe UserRepo do
     end
 
     context "when associated project exists" do
-      let!(:project) { create :project, user_repo: repo }
+      let!(:project) { create :project, user_repo: repo, company: repo.company }
       before do
         mock(repo).unsubscribe_project
         any_instance_of(Vx::ServiceConnector::Github) do |g|

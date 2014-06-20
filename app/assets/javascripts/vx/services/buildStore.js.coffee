@@ -5,20 +5,11 @@ Vx.service 'buildStore',
     collection = cache.collection
     item       = cache.item
 
-    subscribe = (e) ->
-      projectId = e.data.project_id
-      buildId   = e.id
-      value     = e.data
+    eventSource.subscribe "build:created", (payload) ->
+      collection(payload.project_id).addItem(payload)
 
-      switch e.event
-        when 'created'
-          collection(projectId).addItem value
-        when 'updated'
-          item(buildId).update value, projectId
-        when 'destroyed'
-          item(buildId).remove projectId
-
-    eventSource.subscribe "builds", subscribe
+    eventSource.subscribe "build:updated", (payload) ->
+      item(payload.id).update payload, payload.project_id
 
     all = (projectId) ->
       collection(projectId).get () ->

@@ -17,7 +17,7 @@ describe Users::InvitesController do
 
     context "when company is not found" do
       before do
-        get :new, email: invite.email, company: 'not found', token: invite.token
+        get :new, email: invite.email, company: uuid_for(9), token: invite.token
       end
       it { should be_not_found }
     end

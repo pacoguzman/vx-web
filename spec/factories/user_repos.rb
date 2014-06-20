@@ -3,7 +3,7 @@
 FactoryGirl.define do
   factory :user_repo do
     identity           { create :user_identity }
-    company_id         1
+    company
     organization_login nil
     full_name          "MyString"
     is_private          false

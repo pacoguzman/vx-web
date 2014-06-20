@@ -6,8 +6,14 @@ class JobLog < ActiveRecord::Base
 
   default_scope ->{ order("job_logs.tm ASC") }
 
+  delegate :channel, to: :job, allow_nil: true
+
   def id
     [job_id, tm].join('.')
+  end
+
+  def publish(event = nil)
+    super(event, channel: channel)
   end
 
 end

@@ -10,8 +10,8 @@ describe Api::CompaniesController do
   end
 
   context "POST /default" do
-    let(:c1) { create :company, name: 'c1', id: 1 }
-    let(:c2) { create :company, name: 'c2', id: 2 }
+    let(:c1) { create :company, name: 'c1', id: uuid_for(1) }
+    let(:c2) { create :company, name: 'c2', id: uuid_for(2) }
 
     before do
       expect(user.add_to_company c1).to be

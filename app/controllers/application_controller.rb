@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
     end
 
     def authorize_user
-      user_logged_in? || access_denied
+      (user_logged_in? and current_user.user_companies.any?) or access_denied
     end
 
     def authorize_admin

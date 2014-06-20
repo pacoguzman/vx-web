@@ -15,6 +15,8 @@ class Job < ActiveRecord::Base
   scope :regular, ->{ where(kind: "regular") }
   scope :deploy,  ->{ where(kind: "deploy") }
 
+  delegate :channel, to: :build, allow_nil: true
+
   state_machine :status, initial: :initialized do
 
     state :initialized,   value: 0
@@ -117,6 +119,10 @@ class Job < ActiveRecord::Base
         self
       end
     end
+  end
+
+  def publish(event = nil)
+    super(event, channel: channel)
   end
 
   private
