@@ -14,8 +14,8 @@ angular.module('Vx').
 
       <ul class="dropdown-menu app-popup" role="menu">
         <li role="presentation">
-          <a href="/ui/profile/user">Account Information</a>
-          <a href="/ui/profile/identities">Services</a>
+          <a href="/ui/profile/user">Edit Profile</a>
+          <a href="/ui/profile/identities">Linked Accounts</a>
           <a href="/ui/users" ng-show="user.isAdmin">Users</a>
         </li>
         <li role="presentation" class="divider" ng-show="companies"></li>
