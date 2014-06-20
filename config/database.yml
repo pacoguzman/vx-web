@@ -1,20 +1,17 @@
-development:
+default: &default
   adapter: postgresql
-  database: ci_web_development
   pool: 50
   timeout: 5000
   host: localhost
+
+development:
+  <<: *default
+  database: ci_web_development
 
 production:
-  adapter: postgresql
+  <<: *default
   database: ci_web_development
-  pool: 50
-  timeout: 5000
-  host: localhost
 
 test:
-  adapter: postgresql
+  <<: *default
   database: ci_web_test
-  pool: 50
-  timeout: 5000
-  host: localhost
