@@ -1,36 +1,35 @@
-.panel.panel-info
+.panel.panel-default
 
   .panel-heading Usage Statistics
-  .panel-body
+  .panel-body{ 'ng-show' => "wait" }
 
-    .ajax-loader{ 'ng-show' => 'wait' }
 
-    %table.table{ 'ng-show' => 'companyUsage' }
-      %thead
-        %tr
-          %th Period
-          %th Job count
-          %th Minutes
-          %th Amount
-      %tbody
-        %tr
-          %td Today
-          %td {{ companyUsage.today.job_count | number }}
-          %td {{ companyUsage.today.minutes | number }}
-          %td {{ companyUsage.today.amount | currency }}
-        %tr
-          %td Yesterday
-          %td {{ companyUsage.yesterday.job_count | number }}
-          %td {{ companyUsage.yesterday.minutes | number }}
-          %td {{ companyUsage.yesterday.amount | currency }}
-        %tr
-          %td Last 7 days
-          %td {{ companyUsage.last_7_days.job_count | number }}
-          %td {{ companyUsage.last_7_days.minutes | number }}
-          %td {{ companyUsage.last_7_days.amount | currency }}
-        %tr
-          %td Last 30 days
-          %td {{ companyUsage.last_30_days.job_count | number }}
-          %td {{ companyUsage.last_30_days.minutes | number }}
-          %td {{ companyUsage.last_30_days.amount | currency }}
+  %table.table{ 'ng-show' => 'companyUsage' }
+    %thead
+      %tr
+        %th Period
+        %th Job count
+        %th Minutes
+        %th Amount
+    %tbody
+      %tr
+        %td Today
+        %td {{ companyUsage.today.job_count | number }}
+        %td {{ companyUsage.today.minutes | number }}
+        %td {{ companyUsage.today.amount | currency }}
+      %tr
+        %td Yesterday
+        %td {{ companyUsage.yesterday.job_count | number }}
+        %td {{ companyUsage.yesterday.minutes | number }}
+        %td {{ companyUsage.yesterday.amount | currency }}
+      %tr
+        %td Last 7 days
+        %td {{ companyUsage.last_7_days.job_count | number }}
+        %td {{ companyUsage.last_7_days.minutes | number }}
+        %td {{ companyUsage.last_7_days.amount | currency }}
+      %tr
+        %td Last 30 days
+        %td {{ companyUsage.last_30_days.job_count | number }}
+        %td {{ companyUsage.last_30_days.minutes | number }}
+        %td {{ companyUsage.last_30_days.amount | currency }}
 
