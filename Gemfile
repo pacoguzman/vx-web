@@ -15,7 +15,7 @@ gem 'vx-message',           '0.5.0'
 gem 'vx-builder',           '0.3.4'
 gem 'vx-service_connector', '0.2.0'
 gem 'vx-consumer',          '0.1.4'
-gem 'vx-instrumentation',   '0.1.1'
+gem 'vx-instrumentation',   '0.1.3'
 
 gem 'dalli'
 gem 'dotenv'
