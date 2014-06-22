@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140620193806) do
+ActiveRecord::Schema.define(version: 20140622144354) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,12 +61,13 @@ ActiveRecord::Schema.define(version: 20140620193806) do
 
   add_index "companies", ["name"], name: "index_companies_on_name", unique: true, using: :btree
 
-  create_table "invites", force: true do |t|
-    t.string   "token",      null: false
-    t.string   "email",      null: false
+  create_table "invites", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+    t.string   "token",                            null: false
+    t.string   "email",                            null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.uuid     "company_id", null: false
+    t.uuid     "company_id",                       null: false
+    t.string   "role",       default: "developer", null: false
   end
 
   create_table "invoices", force: true do |t|

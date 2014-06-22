@@ -141,16 +141,16 @@ describe Users::GithubController do
       end
     end
 
-    context "when company not found" do
+    context "when invite not found" do
       it "should redirect to /users/failure" do
-        get_invite company: uuid_for(9)
+        get_invite id: uuid_for(9)
         should be_not_found
       end
     end
 
-    context "when invite not found" do
+    context "when token not found" do
       it "should redirect to /users/failure" do
-        get_invite token: "not found"
+        get_invite token: 'not found'
         should be_not_found
       end
     end
@@ -167,7 +167,7 @@ describe Users::GithubController do
         expect(user).to be
         expect(user.name).to eq 'name'
         expect(user.email).to eq email
-        expect(user).to be_admin(company)
+        expect(user).to be_developer(company)
       end
 
       it "should create identity" do
@@ -193,10 +193,9 @@ describe Users::GithubController do
 
     def get_invite(o = {})
       request.env['omniauth.params'] = {
-        'do'      => "invite",
-        "email"   => o[:email]   || "me@example.com",
-        "token"   => o[:token]   || invite.token,
-        "company" => o[:company] || company.id
+        'do'  => "invite",
+        "i"   => o[:id]    || invite.id,
+        "t"   => o[:token] || invite.token,
       }
       get :callback
     end

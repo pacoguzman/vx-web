@@ -31,6 +31,10 @@ class User < ActiveRecord::Base
     role(company) == 'admin'
   end
 
+  def developer?(company)
+    role(company) == 'developer'
+  end
+
   def sync_repos(company)
     transaction do
       active_identities.map do |identity|

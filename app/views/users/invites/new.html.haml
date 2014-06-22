@@ -1,3 +1,3 @@
-- options = { email: @email, company: @company.id, token: @invite.token }
+- options = { t: @invite.token, i: @invite.id }
 
 = render partial: "shared/session", locals: { operation: :invite, options: options, title: "Sign up by invite" }
