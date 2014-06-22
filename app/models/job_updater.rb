@@ -75,12 +75,11 @@ class JobUpdater
       status = build.jobs.regular.maximum(:status)
 
       if status == 3 or status == nil # passed
+        build.deploy!
         build.publish_perform_deploy_job_messages
       else
         build.jobs.deploy.map(&:cancel)
       end
-
-      build.deploy!
 
       true
     end
