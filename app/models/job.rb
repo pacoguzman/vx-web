@@ -109,7 +109,7 @@ class Job < ActiveRecord::Base
   end
 
   def restart
-    if finished?
+    if finished? or cancelled?
       transaction do
         self.started_at  = nil
         self.finished_at = nil
