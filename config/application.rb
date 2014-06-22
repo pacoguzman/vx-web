@@ -11,7 +11,7 @@ Bundler.require(:default, Rails.env)
 
 require 'dotenv'
 
-Dotenv.load "#{File.expand_path("../../", __FILE__)}/.env.#{Rails.env}", "/etc/vexor/Envfile"
+Dotenv.load "#{File.expand_path("../../", __FILE__)}/.env.#{Rails.env}", "/etc/vexor/vxweb.env"
 
 VX_COMPONENT_NAME ||= ENV['VX_COMPONENT_NAME'] || "http"
 
@@ -55,8 +55,8 @@ module VxWeb
         Socket.gethostname
       end
 
-    config.x.hostname = (ENV['VX_HOSTNAME'] || sys_hostname || "example.com")
-    if ENV['VX_HTTPS']
+    config.x.hostname = (ENV['VX_WEB_HOSTNAME'] || sys_hostname || "example.com")
+    if ENV['VX_WEB_HTTPS']
       config.x.hostname = URI.parse("https://#{config.x.hostname}")
     else
       config.x.hostname = URI.parse("http://#{config.x.hostname}")
