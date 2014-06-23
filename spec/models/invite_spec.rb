@@ -20,7 +20,7 @@ describe Invite do
 
     context "successfuly" do
       it "should be" do
-        expect(subject).to have(2).items
+        expect(subject.size).to eq 2
       end
 
       it "should create invites" do
