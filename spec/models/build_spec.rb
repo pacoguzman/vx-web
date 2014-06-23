@@ -151,7 +151,7 @@ describe Build do
     end
 
     context "after transition to deployed" do
-      let(:status) { 2 }
+      let(:status) { "started" }
       subject { b.deploy }
 
       it "should delivery message to BuildNotifyConsumer" do
@@ -159,7 +159,7 @@ describe Build do
           subject
         }.to change(BuildNotifyConsumer.messages, :count).by(1)
         msg = BuildNotifyConsumer.messages.last
-        expect(msg["status"]).to eq 6
+        expect(msg["status"]).to eq "deploying"
       end
 
       it "should delivery messages to ServerSideEventsConsumer" do

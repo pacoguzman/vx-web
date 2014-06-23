@@ -74,11 +74,11 @@ class JobUpdater
 
       status = maximum_status(build.jobs.regular)
 
-      if status == "passed" or status == nil # passed
+      if status == :passed or status == nil # passed
         build.deploy!
         build.publish_perform_deploy_job_messages
       else
-        build.jobs.deploy.map(&:cancel)
+        build.jobs.deploy.map(&:cancel!)
       end
 
       true
@@ -134,7 +134,7 @@ class JobUpdater
       # relation.maximum(:status) # we haven't integers anymore
 
       existing = relation.pluck(:status).map(&:to_sym).uniq
-      build.aasm.states.select { |state| existing.include?(state.name) }.max_by { |state| state.options[:value] }.name
+      build.aasm.states.select { |state| existing.include?(state.name) }.max_by { |state| state.options[:value] }.try(:name)
     end
 
 end
