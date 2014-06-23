@@ -28,6 +28,7 @@
       %dl.task-attribute.dl-horizontal
         %dt Author
         %dd
+          %img{ src: "{{ build.author_avatar }}" }
           %a{'ng-href' => "mailto:{{build.author_email}}"}
             {{ build.author }}
 
