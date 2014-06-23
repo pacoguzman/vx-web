@@ -1,0 +1,42 @@
+.users
+
+  %p.create-invites{ 'ng-hide' => "showInvitesForm" }
+    %a.btn.btn-sm.btn-default{ 'href' => "javascript://", 'ng-click' => "toggleInvitesForm()" } Create Invites
+
+  .well{ 'ng-show' => "showInvitesForm" }
+    %form{ role: "form", 'ng-submit' => "createInvites()", name: "form", novalidate: true }
+      .form-group
+        %span.help-block
+          Invite email addresses separated by space
+        %textarea.form-control{ name: "emails", 'ng-model' => "invite.emails", 'required' => true, placeholder: "user1@example.com user2@example.com user3@example.com" }
+      %p{ 'ng-hide' => "invite.wait" }
+        %input.btn.btn-sm.btn-success{ type: "submit", value: "Create Invites", 'ng-disabled' => "form.$invalid" }
+        or
+        %a{ href: "javascript://", 'ng-click' => "toggleInvitesForm()" } Cancel
+      %p{ 'ng-show' => 'invite.wait' }
+        %span.ajax-loader-inline
+
+  .ajax-loader{ 'ng-show' => "wait" }
+
+  %table.table.table-hover{ 'ng-show' => "users.length > 0" }
+    %thead
+      %tr
+        %th
+        %th Name
+        %th Email
+        %th Projects
+        %th Role
+        %th
+    %tbody
+      %tr{ 'ng-repeat' => "user in users | orderBy:'active_projects':true" }
+        %td
+          %img{ 'ng-src' => "{{ user.avatar_url }}" }
+        %td {{ user.name }}
+        %td {{ user.email }}
+        %td {{ user.active_projects }}
+        %td
+          %select.form-control.input-sm{ 'ng-model' => 'user.role', 'ng-change' => 'update(user)', 'ng-options' => 'role for role in user.available_roles', 'ng-disabled' => 'disableEdit(user)' }
+        %td
+          %a.btn.btn-sm.btn-default{ 'href' => 'javascript://', 'ng-hide' => 'disableEdit(user)', 'ng-click' => 'destroy(user)' }
+            %i.fa.fa-remove
+            Destroy

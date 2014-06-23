@@ -1,9 +1,15 @@
 class UserCompany < ActiveRecord::Base
-  validates :user_id, :company_id, :default, presence: true
-  validates :user_id, uniqueness: { scope: [:company_id] }
+  ROLES = %w{
+    admin
+    developer
+  }
 
   belongs_to :user
   belongs_to :company
+
+  validates :user, :company, :default, :role, presence: true
+  validates :user_id, uniqueness: { scope: [:company_id] }
+  validates :role, inclusion: { in: ROLES }
 
   def default?
     default == 1
@@ -15,6 +21,7 @@ class UserCompany < ActiveRecord::Base
       update default: 1
     end
   end
+
 end
 
 # == Schema Information

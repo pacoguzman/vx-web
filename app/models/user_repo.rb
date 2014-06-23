@@ -14,6 +14,7 @@ class UserRepo < ActiveRecord::Base
   belongs_to :company
 
   has_one :project, dependent: :nullify
+  has_one :user, through: :identity
   has_many :same_name_projects,
     ->(owner){
       readonly.where(company_id: owner.company_id)

@@ -16,7 +16,7 @@ describe UserRepoSerializer do
     context "when is not subscribed and have same name projects" do
       before do
         user_repo.update subscribed: false
-        create :project, name: user_repo.full_name, user_repo: nil
+        create :project, name: user_repo.full_name, user_repo: nil, company: user_repo.company
       end
       it { should be(true) }
     end
@@ -24,7 +24,7 @@ describe UserRepoSerializer do
     context "when is subscribed and have same name projects" do
       before do
         user_repo.update subscribed: true
-        create :project, name: user_repo.full_name, user_repo: nil
+        create :project, name: user_repo.full_name, user_repo: nil, company: user_repo.company
       end
       it { should be(false) }
     end
@@ -43,7 +43,7 @@ describe UserRepoSerializer do
     context "when user_repo project" do
       before do
         user_repo.update subscribed: false
-        create :project, user_repo: user_repo
+        create :project, user_repo: user_repo, company: user_repo.company
       end
       it { should be(true) }
     end
@@ -51,7 +51,7 @@ describe UserRepoSerializer do
     context "when same name project" do
       before do
         user_repo.update subscribed: false
-        create :project, user_repo: nil, name: user_repo.full_name
+        create :project, user_repo: nil, name: user_repo.full_name, company: user_repo.company
       end
       it { should be(true) }
     end

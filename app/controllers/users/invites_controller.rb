@@ -3,9 +3,7 @@ class Users::InvitesController < ApplicationController
   skip_before_filter :authorize_user
 
   def new
-    @email   = params[:email]
-    @company = Company.find_by! name: params[:company]
-    @invite  = @company.invites.find_by! token: params[:token], email: @email
+    @invite  = Invite.find_by! id: params[:i], token: params[:t]
 
     render layout: "session"
   end

@@ -1,7 +1,7 @@
 require 'active_support/notifications'
 require 'vx/instrumentation'
 
-$stdout.puts ' --> initializing ActiveSupport::Notifications for vx-consumer'
+$stdout.puts ' --> activate instrumentations for vx-consumer'
 
 ActiveSupport::Notifications.subscribe(/\.consumer\.vx/) do |event, started, finished, _, payload|
   ingnored_consumers = %w{

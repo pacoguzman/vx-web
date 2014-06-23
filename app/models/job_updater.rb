@@ -22,8 +22,9 @@ class JobUpdater
     guard do
       update_and_save_job_status
       truncate_job_logs
-      start_build? and start_build
-      all_jobs_finished? and finalize_build
+      start_build?               and start_build
+      all_regular_jobs_finished? and start_deploy
+      all_jobs_finished?         and finalize_build
       true
     end
   end
@@ -37,8 +38,7 @@ class JobUpdater
             yield
           # TODO: save and compare messages
           rescue AASM::InvalidTransition => e
-            Rails.logger.error "ERROR: #{e.inspect}"
-            Airbrake.notify(e)
+            Vx::Instrumentation.handle_exception "job_updater.consumer.web.vx", e, message: message
             :invalid_transition
           end
         end
@@ -48,27 +48,40 @@ class JobUpdater
     def truncate_job_logs
       if message.status == 2
         JobLog.where(job_id: job.id).delete_all
-
-        message = {
-          channel: "job_logs",
-          event:   "truncate",
-          payload: { event: "truncate", data: { job_id: job.id } }
-        }
-        ServerSideEventsConsumer.publish message
+        job.publish :logs_truncated
       end
     end
 
     def new_build_status
       if all_jobs_finished?
-        # build.jobs.maximum(:status) - we haven't integers anymore
-        existing = build.jobs.pluck(:status).map(&:to_sym).uniq
-        build.aasm.states.select { |state| existing.include?(state.name) }.max_by { |state| state.options[:value] }.name
+        maximum_status(build.jobs.where("status <> ?", 'cancelled')) # ignore cancelled jobs
       end
     end
 
     def all_jobs_finished?
-      statuses = ["passed", "failed", "errored"]
+      statuses = ["passed", "failed", "errored", "cancelled"]
       build.jobs.where(status: statuses).count == build.jobs.count
+    end
+
+    def all_regular_jobs_finished?
+      statuses = ["passed", "failed", "errored"]
+      build.jobs.regular.where(status: statuses).count == build.jobs.regular.count
+    end
+
+    def start_deploy
+      return true if build.deploying?
+      return true if build.jobs.deploy.empty?
+
+      status = maximum_status(build.jobs.regular)
+
+      if status == "passed" or status == nil # passed
+        build.deploy!
+        build.publish_perform_deploy_job_messages
+      else
+        build.jobs.deploy.map(&:cancel)
+      end
+
+      true
     end
 
     def start_build?
@@ -113,18 +126,15 @@ class JobUpdater
       end
     end
 
-    def create_deploy_if_need
-      if build.passed?
-        source = ::Vx::Builder::BuildConfiguration.new(build.source)
-        if source.deploy?
-          deploy = build.new_deploy_from_self
-          deploy.save
-        end
-      end
-    end
-
     def tm
       @tm ||= Time.at(message.tm)
+    end
+
+    def maximum_status(relation)
+      # relation.maximum(:status) # we haven't integers anymore
+
+      existing = relation.pluck(:status).map(&:to_sym).uniq
+      build.aasm.states.select { |state| existing.include?(state.name) }.max_by { |state| state.options[:value] }.name
     end
 
 end

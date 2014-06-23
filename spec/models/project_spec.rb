@@ -205,7 +205,7 @@ describe Project do
 
     context "when user_repo exists" do
       let(:user_repo) { create :user_repo }
-      let(:project) { create :project, user_repo: user_repo }
+      let(:project) { create :project, user_repo: user_repo, company: user_repo.company }
 
       before do
         project.name = 'full/name'

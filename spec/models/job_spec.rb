@@ -51,8 +51,8 @@ describe Job do
       create :job, build: b
     }.to change(ServerSideEventsConsumer.messages, :count).by(1)
     msg = ServerSideEventsConsumer.messages.last
-    expect(msg[:channel]).to eq 'jobs'
-    expect(msg[:event]).to eq :created
+    expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
+    expect(msg[:event_name]).to eq "job:created"
   end
 
   context "(state machine)" do
@@ -61,6 +61,17 @@ describe Job do
     context "after transition to started" do
       let(:status) { "initialized" }
       subject { job.start }
+
+      it "should delivery messages to ServerSideEventsConsumer" do
+        expect{
+          subject
+        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+      end
+    end
+
+    context "after transition to cancelled" do
+      let(:status) { "initialized" }
+      subject { job.cancel }
 
       it "should delivery messages to ServerSideEventsConsumer" do
         expect{
@@ -139,12 +150,6 @@ describe Job do
         expect{
           subject
         }.to change(ServerSideEventsConsumer.messages, :count).by(1)
-      end
-
-      it "should delivery message to JobsConsumer" do
-        expect{
-          subject
-        }.to change(JobsConsumer.messages, :count).by(1)
       end
     end
   end

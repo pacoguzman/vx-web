@@ -7,9 +7,9 @@ describe UserCompany do
   it { should be_valid }
 
   context "#default!" do
-    let(:user_company)      { create :user_company, default: 0 }
-    let(:user)              { user_company.user }
-    let(:other_company)     { create :company, name: "other", id: 2 }
+    let(:user_company)        { create :user_company, default: 0 }
+    let(:user)                { user_company.user }
+    let(:other_company)       { create :company, name: "other", id: uuid_for(1) }
     let!(:other_user_company) { create :user_company, user: user, company: other_company, default: 1 }
 
     subject { user_company.default! }
@@ -22,6 +22,7 @@ describe UserCompany do
       expect(other_user_company.reload).to_not be_default
     end
   end
+
 end
 
 # == Schema Information

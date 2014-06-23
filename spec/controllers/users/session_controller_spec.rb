@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 describe Users::SessionController do
+  let(:user) { create :user }
   subject { response }
 
   context "DELETE /destroy" do
 
     before do
-      session[:user_id] = 1
+      sign_in user, create(:company)
     end
 
     it "should be redirected to /ui" do
@@ -17,7 +18,7 @@ describe Users::SessionController do
     it "should remove user_id from session" do
       expect {
         delete :destroy
-      }.to change{ session[:user_id] }.from(1).to(nil)
+      }.to change{ session[:user_id] }.from(user.id).to(nil)
     end
 
     context "for json request" do
@@ -32,7 +33,7 @@ describe Users::SessionController do
 
   context "GET /show" do
     before do
-      session[:user_id] = create(:user).id
+      sign_in user, create(:company)
       get :show
     end
 

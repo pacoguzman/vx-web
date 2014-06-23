@@ -5,5 +5,10 @@ FactoryGirl.define do
     user
     company
     default 1
+    role 'developer'
+
+    trait :admin do
+      role 'admin'
+    end
   end
 end

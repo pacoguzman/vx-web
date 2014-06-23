@@ -26,6 +26,9 @@ OmniAuth.config.test_mode = true
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include ReadFixtureSpecSupport
+  config.include UuidHelper
+  config.include ResponseHelper, type: :controller
+  config.include UserHelper, type: :controller
 
   config.mock_with :rr
   config.use_transactional_fixtures = true
@@ -62,6 +65,7 @@ RSpec.configure do |config|
     Vx::Consumer::Testing.clear
     Rails.configuration.x = OpenStruct.new
     Rails.configuration.x.hostname = URI('http://test.host')
+    ActionMailer::Base.deliveries = []
   end
 
 end

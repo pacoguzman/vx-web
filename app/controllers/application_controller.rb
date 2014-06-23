@@ -53,7 +53,15 @@ class ApplicationController < ActionController::Base
     end
 
     def authorize_user
-      user_logged_in? || access_denied
+      (user_logged_in? and current_user.user_companies.any?) or access_denied
+    end
+
+    def authorize_admin
+      (user_logged_in? and current_user.admin?(current_company)) || access_denied
+    end
+
+    def authorize_back_office_user
+      (user_logged_in? and current_user.back_office) || access_denied
     end
 
     def access_denied
@@ -61,7 +69,7 @@ class ApplicationController < ActionController::Base
 
       respond_to do |want|
         want.html { render 'users/session/new', layout: 'session', status: 403 }
-        want.json { head 403 }
+        want.json { render json: "{}", status: 403 }
         want.all  { head 403 }
       end
       false

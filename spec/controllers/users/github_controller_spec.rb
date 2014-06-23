@@ -63,8 +63,8 @@ describe Users::GithubController do
 
   context "GET /invite" do
     let(:email)    { 'me@example.com' }
-    let!(:invite)  { create :invite, email: email }
     let!(:company) { create :company  }
+    let!(:invite)  { create :invite, email: email, company: company }
 
     context "authorization failed" do
       let(:auth_hash) { :invalid_credentials }
@@ -106,7 +106,7 @@ describe Users::GithubController do
       let!(:user)    { create :user, email: email}
 
       before do
-        user.companies << company
+        user.add_to_company company
       end
 
       it "should redirect to /ui" do
@@ -141,16 +141,16 @@ describe Users::GithubController do
       end
     end
 
-    context "when company not found" do
+    context "when invite not found" do
       it "should redirect to /users/failure" do
-        get_invite company: "not found"
+        get_invite id: uuid_for(9)
         should be_not_found
       end
     end
 
-    context "when invite not found" do
+    context "when token not found" do
       it "should redirect to /users/failure" do
-        get_invite token: "not found"
+        get_invite token: 'not found'
         should be_not_found
       end
     end
@@ -167,6 +167,7 @@ describe Users::GithubController do
         expect(user).to be
         expect(user.name).to eq 'name'
         expect(user.email).to eq email
+        expect(user).to be_developer(company)
       end
 
       it "should create identity" do
@@ -192,10 +193,9 @@ describe Users::GithubController do
 
     def get_invite(o = {})
       request.env['omniauth.params'] = {
-        'do'      => "invite",
-        "email"   => o[:email]   || "me@example.com",
-        "token"   => o[:token]   || invite.token,
-        "company" => o[:company] || company.name
+        'do'  => "invite",
+        "i"   => o[:id]    || invite.id,
+        "t"   => o[:token] || invite.token,
       }
       get :callback
     end

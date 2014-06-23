@@ -6,5 +6,10 @@ FactoryGirl.define do
     number 1
     status "initialized"
     source({"script" => "true"}.to_yaml)
+    kind   'regular'
+
+    trait :deploy do
+      kind 'deploy'
+    end
   end
 end
