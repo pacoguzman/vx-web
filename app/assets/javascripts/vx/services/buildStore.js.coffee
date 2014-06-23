@@ -8,7 +8,7 @@ Vx.service 'buildStore',
     eventSource.subscribe "build:created", (payload) ->
       collection(payload.project_id).addItem(payload)
       _onBranchesForCreate(payload.project_id, payload.id, payload)
-      collection("queued").addItem payload
+      collection("queued").addItem(payload)
       _onPullRequestsForCreate(payload.project_id, payload.id, payload)
 
     eventSource.subscribe "build:updated", (payload) ->
@@ -18,12 +18,6 @@ Vx.service 'buildStore',
         item(payload.id).update payload, "queued"
       else
         item(payload.id).remove "queued"
-    
-    // FIXME This is not in master anymore
-    eventSource.subscribe "build:destroyed", (payload) ->
-      item(payload.id).remove payload.project_id
-      item(payload.id).remove "branches" + payload.project_id
-      item(payload.id).remove "queued"
 
     _onBranchesForCreate = (projectId, buildId, value) ->
       if value.branch
