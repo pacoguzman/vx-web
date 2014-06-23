@@ -35,6 +35,12 @@ h4 {
 
 .panel-footer {
   background-color: #f9f9f9;
+  border-top-color: #eee;
+}
+
+.panel-default > .panel-heading {
+  background-image: linear-gradient(to bottom,#f5f5f5 0,#f9f9f9 100%);
+  border-color: #eee;
 }
 
 
@@ -75,6 +81,6 @@ h4 {
 
 .bs-callout-notice {
   background-color: #f9f9f9;
-  border-color: #ccc;
+  border-color: #eee;
 }
 
