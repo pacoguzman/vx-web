@@ -28,8 +28,8 @@
         %td {{ companyUsage.last_7_days.minutes | number }}
         %td {{ companyUsage.last_7_days.amount | currency }}
       %tr
-        %td Last 30 days
-        %td {{ companyUsage.last_30_days.job_count | number }}
-        %td {{ companyUsage.last_30_days.minutes | number }}
-        %td {{ companyUsage.last_30_days.amount | currency }}
+        %td This month
+        %td {{ companyUsage.this_month.job_count | number }}
+        %td {{ companyUsage.this_month.minutes | number }}
+        %td {{ companyUsage.this_month.amount | currency }}
 
