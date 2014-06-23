@@ -1,6 +1,8 @@
 require 'digest/md5'
 
 class UserSerializer < ActiveModel::Serializer
+  include GavatarHelper
+
   cached
 
   attributes :id, :email, :name, :project_subscriptions, :default_company,
@@ -32,8 +34,7 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def avatar_url
-    m = Digest::MD5.hexdigest(object.email)
-    "//www.gravatar.com/avatar/#{m}"
+    gavatar_url(object.email, size: 20)
   end
 
   def active_projects

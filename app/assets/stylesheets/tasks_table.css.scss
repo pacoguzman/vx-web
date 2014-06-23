@@ -3,6 +3,12 @@
 
   td {
     border-width: 0;
+
+    img {
+      display: inline-block;
+      width: 18px;
+      margin-right: 1em;
+    }
   }
 
   th:nth-child(1) {
