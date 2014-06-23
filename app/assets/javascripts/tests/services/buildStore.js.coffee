@@ -143,7 +143,7 @@ describe "buildStore", ->
     updateEv = null
 
     beforeEach ->
-    [[_, createEv], [_, updateEv]] = evSource.subscriptions()
+      [[_, createEv], [_, updateEv]] = evSource.subscriptions()
 
     describe "new build from event", ->
 
