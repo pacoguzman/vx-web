@@ -9,29 +9,22 @@ describe Users::InvitesController do
 
     context "successfuly" do
       before do
-        get :new, email: invite.email, company: company.name, token: invite.token
+        get :new, i: invite.id, t: invite.token
       end
       it { should be_success }
       it { should render_template("new") }
     end
 
-    context "when company is not found" do
-      before do
-        get :new, email: invite.email, company: 'not found', token: invite.token
-      end
-      it { should be_not_found }
-    end
-
-    context "when email is not found" do
-      before do
-        get :new, email: 'not found', company: company.name, token: invite.token
-      end
-      it { should be_not_found }
-    end
-
     context "when token is not found" do
       before do
-        get :new, email: invite.email, company: company.name, token: 'not found'
+        get :new, i: invite.id, t: 'not found'
+      end
+      it { should be_not_found }
+    end
+
+    context "when invite.id is not found" do
+      before do
+        get :new, i: uuid_for(9), t: invite.token
       end
       it { should be_not_found }
     end

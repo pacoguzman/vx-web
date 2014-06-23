@@ -4,16 +4,14 @@ Vx.service 'projectStore',
     cache    = cacheStore()
     projects = cache.collection("projects")
 
-    subscribe = (e) ->
-      switch e.event
-        when 'created'
-          projects.addItem e.data
-        when 'updated'
-          cache.item(e.id).update e.data, 'projects'
-        when 'destroyed'
-          cache.item(e.id).remove 'projects'
+    eventSource.subscribe "project:created", (payload) ->
+      projects.addItem payload
 
-    eventSource.subscribe "projects", subscribe
+    eventSource.subscribe "project:updated", (payload) ->
+      cache.item(payload.id).update payload, 'projects'
+
+    eventSource.subscribe "project:destroyed", (payload) ->
+      cache.item(payload.id).remove 'projects'
 
     all = () ->
       projects.get () ->

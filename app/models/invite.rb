@@ -1,9 +1,22 @@
 class Invite < ActiveRecord::Base
-  validates :company_id, :email, :token, presence: true
-
   belongs_to :company
 
   before_validation :generate_token
+
+  validates :company, :email, :token, presence: true
+
+  class << self
+    def mass_create(emails, company)
+      list = emails.to_s.split(" ")
+      transaction do
+        list.map do |email|
+          invite = create(company: company, email: email)
+          invite.persisted?.or_rollback_transaction
+          invite
+        end
+      end
+    end
+  end
 
   private
 
@@ -22,5 +35,3 @@ end
 #  email      :string(255)      not null
 #  created_at :datetime
 #  updated_at :datetime
-#
-

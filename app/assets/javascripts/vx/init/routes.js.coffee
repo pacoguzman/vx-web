@@ -31,6 +31,14 @@ Vx.config ($routeProvider, $locationProvider) ->
       templateUrl: "user_repos/index.html",
       controller: "UserReposCtrl"
     ).
+    when(p + '/users',
+      templateUrl: 'users/index.html',
+      controller: 'UsersCtrl'
+    ).
+    when(p + '/billing',
+      templateUrl: 'billing/index.html',
+      controller: 'BillingCtrl'
+    ).
     when(p + "/profile/user",
       templateUrl: "profile/user.html",
       controller: "UserProfileCtrl"

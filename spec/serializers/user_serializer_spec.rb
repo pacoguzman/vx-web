@@ -11,10 +11,11 @@ describe UserSerializer do
   end
 
   context "as_json" do
-    subject { serializer.as_json.keys }
+    subject { serializer.as_json.keys.sort }
 
-    it { should eq [:id, :email, :name, :project_subscriptions,
-                    :default_company, :identities, :companies ] }
+    it { should eq [:active_projects, :available_roles, :avatar_url, :companies,
+                    :default_company, :email, :id, :identities, :name,
+                    :project_subscriptions, :role, :sse_path] }
   end
 
   context "default_company" do
@@ -23,7 +24,7 @@ describe UserSerializer do
   end
 
   context "#project_subscriptions" do
-    let(:project) { create :project, user_repo: nil }
+    let(:project) { create :project, user_repo: nil, company: company }
     let(:sub)     { create :project_subscription, user: user, project: project }
     subject       { serializer.project_subscriptions }
 

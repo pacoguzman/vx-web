@@ -36,10 +36,11 @@ class ServerSideEventLoop
     end
   end
 
-  attr_reader :response
+  attr_reader :response, :channel
 
-  def initialize(response)
+  def initialize(response, channel)
     @response = response
+    @channel  = channel
   end
 
   def start
@@ -81,6 +82,7 @@ class ServerSideEventLoop
   def create_subscriber
     ActiveSupport::Notifications.subscribe(/server_side_event/) do |event, _, _, _, payload|
       begin
+        puts "! SSE: #{payload.inspect}"
         data = JSON.dump payload
         response.stream.write("event: event\n")
         response.stream.write("data: #{data}\n\n")

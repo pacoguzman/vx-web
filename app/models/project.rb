@@ -5,23 +5,25 @@ class Project < ActiveRecord::Base
   include ::PublicUrl::Project
 
   belongs_to :user_repo, class_name: "::UserRepo", foreign_key: :user_repo_id
+  belongs_to :company
+
+  has_one :identity, through: :user_repo
   has_many :builds, dependent: :destroy, class_name: "::Build"
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
   has_many :cached_files, dependent: :destroy
-  belongs_to :company
 
   validates :name, :http_url, :clone_url, :token,
     :deploy_key, presence: true
   validates :token, uniqueness: true
   validates :name, uniqueness: { scope: :company_id }
 
-  delegate :identity, to: :user_repo, allow_nil: true
-
   before_validation :generate_token,      on: :create
   before_validation :generate_deploy_key, on: :create
 
   after_destroy :publish_destroyed
+  after_create  :publish_created
 
+  delegate :channel, to: :company, allow_nil: true
 
   class << self
     def deploy_key_name
@@ -102,7 +104,12 @@ class Project < ActiveRecord::Base
   def new_build_from_payload(payload)
     return unless sc
 
-    file = sc.files(sc_model).get(payload.sha, ".travis.yml")
+    file = nil
+    if f = Rails.application.config.x.force_build_configuration
+      file = f
+    else
+      file = sc.files(sc_model).get(payload.sha, ".travis.yml")
+    end
 
     attrs = {
       pull_request_id:  payload.pull_request_number,
@@ -133,6 +140,10 @@ class Project < ActiveRecord::Base
     identity.sc.payload(sc_model, params)
   end
 
+  def publish(event = nil)
+    super(event, channel: channel)
+  end
+
   private
 
     def find_or_build_subscription_for_user(user)
@@ -142,6 +153,10 @@ class Project < ActiveRecord::Base
 
     def publish_destroyed
       publish :destroyed
+    end
+
+    def publish_created
+      publish :created
     end
 
 end

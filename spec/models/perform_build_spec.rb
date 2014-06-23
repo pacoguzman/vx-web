@@ -20,7 +20,10 @@ describe PerformBuild do
   context "#process" do
     let(:user)     { project.user_repo.user }
     let(:commit)   { Vx::ServiceConnector::Model.test_commit }
-    let(:file)     { { "rvm" => "2.0.0" }.to_yaml }
+    let(:file)     { {
+      "rvm"    => "2.0.0",
+      "deploy" => { "shell" => "/bin/true" }
+    }.to_yaml }
 
     subject { perform_build.process }
     before { mock_file_request file }
@@ -42,16 +45,24 @@ describe PerformBuild do
 
       it "should assign source to build" do
         expect(subject.source.keys).to be_include("rvm")
+        expect(subject.source.keys).to be_include("deploy")
       end
 
       it "should create jobs" do
         expect {
           subject
-        }.to change(perform_build.build.jobs, :count).by(1)
+        }.to change(perform_build.build.jobs, :count).by(2)
         job = subject.jobs.first
         expect(job).to be
+        expect(job).to be_regular
         expect(job.number).to eq 1
         expect(job.matrix).to eq({"rvm"=>"2.0.0"})
+        expect(job.source).to be
+
+        job = subject.jobs.last
+        expect(job).to be_deploy
+        expect(job.number).to eq 2
+        expect(job.matrix).to eq("rvm" => "2.0.0")
         expect(job.source).to be
       end
 
@@ -59,6 +70,16 @@ describe PerformBuild do
         expect {
           subject
         }.to change(JobsConsumer.messages, :count).by(1)
+        message = JobsConsumer.messages.first
+        expect(message.job_id).to eq 1
+      end
+
+      context "when only deploy jobs" do
+        let(:file) { {
+          "deploy" => { "shell" => "value" }
+        }.to_json }
+
+        it { should be }
       end
     end
 
@@ -86,8 +107,17 @@ describe PerformBuild do
         end
       end
 
-      context "when jobs is empty" do
+      context "when configuration file is empty" do
         let(:file) { "---\n" }
+        it "cannot create any builds" do
+          expect {
+            subject
+          }.to_not change(project.builds, :count)
+        end
+      end
+
+      context "when jobs is empty" do
+        let(:file) { { "before_script" => "value" }.to_yaml }
         it "cannot create any builds" do
           expect {
             subject

@@ -1,8 +1,9 @@
 VxWeb::Application.routes.draw do
 
   namespace :api do
+    resources :invites, only: [:create]
 
-    resources :users do
+    resources :users, only: [:index, :update, :destroy] do
       collection do
         get :me
       end
@@ -50,9 +51,10 @@ VxWeb::Application.routes.draw do
 
     resources :cached_files, only: [:destroy]
     resources :status, only: [:show], id: /(jobs)/
-    resources :events, only: [:index]
+    resources :events, show: [:index]
 
     resources :companies, only: [] do
+      get :usage, on: :collection
       member do
         post :default
       end
@@ -60,8 +62,9 @@ VxWeb::Application.routes.draw do
   end
 
   namespace :users do
-    get    'github/callback', to: "github#callback"
-    get    'failure',         to: redirect('/ui')
+    get 'github/callback', to: "github#callback"
+    get 'failure',         to: redirect('/ui')
+    get '/:id/become',     to: 'session#become'
 
     resource :session, only: [:destroy, :show], controller: "session"
     resource :invite,  only: [:new]

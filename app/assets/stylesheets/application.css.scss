@@ -87,6 +87,10 @@ body > .container > .ng-view {
   opacity: 0.5;
 }
 
+.ajax-loader-inline {
+  content: url(asset-path("ajax-loader.gif"));
+}
+
 .medium-text {
   font-size: 14px;
 }

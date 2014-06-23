@@ -8,7 +8,7 @@ describe JobSerializer do
     subject { serializer.as_json.keys }
 
     it { should eq [:id, :build_id, :project_id, :number, :natural_number, :status,
-                    :matrix, :started_at, :finished_at, :text_logs_url] }
+                    :matrix, :started_at, :finished_at, :text_logs_url, :kind] }
 
   end
 
@@ -21,6 +21,7 @@ describe JobSerializer do
     subject { serializer.natural_number }
 
     before do
+      object.build.number = 1
       object.number = 12345
     end
     it { should eq "1.0000012345" }

@@ -49,22 +49,38 @@ describe "currentUserStore", ->
   describe "get()", ->
 
     describe "success", ->
-      beforeEach ->
-        $http.expectGET('/api/users/me').respond('success')
+      it 'sends GET request', ->
+        $http.expectGET('/api/users/me').respond({ role: 'admin' })
+        $scope.$apply -> currentUserStore.get()
+        $http.flush()
 
-      it "should send GET request", ->
+      it 'returns isAdmin = true if role equals "admin"', ->
+        $http.expectGET('/api/users/me').respond({ role: 'admin' })
+
         $scope.$apply ->
           currentUserStore.get().then succ, fail
         $http.flush()
-        expect(succVal).toEqual 'success'
 
-      it "should return existing object on second run", ->
+        expect(succVal).toEqual({ role: 'admin', isAdmin: true })
+
+      it 'returns isAdmin = false if role does not equal "admin"', ->
+        $http.expectGET('/api/users/me').respond({ role: 'developer' })
+
         $scope.$apply ->
           currentUserStore.get().then succ, fail
         $http.flush()
-        expect(succVal).toEqual 'success'
+
+        expect(succVal).toEqual({ role: 'developer', isAdmin: false })
+
+      it 'returns existing object on second run', ->
+        $http.expectGET('/api/users/me').respond({ role: 'admin' })
 
         $scope.$apply ->
           currentUserStore.get().then succ, fail
-        expect(succVal).toEqual 'success'
+        $http.flush()
+        expect(succVal).toEqual({ role: 'admin', isAdmin: true })
+
+        $scope.$apply ->
+          currentUserStore.get().then succ, fail
+        expect(succVal).toEqual({ role: 'admin', isAdmin: true })
 

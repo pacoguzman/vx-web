@@ -9,6 +9,14 @@ class Company < ActiveRecord::Base
   has_many :invites, dependent: :destroy
 
   default_scope ->{ order("companies.name ASC") }
+
+  def default_user_role
+    users.any? ? "developer" : "admin"
+  end
+
+  def channel
+    @channel ||= "company/#{id}"
+  end
 end
 
 # == Schema Information

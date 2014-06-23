@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   has_many :identities, class_name: "::UserIdentity", dependent: :nullify
   has_many :user_repos, through: :identities
   has_many :project_subscriptions, class_name: "::ProjectSubscription", dependent: :destroy
+  has_many :active_project_subscriptions,
+    ->{ where(subscribe: true).readonly }, class_name: "::ProjectSubscription"
 
   has_many :user_companies, dependent: :destroy
   has_many :companies, through: :user_companies
@@ -10,8 +12,27 @@ class User < ActiveRecord::Base
   validates :name, :email, presence: true
   validates :email, uniqueness: true
 
+  def update_role(role, company)
+    user_company = user_companies.find_by(company: company)
+    user_company.update(role: role)
+  end
+
   def default_company
     companies.reorder("user_companies.default DESC").first
+  end
+
+  def role(company)
+    if company
+      user_companies.where(company_id: company.id).pluck(:role).first
+    end
+  end
+
+  def admin?(company)
+    role(company) == 'admin'
+  end
+
+  def developer?(company)
+    role(company) == 'developer'
   end
 
   def sync_repos(company)
@@ -32,13 +53,26 @@ class User < ActiveRecord::Base
     identities(true).to_a.select{|i| not i.ignored? }
   end
 
-  def add_to_company(company)
-    user_company = user_companies.find_or_initialize_by(
-      company_id: company.id
-    )
+  def add_to_company(company, role = 'developer')
+    user_company = user_companies.find_or_initialize_by(company_id: company.id)
+    user_company.role = role
     if user_company.save
       user_company.default!
       user_company
+    end
+  end
+
+  def delete_from_company(company)
+    user_company = user_companies.find_by(company: company)
+
+    if user_company
+      transaction do
+        user_repos.where(company: company).find_each do |user_repo|
+          user_repo.unsubscribe
+          user_repo.destroy
+        end
+        user_company.destroy
+      end
     end
   end
 

@@ -5,6 +5,20 @@ describe Company do
   subject { company }
 
   it { should be_valid }
+
+  context "default_user_role" do
+    let(:company) { create :company }
+    let(:user)    { create :user }
+
+    it "should be developer if any users exists" do
+      user.add_to_company company
+      expect(company.default_user_role).to eq 'developer'
+    end
+
+    it "should be admin if no any users" do
+      expect(company.default_user_role).to eq 'admin'
+    end
+  end
 end
 
 # == Schema Information

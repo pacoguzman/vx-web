@@ -15,8 +15,8 @@ describe Build do
       end
 
       it "should increment when any other builds exist" do
-        create :build, project: project
-        expect(subject).to change(b, :number).to(2)
+        other_build = create(:build, project: project)
+        expect{ b.save! }.to change{ b.number }.to(other_build.number + 1)
       end
     end
 
@@ -48,12 +48,27 @@ describe Build do
   end
 
   it "should publish(:created) after create" do
+    project = create :project, company: create(:company)
     expect{
-      create :build
+      create :build, project: project
     }.to change(ServerSideEventsConsumer.messages, :count).by(1)
     msg = ServerSideEventsConsumer.messages.last
-    expect(msg[:channel]).to eq 'builds'
-    expect(msg[:event]).to eq :created
+    expect(msg.keys).to eq [:channel, :event, :event_name, :payload]
+    expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
+    expect(msg[:event_name]).to eq "build:created"
+    expect(msg[:payload]).to_not be_empty
+  end
+
+  it "should publish updated" do
+    b.save!
+    expect{
+      b.publish
+    }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+    msg = ServerSideEventsConsumer.messages.last
+    expect(msg.keys).to eq [:channel, :event, :event_name, :payload]
+    expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
+    expect(msg[:event_name]).to eq "build:updated"
+    expect(msg[:payload]).to_not be_empty
   end
 
   context "(messages)" do
@@ -132,6 +147,25 @@ describe Build do
         expect{
           subject
         }.to change{ b.project.reload.last_build_id }.to(b.id)
+      end
+    end
+
+    context "after transition to deployed" do
+      let(:status) { 2 }
+      subject { b.deploy }
+
+      it "should delivery message to BuildNotifyConsumer" do
+        expect{
+          subject
+        }.to change(BuildNotifyConsumer.messages, :count).by(1)
+        msg = BuildNotifyConsumer.messages.last
+        expect(msg["status"]).to eq 6
+      end
+
+      it "should delivery messages to ServerSideEventsConsumer" do
+        expect{
+          subject
+        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
       end
     end
 
@@ -368,13 +402,15 @@ describe Build do
   end
 
   context "#restart" do
-    let(:job) { create :job, build: b }
-    let(:b)   { create :build }
-    subject   { b.restart.try(:reload) }
+    let(:b)    { create :build }
+    let(:job1) { create :job, build: b, number: 1 }
+    let(:job2) { create :job, :deploy, build: b, number: 2 }
+    subject    { b.restart.try(:reload) }
 
     context "when build is finished" do
       before do
-        job.update! status: 3
+        job1.update! status: 3
+        job2.update! status: 3
         b.update! status: 3
       end
 
@@ -387,16 +423,16 @@ describe Build do
       it "should delivery messages to ServerSideEventsConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
+        }.to change(ServerSideEventsConsumer.messages, :count).by(3)
         build_m = ServerSideEventsConsumer.messages.pop
-        job_m   = ServerSideEventsConsumer.messages.pop
+        job2_m  = ServerSideEventsConsumer.messages.pop
 
-        expect(job_m[:channel]).to eq 'jobs'
-        expect(job_m[:event]).to eq :updated
-        expect(job_m[:payload][:id]).to eq job.id
+        expect(job2_m[:channel]).to eq "company/00000000-0000-0000-0000-000000000000"
+        expect(job2_m[:event_name]).to eq "job:updated"
+        expect(job2_m[:payload][:id]).to eq job2.id
 
-        expect(build_m[:channel]).to eq 'builds'
-        expect(build_m[:event]).to eq :updated
+        expect(job2_m[:channel]).to eq "company/00000000-0000-0000-0000-000000000000"
+        expect(build_m[:event_name]).to eq "build:updated"
       end
 
       it "should delivery message to JobsConsumer" do
@@ -428,8 +464,8 @@ describe Build do
     its(:script)     { should eq ["/bin/true"] }
   end
 
-  context "to_matrix" do
-    subject { b.to_matrix }
+  context "to_matrix.build" do
+    subject { b.to_matrix.build }
     before do
       b.source = {"rvm" => %w{ 1.9 2.0 }}.to_yaml
     end
@@ -437,14 +473,43 @@ describe Build do
     it { should have(2).item }
   end
 
+  context "to_deploy.build" do
+    subject { b.to_deploy.build }
+    before do
+      b.source = {"deploy" => { "shell" => "/bin/true", "branch" => "master" } }.to_yaml
+    end
+    it { should be }
+    it { should have(1).item }
+
+    context "when branch is not matched" do
+      before do
+        b.branch = 'production'
+      end
+      it { should be_empty }
+    end
+  end
+
   context "publish_perform_job_messages" do
-    let(:job) { create :job }
     subject { job.build.publish_perform_job_messages }
 
-    it "should be" do
-      expect {
-        subject
-      }.to change(JobsConsumer.messages, :count).by(1)
+    context "regular" do
+      let(:job) { create :job }
+
+      it "should publish messages" do
+        expect {
+          subject
+        }.to change(JobsConsumer.messages, :count).by(1)
+      end
+    end
+
+    context "deploy" do
+      let(:job) { create :job, :deploy }
+
+      it "should publish messages" do
+        expect {
+          subject
+        }.to change(JobsConsumer.messages, :count).by(1)
+      end
     end
   end
 
@@ -459,12 +524,11 @@ describe Build do
         subject
       }.to change(user.project_subscriptions, :count).by(1)
     end
-
   end
 
-  context "create_jobs_from_matrix" do
+  context "create_regular_jobs" do
     let(:b) { create :build }
-    subject { b.create_jobs_from_matrix }
+    subject { b.create_regular_jobs }
 
     before do
       b.source = {"rvm" => %w{ 1.9 2.0 }}.to_yaml
@@ -475,7 +539,7 @@ describe Build do
     context "created jobs" do
       subject { b.jobs }
       before do
-        b.create_jobs_from_matrix
+        b.create_regular_jobs
       end
       it { should have(2).item }
 
@@ -489,6 +553,45 @@ describe Build do
 
       it "should have true sources" do
         expect(subject.map{|i| YAML.load(i.source)["rvm"] }).to eq [["1.9"], ["2.0"]]
+      end
+
+      it "should have true kind" do
+        expect(subject.map(&:kind)).to eq %w{ regular regular }
+      end
+    end
+  end
+
+  context "create_deploy_jobs" do
+    let(:b) { create :build }
+    subject { b.create_deploy_jobs }
+
+    before do
+      b.source = {"deploy" => { "shell" => "/bin/true" }}.to_yaml
+    end
+
+    it { should be }
+
+    context "created jobs" do
+      subject { b.jobs }
+      before do
+        b.create_deploy_jobs
+      end
+      it { should have(1).item }
+
+      it "should have matrixes" do
+        expect(subject.map(&:matrix)).to eq [{}]
+      end
+
+      it "should have true numbers" do
+        expect(subject.map(&:number)).to eq [1]
+      end
+
+      it "should have true sources" do
+        expect(subject.map{|i| YAML.load(i.source)["deploy_modules"] }).to eq [[{"shell"=>["/bin/true"]}]]
+      end
+
+      it "should have true kind" do
+        expect(subject.map(&:kind)).to eq %w{ deploy }
       end
     end
   end

@@ -1,4 +1,4 @@
-class Api::ProjectsController < Api::BaseController
+class ::Api::ProjectsController < ::Api::BaseController
 
   respond_to :json
   skip_before_filter :authorize_user, only: [:key]

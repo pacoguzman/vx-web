@@ -22,6 +22,8 @@ class Build < ActiveRecord::Base
   scope :pending, -> { where(status: [0,2]).reorder('builds.updated_at DESC') } # TODO next Rails version allow not
   scope :with_pull_request, -> { where(arel_table[:pull_request_id].not_eq(nil)) }
 
+  delegate :channel, to: :project, allow_nil: true
+
   state_machine :status, initial: :initialized do
 
     state :initialized,   value: 0
@@ -29,24 +31,29 @@ class Build < ActiveRecord::Base
     state :passed,        value: 3
     state :failed,        value: 4
     state :errored,       value: 5
+    state :deploying,     value: 6
 
     event :start do
       transition :initialized => :started
     end
 
     event :pass do
-      transition :started => :passed
+      transition [:started, :deploying] => :passed
     end
 
     event :decline do
-      transition :started => :failed
+      transition [:started, :deploying] => :failed
     end
 
     event :error do
-      transition [:initialized, :started] => :errored
+      transition [:initialized, :started, :deploying] => :errored
     end
 
-    after_transition any => [:started, :passed, :failed, :errored] do |build, transition|
+    event :deploy do
+      transition [:initialized, :started] => :deploying
+    end
+
+    after_transition any => [:started, :passed, :failed, :errored, :deploying] do |build, transition|
       build.delivery_to_notifier
 
       build.publish
@@ -124,24 +131,50 @@ class Build < ActiveRecord::Base
   end
 
   def to_matrix
-    ::Vx::Builder.matrix(to_build_configuration).build
+    @matrix ||= ::Vx::Builder.matrix(to_build_configuration)
   end
 
-  def create_jobs_from_matrix
-    to_matrix.each_with_index do |config, idx|
+  def to_deploy
+    @deploy ||= ::Vx::Builder.deploy(to_matrix, branch: branch)
+  end
+
+  def create_regular_jobs
+    to_matrix.build.each_with_index do |config, idx|
       number = idx + 1
-      self.jobs.create(
+      job = self.jobs.regular.create(
+        matrix: config.matrix_attributes,
+        number: number,
+        source: config.to_yaml,
+      )
+      return false unless job.persisted?
+    end
+    true
+  end
+
+  def create_deploy_jobs
+    to_deploy.build.each_with_index do |config, idx|
+      number = self.jobs.count + idx + 1
+      job = self.jobs.deploy.create(
         matrix: config.matrix_attributes,
         number: number,
         source: config.to_yaml
-      ) || return
+      )
+      return false unless job.persisted?
     end
-    jobs.any?
+    true
   end
 
   def publish_perform_job_messages
-    jobs.each(&:publish_perform_job_message)
+    if jobs.regular.any?
+      jobs.regular.each(&:publish_perform_job_message)
+    else
+      publish_perform_deploy_job_messages
+    end
     true
+  end
+
+  def publish_perform_deploy_job_messages
+    jobs.deploy.each(&:publish_perform_job_message)
   end
 
   def subscribe_author
@@ -193,6 +226,8 @@ class Build < ActiveRecord::Base
           job.restart.or_rollback_transaction
         end
 
+        publish_perform_job_messages
+
         self.publish
         self
       end
@@ -210,6 +245,10 @@ class Build < ActiveRecord::Base
 
   def update_last_build_on_project
     project.update_last_build
+  end
+
+  def publish(name = nil)
+    super(name, channel: channel)
   end
 
   private
@@ -233,7 +272,6 @@ class Build < ActiveRecord::Base
     def publish_created
       publish :created
     end
-
 
 end
 

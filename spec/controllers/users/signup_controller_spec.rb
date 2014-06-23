@@ -7,7 +7,7 @@ describe Users::SignupController do
     },
     "info" => {
       "name"    => "name",
-      "email"   => "email",
+      "email"   => "user@example.com",
       "nickname"=> "nickname"
     },
     "provider" => "github",
@@ -40,7 +40,7 @@ describe Users::SignupController do
       context "@signup" do
         subject { assigns(:signup) }
         its(:company_name) { should eq 'nickname' }
-        its(:email)        { should eq 'email' }
+        its(:email)        { should eq 'user@example.com' }
         it { should_not be_user_exists }
       end
     end
@@ -93,6 +93,7 @@ describe Users::SignupController do
       it "should create company" do
         expect(company).to be
         expect(user.default_company).to eq company
+        expect(user).to be_admin(company)
       end
 
       it "should create identity for user" do
@@ -169,8 +170,9 @@ describe Users::SignupController do
     end
 
     context "when user with same identity exists" do
+      let!(:user) { create(:user) }
+
       before do
-        create :user
         create :user_identity, uid: "uid", user: user
         post_create
       end
@@ -179,7 +181,7 @@ describe Users::SignupController do
 
       it "should update user email" do
         expect(user).to be
-        expect(user.email).to eq 'email'
+        expect(user.email).to eq 'user@example.com'
       end
 
       it "should create company" do
@@ -201,8 +203,9 @@ describe Users::SignupController do
     end
 
     context "when user with same identity exists and already in company" do
+      let!(:user) { create(:user) }
+
       before do
-        user    = create :user
         company = create :company, id: nil
         create :user_identity, uid: "uid", user: user
         user.add_to_company(company)
@@ -213,7 +216,7 @@ describe Users::SignupController do
 
       it "should update user email" do
         expect(user).to be
-        expect(user.email).to eq 'email'
+        expect(user.email).to eq 'user@example.com'
       end
 
       it "should create company" do

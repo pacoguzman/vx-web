@@ -3,6 +3,7 @@ require "spec_helper"
 describe BuildsMailer do
   let(:build) {
     create(:build,
+      number: 1,
       started_at: 3.minutes.ago,
       finished_at: 1.minute.ago,
       status: 3,

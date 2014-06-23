@@ -5,28 +5,25 @@ Vx.service 'buildStore',
     collection = cache.collection
     item       = cache.item
 
-    subscribe = (e) ->
-      projectId = e.data.project_id
-      buildId   = e.id
-      value     = e.data
+    eventSource.subscribe "build:created", (payload) ->
+      collection(payload.project_id).addItem(payload)
+      _onBranchesForCreate(payload.project_id, payload.id, payload)
+      collection("queued").addItem payload
+      _onPullRequestsForCreate(payload.project_id, payload.id, payload)
 
-      switch e.event
-        when 'created'
-          collection(projectId).addItem value
-          _onBranchesForCreate(projectId, e.data.id, value)
-          collection("queued").addItem value
-          _onPullRequestsForCreate(projectId, e.data.id, value)
-        when 'updated'
-          item(buildId).update value, projectId
-          item(buildId).update value, "branches" + projectId
-          if !value.finished_at # still pending
-            item(buildId).update value, "queued"
-          else
-            item(buildId).remove "queued"
-        when 'destroyed'
-          item(buildId).remove projectId
-          item(buildId).remove "branches" + projectId
-          item(buildId).remove "queued"
+    eventSource.subscribe "build:updated", (payload) ->
+      item(payload.id).update payload, payload.project_id
+      item(payload.id).update payload, "branches" + payload.project_id
+      if !payload.finished_at # still pending
+        item(payload.id).update payload, "queued"
+      else
+        item(payload.id).remove "queued"
+    
+    // FIXME This is not in master anymore
+    eventSource.subscribe "build:destroyed", (payload) ->
+      item(payload.id).remove payload.project_id
+      item(payload.id).remove "branches" + payload.project_id
+      item(payload.id).remove "queued"
 
     _onBranchesForCreate = (projectId, buildId, value) ->
       if value.branch
@@ -53,8 +50,6 @@ Vx.service 'buildStore',
           its.push value
           d.resolve value
           d.promise
-
-    eventSource.subscribe "builds", subscribe
 
     all = (projectId) ->
       collection(projectId).get () ->

@@ -3,7 +3,7 @@
   to { opacity: 0.0; }
 }
 
-.task-status-errored {
+.task-status-errored, .task-status-cancelled {
   background-color: #fbfbfb;
   a {
     color: #666;
@@ -30,7 +30,7 @@
   }
 }
 
-.task-status-initialized, .task-status-queued, .task-status-started {
+.task-status-initialized, .task-status-queued, .task-status-started, .task-status-deploying {
   background-color: #fffefa;
 
   a {
@@ -41,7 +41,7 @@
   }
 }
 
-.task-status-started {
+.task-status-started, .task-status-deploying {
   i {
     -webkit-animation-name: blinker;
     -webkit-animation-iteration-count: infinite;

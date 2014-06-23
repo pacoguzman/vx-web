@@ -100,15 +100,15 @@ describe "projectStore", ->
 
   describe "with eventSource", ->
 
-    f = null
+    fCreate  = null
+    fUpdate  = null
+    fDestroy = null
 
     beforeEach ->
       $http.expectGET("/api/projects").respond(angular.copy [testObj,testObj2])
 
     beforeEach ->
-      found = _.find evSource.subscriptions(), (it) ->
-        it[0] == 'projects'
-      f = found[1]
+      [[_,fCreate], [_, fUpdate], [_, fDestroy]] = evSource.subscriptions()
 
     beforeEach ->
       projects.all()
@@ -117,29 +117,23 @@ describe "projectStore", ->
     it "should subscribe to 'projects'", ->
       names = evSource.subscriptions().map (it) ->
         it[0]
-      expect(names).toContain 'projects'
-      expect(f).toBeDefined()
+      expect(names).toEqual  [ 'project:created', 'project:updated', 'project:destroyed' ]
 
     it "should add new project from event", ->
       e =
-        event: 'created',
-        data:
-          id: 1
-          name: "Created"
-      f(e)
+        id: 1
+        name: "Created"
+      fCreate(e)
       $scope.$apply ->
         projects.all().then (its) ->
           expected = its[2]
-      expect(expected).toEqual e.data
+      expect(expected).toEqual e
 
     it "should update project from event", ->
       e =
-        event: 'updated',
         id: 12
-        data:
-          id: 12
-          name: "sUpdated"
-      f(e)
+        name: "sUpdated"
+      fUpdate(e)
       $scope.$apply ->
         projects.all().then (its) ->
           expected = its[0]
@@ -147,9 +141,8 @@ describe "projectStore", ->
 
     it "should destroy project from event", ->
       e =
-        event: 'destroyed',
         id: 12
-      f(e)
+      fDestroy(e)
       $scope.$apply ->
         projects.all().then (its) ->
           expected = its

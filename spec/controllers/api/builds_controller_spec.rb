@@ -8,7 +8,7 @@ describe Api::BuildsController do
   subject { response }
 
   before do
-    session[:user_id] = user.id
+    sign_in user, project.company
   end
 
   context "GET /index" do
