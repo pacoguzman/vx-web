@@ -34,7 +34,7 @@ describe Api::CompaniesController do
       expected_response = {
         today:        { job_count: 0, minutes: 0, amount: 0 },
         yesterday:    { job_count: 0, minutes: 0, amount: 0 },
-        last_7_days:  { job_count: 0, minutes: 0, amount: 0 },
+        this_week:    { job_count: 0, minutes: 0, amount: 0 },
         this_month:   { job_count: 0, minutes: 0, amount: 0 }
       }
       expect(json_response).to eq(expected_response)

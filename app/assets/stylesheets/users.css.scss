@@ -8,12 +8,12 @@
 
     i.fa-gear {
       font-size: 1.2em;
-      cursor: pointer;
       opacity: 0.5;
 
     }
 
     i.dropdown-toggle {
+      cursor: pointer;
       &:hover {
         opacity: 1.0;
       }

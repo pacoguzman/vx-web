@@ -11,10 +11,10 @@ class CompanyUsage
 
   def calculate
     {
-      today:        calculate_for_period(from: Time.current.beginning_of_day,   to: Time.current),
-      yesterday:    calculate_for_period(from: 1.day.ago.beginning_of_day,      to: 1.day.ago.end_of_day),
-      last_7_days:  calculate_for_period(from: 7.days.ago.beginning_of_day,     to: Time.current),
-      this_month:   calculate_for_period(from: Time.current.beginning_of_month, to: Time.current)
+      today:      calculate_for_period(from: Time.current.beginning_of_day,   to: Time.current),
+      yesterday:  calculate_for_period(from: 1.day.ago.beginning_of_day,      to: 1.day.ago.end_of_day),
+      this_week:  calculate_for_period(from: Time.current.beginning_of_week,  to: Time.current),
+      this_month: calculate_for_period(from: Time.current.beginning_of_month, to: Time.current)
     }
   end
 
