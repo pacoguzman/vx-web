@@ -23,6 +23,7 @@ class CreateJobHistories < ActiveRecord::Migration
       FROM jobs
       INNER JOIN builds ON builds.id = jobs.build_id
       INNER JOIN projects ON projects.id = builds.project_id
+      WHERE jobs.started_at IS NOT NULL AND jobs.finished_at IS NOT NULL
     }.squish
   end
 
