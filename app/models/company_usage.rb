@@ -18,28 +18,20 @@ class CompanyUsage
     }
   end
 
-  private
+  def calculate_for_period(options)
+    query = %{
+      SELECT
+        COUNT(job_histories.job_number) AS job_count,
+        SUM(CEIL(job_histories.duration / 60.0)) AS minutes
+      FROM job_histories
+      WHERE job_histories.company_id = ? AND job_histories.created_at > ? AND job_histories.created_at < ?
+    }.squish
 
-    def calculate_for_period(options)
-      query = %{
-        SELECT
-          COUNT(*) AS job_count,
-          CEIL(SUM(EXTRACT(EPOCH FROM AGE(jobs.finished_at, jobs.started_at))) / 60.0) AS minutes
-        FROM jobs
-        INNER JOIN builds ON builds.id = jobs.build_id
-        INNER JOIN projects ON projects.id = builds.project_id
-        WHERE
-          projects.company_id = ? AND
-          jobs.started_at IS NOT NULL AND jobs.finished_at IS NOT NULL AND
-          jobs.finished_at > ? AND jobs.finished_at < ?
-      }.compact
+    query  = JobHistory.send(:sanitize_sql_array, [query, company.id, options[:from], options[:to]])
 
-      query  = Job.send(:sanitize_sql_array, [query, company.id, options[:from], options[:to]])
-
-      result = Job.connection.select_one(query)
-      result = result.map { |key, value| { key.to_sym => value.to_i } }.reduce(:merge)
-      amount = result[:minutes] # TODO use hourly rate here
-      result[:amount] = amount.to_f / 100.0
-      result
-    end
+    result = JobHistory.connection.select_one(query)
+    result = result.map { |key, value| { key.to_sym => value.to_i } }.reduce(:merge)
+    result[:amount] = result[:minutes].to_f / 100.0
+    result
+  end
 end

@@ -56,9 +56,42 @@ describe Job do
   end
 
   context "(state machine)" do
-    let!(:job) { create :job, status: status }
+    context 'after job finishing' do
+      it 'creates a JobHistory' do
+        now = Time.current
+        job = create(:job, status: 2, started_at: now - 180.seconds, finished_at: now - 90.seconds)
+
+        expect { job.pass }.to change { JobHistory.count }.by(1)
+
+        job_history = JobHistory.last
+        expect(job_history.company).to      eq(job.company)
+        expect(job_history.build_number).to eq(job.build.number)
+        expect(job_history.job_number).to   eq(job.number)
+        expect(job_history.duration).to     eq(90)
+      end
+
+      it 'creates a JobHistory after calling #restart method too' do
+        now = Time.current
+        job = create(:job, status: 2, started_at: now - 2.minutes)
+
+        job.error
+        job.restart
+        job.start
+        stub(job).started_at { now - 60.seconds }
+        stub(job).finished_at { now }
+
+        expect { job.pass }.to change { JobHistory.count }.from(1).to(2)
+
+        job_history = JobHistory.last
+        expect(job_history.company).to      eq(job.company)
+        expect(job_history.build_number).to eq(job.build.number)
+        expect(job_history.job_number).to   eq(job.number)
+        expect(job_history.duration).to     eq(60)
+      end
+    end
 
     context "after transition to started" do
+      let!(:job) { create :job, status: status }
       let(:status) { 0 }
       subject { job.start }
 
@@ -70,6 +103,7 @@ describe Job do
     end
 
     context "after transition to cancelled" do
+      let!(:job) { create :job, status: status }
       let(:status) { 0 }
       subject { job.cancel }
 
@@ -81,6 +115,7 @@ describe Job do
     end
 
     context "after transition to passed" do
+      let!(:job) { create :job, status: status }
       let(:status) { 2 }
       subject { job.pass }
 
@@ -92,6 +127,7 @@ describe Job do
     end
 
     context "after transition to failed" do
+      let!(:job) { create :job, status: status }
       let(:status) { 2 }
       subject { job.decline }
 
@@ -103,6 +139,7 @@ describe Job do
     end
 
     context "after transition to errored" do
+      let!(:job) { create :job, status: status }
       let(:status) { 2 }
       subject { job.error }
 

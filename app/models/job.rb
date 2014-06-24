@@ -48,8 +48,26 @@ class Job < ActiveRecord::Base
       transition [:initialized] => :cancelled
     end
 
+    after_transition any => [:passed, :failed, :errored] do |job, _|
+      JobHistory.create!(
+        company:      job.company,
+        build_number: job.build.number,
+        job_number:   job.number,
+        duration:     job.duration,
+        created_at:   job.finished_at
+      )
+    end
+
     after_transition any => [:started, :passed, :failed, :errored, :cancelled] do |job, _|
       job.publish
+    end
+  end
+
+  def duration
+    if finished_at && started_at
+      (finished_at - started_at).to_i
+    else
+      0
     end
   end
 
