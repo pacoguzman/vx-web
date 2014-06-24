@@ -21,6 +21,7 @@ class JobUpdater
   def perform
     guard do
       update_and_save_job_status
+      create_job_history
       truncate_job_logs
       start_build?               and start_build
       all_regular_jobs_finished? and start_deploy
@@ -104,6 +105,12 @@ class JobUpdater
       when 5 # errored
         job.finished_at = tm
         job.error!
+      end
+    end
+
+    def create_job_history
+      if [3,4,5].include?(message.status)
+        job.create_job_history!
       end
     end
 

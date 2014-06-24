@@ -48,16 +48,6 @@ class Job < ActiveRecord::Base
       transition [:initialized] => :cancelled
     end
 
-    after_transition any => [:passed, :failed, :errored] do |job, _|
-      JobHistory.create!(
-        company:      job.company,
-        build_number: job.build.number,
-        job_number:   job.number,
-        duration:     job.duration,
-        created_at:   job.finished_at
-      )
-    end
-
     after_transition any => [:started, :passed, :failed, :errored, :cancelled] do |job, _|
       job.publish
     end
@@ -143,6 +133,19 @@ class Job < ActiveRecord::Base
 
   def publish(event = nil)
     super(event, channel: channel)
+  end
+
+  def create_job_history!
+    if finished?
+      JobHistory.create!(
+        company:      company,
+        project_name: project.name,
+        build_number: build.number,
+        job_number:   number,
+        duration:     duration,
+        created_at:   finished_at
+      )
+    end
   end
 
   private
