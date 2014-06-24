@@ -29,6 +29,14 @@ class UserRepo < ActiveRecord::Base
 
   default_scope ->{ order("user_repos.full_name ASC") }
 
+  scope :in_company, ->(company) {
+    if company
+      where(company: company)
+    else
+      self
+    end
+  }
+
   class << self
     def find_or_create_by_sc(company, identity, model)
       repo = find_or_initialize_by(

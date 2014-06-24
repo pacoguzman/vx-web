@@ -38,6 +38,6 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def active_projects
-    object.user_repos.where(subscribed: true).count
+    object.user_repos.in_company(scope).where(subscribed: true).count
   end
 end

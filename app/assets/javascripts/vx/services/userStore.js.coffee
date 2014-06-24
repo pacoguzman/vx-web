@@ -14,7 +14,7 @@ Vx.service 'userStore', ($http, $q, cacheStore) ->
     $http
       method: 'PATCH'
       url: "#{ API_PATH }/#{ user.id }",
-      data: { user: { role: user.role } }
+      data: { user: { role: user.role, id: user.id } }
 
   destroy: (user) ->
     $http.delete("#{ API_PATH }/#{ user.id }").success (response) ->
