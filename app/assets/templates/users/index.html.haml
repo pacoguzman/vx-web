@@ -37,6 +37,6 @@
         %td
           %select.form-control.input-sm{ 'ng-model' => 'user.role', 'ng-change' => 'update(user)', 'ng-options' => 'role for role in user.available_roles', 'ng-disabled' => 'disableEdit(user)' }
         %td
-          %a.btn.btn-sm.btn-default{ 'href' => 'javascript://', 'ng-hide' => 'disableEdit(user)', 'ng-click' => 'destroy(user)' }
+          %a.btn.btn-sm.btn-default{ 'href' => 'javascript://', 'ng-hide' => 'disableEdit(user)', 'ng-click' => 'destroy(user)', 'app-confirm-click' => 'Are you sure?' }
             %i.fa.fa-remove
             Destroy
