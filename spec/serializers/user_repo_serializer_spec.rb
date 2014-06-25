@@ -4,11 +4,30 @@ describe UserRepoSerializer do
   let(:user_repo)  { create :user_repo }
   let(:serializer) { described_class.new user_repo }
 
+  it "should find same_name_projects in object" do
+    expect(described_class.new user_repo).to_not be_same_name_projects
+    create :project, name: user_repo.full_name, company: user_repo.company
+    expect(described_class.new user_repo).to be_same_name_projects
+  end
+
+  it "should find same_name_projects in scope" do
+    dont_allow(user_repo).same_name_projects?
+
+    struct = Struct.new(:same_name_projects)
+
+    scope = struct.new([])
+    expect(described_class.new user_repo, scope: scope).to_not be_same_name_projects
+
+    scope = struct.new([user_repo.full_name])
+    expect(described_class.new user_repo, scope: scope).to be_same_name_projects
+  end
+
   context "as_json" do
     subject { serializer.as_json.keys }
 
     it { should eq [:id, :full_name, :html_url, :subscribed,
-                    :disabled, :settings_url, :provider_title] }
+                    :disabled, :settings_url, :provider_title,
+                    :description] }
   end
 
   context "disabled" do

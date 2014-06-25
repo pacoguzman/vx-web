@@ -15,10 +15,14 @@ VxWeb::Application.routes.draw do
 
     resources :projects do
       resources :builds, only: [:index, :create]
-      resources :cached_files, only: [:index]
+      resources :cached_files, only: [:index] do
+        collection do
+          post :mass_destroy
+        end
+      end
       resource :subscription, only: [:create, :destroy], controller: "project_subscriptions"
       member do
-        get "key"
+        get "key.:format", action: :key
       end
     end
 
@@ -46,7 +50,6 @@ VxWeb::Application.routes.draw do
       end
     end
 
-    resources :cached_files, only: [:destroy]
     resources :status, only: [:show], id: /(jobs)/
     resources :events, show: [:index]
 

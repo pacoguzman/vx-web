@@ -1,5 +1,4 @@
-Vx.service 'currentUserStore',
-  ($http, $q) ->
+Vx.service 'currentUserStore', ['$http', '$q', ($http, $q) ->
 
     deferMe = $q.defer()
     me      = deferMe.promise
@@ -25,5 +24,10 @@ Vx.service 'currentUserStore',
         url:    "/users/session"
       )
 
+    setDefaultCompany = (companyId) ->
+      $http.post("/api/companies/#{companyId}/default")
+
     get: get
     signOut: signOut
+    setDefaultCompany: setDefaultCompany
+]

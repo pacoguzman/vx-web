@@ -17,13 +17,16 @@ class User < ActiveRecord::Base
     user_company.update(role: role)
   end
 
-  def default_company
-    companies.reorder("user_companies.default DESC").first
+  def default_company(reload = false)
+    if reload
+      @default_company = nil
+    end
+    @default_company ||= companies.reorder("user_companies.default DESC").first
   end
 
   def role(company)
     if company
-      user_companies.where(company_id: company.id).pluck(:role).first
+      user_companies.where(company: company).pluck(:role).first
     end
   end
 
@@ -55,6 +58,11 @@ class User < ActiveRecord::Base
 
   def add_to_company(company, role = 'developer')
     user_company = user_companies.find_or_initialize_by(company_id: company.id)
+
+    if user_company.persisted? and user_company.role == role
+      return true
+    end
+
     user_company.role = role
     if user_company.save
       user_company.default!
@@ -73,6 +81,15 @@ class User < ActiveRecord::Base
         end
         user_company.destroy
       end
+    end
+  end
+
+  def update_with_company(company, params)
+    transaction do
+      if role = params.delete(:role)
+        add_to_company(company, role).or_rollback_transaction
+      end
+      update(params).or_rollback_transaction
     end
   end
 

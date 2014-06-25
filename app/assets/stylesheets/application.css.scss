@@ -1,100 +1,28 @@
 /*
  *= require_self
- *= require_tree .
+ *= require theme/style
+ *= require theme/animate
+ *= require style_override
+ *= require app_task_output
  */
 
-body, head, html {
-  font-family: 'Helvetica Neue', 'Helvetica' !important;
-  color: #666 !important;
-  font-size: 13px;
-}
-
-body > .container {
-  padding-bottom: 3em;
-  position: relative;
-}
-
-body > .container > .ng-view {
-  margin-top: 2em;
-
-  &> div {
-    margin-left: .4em;
-    margin-right: .4em;
-  }
-}
-
-.site-head {
-  width: 100%;
-  padding: 3em 0 1em 0;
-
-  .site-title {
-    position: absolute;
-    width: 3em;
-    height: 2.4em;
-    background: #0088cc;
-    color: white;
-    font-size: 1.2em;
-    line-height: 1.2em;
-    margin-left: .3em;
-    margin-top: .35em;
-
-    span {
-      display: block;
-      width: 1em;
-      margin: 0.65em auto 0 auto;
-    }
-  }
-
-  .navigation {
-
-    margin-left: 5em;
-
-    ul li {
-      margin-right: 1em;
-      font-weight: 400;
-    }
-
-    ul li.active a {
-      border-bottom-color: #0088cc;
-      border-bottom-width: 2px;
-      font-weight: 500;
-
-      &:hover {
-        border-bottom-color: #0088cc;
-        color: #666;
-      }
-    }
-
-    ul li a {
-      border-color: white;
-      border-bottom-color: white;
-
-      &:hover {
-        border-color: white;
-        border-bottom-color: white;
-        background: none;
-        color: #0088cc;
-      }
-    }
-  }
-}
-
-.ajax-loader {
-  display: block;
-  margin-top: 3em;
-  margin-left: 1em;
-  content: url(asset-path("484.gif"));
-  opacity: 0.5;
-}
-
-.ajax-loader-inline {
+span.ajax-loader {
   content: url(asset-path("ajax-loader.gif"));
 }
 
-.medium-text {
-  font-size: 14px;
+dl.task {
+  dt {
+    float: left;
+    width: 7em;
+  }
+
+  dd {
+    margin-left: 7em;
+    display: block;
+  }
+
+  .task-message {
+    white-space: pre;
+  }
 }
 
-.secondary-text {
-  color: #999;
-}

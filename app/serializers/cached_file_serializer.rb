@@ -1,8 +1,6 @@
 class CachedFileSerializer < ActiveModel::Serializer
   include ActionView::Helpers::NumberHelper
 
-  cached
-
   attributes :id, :project_id, :name, :size_in_bytes, :size, :download_url,
     :updated_at
 

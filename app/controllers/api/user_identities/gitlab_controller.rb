@@ -7,9 +7,9 @@ class Api::UserIdentities::GitlabController < Api::BaseController
     @identity = current_user.identities.find(params[:id])
     @session  = UserSession::Gitlab.new(identity_params)
     if @session.update_identity(@identity)
-      head 204
+      respond_with(@identity)
     else
-      head 422
+      render text: @session.last_error, status: 422
     end
   end
 
@@ -19,7 +19,7 @@ class Api::UserIdentities::GitlabController < Api::BaseController
     if @identity
       respond_with(@identity, location: api_user_identities_gitlab_url(@identity))
     else
-      head 422
+      render text: @session.last_error, status: 422
     end
   end
 

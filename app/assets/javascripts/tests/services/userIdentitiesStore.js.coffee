@@ -52,14 +52,18 @@ describe "userIdentitiesStore", ->
 
   describe "gitlab.create()", ->
 
+    collection = []
+
     beforeEach ->
+      collection = []
       $http.expectPOST('/api/user_identities/gitlab').respond('success')
 
     it "should send POST request", ->
       $scope.$apply ->
-        identities.gitlab.create(params).then succ, fail
+        identities.gitlab.create(params, collection).then succ, fail
       $http.flush()
       expect(succVal.data).toEqual 'success'
+      expect(collection).toEqual ['success']
 
   describe "gitlab.update()", ->
 

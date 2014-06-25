@@ -1,10 +1,19 @@
-Vx.controller 'BuildsCtrl', ($scope, appMenu, buildStore, projectStore, $routeParams, $location) ->
+Vx.controller 'BuildsCtrl', [ '$scope', 'buildStore', 'projectStore', '$routeParams', '$location'
+  ($scope, buildStore, projectStore, $routeParams, $location) ->
 
-  $scope.waitBuilds = true
-  $scope.project    = projectStore.one $routeParams.projectId
-  $scope.builds     = buildStore.all($routeParams.projectId).finally ->
-    $scope.waitBuilds = false
+    $scope.wait    = true
+    $scope.project = null
+    $scope.builds  = []
 
-  appMenu.define $scope.project, (p) ->
-    appMenu.add p.name, "/ui/projects/#{p.id}/builds"
+    projectStore.one($routeParams.projectId).then (project) ->
+      $scope.project = project
 
+    buildStore.all($routeParams.projectId)
+      .then (builds) ->
+        $scope.builds = builds
+      .finally ->
+        $scope.wait = false
+
+    $scope.go = (build) ->
+      $location.path("/ui/builds/#{build.id}")
+]

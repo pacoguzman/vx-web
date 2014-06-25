@@ -8,17 +8,15 @@ class Api::UsersController < Api::BaseController
 
   def index
     @users = current_company.users.includes(
-      :identities,
-      :companies,
-      :active_project_subscriptions
+      :user_companies,
     )
-    respond_with(@users)
+    respond_with(@users, each_serializer: UserListSerializer)
   end
 
   def update
     @user = current_company.users.find(params[:id])
 
-    if @user.update_role(user_params[:role], current_company)
+    if @user.update_with_company(current_company, user_params)
       head :ok
     else
       head :unprocessable_entity
@@ -27,7 +25,7 @@ class Api::UsersController < Api::BaseController
 
   def me
     @user = current_user
-    respond_with(@user)
+    respond_with(@user, serializer: CurrentUserSerializer)
   end
 
   def destroy
@@ -51,6 +49,6 @@ class Api::UsersController < Api::BaseController
     end
 
     def user_params
-      params.require(:user).permit(:role)
+      params.require(:user).permit(:role, :name, :email)
     end
 end

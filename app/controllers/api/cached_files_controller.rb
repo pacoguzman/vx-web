@@ -1,10 +1,10 @@
 class Api::CachedFilesController < ApplicationController
 
-  before_filter :find_project, only: [:index]
-  before_filter :find_project_by_token, only: [:upload, :download]
-  before_filter :find_cached_file_by_file_name, only: [:upload, :download]
+  before_filter :find_project,                   only: [:index, :mass_destroy]
+  before_filter :find_project_by_token,          only: [:upload, :download]
+  before_filter :find_cached_file_by_file_name,  only: [:upload, :download]
 
-  skip_before_filter :authorize_user, only: [:upload, :download]
+  skip_before_filter :authorize_user,            only: [:upload, :download]
   skip_before_filter :verify_authenticity_token, only: [:upload]
 
   respond_to :json
@@ -14,10 +14,9 @@ class Api::CachedFilesController < ApplicationController
     respond_with(@cached_files)
   end
 
-  def destroy
-    @cached_file = CachedFile.find params[:id]
-    @cached_file.destroy
-    respond_with(@cached_file)
+  def mass_destroy
+    @project.cached_files.where(id: destroy_params).each(&:destroy)
+    head :ok
   end
 
   def upload
@@ -41,7 +40,7 @@ class Api::CachedFilesController < ApplicationController
   private
 
     def find_project
-      @project = Project.find params[:project_id]
+      @project = current_company.projects.find params[:project_id]
     end
 
     def find_project_by_token
@@ -66,6 +65,10 @@ class Api::CachedFilesController < ApplicationController
         input.original_filename = file_name
         input
       end
+    end
+
+    def destroy_params
+      params.require(:ids)
     end
 
 end

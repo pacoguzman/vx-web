@@ -1,8 +1,7 @@
 class JobSerializer < ActiveModel::Serializer
-  cached
 
   attributes :id, :build_id, :project_id, :number, :natural_number, :status,
-    :matrix, :started_at, :finished_at, :text_logs_url, :kind
+    :matrix, :started_at, :finished_at, :text_logs_url, :kind, :created_at
 
   def project_id
     object.build.project_id

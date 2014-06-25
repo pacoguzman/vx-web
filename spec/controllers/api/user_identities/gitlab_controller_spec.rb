@@ -4,7 +4,7 @@ describe Api::UserIdentities::GitlabController do
   let(:identity) { create :user_identity, :gitlab }
   let(:user)     { identity.user }
   let(:company)  { create :company }
-  let(:gitlab)   { 'session' }
+  let(:gitlab)   { OpenStruct.new(last_error: "last error") }
   let(:attrs)   { {
     "login"    => "login",
     "password" => "password",

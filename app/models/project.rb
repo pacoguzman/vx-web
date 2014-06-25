@@ -8,9 +8,11 @@ class Project < ActiveRecord::Base
   belongs_to :company
 
   has_one :identity, through: :user_repo
+  has_one :user, through: :user_repo
+
   has_many :builds, dependent: :destroy, class_name: "::Build"
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
-  has_many :cached_files, dependent: :destroy
+  has_many :cached_files, dependent: :destroy, inverse_of: :project
 
   validates :name, :http_url, :clone_url, :token,
     :deploy_key, presence: true
@@ -68,17 +70,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_build
-    builds.where.not(status: [0,1]).first
-  end
-
-  def update_last_build
-    if build = last_build
-      update(
-        last_build_id:          build.id,
-        last_build_at:          build.created_at,
-        last_build_status_name: build.status_name
-      )
-    end
+    builds.first
   end
 
   def subscribed_by?(user)

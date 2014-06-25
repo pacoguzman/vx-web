@@ -41,7 +41,7 @@ module VxWeb
     config.i18n.enforce_available_locales = true
     config.middleware.delete "Rack::Lock"
 
-    config.assets.precompile += %w( lib.js )
+    config.assets.precompile += %w( lib.js session.css )
 
     config.preload_frameworks = true
     config.allow_concurrency = true

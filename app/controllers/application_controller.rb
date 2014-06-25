@@ -37,7 +37,12 @@ class ApplicationController < ActionController::Base
     end
 
     def current_user
-      @current_user ||= ::User.find_by(id: current_user_id.to_i)
+      @current_user ||=
+        if Rails.env.development?
+          User.first
+        else
+          ::User.find_by(id: current_user_id.to_i)
+        end
     end
 
     def current_company
