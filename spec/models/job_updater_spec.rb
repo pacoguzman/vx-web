@@ -60,6 +60,12 @@ describe JobUpdater do
         job.start!
       end
 
+      it "should create job history" do
+        expect {
+          subject
+        }.to change(JobHistory, :count).by(1)
+      end
+
       it "should update and save job status" do
         expect {
           subject

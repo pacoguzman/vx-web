@@ -20,11 +20,24 @@ Vx.controller 'UsersCtrl', ($scope, appMenu, userStore, currentUserStore, invite
 
   #############################################################################
 
-  $scope.update = userStore.update
   $scope.destroy = userStore.destroy
+
+  $scope.updateRole = (user, role) ->
+    user.role = role
+    userStore.update(user)
+
+  $scope.disableEditRole = (user, role) ->
+    (user.id == $scope.currentUser.id) ||
+      (user.role == role)
 
   $scope.disableEdit = (user) ->
     user.id == $scope.currentUser.id
+
+  $scope.classForRole = (user, role) ->
+    if user.role == role
+      'btn-primary'
+    else
+      'btn-default'
 
   $scope.toggleInvitesForm = () ->
     $scope.showInvitesForm = !$scope.showInvitesForm

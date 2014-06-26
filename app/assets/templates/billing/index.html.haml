@@ -2,7 +2,7 @@
 
   .panel-heading Usage Statistics
   .panel-body{ 'ng-show' => "wait" }
-
+    .ajax-loader
 
   %table.table{ 'ng-show' => 'companyUsage' }
     %thead
@@ -23,10 +23,10 @@
         %td {{ companyUsage.yesterday.minutes | number }}
         %td {{ companyUsage.yesterday.amount | currency }}
       %tr
-        %td Last 7 days
-        %td {{ companyUsage.last_7_days.job_count | number }}
-        %td {{ companyUsage.last_7_days.minutes | number }}
-        %td {{ companyUsage.last_7_days.amount | currency }}
+        %td This week
+        %td {{ companyUsage.this_week.job_count | number }}
+        %td {{ companyUsage.this_week.minutes | number }}
+        %td {{ companyUsage.this_week.amount | currency }}
       %tr
         %td This month
         %td {{ companyUsage.this_month.job_count | number }}

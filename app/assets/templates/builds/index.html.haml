@@ -35,7 +35,7 @@
           %span {{ build.number }}
       %td.app-build-http-url{ build: 'build' }
       %td.visible-md.visible-lg{ title: "{{ build.message }}" }
-        %img{ src: "{{ build.author_avatar }}" }
+        %img{ 'ng-src' => "{{ build.author_avatar }}" }
         {{ build.message | truncate: 30 }}
       %td {{ build.branch | truncate: 30 }}
       %td.app-task-duration{ task: 'build' }

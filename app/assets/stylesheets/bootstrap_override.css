@@ -12,6 +12,10 @@ small {
   font-weight: normal;
 }
 
+.btn-tiny {
+  
+}
+
 .table>thead>tr>th {
   border-bottom: 0 !important;
   font-weight: 500 !important;

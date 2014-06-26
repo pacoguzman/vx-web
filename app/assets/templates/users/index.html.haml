@@ -8,7 +8,7 @@
       .form-group
         %span.help-block
           Invite email addresses separated by space
-        %textarea.form-control{ name: "emails", 'ng-model' => "invite.emails", 'required' => true, placeholder: "user1@example.com user2@example.com user3@example.com" }
+        %textarea.form-control{ name: "emails", 'ng-model' => "invite.emails", 'required' => true, placeholder: "user1@example.com user2@example.com user3@example.com", 'autofocus' => true }
       %p{ 'ng-hide' => "invite.wait" }
         %input.btn.btn-sm.btn-success{ type: "submit", value: "Create Invites", 'ng-disabled' => "form.$invalid" }
         or
@@ -22,21 +22,28 @@
     %thead
       %tr
         %th
-        %th Name
+        %th
+          Name
         %th Email
         %th Projects
         %th Role
-        %th
     %tbody
       %tr{ 'ng-repeat' => "user in users | orderBy:'active_projects':true" }
         %td
+          %i.fa.fa-gear{ 'ng-show' => 'disableEdit(user)' }
+
+          .dropdown{ 'ng-hide' => 'disableEdit(user)' }
+            %i.fa.fa-gear.dropdown-toggle
+            %ul.dropdown-menu
+              %li
+                %a{ 'ng-click' => 'destroy(user)', href: "javascript://" } Remove
+
+        %td
           %img{ 'ng-src' => "{{ user.avatar_url }}" }
-        %td {{ user.name }}
+          {{ user.name }}
         %td {{ user.email }}
         %td {{ user.active_projects }}
         %td
-          %select.form-control.input-sm{ 'ng-model' => 'user.role', 'ng-change' => 'update(user)', 'ng-options' => 'role for role in user.available_roles', 'ng-disabled' => 'disableEdit(user)' }
-        %td
-          %a.btn.btn-sm.btn-default{ 'href' => 'javascript://', 'ng-hide' => 'disableEdit(user)', 'ng-click' => 'destroy(user)' }
-            %i.fa.fa-remove
-            Destroy
+          .btn-group
+            %button.btn.btn-sm{ type: "button", 'ng-repeat' => "role in user.available_roles", 'ng-class' => "classForRole(user, role)", 'ng-disabled' => "disableEditRole(user, role)", 'ng-click' => "updateRole(user, role)" }
+              {{ role }}

@@ -33,10 +33,6 @@
             {{ build.author }}
 
       %dl.task-attribute.dl-horizontal
-        %dt Message
-        %dd {{ build.message }}
-
-      %dl.task-attribute.dl-horizontal
         %dt Config
         %dd{ 'ng-repeat' => "(key, value) in job.matrix" }
           {{ key }} {{ value }}

@@ -53,6 +53,14 @@ class Job < ActiveRecord::Base
     end
   end
 
+  def duration
+    if finished_at && started_at
+      (finished_at - started_at).to_i
+    else
+      0
+    end
+  end
+
   def regular?
     kind == 'regular'
   end
@@ -125,6 +133,19 @@ class Job < ActiveRecord::Base
 
   def publish(event = nil)
     super(event, channel: channel)
+  end
+
+  def create_job_history!
+    if finished?
+      JobHistory.create!(
+        company:      company,
+        project_name: project.name,
+        build_number: build.number,
+        job_number:   number,
+        duration:     duration,
+        created_at:   finished_at
+      )
+    end
   end
 
   private
