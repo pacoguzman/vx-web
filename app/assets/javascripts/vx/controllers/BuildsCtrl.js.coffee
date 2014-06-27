@@ -1,4 +1,4 @@
-Vx.controller 'BuildsCtrl', [ '$scope', 'buildStore', 'projectStore', '$routeParams', '$location'
+Vx.controller 'BuildsCtrl', [ '$scope', 'buildStore', 'projectStore', '$routeParams', '$location',
   ($scope, buildStore, projectStore, $routeParams, $location) ->
 
     $scope.wait    = true

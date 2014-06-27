@@ -1,4 +1,4 @@
-Vx.controller 'UserReposCtrl', ['$scope', 'userRepoStore'
+Vx.controller 'UserReposCtrl', ['$scope', 'userRepoStore',
   ($scope, userRepos) ->
 
     $scope.wait       = true

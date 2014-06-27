@@ -1,4 +1,4 @@
-Vx.controller 'UserProfileCtrl', ['$scope', 'currentUserStore', 'userStore', 'userIdentitiesStore', "$window"
+Vx.controller 'UserProfileCtrl', ['$scope', 'currentUserStore', 'userStore', 'userIdentitiesStore', "$window",
   ($scope, currentUserStore, userStore, userIdentitiesStore, $window) ->
 
     $scope.user       = null

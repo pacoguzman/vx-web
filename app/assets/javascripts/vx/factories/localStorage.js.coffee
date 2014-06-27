@@ -12,7 +12,6 @@ angular.module('Vx').
 
     get: (key) ->
       if exists()
-        console.log storage
         storage.getItem(key)
 
     set: (key, value) ->

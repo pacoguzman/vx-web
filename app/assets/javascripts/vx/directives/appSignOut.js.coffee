@@ -1,5 +1,5 @@
 angular.module('Vx').
-  directive "appSignOut", ['currentUserStore', '$window'
+  directive "appSignOut", ['currentUserStore', '$window',
     (currentUserStore, $window) ->
 
       restrict: 'EC'

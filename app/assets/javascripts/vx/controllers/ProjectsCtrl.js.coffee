@@ -1,4 +1,4 @@
-Vx.controller 'ProjectsCtrl', ['$scope', 'projectStore', '$location'
+Vx.controller 'ProjectsCtrl', ['$scope', 'projectStore', '$location',
 
   ($scope, projects, $location) ->
 

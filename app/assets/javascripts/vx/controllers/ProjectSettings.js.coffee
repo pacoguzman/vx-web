@@ -1,4 +1,4 @@
-Vx.controller 'ProjectSettingsCtrl', ['$scope', 'projectStore', 'cachedFilesStore', '$routeParams', '$location'
+Vx.controller 'ProjectSettingsCtrl', ['$scope', 'projectStore', 'cachedFilesStore', '$routeParams', '$location',
   ($scope, projectStore, cachedFilesStore, $routeParams, $location) ->
 
     $scope.project                = null

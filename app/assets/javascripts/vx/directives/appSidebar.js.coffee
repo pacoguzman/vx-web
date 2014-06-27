@@ -1,5 +1,5 @@
 angular.module('Vx').
-  directive "appSidebar", ['currentUserStore', '$location', '$window'
+  directive "appSidebar", ['currentUserStore', '$location', '$window',
     (currentUserStore, $location, $window) ->
 
       restrict: 'EC'
