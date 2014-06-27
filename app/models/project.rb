@@ -129,6 +129,22 @@ class Project < ActiveRecord::Base
     super(event, channel: channel)
   end
 
+  def status_for_gitlab(sha)
+    build = builds.find_by(sha: sha)
+    status_map = {
+      initialized: :pending,
+      started:     :running,
+      deploying:   :running,
+      passed:      :success,
+      failed:      :failed,
+      errored:     :failed
+    }.with_indifferent_access
+
+    if build
+      { status: status_map[build.status_name], location: build.public_url }
+    end
+  end
+
   private
 
     def find_or_build_subscription_for_user(user)

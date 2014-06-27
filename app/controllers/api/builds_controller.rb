@@ -1,18 +1,13 @@
 class ::Api::BuildsController < ::Api::BaseController
 
   respond_to :json
-  skip_before_filter :authorize_user, if: :show_build_status_with_token
+  skip_before_filter :authorize_user, only: [:status_for_gitlab]
 
   def index
     respond_with(@builds = project.builds.limit(20))
   end
 
   def show
-    respond_with build
-  end
-
-  def sha
-    build = ::Build.find_by!(sha: params[:sha])
     respond_with build
   end
 
@@ -24,6 +19,18 @@ class ::Api::BuildsController < ::Api::BaseController
     end
   end
 
+  def status_for_gitlab
+    @token   = request.headers['HTTP_X_VEXOR_PROJECT_TOKEN']
+    @sha     = params[:id]
+    @project = Project.find_by! token: @token
+    @status  = @project.status_for_gitlab(@sha)
+    if @status
+      render json: @status
+    else
+      render json: {}, status: :not_found
+    end
+  end
+
   private
 
     def project
@@ -32,12 +39,6 @@ class ::Api::BuildsController < ::Api::BaseController
 
     def build
       @build ||= ::Build.find params[:id]
-    end
-
-    def show_build_status_with_token
-      correct_action = action_name.to_s.in?(%w(sha show))
-      correct_token = Project.where(token: params[:token]).exists?
-      correct_action && correct_token
     end
 
 end

@@ -589,6 +589,7 @@ describe Build do
       end
     end
   end
+
 end
 
 # == Schema Information

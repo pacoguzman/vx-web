@@ -29,9 +29,7 @@ VxWeb::Application.routes.draw do
     resources :builds, only: [:show] do
       member do
         post :restart
-      end
-      collection do
-        get "sha/:sha", action: :sha, as: :sha
+        get :status_for_gitlab
       end
       resources :jobs, only: [:index]
     end
@@ -50,7 +48,6 @@ VxWeb::Application.routes.draw do
       end
     end
 
-    resources :status, only: [:show], id: /(jobs)/
     resources :events, show: [:index]
 
     resources :companies, only: [] do
@@ -76,8 +73,6 @@ VxWeb::Application.routes.draw do
 
   post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'
-
-  get "builds/sha/:sha" => "builds#sha"
 
   scope constraints: ->(req){ req.format == Mime::HTML } do
     get "/",         to: redirect("/ui")
