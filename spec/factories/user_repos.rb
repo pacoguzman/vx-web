@@ -1,7 +1,8 @@
-# Read about factories at https://github.com/thoughtbot/factory_girl
+require 'securerandom'
 
 FactoryGirl.define do
   factory :user_repo do
+    id                 { SecureRandom.uuid }
     identity           { create :user_identity }
     company
     organization_login nil

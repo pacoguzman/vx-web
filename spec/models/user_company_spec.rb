@@ -31,9 +31,10 @@ end
 #
 #  id         :integer          not null, primary key
 #  user_id    :integer          not null
-#  company_id :integer          not null
 #  default    :integer          default(0), not null
 #  created_at :datetime
 #  updated_at :datetime
+#  role       :string(255)      not null
+#  company_id :uuid             not null
 #
 

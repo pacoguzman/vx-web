@@ -71,7 +71,10 @@ describe PerformBuild do
           subject
         }.to change(JobsConsumer.messages, :count).by(1)
         message = JobsConsumer.messages.first
-        expect(message.job_id).to eq 1
+
+        job = subject.jobs.first
+        expect(message.job_id).to eq job.id.to_s
+        expect(message.job_number).to eq 1
       end
 
       context "when only deploy jobs" do

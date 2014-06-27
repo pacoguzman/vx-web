@@ -22,7 +22,7 @@ describe CurrentUserSerializer do
   end
 
   context "#project_subscriptions" do
-    let(:project) { create :project, user_repo: nil, company: company }
+    let(:project) { create :project, company: company }
     let(:sub)     { create :project_subscription, user: user, project: project }
     subject       { serializer.project_subscriptions }
 

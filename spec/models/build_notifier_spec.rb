@@ -59,7 +59,7 @@ describe BuildNotifier do
     let!(:sub) { create :project_subscription, user: user, project: b.project }
     subject { notifier.subscribed_emails }
 
-    it { should eq ["\"name\" <#{ user.email }>"] }
+    it { should eq ["\"#{user.name}\" <#{ user.email }>"] }
   end
 
   context "#delivery_email_notifications" do

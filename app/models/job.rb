@@ -95,10 +95,19 @@ class Job < ActiveRecord::Base
   def to_perform_job_message
     script = to_script_builder
     ::Vx::Message::PerformJob.new(
-      project_id:      build.project_id,
-      build_id:        build.id,
-      job_id:          number,
-      name:            build.project.name,
+      company_id:      company.id,
+      company_name:    company.name,
+
+      project_id:      project.id.to_s,
+      project_name:    project.name,
+
+      build_id:        build.id.to_s,
+      build_number:    build.number,
+
+      job_id:          id.to_s,
+      job_number:      number,
+      job_version:     1,
+
       before_script:   script.to_before_script,
       script:          script.to_script,
       after_script:    script.to_after_script,
@@ -110,8 +119,18 @@ class Job < ActiveRecord::Base
     ::JobsConsumer.publish(
       to_perform_job_message,
       headers: {
-        build_id: build.id,
-        job_id:   number
+        company_id:      company.id,
+        company_name:    company.name,
+
+        project_id:      project.id.to_s,
+        project_name:    project.name,
+
+        build_id:        build.id.to_s,
+        build_number:    build.number,
+
+        job_id:          id,
+        job_number:      number,
+        job_version:     1,
       }
     )
   end
@@ -170,6 +189,6 @@ end
 #  created_at  :datetime
 #  updated_at  :datetime
 #  source      :text             not null
-#  kind        :string(255)
+#  kind        :string(255)      not null
 #
 

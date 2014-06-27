@@ -38,10 +38,10 @@ class ApplicationController < ActionController::Base
 
     def current_user
       @current_user ||=
-        if Rails.env.development?
-          User.first
+        if current_user_id.blank?
+          false
         else
-          ::User.find_by(id: current_user_id.to_i)
+          ::User.find_by(id: current_user_id)
         end
     end
 

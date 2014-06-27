@@ -14,8 +14,7 @@ class Project < ActiveRecord::Base
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
   has_many :cached_files, dependent: :destroy, inverse_of: :project
 
-  validates :name, :http_url, :clone_url, :token,
-    :deploy_key, presence: true
+  validates :name, :http_url, :clone_url, :token, :deploy_key, :user_repo_id, presence: true
   validates :token, uniqueness: true
   validates :name, uniqueness: { scope: :company_id }
 
@@ -164,6 +163,6 @@ end
 #  last_build_id          :integer
 #  last_build_status_name :string(255)
 #  last_build_at          :datetime
-#  company_id             :integer          not null
+#  company_id             :uuid             not null
 #
 

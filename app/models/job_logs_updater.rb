@@ -4,11 +4,7 @@ class JobLogsUpdater
 
   def initialize(job_log_message)
     @message = job_log_message
-    @build   = ::Build.find_by id: @message.build_id
-
-    if @build
-      @job = @build.jobs.find_by number: @message.job_id
-    end
+    @job     = Job.find_by id: @message.job_id
   end
 
   def perform

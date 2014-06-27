@@ -1,7 +1,8 @@
-# Read about factories at https://github.com/thoughtbot/factory_girl
+require 'securerandom'
 
 FactoryGirl.define do
   factory :project do
+    id            { SecureRandom.uuid }
     company
     name          "ci-worker-test-repo"
     http_url      "MyString"

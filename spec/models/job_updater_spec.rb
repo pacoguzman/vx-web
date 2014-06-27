@@ -2,15 +2,20 @@ require 'spec_helper'
 
 describe JobUpdater do
   let(:status) { 2 }
-  let(:message_attributes) { {status: status} }
+  let(:message_attributes) { {
+    status: status,
+    project_id: uuid_for(1),
+    build_id: uuid_for(2),
+    job_id: uuid_for(3)
+  } }
   let(:message)  {
     Vx::Message::JobStatus.test_message(
       message_attributes
     )
   }
   let(:project) { create :project, id: message.project_id }
-  let(:b)       { create :build, id: message.build_id, project: project }
-  let(:job)     { create :job, number: message.job_id, build: b }
+  let(:b)       { create :build,   id: message.build_id, project: project }
+  let(:job)     { create :job,     id: message.job_id,   build: b }
   let(:updater) { described_class.new message }
   subject { updater }
 
@@ -82,7 +87,7 @@ describe JobUpdater do
 
       context "when have failed job" do
         before do
-          create :job, build: b, status: 4
+          create :job, build: b, status: 4, number: 2
         end
 
         it "should fail build" do
@@ -95,7 +100,7 @@ describe JobUpdater do
 
       context "when have pending jobs" do
         before do
-          create :job, build: b, status: 2
+          create :job, build: b, status: 2, number: 2
         end
 
         it "should keep build" do

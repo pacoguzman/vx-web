@@ -15,7 +15,7 @@ describe UserRepo do
   let(:repo) { create :user_repo }
 
   context "same_name_projects" do
-    let(:project) { create :project, name: repo.full_name, user_repo: nil, company: repo.company }
+    let(:project) { create :project, name: repo.full_name, user_repo: create(:user_repo, company: repo.company), company: repo.company }
 
     it "should be true if projects with same name exists" do
       project
@@ -235,6 +235,6 @@ end
 #  updated_at         :datetime
 #  identity_id        :integer          not null
 #  external_id        :integer          not null
-#  company_id         :integer          not null
+#  company_id         :uuid             not null
 #
 
