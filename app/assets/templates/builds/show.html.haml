@@ -20,13 +20,15 @@
       .col-sm-9
         %p.form-control-static.app-task-status{ task: "build" }
     .row.form-group
-      %label.col-sm-3.control-label{ style: "white-space: nowrap;" } Finished At
+      %label.col-sm-3.control-label Author
       .col-sm-9
-        %p.form-control-static.app-task-finished-at{ task: "build" }
+        %p.form-control-static
+          %img.img-circle{ 'ng-src' => "{{ build.author_avatar }}", style: "width: 16px; height: 16px" }
+          {{ build.author }}
     .row.form-group
-      %label.col-sm-3.control-label Duration
+      %label.col-sm-3.control-label Mesage
       .col-sm-9
-        %p.form-control-static.app-task-duration{ task: "build" }
+        %p.form-control-static.task-message {{ build.message }}
 
   .col-md-6.m-t-md
     .row.form-group
@@ -37,18 +39,15 @@
             %i.fa.fa-external-link
               {{ build.sha | truncate:8:'' }}
           to {{ build.branch }}
-
     .row.form-group
-      %label.col-sm-3.control-label Author
+      %label.col-sm-3.control-label{ style: "white-space: nowrap;" } Finished At
       .col-sm-9
-        %p.form-control-static
-          %img.img-circle{ 'ng-src' => "{{ build.author_avatar }}", style: "width: 16px; height: 16px" }
-          {{ build.author }}
-
+        %p.form-control-static.app-task-finished-at{ task: "build" }
     .row.form-group
-      %label.col-sm-3.control-label Mesage
+      %label.col-sm-3.control-label Duration
       .col-sm-9
-        %p.form-control-static.task-message {{ build.message }}
+        %p.form-control-static.app-task-duration{ task: "build" }
+
 
 .wrapper.wrapper-content
   .row.animated.fadeInRight{ 'ng-show' => "regularJobs.length > 0" }
