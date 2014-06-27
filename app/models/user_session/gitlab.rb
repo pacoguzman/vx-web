@@ -7,18 +7,27 @@ module UserSession
   # TODO: add specs
   class Gitlab
 
-    attr_reader :login, :password, :host
+    attr_reader :login, :password, :host, :last_error
 
     def initialize(params = {})
-      @login    = params[:login]
-      @password = params[:password]
-      @host     = params[:url]
+      @login       = params[:login]
+      @password    = params[:password]
+      @host        = params[:url]
+      @last_error  = nil
+      @uri         = nil
     end
 
     def uri
-      begin
-        @uri ||= URI(host)
+      @uri ||= begin
+        u = URI(host)
+        if u.host.blank?
+          @last_error = 'Bad URL'
+          u = false
+        end
+        u
       rescue URI::BadURIError
+        @last_error = 'Bad URL'
+        false
       end
     end
 
@@ -62,14 +71,22 @@ module UserSession
     end
 
     def authenticate
-      conn = Faraday.new request_options
-      res = conn.post do |req|
-        req.url "/api/v3/session.json"
-        req.headers['Content-Type'] = 'application/json'
-        req.body = { email: login, password: password }.to_json
-      end
-      if res.success?
-        OpenStruct.new JSON.parse(res.body)
+      begin
+        conn = Faraday.new request_options
+        res = conn.post do |req|
+          req.url "/api/v3/session.json"
+          req.headers['Content-Type'] = 'application/json'
+          req.body = { email: login, password: password }.to_json
+        end
+        if res.success?
+          OpenStruct.new(JSON.parse(res.body))
+        else
+          @last_error =  "#{res.status}: #{res.body}"
+          nil
+        end
+      rescue Exception => e
+        @last_error = e.message
+        nil
       end
     end
 
@@ -99,6 +116,9 @@ module UserSession
         if res.success?
           json = JSON.parse(res.body)
           json["gitlab_version"]
+        else
+          @last_error = "#{res.status}: #{res.body}"
+          nil
         end
       end
 

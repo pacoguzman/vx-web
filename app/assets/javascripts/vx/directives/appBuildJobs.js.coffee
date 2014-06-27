@@ -1,58 +1,57 @@
 angular.module('Vx').
-  directive "appBuildJobs", () ->
+  directive "appBuildJobs", ['$location',
+    ($location) ->
 
-    restrict: 'EC'
-    replace: true
-    scope: {
-      jobs: "=jobs",
-    }
+      restrict: 'EC'
+      replace: true
+      scope: {
+        jobs: "=jobs",
+      }
 
-    template: """
-    <table class='table tasks-table' ng-show="display">
-      <thead>
-        <th>Job</th>
-        <th>Duration</th>
-        <th>Finished At</th>
-        <th ng-repeat='m in matrix' class="hidden-xs">
-          {{m}}
-        </th>
-      </thead>
-      <tr class='app-build-jobs-job app-task-status-class tasks-table-item'
-          ng-repeat="job in jobs | orderBy:'natural_number'" status="job.status">
-        <td>
-          <a ng-href='/ui/jobs/{{job.id}}'>
-            <i class='fa fa-circle'></i>
-            <span>{{ job.number }}</span>
-          </a>
-        </td>
-        <td class="app-task-duration" task="job"></td>
-        <td class="app-task-finished" task="job"></td>
-        <td ng-repeat='m in matrix' class="hidden-xs">
-          {{ job.matrix[m] | truncate:30 }}
-        </td>
-      </tr>
-    </table>
-    """
+      template: """
+      <table class='table jobs-table table-hover'>
+        <thead>
+          <th>Status</th>
+          <th>Job</th>
+          <th>Duration</th>
+          <th>Finished At</th>
+          <th ng-repeat='m in matrix' class="hidden-xs">
+            {{m}}
+          </th>
+        </thead>
+        <tr ng-repeat="job in jobs | orderBy:'natural_number'" status="job.status"
+            ng-click="go(job)" style="cursor: pointer">
+          <td>
+            <span class="app-task-status" task="job"></span>
+          </td>
+          <td>
+            <span>\#{{ job.number }}</span>
+          </td>
+          <td class="app-task-duration" task="job"></td>
+          <td class="app-task-finished-at" task="job"></td>
+          <td ng-repeat='m in matrix' class="hidden-xs">
+            {{ job.matrix[m] | truncate:30 }}
+          </td>
+        </tr>
+      </table>
+      """
 
-    link: (scope, elem, attrs) ->
-      scope.matrix      = []
-      scope.display     = false
+      link: (scope, elem, attrs) ->
+        scope.matrix = []
 
-      updateMatrix = (newVal) ->
-        if newVal && newVal.length > 0
+        scope.go = (job) ->
+          $location.path("/ui/jobs/#{job.id}")
 
-          if scope.matrix.length == 0
-            values = _.pluck(newVal, 'matrix')
-            values = _.map(values, (it) -> _.keys(it))
-            scope.matrix = _.uniq _.flatten(values).sort()
+        updateMatrix = (newVal) ->
 
-          if scope.matrix[0] != 'deploy'
-            deployJobs  = _.filter(newVal, (it) -> it.kind == 'deploy')
-            if deployJobs.length > 0
-              _.each(deployJobs, (it) -> it.matrix['deploy'] = 'Yes')
-              scope.matrix.unshift 'deploy'
+          if newVal && newVal.length > 0
 
-          scope.display = true
+            if scope.matrix.length == 0
+              values = _.pluck(newVal, 'matrix')
+              values = _.map(values, (it) -> _.keys(it))
+              scope.matrix = _.uniq _.flatten(values).sort()
 
+            scope.jobs = newVal
 
-      scope.$watch("jobs", updateMatrix, true)
+        scope.$watch("jobs", updateMatrix, true)
+  ]

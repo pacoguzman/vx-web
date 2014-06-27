@@ -47,5 +47,5 @@ describe "appProjectSubscribe", ->
     it "should be", ->
       $http.flush()
       $scope.$digest()
-      expect(elem.html()).toContain("input type=\"checkbox\"")
+      expect(elem.html()).toContain("fa-eye")
 

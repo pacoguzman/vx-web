@@ -1,0 +1,44 @@
+!!!
+%html{ "ng-app" => "Vx" }
+  %head
+    %title Vexor CI
+    %link{ 'rel' => "icon", 'type' => 'image/png', 'href' => '/favicon.png' }
+    %meta{ 'http-equiv' => 'Content-Type', 'content' => "text/html; charset=utf-8" }
+    %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1.0' }
+
+    = stylesheet_link_tag '//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&subset=latin,cyrillic'
+    = stylesheet_link_tag "//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css"
+    = stylesheet_link_tag "//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"
+    = stylesheet_link_tag "application", media: "all"
+
+    = csrf_meta_tags
+
+  %body
+
+    #wrapper
+
+      .nav.navbar-static-side.app-sidebar
+
+      #page-wrapper.gray-bg
+
+        .row.border-bottom
+          %nav.navbar.navbar-static-top{ style: "margin-bottom: 0" }
+            .navbar-header
+              %a.navbar-minimalize.minimalize-styl-2.btn.btn-default.app-sidebar-control{ href: "javascript://" }
+                %i.fa.fa-bars
+
+              #ajax-loading.hidden{ style: "float: left; padding-top: 1.5em; margin-left:3em" }
+                = image_tag('ajax-loader.gif')
+                Loading...
+
+            %ul.nav.navbar-top-links.navbar-right
+              %li
+                %a.app-sign-out{ href: "javascript://" }
+                  %i.fa.fa-sign-out
+                  Log out
+
+        .ng-view
+
+    = javascript_include_tag 'lib'
+    = javascript_include_tag 'application'
+

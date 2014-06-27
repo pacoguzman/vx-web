@@ -5,7 +5,7 @@ class Api::UserReposController < Api::BaseController
   def index
     respond_with(
       user_repos.includes(:project, :identity),
-      each_serializer: UserRepoSerializer
+      serializer: UserReposSerializer
     )
   end
 

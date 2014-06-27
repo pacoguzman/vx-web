@@ -1,20 +1,21 @@
-Vx.controller 'BuildCtrl', ($scope, appMenu, projectStore, buildStore, jobStore, $routeParams) ->
+Vx.controller 'BuildCtrl', ['$scope', 'projectStore', 'buildStore', 'jobStore', '$routeParams',
+  ($scope, projectStore, buildStore, jobStore, $routeParams) ->
 
-  $scope.waitJobs  = true
+    $scope.project     = null
+    $scope.build       = null
+    $scope.regularJobs = []
+    $scope.deployJobs  = []
 
-  $scope.build     = buildStore.one($routeParams.buildId)
-  $scope.jobs      = jobStore.all($routeParams.buildId).finally ->
-    $scope.waitJobs = false
+    buildStore.one($routeParams.buildId).then (build) ->
+      $scope.build = build
+      projectStore.one(build.project_id).then (project) ->
+        $scope.project = project
 
-  $scope.project = $scope.build.then (it) ->
-    projectStore.one it.project_id
+    jobStore.all($routeParams.buildId).then (jobs) ->
+      $scope.regularJobs = _.filter(jobs, (it) -> it.kind == 'regular')
+      $scope.deployJobs  = _.filter(jobs, (it) -> it.kind == 'deploy')
 
-  $scope.restartBuild = (build) ->
-    buildStore.restart(build.id)
+    $scope.restart = () ->
+      buildStore.restart($scope.build.id)
 
-  $scope.isFinished = (build) ->
-    build && ["passed", 'failed', 'errored'].indexOf(build.status) != -1
-
-  appMenu.define $scope.build, $scope.project, (b,p) ->
-    appMenu.add p.name, "/ui/projects/#{p.id}/builds"
-    appMenu.add "Build #{b.number}", "/ui/builds/#{b.id}"
+]

@@ -1,22 +1,26 @@
-Vx.controller 'UserReposCtrl', ['$scope', 'appMenu', 'userRepoStore'
-  ($scope, menu, userRepos) ->
+Vx.controller 'UserReposCtrl', ['$scope', 'userRepoStore'
+  ($scope, userRepos) ->
 
-    menu.define ->
-      menu.add 'Manage Projects', '/ui/user_repos'
-
-    $scope.inProgress = false
-    $scope.repos      = userRepos.all()
+    $scope.wait       = true
+    $scope.repos      = []
     $scope.query      = null
     $scope.processing = {}
 
+    userRepos.all()
+      .then (repos) ->
+        $scope.repos = repos
+      .finally ->
+        $scope.wait = false
+
     $scope.changeSubscription = (repo) ->
       repo.wait = true
+      repo.subscribed = !repo.subscribed
       userRepos.toggleSubscribtion(repo).finally ->
         repo.wait = false
 
-    $scope.syncUserRepos = () ->
-      $scope.inProgress = true
+    $scope.sync = () ->
+      $scope.wait = true
       userRepos.sync().finally ->
-        $scope.inProgress = false
+        $scope.wait = false
 
 ]

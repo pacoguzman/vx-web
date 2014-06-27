@@ -179,9 +179,9 @@ describe Users::SignupController do
 
       it { should redirect_to("/ui") }
 
-      it "should update user email" do
+      it "cannot update user email" do
         expect(user).to be
-        expect(user.email).to eq 'user@example.com'
+        expect(user.email).to_not eq 'email'
       end
 
       it "should create company" do
@@ -214,9 +214,9 @@ describe Users::SignupController do
 
       it { should redirect_to("/ui") }
 
-      it "should update user email" do
+      it "cannot update user email" do
         expect(user).to be
-        expect(user.email).to eq 'user@example.com'
+        expect(user.email).to_not eq 'email'
       end
 
       it "should create company" do

@@ -1,0 +1,56 @@
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-md-6
+    %h2 Settings of {{ project.name }}
+    %ol.breadcrumb
+      %li
+        %a{ href: "/ui" } Projects
+      %li
+        %a{ 'ng-href' => "/ui/projects/{{project.id}}/builds" }
+          {{ project.name }}
+
+.row.wrapper.animated.fadeInDown.white-bg.border-bottom{ style: 'background-color: #f3f6fb' }
+  .col-lg-12.m-t-md
+    .row.form-group
+      %label.col-sm-2.control-label Owner
+      .col-sm-10
+        %p.form-control-static {{ project.owner.name }}
+    .row.form-group
+      %label.col-sm-2.control-label Origin
+      .col-sm-10
+        %p.form-control-static
+          %a{ href:  "{{ project.http_url}}", target: "_blank" }
+            %i.fa.fa-external-link
+            {{ project.http_url }}
+    .row.form-group
+      %label.col-sm-2.control-label Public key location
+      .col-sm-10
+        %p.form-control-static
+          %a{ href: "{{ pubKey }}", target: "_blank" }
+            %i.fa.fa-external-link
+            {{ pubKey }}
+
+.wrapper.wrapper-content.animated.fadeInRight
+  .row
+    .col-lg-12
+      .mail-box-header
+        %h2 Cached Files
+        .mail-tools.m-t-md{ 'ng-show' => 'cachedFiles.length > 0' }
+          %button.btn.btn-white.btn-sm{ 'ng-click' => "toggleSelectAllCachedFiles()" }
+            %i.fa.fa-check-square-o
+            Select All
+          %button.btn.btn-white.btn-sm{ 'ng-disabled' => "!anyCachedFileSelected()", 'ng-click' => 'destroySelectedCachedFiles()' }
+            %i.fa.fa-trash-o
+            Remove Selected
+      .mail-box
+        .col-lg-12{ 'ng-hide' => "cachedFiles.length > 0" }
+          %p.m-l-xs.m-b-lg No files found.
+
+        %table.table.table-hover.table-mail{'ng-show' => 'cachedFiles.length > 0'}
+          %tbody
+            %tr{ 'ng-repeat' => "file in cachedFiles|orderBy:'created_at':true" }
+              %td.check-mail
+                %input{ type: "checkbox", 'ng-model' => "file.selected" }
+              %td.mail-ontact {{ file.size }}
+              %td.mail-subject {{ file.name }}
+              %td
+              %td.text-right.mail-date {{ file.updated_at | fromNow }}

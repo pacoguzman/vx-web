@@ -2,7 +2,6 @@ angular.module('Vx').
   directive "appTaskStatus", ($compile) ->
 
     restrict: 'EC'
-    transclude: true
     scope: {
       task: "=task",
     }
@@ -10,13 +9,34 @@ angular.module('Vx').
     compile: (tElem, tAttrs, transclude) ->
       ($scope, elem, attrs) ->
 
+        statusName = (s) ->
+          switch s
+            when 'initialized'
+              'pending'
+            else
+              s
+
+        statusClass = (s) ->
+          switch s
+            when'deploying', 'started'
+              'label-warning-light'
+            when 'errored', 'failed'
+              'label-danger'
+            when 'passed'
+              'label-info'
+            else
+              ''
+        map =
+          "initialized": "pending"
+
         updateTaskStatus = (newVal, _) ->
           if newVal
-            elem.removeClass("task-status-#{$scope.prevClass}") if $scope.prevClass
-            elem.addClass("task-status-#{newVal}")
-            $scope.prevClass = newVal
+            cls = statusClass(newVal)
+            elem.removeClass($scope.prevClass) if $scope.prevClass
+            elem.addClass(cls)
+            elem.html(statusName(newVal))
+            $scope.prevClass = cls
 
-        transclude $scope, (clone) ->
-          elem.append(clone)
-          elem.prepend('<i class="fa fa-circle">')
-          $scope.$watch "task.status", updateTaskStatus
+        elem.addClass("label")
+        $scope.$watch "task.status", updateTaskStatus, true
+

@@ -5,29 +5,8 @@ describe UserSerializer do
   let(:serializer) { described_class.new user }
   let(:company)    { create :company }
 
-  before do
-    user.add_to_company company
-    create :user_identity, user_id: user.id
+  it "should sucessfuly serialize" do
+    expect(serializer.to_json).to_not be_empty
   end
 
-  context "as_json" do
-    subject { serializer.as_json.keys.sort }
-
-    it { should eq [:active_projects, :available_roles, :avatar_url, :companies,
-                    :default_company, :email, :id, :identities, :name,
-                    :project_subscriptions, :role, :sse_path] }
-  end
-
-  context "default_company" do
-    subject { serializer.default_company }
-    it { should eq company.id }
-  end
-
-  context "#project_subscriptions" do
-    let(:project) { create :project, user_repo: nil, company: company }
-    let(:sub)     { create :project_subscription, user: user, project: project }
-    subject       { serializer.project_subscriptions }
-
-    it { should eq [sub.project_id] }
-  end
 end

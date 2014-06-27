@@ -1,11 +1,9 @@
 class BuildSerializer < ActiveModel::Serializer
   include GavatarHelper
 
-  cached
-
   attributes :id, :project_id, :number, :status, :started_at, :finished_at,
              :sha, :branch, :author, :author_email, :message, :http_url,
-             :author_avatar
+             :author_avatar, :short_message, :finished, :created_at
 
   def status
     object.status_name
@@ -16,6 +14,14 @@ class BuildSerializer < ActiveModel::Serializer
   end
 
   def author_avatar
-    gavatar_url(author_email, size: 20)
+    gavatar_url(author_email, size: 38)
+  end
+
+  def short_message
+    message.lines.first
+  end
+
+  def finished
+    [3,4,5].include?(object.status)
   end
 end

@@ -21,12 +21,11 @@ describe "appBuildJobs", ->
 
     job2 = {
       matrix: {"rvm": "1.9.3", 'natural_number': "2"}
-      kind: "deploy"
     }
 
   beforeEach ->
-    elem = angular.element('<span class="app-build-jobs" jobs="jobs">')
     $scope.jobs = []
+    elem = angular.element('<div class="app-build-jobs" jobs="jobs">')
     $compile(elem)($scope)
 
   describe "with empty jobs", ->
@@ -43,3 +42,4 @@ describe "appBuildJobs", ->
       expect(elem.html()).toMatch 'rvm'
       expect(elem.html()).toMatch '2.0.0'
       expect(elem.html()).toMatch '1.9.3'
+

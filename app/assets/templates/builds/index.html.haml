@@ -1,38 +1,52 @@
-.builds
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-md-6
+    %h2 {{ project.name }}
+    %ol.breadcrumb
+      %li
+        %a{ href: "/ui" } Projects
 
-  .bs-callout.bs-callout-notice
-    .pull-right{ 'ng-show' => "project" }
+  .col-md-6
+    .title-action
+      %a.btn.btn-white{ 'ng-href' => "{{ project.http_url }}", target: "_blank" }
+        %i.fa.fa-external-link
+        On {{ project.source }}
+      %a.btn.btn-white{ 'ng-href' => "/ui/projects/{{ project.id }}/settings"}
+        %i.fa.fa-gears
+        Settings
+      %a.app-project-subscribe{ project: "project", title: "Watch" }
 
-      %a.project-url{ "ng-href" => "{{ project.http_url}}", "target" => "_blank" }
-        On {{ project.provider_title }}
+.wrapper.wrapper-content.animated.fadeInRight{ 'ng-show' => "builds.length > 0" }
+  .row
+    .col-lg-12
+      .ibox
+        .ibox-title
+          %h5 Recent project activity
 
-      %a.project-cached-files{ "ng-href" => "/ui/projects/{{project.id}}/cached_files" }
-        Cached Files
+        .ibox-content
+          %div
 
-      .project-subscribe.app-project-subscribe{ project: "project", title: "Watch Project" }
-    %p
-      {{ project.description || "[no description available]" }}
+            .chat-activity-list
 
-  %table.tasks-table.table{ 'ng-show' => 'builds.length > 0' }
-    %thead
-      %th No.
-      %th Commit
-      %th.visible-md.visible-lg
-      %th Branch
-      %th Duration
-      %th Finished At
+              .chat-element{'ng-repeat' => "build in builds | orderBy:'number':true | limitTo: 30", 'ng-click' => "go(build)", style: "cursor: pointer" }
+                .pull-left
+                  %img.img-circle{ 'ng-src' => "{{ build.author_avatar }}" }
 
-    %tr.tasks-table-item.app-task-status-class{ 'ng-repeat' => "build in builds | orderBy:'number':true | limitTo:20", 'status' => "build.status" }
-      %td
-        %a{ 'ng-href' => "/ui/builds/{{build.id}}" }
-          %i.fa.fa-circle
-          %span {{ build.number }}
-      %td.app-build-http-url{ build: 'build' }
-      %td.visible-md.visible-lg{ title: "{{ build.message }}" }
-        %img{ 'ng-src' => "{{ build.author_avatar }}" }
-        {{ build.message | truncate: 30 }}
-      %td {{ build.branch | truncate: 30 }}
-      %td.app-task-duration{ task: 'build' }
-      %td.app-task-finished{ task: 'build' }
+                .media-body
+                  .pull-right
+                    %span.pull-right.app-task-status{ 'task' => 'build' }
 
-  .ajax-loader{ 'ng-show' => 'waitBuilds' }
+                  %strong
+                    {{ build.author }}
+
+                  commited
+                  %a{ href: "{{ build.http_url }}" }
+                    %i.fa.fa-external-link
+                    {{ build.sha | truncate:6:"" }}
+                  to branch
+                  {{ build.branch }}
+
+                  %p.m-b.m-t-xs {{ build.short_message }}
+
+                  %small.text-muted
+                    %i.fa.fa-clock-o
+                    %span {{ build.created_at | fromNow }}

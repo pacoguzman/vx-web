@@ -1,50 +1,42 @@
-Vx.controller 'UsersCtrl', ($scope, appMenu, userStore, currentUserStore, inviteStore) ->
+Vx.controller 'UsersCtrl', ['$scope', 'userStore', 'currentUserStore', 'inviteStore', "$window",
+  ($scope, userStore, currentUserStore, inviteStore, $window) ->
 
-  appMenu.define ->
-    appMenu.add 'Users', '/ui/users'
+    $scope.users           = []
+    $scope.currentUser     = null
+    $scope.showInvitesForm = false
+    $scope.invite          = { wait: true, emails: null }
+    $scope.wait            = true
 
-  $scope.users           = []
-  $scope.currentUser     = null
-  $scope.showInvitesForm = false
-  $scope.invite          = { wait: false, emails: null }
-  $scope.wait            = true
+    userStore.all()
+      .then (users) ->
+        $scope.users = users
+      .finally ->
+        $scope.wait = false
 
-  userStore.all()
-    .then (users) ->
-      $scope.users = users
-    .finally ->
-      $scope.wait = false
+    currentUserStore.get().then (user) ->
+      $scope.currentUser = user
 
-  currentUserStore.get().then (user) ->
-    $scope.currentUser = user
+    #############################################################################
 
-  #############################################################################
+    $scope.destroy = (user) ->
+      if $window.confirm("Are you sure?")
+        userStore.destroy(user)
 
-  $scope.destroy = userStore.destroy
+    $scope.updateRole = (user, role) ->
+      user.role = role
+      userStore.update(user)
 
-  $scope.updateRole = (user, role) ->
-    user.role = role
-    userStore.update(user)
+    $scope.cannotEdit = (user) ->
+      user.id == $scope.currentUser.id
 
-  $scope.disableEditRole = (user, role) ->
-    (user.id == $scope.currentUser.id) ||
-      (user.role == role)
+    $scope.toggleInvitesForm = () ->
+      $scope.showInvitesForm = !$scope.showInvitesForm
 
-  $scope.disableEdit = (user) ->
-    user.id == $scope.currentUser.id
+    $scope.createInvites = () ->
+      $scope.invite.wait = true
+      inviteStore.create($scope.invite.emails).finally ->
+        $scope.invite.emails = null
+        $scope.invite.wait   = false
+        $scope.toggleInvitesForm()
 
-  $scope.classForRole = (user, role) ->
-    if user.role == role
-      'btn-primary'
-    else
-      'btn-default'
-
-  $scope.toggleInvitesForm = () ->
-    $scope.showInvitesForm = !$scope.showInvitesForm
-
-  $scope.createInvites = () ->
-    $scope.invite.wait = true
-    inviteStore.create($scope.invite.emails).finally ->
-      $scope.invite.emails = null
-      $scope.invite.wait   = false
-      $scope.toggleInvitesForm()
+  ]

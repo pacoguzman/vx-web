@@ -40,7 +40,17 @@ describe User do
       expect(subject).to be
       expect(user_repo.reload.description).to eq 'description'
     end
+  end
 
+  context "update_with_company" do
+    let(:company) { create :company }
+    let(:user)    { create :user }
+    it "should update user and its role in company" do
+      expect(user).to_not be_admin(company)
+      expect(user.update_with_company(company, role: 'admin', name: "NewName")).to be
+      expect(user).to be_admin(company)
+      expect(user.name).to eq 'NewName'
+    end
   end
 
   context "default_company" do
@@ -63,13 +73,13 @@ describe User do
 
     it "should crate user_company and set is default" do
       expect(user.add_to_company c1).to be
-      expect(user.default_company).to eq c1
+      expect(user.default_company true).to eq c1
 
       expect(user.add_to_company c2).to be
-      expect(user.default_company).to eq c2
+      expect(user.default_company true).to eq c2
 
       expect(user.add_to_company c2).to be
-      expect(user.default_company).to eq c2
+      expect(user.default_company true).to eq c2
     end
 
     it "should create with developer role by default" do

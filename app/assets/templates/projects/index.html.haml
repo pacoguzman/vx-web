@@ -1,26 +1,31 @@
-.projects
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-md-9
+    %h2 Projects
+
+.wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => "projects.length > 0" }
   .row
+    .col-lg-12
+      .ibox
+        .ibox-title
+          %h5 Recent activity
 
-    .col-xs-10
+        .ibox-content
+          %div
 
-      .ajax-loader{ 'ng-hide' => 'projects.length != undefined' }
+            .feed-activity-list
 
+              .feed-element{'ng-repeat' => "project in projects | orderBy:'last_build_at':true", 'ng-click' => "go(project)", style: "cursor: pointer;"}
+                %a.pull-left
+                  %img.img-circle{ 'ng-src' => "{{ projectAvatar(project) }}" }
 
-      .project.panel.panel-default{ 'ng-repeat' => "project in projects | orderBy:'last_build_created_at':true" }
-        .panel-body
-          .pull-right.app-task-status{ 'task' => 'project'}
+                .media-body
+                  %span.pull-right.app-task-status{ 'task' => 'project.last_build', 'ng-show' => "project.last_build" }
 
-          %a.medium-text{ 'ng-href' => "/ui/projects/{{project.id}}/builds" }
-            {{project.name}}
-
-        .panel-footer
-          %small {{ project.last_build_created_at | fromNow }}
-
-
-    .col-xs-2
-      .projects-add-new.pull-right
-        %a{ class: "btn btn-sm btn-primary", 'ng-href' => "/ui/user_repos" }
-          Manage Projects
-
-
-
+                  %strong {{ projectAuthor(project) }}
+                  {{ projectLastAction(project) }}
+                  %a{ href: "/ui/projects/{{ project.id }}/builds" }
+                    {{ project.name }}
+                  %br
+                  %small.text-muted
+                    %i.fa.fa-clock-o
+                    {{ projectLastActionAt(project) | fromNow }}
