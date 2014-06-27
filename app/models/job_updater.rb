@@ -15,7 +15,7 @@ class JobUpdater
   end
 
   def job
-    @job ||= build && build.jobs.find_by(number: message.job_id)
+    @job ||= build && build.jobs.find_by(id: message.job_id)
   end
 
   def perform

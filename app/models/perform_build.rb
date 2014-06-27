@@ -4,7 +4,7 @@ class PerformBuild
 
   def initialize(params)
     @payload    = Vx::ServiceConnector::Model::Payload.from_hash(params)
-    @project_id = params["project_id"].to_i
+    @project_id = params["project_id"]
   end
 
   def project

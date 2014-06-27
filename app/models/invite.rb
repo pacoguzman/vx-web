@@ -35,3 +35,17 @@ end
 #  email      :string(255)      not null
 #  created_at :datetime
 #  updated_at :datetime
+
+# == Schema Information
+#
+# Table name: invites
+#
+#  token      :string(255)      not null
+#  email      :string(255)      not null
+#  created_at :datetime
+#  updated_at :datetime
+#  company_id :uuid             not null
+#  id         :uuid             not null, primary key
+#  role       :string(255)      default("developer"), not null
+#
+

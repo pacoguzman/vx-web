@@ -27,7 +27,7 @@ class ProjectsSerializer < ActiveModel::ArraySerializer
   private
 
     def project_ids
-      object.map(&:id) + [-1]
+      object.map{|i| Project.connection.quote i.id }
     end
 
 end

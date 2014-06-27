@@ -19,7 +19,6 @@ Vx.service 'projectStore',
           re.data
 
     one = (id) ->
-      id = parseInt(id)
       all().then (its) ->
         _.find its, (it) ->
           it.id == id

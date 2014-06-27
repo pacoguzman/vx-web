@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe ProjectsSerializer do
   it "should find last_builds" do
-    p1 = create(:project, name: "p1", id: 1)
-    p2 = create(:project, name: "p2", id: 2, company: p1.company)
+    p1 = create(:project, name: "p1", id: uuid_for(1))
+    p2 = create(:project, name: "p2", id: uuid_for(2), company: p1.company)
 
     b1_2 = create(:build, project: p1, number: 2)
     create(:build, project: p1, number: 1)

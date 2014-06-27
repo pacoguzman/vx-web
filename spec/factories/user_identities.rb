@@ -1,7 +1,8 @@
-# Read about factories at https://github.com/thoughtbot/factory_girl
+require 'securerandom'
 
 FactoryGirl.define do
   factory :user_identity, aliases: [:identity] do
+    id         { SecureRandom.uuid }
     user
     provider   "github"
     token      "token"

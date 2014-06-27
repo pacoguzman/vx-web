@@ -11,7 +11,7 @@ gem 'active_model_serializers'
 gem 'carrierwave'
 gem 'sshkey'
 
-gem 'vx-message',           '0.5.0'
+gem 'vx-message',           '0.6.0'
 gem 'vx-builder',           '0.3.4'
 gem 'vx-service_connector', '0.2.0'
 gem 'vx-consumer',          '0.1.8'

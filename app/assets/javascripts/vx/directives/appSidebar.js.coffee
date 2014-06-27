@@ -22,12 +22,12 @@ angular.module('Vx').
                 </span>
                 <span class="text-muted text-as block">
                   {{ currentCompany.name }}
-                  <span class="caret" ng-if="user.companies.length > 0"></span>
+                  <span class="caret" ng-if="user.companies.length > 1"></span>
                 </span>
               </span>
             </a>
 
-            <ul class="dropdown-menu animated fadeInRight" ng-if="user.companies.length > 0">
+            <ul class="dropdown-menu animated fadeInRight" ng-if="user.companies.length > 1">
               <li ng-repeat="company in user.companies">
                 <a href="javascript://" ng-click="setCompany(company)">{{ company.name }}</a>
               </li>

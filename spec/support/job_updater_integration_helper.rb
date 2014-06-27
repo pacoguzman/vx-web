@@ -5,8 +5,10 @@ module JobUpdaterIntegrationHelper
     if job == nil
       expect(m).to be_nil
     else
-      expect(m.job_id).to eq job.number
-      expect(m.build_id).to eq job.build_id
+      expect(m.job_id).to       eq job.id.to_s
+      expect(m.job_number).to   eq job.number
+      expect(m.build_id).to     eq job.build.id.to_s
+      expect(m.build_number).to eq job.build.number
     end
 
     JobsConsumer.messages.clear
@@ -37,11 +39,12 @@ module JobUpdaterIntegrationHelper
 
   def message(job, status, tm = nil)
     Vx::Message::JobStatus.test_message(
-      project_id: job.build.project_id,
-      build_id: job.build_id,
-      job_id: job.number,
-      status: status,
-      tm: Time.at(tm) || Time.now
+      company_id:   job.company.id,
+      project_id:   job.project.id,
+      build_id:     job.build_id,
+      job_id:       job.id,
+      status:       status,
+      tm:           Time.at(tm) || Time.now
     )
   end
 end

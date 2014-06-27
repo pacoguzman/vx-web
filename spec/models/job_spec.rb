@@ -216,6 +216,6 @@ end
 #  created_at  :datetime
 #  updated_at  :datetime
 #  source      :text             not null
-#  kind        :string(255)
+#  kind        :string(255)      not null
 #
 
