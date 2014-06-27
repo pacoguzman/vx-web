@@ -11,11 +11,16 @@
 .row.wrapper.animated.fadeInDown.white-bg.border-bottom{ style: 'background-color: #f3f6fb' }
   .col-lg-12.m-t-md
     .row.form-group
+      %label.col-sm-2.control-label Secret Token
+      .col-sm-10
+        %p.form-control-static
+          {{ project.token }}
+    .row.form-group
       %label.col-sm-2.control-label Owner
       .col-sm-10
         %p.form-control-static {{ project.owner.name }}
     .row.form-group
-      %label.col-sm-2.control-label Origin
+      %label.col-sm-2.control-label Origin Url
       .col-sm-10
         %p.form-control-static
           %a{ href:  "{{ project.http_url}}", target: "_blank" }

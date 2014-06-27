@@ -1,7 +1,7 @@
 class ProjectSerializer < ActiveModel::Serializer
 
   attributes :id, :name, :http_url, :description, :last_build_at, :created_at,
-    :source
+    :source, :token
 
   has_one :last_build
   has_one :owner
