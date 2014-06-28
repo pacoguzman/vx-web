@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
           UserRepo.find_or_create_by_sc company, identity, external_repo
         end
         identity.user_repos.where("id NOT IN (?)", synced_repos.map(&:id)).each do |user_repo|
-          user_repo.destroy
+          user_repo.destroy unless user_repo.project
         end
         synced_repos
       end

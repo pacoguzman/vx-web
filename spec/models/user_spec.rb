@@ -35,6 +35,14 @@ describe User do
       expect{user_repo.reload}.to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    it "should keep repos with projects" do
+      user_repo.update! external_id: -1
+      create(:project, user_repo: user_repo, company: user_repo.company)
+
+      expect(subject).to be
+      expect{user_repo.reload}.to be
+    end
+
     it "should update existing user_repos" do
       user_repo.update! description: "..."
       expect(subject).to be

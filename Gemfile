@@ -13,7 +13,7 @@ gem 'sshkey'
 
 gem 'vx-message',           '0.6.0'
 gem 'vx-builder',           '0.3.4'
-gem 'vx-service_connector', '0.2.2'
+gem 'vx-service_connector', '0.2.4'
 gem 'vx-consumer',          '0.1.8'
 gem 'vx-instrumentation',   '0.1.3'
 
