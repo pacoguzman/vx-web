@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-ENV['VX_COMPONENT_NAME'] = 'as-notifier'
+ENV['VX_COMPONENT_NAME'] = 'cloud-notifier'
 
 require File.expand_path("../../config/environment", __FILE__)
 
@@ -10,7 +10,7 @@ $th = Thread.new do
   loop do
     break if $shutdown
 
-    AutoScaleNotifier.notify
+    CloudNotifier.notify
 
     break if $shutdown
 

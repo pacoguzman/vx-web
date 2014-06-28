@@ -16,13 +16,13 @@ module Vx
         event   = "#{self.class.table_name.singularize}:#{event}"
 
         message = {
-          channel:    channel,
-          event:      'event',
-          event_name: event,
-          payload:    payload
+          channel: channel,
+          event:   'event',
+          _event:  event,
+          payload: payload
         }
 
-        ServerSideEventsConsumer.publish message
+        SockdNotifyConsumer.publish message, type: channel
 
         true
       end

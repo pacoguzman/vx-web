@@ -3,17 +3,25 @@ Vx.service 'eventSource', [ '$rootScope', "currentUserStore"
 
     $bus = $scope.$new()
 
-    currentUserStore.get().then (u) ->
+    currentUserStore.get().then (me) ->
 
-      sub  = new EventSource(u.sse_path)
+      url    = me.stream
+      sock   = new SockJS(url)
 
-      sub.addEventListener "event", (e) ->
-        data  = JSON.parse(e.data)
-        event = data.event_name
-        $bus.$broadcast(event, data.payload)
+      sock.onopen = () ->
+        console.log(" --> Open SockJS connection to #{url}");
+        sock.send("subscribe: company/#{me.current_company}")
 
-      sub.onopen = (e) ->
-        console.log "---> Open SSE connection to #{sub.url}"
+      sock.onclose = () ->
+        console.log(" --> Closed SockJS connection")
+
+      sock.onmessage = (e) ->
+
+        switch e.type
+          when 'message'
+            data = JSON.parse(e.data)
+            event = data._event
+            $bus.$broadcast(event, data.payload)
 
     subscribe: (name, callback) ->
       $bus.$on name, (e, data) ->
