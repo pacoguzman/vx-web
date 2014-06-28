@@ -15,8 +15,11 @@ Vx.controller 'UserReposCtrl', ['$scope', 'userRepoStore',
     $scope.changeSubscription = (repo) ->
       repo.wait = true
       repo.subscribed = !repo.subscribed
-      userRepos.toggleSubscribtion(repo).finally ->
-        repo.wait = false
+      userRepos.toggleSubscribtion(repo)
+        .catch (e) ->
+          repo.subscribed = !repo.subscribed
+        .finally ->
+          repo.wait = false
 
     $scope.sync = () ->
       $scope.wait = true
