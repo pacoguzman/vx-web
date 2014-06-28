@@ -44,9 +44,18 @@ class User < ActiveRecord::Base
         synced_repos = identity.sc.repos.map do |external_repo|
           UserRepo.find_or_create_by_sc company, identity, external_repo
         end
-        identity.user_repos.where("id NOT IN (?)", synced_repos.map(&:id)).each do |user_repo|
+
+        collection =
+          if synced_repos.any?
+            identity.user_repos.where("id NOT IN (?)", synced_repos.map(&:id))
+          else
+            identity.user_repos.all
+          end
+
+        collection.each do |user_repo|
           user_repo.destroy unless user_repo.project
         end
+
         synced_repos
       end
     end

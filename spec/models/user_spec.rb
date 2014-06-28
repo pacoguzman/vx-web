@@ -13,15 +13,8 @@ describe User do
 
     subject { user.sync_repos(company) }
 
-    before do
-      any_instance_of(Vx::ServiceConnector::Github) do |g|
-        mock(g).repos { [external_repo] }
-      end
-    end
-
-    it { should be }
-
     it "should create missing user_repos" do
+      mock_repos
       user_repo.destroy
       expect {
         subject
@@ -29,13 +22,23 @@ describe User do
     end
 
     it "should remove unupdated user_repos" do
+      mock_repos
       user_repo.update! external_id: -1
 
       expect(subject).to be
       expect{user_repo.reload}.to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    it "should remove if identity return empty array" do
+      mock_repos []
+      user_repo
+
+      expect(subject).to be
+      expect{user_repo.reload}.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it "should keep repos with projects" do
+      mock_repos
       user_repo.update! external_id: -1
       create(:project, user_repo: user_repo, company: user_repo.company)
 
@@ -44,9 +47,18 @@ describe User do
     end
 
     it "should update existing user_repos" do
+      mock_repos
       user_repo.update! description: "..."
       expect(subject).to be
       expect(user_repo.reload.description).to eq 'description'
+    end
+
+    def mock_repos(list = nil)
+      list ||=  [external_repo]
+
+      any_instance_of(Vx::ServiceConnector::Github) do |g|
+        mock(g).repos { list }
+      end
     end
   end
 
