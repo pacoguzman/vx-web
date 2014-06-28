@@ -1,4 +1,4 @@
-class AutoScaleConsumer
+class CloudNotifyConsumer
 
   include Vx::Consumer
 

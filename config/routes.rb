@@ -48,8 +48,6 @@ VxWeb::Application.routes.draw do
       end
     end
 
-    resources :events, show: [:index]
-
     resources :companies, only: [] do
       get :usage, on: :collection
       member do

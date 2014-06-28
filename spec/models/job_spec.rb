@@ -49,10 +49,10 @@ describe Job do
     b = create :build
     expect{
       create :job, build: b
-    }.to change(ServerSideEventsConsumer.messages, :count).by(1)
-    msg = ServerSideEventsConsumer.messages.last
+    }.to change(SockdNotifyConsumer.messages, :count).by(1)
+    msg = SockdNotifyConsumer.messages.last
     expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
-    expect(msg[:event_name]).to eq "job:created"
+    expect(msg[:_event]).to eq "job:created"
   end
 
   context "#create_job_history!" do
@@ -90,10 +90,10 @@ describe Job do
       let(:status) { 0 }
       subject { job.start }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
 
@@ -102,10 +102,10 @@ describe Job do
       let(:status) { 0 }
       subject { job.cancel }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
 
@@ -114,10 +114,10 @@ describe Job do
       let(:status) { 2 }
       subject { job.pass }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
 
@@ -126,10 +126,10 @@ describe Job do
       let(:status) { 2 }
       subject { job.decline }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
 
@@ -138,10 +138,10 @@ describe Job do
       let(:status) { 2 }
       subject { job.error }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
   end
@@ -178,10 +178,10 @@ describe Job do
       its(:finished_at) { should be_nil }
       its(:status_name) { should eq :initialized }
 
-      it "should delivery message to ServerSideEventsConsumer" do
+      it "should delivery message to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
   end

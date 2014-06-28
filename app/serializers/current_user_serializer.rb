@@ -1,6 +1,6 @@
 class CurrentUserSerializer < UserSerializer
 
-  attributes :sse_path, :role, :project_subscriptions, :current_company
+  attributes :stream, :role, :project_subscriptions, :current_company
 
   has_many :identities
   has_many :companies
@@ -23,8 +23,12 @@ class CurrentUserSerializer < UserSerializer
     object.default_company.try(:id)
   end
 
-  def sse_path
-    "/api/events/#{object.default_company.id}"
+  def stream
+    if Rails.env.development?
+      "http://localhost:8081/echo"
+    else
+      "/mount/echo"
+    end
   end
 
   def avatar

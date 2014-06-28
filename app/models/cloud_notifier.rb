@@ -1,4 +1,4 @@
-class AutoScaleNotifier
+class CloudNotifier
 
   def self.notify
     s = Job.status
@@ -8,7 +8,7 @@ class AutoScaleNotifier
         key:  key,
         jobs: n
       }
-      AutoScaleConsumer.publish m
+      CloudNotifyConsumer.publish m
     end
   end
 

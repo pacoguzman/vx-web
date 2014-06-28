@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AutoScaleNotifier do
+describe CloudNotifier do
   let(:notifier) { described_class }
   subject { notifier }
 
@@ -9,7 +9,7 @@ describe AutoScaleNotifier do
   end
 
   context ".notify" do
-    let(:messages) { AutoScaleConsumer.messages }
+    let(:messages) { CloudNotifyConsumer.messages }
     it "should be" do
       b = create :build
       create :job, status: 0, build: b, number: 1
