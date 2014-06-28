@@ -12,15 +12,15 @@ angular.module('Vx').
         <li class="nav-header">
           <div class="profile-element dropdown">
             <span>
-              <img ng-src="{{ user.avatar }}" style="width: 48px; height: 48px;">
+              <img ng-src="{{ user.avatar }}" class="app-sidebar-avatar">
             </span>
 
             <a class="dropdown-toggle" href="javascript://">
               <span class="clear">
                 <span class="block m-t-xs">
-                  <strong>{{ user.name }}</strong>
+                  <strong class="app-sidebar-user-name">{{ user.name }}</strong>
                 </span>
-                <span class="text-muted text-as block">
+                <span class="text-muted text-as block app-sidebar-company-name">
                   {{ currentCompany.name }}
                   <span class="caret" ng-if="user.companies.length > 1"></span>
                 </span>
@@ -54,8 +54,8 @@ angular.module('Vx').
         scope.currentCompany = null
 
         scope.items = [
-          { title: "Projects",      href: "/ui",            logo: "th-large" },
-          { title: "Subscriptions", href: "/ui/user_repos", logo: "star"     },
+          { title: "Dashboard",     href: "/ui",            logo: "th-large" },
+          { title: "Add Project",   href: "/ui/user_repos", logo: "plus"     },
           { title: "Users",         href: "/ui/users",      logo: "users",   admin: true }
           { title: "Billing",       href: "/ui/billing",    logo: "money",     admin: true }
           { title: "Profile",       href: "/ui/profile",    logo: "user",    admin: true }
@@ -85,9 +85,9 @@ angular.module('Vx').
         scope.$on "$routeChangeSuccess", (ev, cur, prev) ->
           switch cur.$$route.controller
             when 'ProjectsCtrl', 'BuildsCtrl', 'BuildCtrl', 'ProjectSettingsCtrl'
-              scope.active = 'Projects'
+              scope.active = 'Dashboard'
             when 'UserReposCtrl'
-              scope.active = 'Subscriptions'
+              scope.active = 'Add Project'
             when 'UsersCtrl'
               scope.active = 'Users'
             when 'UserProfileCtrl'

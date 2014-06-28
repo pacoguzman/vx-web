@@ -35,6 +35,12 @@ Vx.controller 'ProjectsCtrl', ['$scope', 'projectStore', '$location',
         else
           project.created_at
 
+    $scope.projectOrderBy = (project) ->
+      if project.last_build
+        project.last_build.created_at
+      else
+        project.created_at
+
     $scope.go = (project) ->
       if project.last_build
         $location.path("/ui/builds/#{project.last_build.id}")

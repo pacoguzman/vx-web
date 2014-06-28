@@ -1,6 +1,6 @@
 .row.wrapper.border-bottom.white-bg.page-heading
   .col-lg-12
-    %h2 Manage Subscriptions
+    %h2 Add Project
 
 .wrapper.wrapper-content.animated.fadeInRight{ 'ng-show' => "repos.length > 0" }
   .row
@@ -13,7 +13,7 @@
           %div.search-form
             .row
               .col-sm-8
-                %input.form-control.input-lg{ autofocus: true, type: "search", placeholder: "Type to search project...", 'ng-model' => "query" }
+                %input.form-control.input-lg{ type: "search", placeholder: "Type to search project...", 'ng-model' => "query" }
               .col-sm-4
                 .pull-right
                   %a.btn.btn-primary.btn-lg{ 'ng-disabled' => 'wait', 'ng-click' => 'sync()', style: "width: 7em" }
@@ -27,10 +27,10 @@
             .search-result
 
               .pull-right
-                %button.btn.btn-link{ href: "javascript://", 'ng-disabled' => 'repo.disabled || repo.wait || wait', 'ng-click' => 'changeSubscription(repo)', 'ng-show' => 'repo.subscribed' }
+                %button.user-repo-toggle.btn.btn-link{ href: "javascript://", 'ng-disabled' => 'repo.disabled || repo.wait || wait', 'ng-click' => 'changeSubscription(repo)', 'ng-show' => 'repo.subscribed' }
                   %i.fa.fa-star.fa-2x.text-warning
 
-                %button.btn.btn-link{ href: "javascript://", 'ng-disabled' => 'repo.disabled || repo.wait || wait', 'ng-click' => 'changeSubscription(repo)', 'ng-hide' => 'repo.subscribed' }
+                %button.user-repo-toggle.btn.btn-link{ href: "javascript://", 'ng-click' => 'changeSubscription(repo)', 'ng-hide' => 'repo.subscribed' }
                   %i.fa.fa-star-o.fa-2x.text-warning
 
               %h3

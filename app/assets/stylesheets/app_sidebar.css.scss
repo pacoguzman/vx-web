@@ -1,0 +1,11 @@
+.app-sidebar-user-name, .app-sidebar-company-name {
+  white-space: nowrap;
+  overflow: hidden;
+  width: 8em;
+  text-overflow: ellipsis;
+}
+
+.app-sidebar-avatar {
+  width: 48px;
+  height: 48px;
+}
