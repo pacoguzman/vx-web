@@ -57,8 +57,8 @@ angular.module('Vx').
           { title: "Dashboard",     href: "/ui",            logo: "th-large" },
           { title: "Add Project",   href: "/ui/user_repos", logo: "plus"     },
           { title: "Users",         href: "/ui/users",      logo: "users",   admin: true }
-          { title: "Billing",       href: "/ui/billing",    logo: "money",     admin: true }
-          { title: "Profile",       href: "/ui/profile",    logo: "user",    admin: true }
+          { title: "Billing",       href: "/ui/billing",    logo: "money",   admin: true }
+          { title: "Profile",       href: "/ui/profile",    logo: "user",    }
         ]
 
         scope.active = 'Projects'
