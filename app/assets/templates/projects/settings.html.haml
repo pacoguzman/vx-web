@@ -52,7 +52,7 @@
 
         %table.table.table-hover.table-mail{'ng-show' => 'cachedFiles.length > 0'}
           %tbody
-            %tr{ 'ng-repeat' => "file in cachedFiles|orderBy:'created_at':true" }
+            %tr{ 'ng-repeat' => "file in cachedFiles|orderBy:'updated_at':true" }
               %td.check-mail
                 %input{ type: "checkbox", 'ng-model' => "file.selected" }
               %td.mail-ontact {{ file.size }}
