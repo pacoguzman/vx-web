@@ -115,11 +115,13 @@ class Build < ActiveRecord::Base
       src:              project.clone_url,
       sha:              sha,
       build_id:         id,
-      job_id:           job.number,
+      build_number:     number,
+      job_id:           job.id,
+      job_number:       job.number,
       deploy_key:       project.deploy_key,
       branch:           branch,
       pull_request_id:  pull_request_id,
-      cache_url_prefix: cache_url_prefix
+      cache_url_prefix: cache_url_prefix,
     )
   end
 
