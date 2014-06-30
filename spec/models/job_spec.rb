@@ -26,11 +26,19 @@ describe Job do
     subject { job.to_perform_job_message }
     it { should be }
 
-    context "with image" do
-      before do
-        job.update!(source: ({ "image" => %w{ one } }).to_yaml)
-      end
-      its(:image) { should eq 'one' }
+    it "should be create PerformJob" do
+      expect(subject).to be
+    end
+
+    it "should assign image" do
+      job.update!(source: ({ "image" => %w{ one } }).to_yaml)
+      expect(subject.image).to eq 'one'
+    end
+
+    it "should assign timeouts" do
+      job.update!(source: ({ "vexor" => { "timeout" => "10", "read_timeout" => "20" } }).to_yaml)
+      expect(subject.job_timeout).to eq 10
+      expect(subject.job_read_timeout).to eq 20
     end
   end
 

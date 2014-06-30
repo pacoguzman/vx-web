@@ -111,7 +111,9 @@ class Job < ActiveRecord::Base
       before_script:   script.to_before_script,
       script:          script.to_script,
       after_script:    script.to_after_script,
-      image:           script.image
+      image:           script.image,
+      job_timeout:     script.vexor.timeout,
+      job_read_timeout:script.vexor.read_timeout
     )
   end
 
