@@ -97,7 +97,7 @@ describe Build do
     its(:branch)               { should eq 'MyString' }
     its(:cache_url_prefix)     { should eq "http://test.host/f/cached_files/#{b.project.token}" }
     its(:build_id)             { should eq b.id }
-    its(:job_id)               { should eq job.number }
+    its(:job_id)               { should eq job.id }
   end
 
   context "duration" do
