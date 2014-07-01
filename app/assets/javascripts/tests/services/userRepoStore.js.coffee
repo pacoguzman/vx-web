@@ -67,26 +67,25 @@ describe "userRepoStore", ->
   describe "subscribe", ->
 
     beforeEach ->
-      $http.expectPOST('/api/user_repos/1/subscribe').respond('success')
+      $http.expectPOST('/api/user_repos/1/subscribe').respond({subscribed: true, project_id: 1})
 
     it "should send POST request", ->
+      repo = {id: 1, subscribed: true}
       $scope.$apply ->
-        repos.toggleSubscribtion(id: 1, subscribed: true).then (it) ->
-          expected = it
+        repos.updateSubscribtion(repo)
       $http.flush()
-      expect(expected).toEqual 'success'
-
+      expect(repo).toEqual(id: 1, subscribed: true, project_id: 1)
 
   describe "unsubscribe", ->
 
     beforeEach ->
-      $http.expectPOST('/api/user_repos/1/unsubscribe').respond('success')
+      $http.expectPOST('/api/user_repos/1/unsubscribe').respond(subscribed: false, project_id: null)
 
     it "should send POST request", ->
+      repo = {id: 1, subscribed: false, project_id: 1}
       $scope.$apply ->
-        repos.toggleSubscribtion(id: 1, subscribed: false).then (it) ->
-          expected = it
+        repos.updateSubscribtion(repo)
       $http.flush()
-      expect(expected).toEqual 'success'
+      expect(repo).toEqual(id: 1, subscribed: false, project_id: null)
 
 
