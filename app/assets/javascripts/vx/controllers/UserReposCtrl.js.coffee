@@ -25,5 +25,4 @@ Vx.controller 'UserReposCtrl', ['$scope', 'userRepoStore',
       $scope.wait = true
       userRepos.sync().finally ->
         $scope.wait = false
-
 ]

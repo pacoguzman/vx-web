@@ -27,13 +27,20 @@
             .search-result
 
               .pull-right
-                %button.user-repo-toggle.btn.btn-link{ href: "javascript://", 'ng-disabled' => 'repo.disabled || repo.wait || wait', 'ng-click' => 'changeSubscription(repo)', 'ng-show' => 'repo.subscribed' }
-                  %i.fa.fa-star.fa-2x.text-warning
+                %span.btn.btn-outline{ 'ng-show' => 'repo.wait' }
+                  %span.ajax-loader
+                %span{ 'ng-hide' => "wait || repo.wait" }
+                  %button.user-repo-toggle.btn.btn-link{ href: "javascript://", 'ng-disabled' => 'repo.disabled', 'ng-click' => 'changeSubscription(repo)', 'ng-show' => 'repo.subscribed', title: "Add this project to Vexor.io" }
+                    %i.fa.fa-check-square-o.fa-2x.text-navy
 
-                %button.user-repo-toggle.btn.btn-link{ href: "javascript://", 'ng-click' => 'changeSubscription(repo)', 'ng-hide' => 'repo.subscribed' }
-                  %i.fa.fa-star-o.fa-2x.text-warning
+                  %button.user-repo-toggle.btn.btn-link{ href: "javascript://", 'ng-click' => 'changeSubscription(repo)', 'ng-hide' => 'repo.subscribed', style: "opacity: 0.8" }
+                    %i.fa.fa-check-square-o.fa-2x.text-muted
 
               %h3
-                %a{ href: "{{ repo.html_url }}"} {{ repo.full_name }}
+                %a{ 'ng-show' => 'repo.project_id', href: "/ui/projects/{{ repo.project_id }}/builds"}
+                  {{ repo.full_name }}
+                %span{ style: "color:#676C6A", 'ng-hide' => 'repo.project_id' }
+                  {{ repo.full_name }}
               %a.search-link{ href: "{{ repo.html_url }}"} {{ repo.html_url }}
               %p {{ repo.description || "[no description given]" }}
+
