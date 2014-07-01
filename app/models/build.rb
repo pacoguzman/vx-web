@@ -53,9 +53,7 @@ class Build < ActiveRecord::Base
 
     after_transition any => [:started, :passed, :failed, :errored, :deploying] do |build, transition|
       build.delivery_to_notifier
-
-      build.publish
-      build.project.publish
+      build.publish_updated
     end
   end
 
@@ -242,6 +240,16 @@ class Build < ActiveRecord::Base
     )
   end
 
+  def publish_updated
+    publish
+    project.publish
+  end
+
+  def publish_created
+    publish :created
+    project.publish
+  end
+
   def publish(name = nil)
     super(name, channel: channel)
   end
@@ -262,10 +270,6 @@ class Build < ActiveRecord::Base
 
     def generate_token
       self.token ||= SecureRandom.uuid
-    end
-
-    def publish_created
-      publish :created
     end
 
 end

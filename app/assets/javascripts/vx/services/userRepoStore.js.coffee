@@ -5,15 +5,22 @@ Vx.service 'userRepoStore', ['$http',
       re.data
 
     subscribe = (repo) ->
-      $http.post("/api/user_repos/#{repo.id}/subscribe").then (it) ->
-        angular.extend repo, it.data
+      $http.post("/api/user_repos/#{repo.id}/subscribe")
+        .then (it) ->
+          angular.extend repo, it.data
+        .finally ->
+          repo.wait = false
 
     unsubscribe = (repo) ->
-      $http.post("/api/user_repos/#{repo.id}/unsubscribe").then (it) ->
-        repo.subscribed = false
-        repo.project_id = null
+      $http.post("/api/user_repos/#{repo.id}/unsubscribe")
+        .then (it) ->
+          repo.subscribed = false
+          repo.project_id = null
+        .finally ->
+          repo.wait = false
 
-    toggleSubscribtion = (repo) ->
+    updateSubscribtion = (repo) ->
+      repo.wait = true
       if repo.subscribed
         subscribe repo
       else
@@ -31,5 +38,5 @@ Vx.service 'userRepoStore', ['$http',
 
     all:                all
     sync:               sync
-    toggleSubscribtion: toggleSubscribtion
+    updateSubscribtion: updateSubscribtion
 ]

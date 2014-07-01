@@ -48,9 +48,9 @@ angular.module('Vx').
           if scope.project
             scope.subscribed = scope.subscriptions.indexOf(scope.project.id) != -1
             if scope.subscribed
-              elem.removeClass("btn-default").addClass("btn-primary")
+              elem.removeClass("btn-default").removeClass("btn-outline").addClass("btn-primary")
             else
-              elem.addClass("btn-default").removeClass("btn-primary")
+              elem.addClass("btn-default").addClass("btn-outline").removeClass("btn-primary")
 
         scope.$watch("subscriptions", updateSubscribed, true)
         scope.$watch("project", updateSubscribed)
