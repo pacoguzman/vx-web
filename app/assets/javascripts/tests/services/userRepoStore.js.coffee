@@ -74,7 +74,7 @@ describe "userRepoStore", ->
       $scope.$apply ->
         repos.updateSubscribtion(repo)
       $http.flush()
-      expect(repo).toEqual(id: 1, subscribed: true, project_id: 1)
+      expect(repo).toEqual(id: 1, subscribed: true, project_id: 1, wait: false)
 
   describe "unsubscribe", ->
 
@@ -86,6 +86,6 @@ describe "userRepoStore", ->
       $scope.$apply ->
         repos.updateSubscribtion(repo)
       $http.flush()
-      expect(repo).toEqual(id: 1, subscribed: false, project_id: null)
+      expect(repo).toEqual(id: 1, subscribed: false, project_id: null, wait: false)
 
 
