@@ -13,14 +13,8 @@ class UserRepo < ActiveRecord::Base
   belongs_to :identity, class_name: "::UserIdentity", foreign_key: :identity_id
   belongs_to :company
 
-  has_one :project, dependent: :nullify
+  has_one :project, dependent: :destroy
   has_one :user, through: :identity
-  has_many :same_name_projects,
-    ->(owner){
-      readonly.where(company_id: owner.company_id)
-    },
-    class_name: "::Project",
-    foreign_key: :name, primary_key: :full_name
 
   validates :full_name, :ssh_url, :html_url, :external_id, presence: true
   validates :is_private, inclusion: { in: [true, false] }
@@ -53,6 +47,10 @@ class UserRepo < ActiveRecord::Base
       )
       repo.save && repo
     end
+  end
+
+  def same_name_projects?
+    Project.where(company: company, name: self.full_name).any?
   end
 
   def subscribe
@@ -157,6 +155,6 @@ end
 #  updated_at         :datetime
 #  identity_id        :integer          not null
 #  external_id        :integer          not null
-#  company_id         :integer          not null
+#  company_id         :uuid             not null
 #
 

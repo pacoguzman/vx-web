@@ -4,8 +4,8 @@ class ::Api::ProjectsController < ::Api::BaseController
   skip_before_filter :authorize_user, only: [:key]
 
   def index
-    @projects = current_company.projects.includes(user_repo: :identity)
-    respond_with(@projects)
+    @projects = current_company.projects.includes([:user, :identity])
+    respond_with(@projects, serializer: ProjectsSerializer)
   end
 
   def show
@@ -14,7 +14,11 @@ class ::Api::ProjectsController < ::Api::BaseController
 
   def key
     @project = Project.find params[:id]
-    render text: @project.public_deploy_key, content_type: "text/plain"
+    respond_to do |want|
+      want.txt {
+        render text: @project.public_deploy_key, content_type: "text/plain"
+      }
+    end
   end
 
   private

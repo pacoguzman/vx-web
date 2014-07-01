@@ -1,0 +1,120 @@
+.row.border-bottom.white-bg.dashboard-header
+  .col-md-4.text-center
+    %h2
+      {{ user.name }}
+    %img{ 'ng-src' => "{{ user.avatar }}", style: "height: 128px; " }
+
+  .col-md-offset-1.col-md-7.m-t
+    %form{ role: "form", 'ng-submit' => "updateUser()" }
+      .form-group
+        %label{ for: "user_email", class: "col-sm-1 control-label" } Email
+        %input{ type: "email", class: "form-control", id: "user_email", "ng-model" => "user.email" }
+      .form-group
+        %label{ for: "user_name", class: "col-sm-1 control-label" } Name
+        %input{ type: "text", class: "form-control", id: "user_name", "ng-model" => "user.name" }
+
+      .form-group.m-t-lg
+        %input{ type: "submit", class: "btn btn-primary", value: "Update", 'ng-disabled' => 'user.wait' }
+        %span{ 'ng-show' => "user.wait" } Pelase wait...
+
+.wrapper.wrapper-content.animated.fadeInDown{ 'ng-show' => "newGitlab" }
+  .row
+    .col-lg-12
+      .ibox-title
+        %h5 New Gitlab Account
+
+      .ibox-content
+        .alert.alert-danger{ 'ng-show' => "newGitlab.error" }
+          %p
+            %strong Error
+            {{ newGitlab.error }}
+
+        %form{ role: "form", class: "", "ng-submit" => "createGitlab()" }
+          .form-group
+            %input{ type: "text", class: "form-control", "ng-model" => "newGitlab.login", placeholder: "Email" }
+          .form-group
+            %input{ type: "password", class: "form-control", "ng-model" => "newGitlab.password", placeholder: "Password" }
+          .form-group
+            %input{ type: "text", class: "form-control", id: "gitlab_id_url", "ng-model" => "newGitlab.url", placeholder: "Url" }
+
+          .form-group.m-t-lg
+            %button.btn.btn-primary{ type: "submit", 'ng-disabled' => "newGitlab.wait"}
+              %i.fa.fa-plus
+              Add Account
+            %span{ 'ng-show' => "newGitlab.wait" }
+              Please wait...
+            %span{ 'ng-hide' => "newGitlab.wait" }
+              or
+              %a{ href: "javascript://", 'ng-click' => 'newGitlabForm(false)' }
+                Cancel
+
+.wrapper.wrapper-content.animated.fadeInDown{ 'ng-show' => "gitlab" }
+  .row
+    .col-lg-12
+      .ibox-title
+        %h5 Edit Gitlab Account
+
+      .ibox-content
+        .alert.alert-danger{ 'ng-show' => "gitlab.error" }
+          %p
+            %strong Error
+            {{ newGitlab.error }}
+
+        %form{ role: "form", class: "", "ng-submit" => "updateGitlab()" }
+          .form-group
+            %input{ type: "text", class: "form-control", "ng-model" => "gitlab.login", placeholder: "Email" }
+          .form-group
+            %input{ type: "password", class: "form-control", "ng-model" => "gitlab.password", placeholder: "Password" }
+          .form-group
+            %input{ type: "text", class: "form-control", id: "gitlab_id_url", "ng-model" => "gitlab.url", placeholder: "Url" }
+
+          .form-group.m-t-lg
+            .pull-right
+              %a.btn.btn-danger{ 'ng-click' => "destroyGitlab()" }
+                Remove
+            %button.btn.btn-primary{ type: "submit", 'ng-disabled' => 'gitlab.wait' }
+              %i.fa.fa-plus
+              Update
+            %span{ 'ng-show' => "gitlab.wait" }
+              Please wait...
+            %span{ 'ng-hide' => "gitlab.wait" }
+              or
+              %a{ href: "javascript://", 'ng-click' => 'editGitlabForm(false)' }
+                Cancel
+
+.wrapper.wrapper-content.animated.fadeInRight{ 'ng-show' => "identities.length > 0", 'ng-hide' => "newGitlab || gitlab" }
+  .row
+    .col-lg-12
+      .ibox
+        .ibox-title
+          %h5 Linked Accounts
+          .ibox-tools
+            %button.btn.btn-xs.btn-warning{ href: "/users/auth/github", 'ng-hide' => 'github' }
+              %i.fa.fa-github
+              Authorize in Github
+            %button.btn.btn-xs.btn-primary{ href: "javascript://", 'ng-click' => 'newGitlabForm(true)' }
+              %i.fa.fa-plus
+              Add Gitlab Account
+
+        .ibox-content
+          %table.table
+            %thead
+              %th Service
+              %th Login
+              %th Url
+              %th
+            %tr{ 'ng-repeat' => "id in identities" }
+              %td
+                {{ id.provider }}
+                %span{ 'ng-show' => "id.version" }
+                  ({{id.version}})
+              %td
+                {{ id.login }}
+              %td
+                %a{ 'ng-href' => "{{ id.url }}" }
+                  {{ id.url }}
+              %td
+                %a.btn.btn-default.btn-outline.btn-xs{ 'ng-click' => "editGitlabForm(id)", 'ng-if' => "id.provider == 'gitlab'" }
+                  %i.fa.fa-edit
+                  Edit
+

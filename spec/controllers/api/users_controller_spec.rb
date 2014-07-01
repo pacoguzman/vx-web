@@ -72,7 +72,7 @@ describe Api::UsersController do
   describe 'DELETE destroy' do
     context 'successfully' do
       it 'returns status 200' do
-        another_user = create(:user, email: 'another.user@example.com')
+        another_user = create(:user, email: 'another.user@example.com', id: uuid_for(1))
         another_user.add_to_company(company, 'admin')
         user.add_to_company(company, 'admin')
         sign_in(user)
@@ -83,7 +83,7 @@ describe Api::UsersController do
       end
 
       it 'deletes user from company' do
-        another_user = create(:user, email: 'another.user@example.com')
+        another_user = create(:user, email: 'another.user@example.com', id: uuid_for(1))
         another_user.add_to_company(company, 'admin')
         user.add_to_company(company, 'admin')
         sign_in(user)

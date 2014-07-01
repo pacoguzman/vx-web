@@ -19,7 +19,7 @@ describe Api::CompaniesController do
     before { post :default, id: c1.id }
     it { should be_success }
     it "should set user default company" do
-      expect(user.default_company).to eq c1
+      expect(user.default_company true).to eq c1
     end
   end
 

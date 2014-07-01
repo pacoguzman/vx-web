@@ -14,10 +14,17 @@ end
 describe UserRepo do
   let(:repo) { create :user_repo }
 
-  context "same_name_projects association" do
-    let(:project) { create :project, name: repo.full_name, user_repo: nil, company: repo.company }
-    subject { repo.same_name_projects }
-    it { should eq [project] }
+  context "same_name_projects" do
+    let(:project) { create :project, name: repo.full_name, user_repo: create(:user_repo, company: repo.company), company: repo.company }
+
+    it "should be true if projects with same name exists" do
+      project
+      expect(repo).to be_same_name_projects
+    end
+
+    it "should be false if no projects with same name" do
+      expect(repo).to_not be_same_name_projects
+    end
   end
 
   context ".find_or_create_by_sc" do
@@ -228,6 +235,6 @@ end
 #  updated_at         :datetime
 #  identity_id        :integer          not null
 #  external_id        :integer          not null
-#  company_id         :integer          not null
+#  company_id         :uuid             not null
 #
 

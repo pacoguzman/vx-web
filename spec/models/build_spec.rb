@@ -51,11 +51,11 @@ describe Build do
     project = create :project, company: create(:company)
     expect{
       create :build, project: project
-    }.to change(ServerSideEventsConsumer.messages, :count).by(1)
-    msg = ServerSideEventsConsumer.messages.last
-    expect(msg.keys).to eq [:channel, :event, :event_name, :payload]
+    }.to change(SockdNotifyConsumer.messages, :count).by(1)
+    msg = SockdNotifyConsumer.messages.last
+    expect(msg.keys).to eq [:channel, :event, :_event, :payload]
     expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
-    expect(msg[:event_name]).to eq "build:created"
+    expect(msg[:_event]).to eq "build:created"
     expect(msg[:payload]).to_not be_empty
   end
 
@@ -63,11 +63,11 @@ describe Build do
     b.save!
     expect{
       b.publish
-    }.to change(ServerSideEventsConsumer.messages, :count).by(1)
-    msg = ServerSideEventsConsumer.messages.last
-    expect(msg.keys).to eq [:channel, :event, :event_name, :payload]
+    }.to change(SockdNotifyConsumer.messages, :count).by(1)
+    msg = SockdNotifyConsumer.messages.last
+    expect(msg.keys).to eq [:channel, :event, :_event, :payload]
     expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
-    expect(msg[:event_name]).to eq "build:updated"
+    expect(msg[:_event]).to eq "build:updated"
     expect(msg[:payload]).to_not be_empty
   end
 
@@ -97,7 +97,7 @@ describe Build do
     its(:branch)               { should eq 'MyString' }
     its(:cache_url_prefix)     { should eq "http://test.host/f/cached_files/#{b.project.token}" }
     its(:build_id)             { should eq b.id }
-    its(:job_id)               { should eq job.number }
+    its(:job_id)               { should eq job.id }
   end
 
   context "duration" do
@@ -137,16 +137,10 @@ describe Build do
         expect(msg["status"]).to eq 2
       end
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
-      end
-
-      it "should update last_build on project" do
-        expect{
-          subject
-        }.to change{ b.project.reload.last_build_id }.to(b.id)
+        }.to change(SockdNotifyConsumer.messages, :count).by(2)
       end
     end
 
@@ -162,10 +156,10 @@ describe Build do
         expect(msg["status"]).to eq 6
       end
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
+        }.to change(SockdNotifyConsumer.messages, :count).by(2)
       end
     end
 
@@ -181,10 +175,10 @@ describe Build do
         expect(msg["status"]).to eq 3
       end
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
+        }.to change(SockdNotifyConsumer.messages, :count).by(2)
       end
     end
 
@@ -200,10 +194,10 @@ describe Build do
         expect(msg["status"]).to eq 4
       end
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
+        }.to change(SockdNotifyConsumer.messages, :count).by(2)
       end
     end
 
@@ -219,10 +213,10 @@ describe Build do
         expect(msg["status"]).to eq 5
       end
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
+        }.to change(SockdNotifyConsumer.messages, :count).by(2)
       end
     end
   end
@@ -420,19 +414,19 @@ describe Build do
       its(:finished_at) { should be_nil }
       its(:status_name) { should eq :initialized }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(3)
-        build_m = ServerSideEventsConsumer.messages.pop
-        job2_m  = ServerSideEventsConsumer.messages.pop
+        }.to change(SockdNotifyConsumer.messages, :count).by(3)
+        build_m = SockdNotifyConsumer.messages.pop
+        job2_m  = SockdNotifyConsumer.messages.pop
 
         expect(job2_m[:channel]).to eq "company/00000000-0000-0000-0000-000000000000"
-        expect(job2_m[:event_name]).to eq "job:updated"
+        expect(job2_m[:_event]).to eq "job:updated"
         expect(job2_m[:payload][:id]).to eq job2.id
 
         expect(job2_m[:channel]).to eq "company/00000000-0000-0000-0000-000000000000"
-        expect(build_m[:event_name]).to eq "build:updated"
+        expect(build_m[:_event]).to eq "build:updated"
       end
 
       it "should delivery message to JobsConsumer" do
@@ -595,6 +589,7 @@ describe Build do
       end
     end
   end
+
 end
 
 # == Schema Information

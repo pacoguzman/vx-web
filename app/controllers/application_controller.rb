@@ -37,7 +37,12 @@ class ApplicationController < ActionController::Base
     end
 
     def current_user
-      @current_user ||= ::User.find_by(id: current_user_id.to_i)
+      @current_user ||=
+        if current_user_id.blank?
+          false
+        else
+          ::User.find_by(id: current_user_id)
+        end
     end
 
     def current_company

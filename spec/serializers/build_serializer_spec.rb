@@ -4,11 +4,7 @@ describe BuildSerializer do
   let(:build) { create :build }
   let(:serializer) { described_class.new build }
 
-  context "as_json" do
-    subject { serializer.as_json.keys }
-
-    it { should eq [:id, :project_id, :number, :status, :started_at,
-                    :finished_at, :sha, :branch, :author, :author_email,
-                    :message, :http_url, :author_avatar, :pull_request_id, :project_name] }
+  it "should successfuly serialize" do
+    expect(serializer.to_json).to_not be_empty
   end
 end

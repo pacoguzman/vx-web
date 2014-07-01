@@ -8,12 +8,13 @@ class Project < ActiveRecord::Base
   belongs_to :company
 
   has_one :identity, through: :user_repo
+  has_one :user, through: :user_repo
+
   has_many :builds, dependent: :destroy, class_name: "::Build"
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
-  has_many :cached_files, dependent: :destroy
+  has_many :cached_files, dependent: :destroy, inverse_of: :project
 
-  validates :name, :http_url, :clone_url, :token,
-    :deploy_key, presence: true
+  validates :name, :http_url, :clone_url, :token, :deploy_key, :user_repo_id, presence: true
   validates :token, uniqueness: true
   validates :name, uniqueness: { scope: :company_id }
 
@@ -74,17 +75,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_build
-    builds.where.not(status: [0,1]).first
-  end
-
-  def update_last_build
-    if build = last_build
-      update(
-        last_build_id:          build.id,
-        last_build_at:          build.created_at,
-        last_build_status_name: build.status_name
-      )
-    end
+    builds.first
   end
 
   def subscribed_by?(user)
@@ -144,6 +135,22 @@ class Project < ActiveRecord::Base
     super(event, channel: channel)
   end
 
+  def status_for_gitlab(sha)
+    build = builds.find_by(sha: sha)
+    status_map = {
+      initialized: :pending,
+      started:     :running,
+      deploying:   :running,
+      passed:      :success,
+      failed:      :failed,
+      errored:     :failed
+    }.with_indifferent_access
+
+    if build
+      { status: status_map[build.status_name], location: build.public_url }
+    end
+  end
+
   private
 
     def find_or_build_subscription_for_user(user)
@@ -178,6 +185,6 @@ end
 #  last_build_id          :integer
 #  last_build_status_name :string(255)
 #  last_build_at          :datetime
-#  company_id             :integer          not null
+#  company_id             :uuid             not null
 #
 

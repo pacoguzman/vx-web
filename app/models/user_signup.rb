@@ -3,7 +3,7 @@ UserSignup = Struct.new(:company_name, :email, :omniauth) do
   def create
     User.transaction do
       if user and company and valid?
-        user.add_to_company(company, company.default_user_role)
+        user.add_to_company(company, company.default_user_role) || rollback
       else
         rollback
       end

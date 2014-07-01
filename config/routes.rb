@@ -15,22 +15,26 @@ VxWeb::Application.routes.draw do
 
     resources :projects do
       resources :builds, only: [:index, :create]
-      resources :cached_files, only: [:index]
+      resources :cached_files, only: [:index] do
+        collection do
+          post :mass_destroy
+        end
+      end
       resource :subscription, only: [:create, :destroy], controller: "project_subscriptions"
       resources :pull_requests, only: [:index]
       resources :branches, only: [:index]
       member do
-        get "key"
+        get "key.:format", action: :key
       end
     end
 
     resources :builds, only: [:show] do
       member do
         post :restart
+        get :status_for_gitlab
       end
       collection do
         get :queued
-        get "sha/:sha", action: :sha, as: :sha
       end
       resources :jobs, only: [:index]
     end
@@ -48,10 +52,6 @@ VxWeb::Application.routes.draw do
         post :sync
       end
     end
-
-    resources :cached_files, only: [:destroy]
-    resources :status, only: [:show], id: /(jobs)/
-    resources :events, show: [:index]
 
     resources :companies, only: [] do
       get :usage, on: :collection
@@ -76,8 +76,6 @@ VxWeb::Application.routes.draw do
 
   post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'
-
-  get "builds/sha/:sha" => "builds#sha"
 
   scope constraints: ->(req){ req.format == Mime::HTML } do
     get "/",         to: redirect("/ui")

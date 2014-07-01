@@ -57,7 +57,7 @@ angular.module('Vx').
 
       findInCollections = (id, collectionId, f) ->
         if collectionId
-          ival         = parseInt(id)
+          ival         = id
           collectionId = collectionId.toString()
           collection   = collectionsCache.get(collectionId)
           if collection

@@ -1,3 +1,7 @@
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-md-9
+    %h2 Dashboard
+
 .projects
   .row
 
@@ -29,19 +33,31 @@
 
       .ajax-loader{ 'ng-hide' => 'builds.length != undefined' }
 
-    .col-xs-4
-      .projects-add-new.pull-right
-        %a{ class: "btn btn-sm btn-primary", 'ng-href' => "/ui/user_repos" }
-          Manage Projects
 
-      .ajax-loader{ 'ng-hide' => 'projects.length != undefined' }
+.wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => "projects.length > 0" }
+  .row
+    .col-lg-12
+      .ibox
+        .ibox-title
+          %h5 Projects activity
 
-      .project.panel.panel-default{ 'ng-repeat' => "project in projects | orderBy:'last_build_created_at':true" }
-        .panel-body
-          .pull-right.app-task-status{ 'task' => 'project'}
+        .ibox-content
+          %div
 
-          %a.medium-text{ 'ng-href' => "/ui/projects/{{project.id}}/builds" }
-            {{project.name}}
+            .feed-activity-list
 
-        .panel-footer
-          %small {{ project.last_build_created_at | fromNow }}
+              .feed-element{'ng-repeat' => "project in projects | orderBy:projectOrderBy:true", 'ng-click' => "go(project)", style: "cursor: pointer;"}
+                %a.pull-left
+                  %img.img-circle{ 'ng-src' => "{{ projectAvatar(project) }}" }
+
+                .media-body
+                  %span.pull-right.app-task-status{ 'task' => 'project.last_build', 'ng-show' => "project.last_build" }
+
+                  %strong {{ projectAuthor(project) }}
+                  {{ projectLastAction(project) }}
+                  %a{ href: "/ui/projects/{{ project.id }}/builds" }
+                    {{ project.name }}
+                  %br
+                  %small.text-muted
+                    %i.fa.fa-clock-o
+                    {{ projectLastActionAt(project) | fromNow }}

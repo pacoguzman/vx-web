@@ -228,6 +228,31 @@ describe Project do
     it { should have(233).items }
   end
 
+  it "should return status for gitlab" do
+    project = create :project
+    b = create(:build, project: project)
+
+    expect(project.status_for_gitlab 'sha').to be_nil
+
+    b.update_attribute :status, 0
+    expect(project.status_for_gitlab(b.sha)[:status]).to eq :pending
+
+    b.update_attribute :status, 2
+    expect(project.status_for_gitlab(b.sha)[:status]).to eq :running
+
+    b.update_attribute :status, 3
+    expect(project.status_for_gitlab(b.sha)[:status]).to eq :success
+
+    b.update_attribute :status, 4
+    expect(project.status_for_gitlab(b.sha)[:status]).to eq :failed
+
+    b.update_attribute :status, 5
+    expect(project.status_for_gitlab(b.sha)[:status]).to eq :failed
+
+    b.update_attribute :status, 6
+    expect(project.status_for_gitlab(b.sha)[:status]).to eq :running
+  end
+
 end
 
 # == Schema Information
@@ -247,6 +272,6 @@ end
 #  last_build_id          :integer
 #  last_build_status_name :string(255)
 #  last_build_at          :datetime
-#  company_id             :integer          not null
+#  company_id             :uuid             not null
 #
 

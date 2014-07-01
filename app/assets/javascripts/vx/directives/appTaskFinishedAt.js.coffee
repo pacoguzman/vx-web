@@ -1,5 +1,5 @@
 angular.module('Vx').
-  directive "appTaskFinished", () ->
+  directive "appTaskFinishedAt", () ->
 
     restrict: 'EC'
     replace: true

@@ -1,53 +1,73 @@
-.build
-  .row.task-attributes{ 'ng-show' => "build" }
-    .col-xs-5
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-sm-8
+    %h2 Build \#{{ build.number }}
+    %ol.breadcrumb
+      %li
+        %a{ href: "/ui" } Projects
+      %li
+        %a{ href: "/ui/projects/{{ project.id }}/builds" } {{ project.name }}
+      %li
+        %a{ href: "/ui/projects/{{ project.id }}/pull_requests" } Pull Requests
+      %li
+        %a{ href: "/ui/projects/{{ project.id }}/branches" } Branches
 
-      %dl.task-attribute.dl-horizontal
-        %dt  Build
-        %dd.app-task-status{ 'task' => "build" }
-          {{ task.number }}
+  .col-sm-4
+    .title-action
+      %a.btn.btn-white{ 'ng-click' => "restart()", 'ng-show' => "build.finished" }
+        %i.fa.fa-undo
+        Restart
 
-      %dl.task-attribute.dl-horizontal
-        %dt Status
-        %dd
-          {{ build.status }}
+.row.wrapper.border-bottom.white-bg.animated.fadeInDown{ style: "background-color: #f3f6fb", 'ng-show' => "build" }
+  .col-md-6.m-t-md
+    .row.form-group
+      %label.col-sm-3.control-label Status
+      .col-sm-9
+        %p.form-control-static.app-task-status{ task: "build" }
+    .row.form-group
+      %label.col-sm-3.control-label Author
+      .col-sm-9
+        %p.form-control-static
+          %img.img-circle{ 'ng-src' => "{{ build.author_avatar }}", style: "width: 16px; height: 16px" }
+          {{ build.author }}
+    .row.form-group
+      %label.col-sm-3.control-label Mesage
+      .col-sm-9
+        %p.form-control-static.task-message {{ build.message }}
 
-      %dl.task-attribute.dl-horizontal
-        %dt Finished At
-        %dd.app-task-finished{ task: 'build' }
+  .col-md-6.m-t-md
+    .row.form-group
+      %label.col-sm-3.control-label Commit
+      .col-sm-9
+        %p.form-control-statis{ style: "white-space: nowrap;" }
+          %a{ href: "{{ build.http_url }}" }
+            %i.fa.fa-external-link
+              {{ build.sha | truncate:8:'' }}
+          to {{ build.branch }}
+    .row.form-group
+      %label.col-sm-3.control-label{ style: "white-space: nowrap;" } Finished At
+      .col-sm-9
+        %p.form-control-static.app-task-finished-at{ task: "build" }
+    .row.form-group
+      %label.col-sm-3.control-label Duration
+      .col-sm-9
+        %p.form-control-static.app-task-duration{ task: "build" }
 
-      %dl.task-attribute.dl-horizontal
-        %dt Duration
-        %dd.app-task-duration{ task: "build" }
 
-    .col-xs-5
+.wrapper.wrapper-content
+  .row.animated.fadeInRight{ 'ng-show' => "regularJobs.length > 0" }
+    .col-lg-12
+      .ibox
+        .ibox-title
+          %h5 Build matrix
 
-      %dl.task-attribute.dl-horizontal
-        %dt Commit
-        %dd.app-build-http-url{ build: 'build', branch: 'true' }
+        .ibox-content
+          .app-build-jobs{ jobs: 'regularJobs' }
 
-      %dl.task-attribute.dl-horizontal{ 'ng-show' => 'build.pull_request_id != undefined' }
-        %dt Pull Request
-        %dd
-          %a{ 'ng-href' => "{{ project.http_url}}/pull/{{build.pull_request_id}}", "target" => "_blank" }
-            {{ build.pull_request_id }}
+  .row.animated.fadeInRight{ 'ng-show' => "deployJobs.length > 0" }
+    .col-lg-12
+      .ibox
+        .ibox-title
+          %h5 Deploy
 
-      %dl.task-attribute.dl-horizontal
-        %dt Author
-        %dd
-          %img{ 'ng-src' => "{{ build.author_avatar }}" }
-          %a{'ng-href' => "mailto:{{ build.author_email }}"}
-            {{ build.author }}
-
-      %dl.task-attribute.dl-horizontal
-        %dt Message
-        %dd.task-attribute-message {{ build.message }}
-
-    .col-xs-2
-      .pull-right
-        %a{ href: 'javascript://', title: "Restart Build", 'ng-click' => 'restartBuild(build)', 'ng-show' => 'isFinished(build)' }
-          %i.fa.fa-refresh.fa-2x
-
-  %pre.app-build-jobs{ jobs: 'jobs' }
-
-  .ajax-loader{ 'ng-show' => 'waitJobs' }
+        .ibox-content
+          .app-build-jobs{ jobs: 'deployJobs' }

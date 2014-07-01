@@ -28,7 +28,7 @@ describe Api::ProjectsController do
   context "GET /key" do
     before do
       session[:user_id] = nil
-      get :key, id: project.id
+      get :key, id: project.id, format: "txt"
     end
     it { should be_success }
     its(:content_type) { should eq 'text/plain' }
