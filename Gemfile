@@ -12,7 +12,7 @@ gem 'carrierwave'
 gem 'sshkey'
 
 gem 'vx-message',           '0.6.2'
-gem 'vx-builder',           '0.5.1'
+gem 'vx-builder',           '0.5.2'
 gem 'vx-service_connector', '0.2.5'
 gem 'vx-consumer',          '0.1.8'
 gem 'vx-instrumentation',   '0.1.3'
