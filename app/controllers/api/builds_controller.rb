@@ -34,7 +34,7 @@ class ::Api::BuildsController < ::Api::BaseController
   private
 
     def project
-      @project ||= ::Project.find params[:project_id]
+      @project ||= current_company.projects.find params[:project_id]
     end
 
     def build

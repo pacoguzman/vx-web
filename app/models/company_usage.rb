@@ -14,7 +14,8 @@ class CompanyUsage
       today:      calculate_for_period(from: Time.current.beginning_of_day,   to: Time.current),
       yesterday:  calculate_for_period(from: 1.day.ago.beginning_of_day,      to: 1.day.ago.end_of_day),
       this_week:  calculate_for_period(from: Time.current.beginning_of_week,  to: Time.current),
-      this_month: calculate_for_period(from: Time.current.beginning_of_month, to: Time.current)
+      this_month: calculate_for_period(from: Time.current.beginning_of_month, to: Time.current),
+      last_month: calculate_for_period(from: 1.month.ago.beginning_of_month,  to: 1.month.ago.end_of_month)
     }
   end
 
