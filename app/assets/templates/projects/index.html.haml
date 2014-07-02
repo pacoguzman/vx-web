@@ -2,36 +2,41 @@
   .col-md-9
     %h2 Dashboard
 
-.projects
+.wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => 'builds && builds.length === 0 && projects && projects.length > 0' }
   .row
+    .col-lg-12
+      .ibox
+        .ibox-title
+          %h5 No pending jobs - Please get your hands dirty
 
-    .col-xs-8
-      %table.tasks-table.table{ 'ng-show' => 'builds.length > 0' }
-        %thead
-          %th No.
-          %th Project
-          %th Branch
-          %th Commit
-          %th Committer
-          %th Duration
 
-        %tr.tasks-table-item.app-task-status-class{ 'ng-repeat' => "build in builds | orderBy:'updated_at':true | limitTo:20", 'status' => "build.status" }
-          %td
-            %a{ 'ng-href' => "/ui/builds/{{build.id}}" }
-              %i.fa.fa-circle
-              %span {{ build.number }}
-          %td
-            %a{ 'ng-href' => "/ui/projects/{{ build.project_id }}/builds" }
-              %span {{ build.project_name }}
-          %td {{ build.branch }}
-          %td.app-build-http-url{ build: 'build' }
-          %td {{ build.author }}
-          %td.app-task-duration{ task: 'build' }
+.wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => "builds.length > 0" }
+  .row
+    .col-lg-12
+      .ibox
+        .ibox-title
+          %h5 Projects queued activity
 
-      %div{ 'ng-show' => 'builds.length === 0 && projects.length > 0' }
-        No pending jobs - Please get your hands dirty
+        .ibox-content
+          %div
 
-      .ajax-loader{ 'ng-hide' => 'builds.length != undefined' }
+            .feed-activity-list
+
+              .feed-element{'ng-repeat' => "build in builds | orderBy:'updated_at':true | limitTo:30", 'ng-click' => "goBuild(build)", style: "cursor: pointer;"}
+                %a.pull-left
+                  %img.img-circle{ 'ng-src' => "{{ build.author_avatar }}" }
+
+                .media-body
+                  %span.pull-right.app-task-status{ 'task' => 'build', 'ng-show' => "build" }
+
+                  %strong {{ build.author }}
+                  commited to
+                  %a{ href: "/ui/projects/{{ project.id }}/builds" }
+                    {{ build.project_name }}
+                  %br
+                  %small.text-muted
+                    %i.fa.fa-clock-o
+                    {{ build.updated_at | fromNow }}
 
 
 .wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => "projects.length > 0" }

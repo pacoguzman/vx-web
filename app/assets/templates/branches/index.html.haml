@@ -1,41 +1,58 @@
-.builds
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-md-6
+    %h2 {{ project.name }}
+    %ol.breadcrumb
+      %li
+        %a{ href: "/ui" } Projects
 
-  .row{ 'ng-show' => 'project' }
+  .col-md-6
+    .title-action
+      %a.btn.btn-white{ 'ng-href' => "{{ project.http_url }}", target: "_blank" }
+        %i.fa.fa-external-link
+        On {{ project.source }}
+      %a.btn.btn-white{ 'ng-href' => "/ui/projects/{{ project.id }}/pull_requests", 'ng-class' => "{'active': false}" }
+        %i.fa.fa-rocket
+        Pull Requests
+      %a.btn.btn-white{ 'ng-href' => "/ui/projects/{{ project.id }}/branches", 'ng-class' => "{'active': true}" }
+        %i.fa.fa-code-fork
+        Branches
+      %a.btn.btn-white{ 'ng-href' => "/ui/projects/{{ project.id }}/settings"}
+        %i.fa.fa-gears
+        Settings
+      %a.app-project-subscribe{ project: "project", title: "Watch" }
 
-    .col-xs-6
-      .build-info
-        {{ project.description || "[no description available]" }}
+.wrapper.wrapper-content.animated.fadeInRight{ 'ng-show' => "builds.length > 0" }
+  .row
+    .col-lg-12
+      .ibox
+        .ibox-title
+          %h5 Grouped project activity by branch
 
-    .col-xs-6
-      .pull-right
+        .ibox-content
+          %div
 
-        %a.project-cached-files{ "ng-href" => "/ui/projects/{{project.id}}/cached_files" }
-          Cached Files
+            .chat-activity-list
 
-        %a.project-url{ "ng-href" => "{{ project.http_url}}", "target" => "_blank" }
-          On {{ project.provider_title }}
+              .chat-element{'ng-repeat' => "build in builds | orderBy:'number':true | limitTo: 30", 'ng-click' => "go(build)", style: "cursor: pointer" }
+                .pull-left
+                  %img.img-circle{ 'ng-src' => "{{ build.author_avatar }}" }
 
-        .project-subscribe.app-project-subscribe{ project: "project", title: "Watch Project" }
+                .media-body
+                  .pull-right
+                    %span.pull-right.app-task-status{ 'task' => 'build' }
 
+                  %strong
+                    {{ build.author }}
 
-  %table.tasks-table.table{ 'ng-show' => 'builds.length > 0' }
-    %thead
-      %th No.
-      %th Commit
-      %th Committer
-      %th Branch
-      %th Duration
-      %th Finished At
+                  commited
+                  %a{ href: "{{ build.http_url }}" }
+                    %i.fa.fa-external-link
+                    {{ build.sha | truncate:6:"" }}
+                  to branch
+                  {{ build.branch }}
 
-    %tr.tasks-table-item.app-task-status-class{ 'ng-repeat' => "build in builds | orderBy:'number':true | limitTo:20", 'status' => "build.status" }
-      %td
-        %a{ 'ng-href' => "/ui/builds/{{build.id}}" }
-          %i.fa.fa-circle
-          %span {{ build.number }}
-      %td.app-build-http-url{ build: 'build' }
-      %td {{ build.author }}
-      %td {{ build.branch }}
-      %td.app-task-duration{ task: 'build' }
-      %td.app-task-finished{ task: 'build' }
+                  %p.m-b.m-t-xs {{ build.short_message }}
 
-  .ajax-loader{ 'ng-hide' => 'builds.length != undefined' }
+                  %small.text-muted
+                    %i.fa.fa-clock-o
+                    %span {{ build.created_at | fromNow }}

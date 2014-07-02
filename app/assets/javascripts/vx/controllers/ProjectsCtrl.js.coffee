@@ -49,4 +49,7 @@ Vx.controller 'ProjectsCtrl', ['$scope', 'projectStore', 'buildStore', '$locatio
       if project.last_build
         $location.path("/ui/builds/#{project.last_build.id}")
 
+    $scope.goBuild = (build) ->
+      $location.path("/ui/builds/#{build.id}")
+
 ]

@@ -4,7 +4,7 @@ class BuildSerializer < ActiveModel::Serializer
   attributes :id, :project_id, :number, :status, :started_at, :finished_at,
              :sha, :branch, :author, :author_email, :message, :http_url,
              :author_avatar, :short_message, :finished, :created_at,
-             :pull_request_id, :project_name
+             :pull_request_id, :project_name, :updated_at
 
   def project_name
     object.project.name
