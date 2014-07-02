@@ -89,13 +89,14 @@ describe Build do
     subject { b.to_builder_task job }
     it { should be }
     its(:name)                 { should eq "ci-worker-test-repo" }
-    its(:src)                  { should eq 'MyString' }
+    its(:src)                  { should eq 'git@example.com' }
     its(:sha)                  { should eq 'MyString' }
     its(:deploy_key)           { should be }
     its(:branch)               { should eq 'MyString' }
     its(:cache_url_prefix)     { should eq "http://test.host/f/cached_files/#{b.project.token}" }
     its(:build_id)             { should eq b.id }
     its(:job_id)               { should eq job.id }
+    its(:project_host)         { should eq 'example.com' }
   end
 
   context "duration" do

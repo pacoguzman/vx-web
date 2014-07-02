@@ -28,7 +28,7 @@
               .search-result
 
                 .pull-right
-                  .ui-switch.ui-switch-md{ value: "repo.subscribed", 'disabled' => "repo.wait || wait" }
+                  .ui-switch.ui-switch-md{ value: "repo.subscribed", 'disabled' => "repo.disabled || repo.wait || wait" }
 
                 %h3
                   %a{ 'ng-show' => 'repo.project_id', href: "/ui/projects/{{ repo.project_id }}/builds"}

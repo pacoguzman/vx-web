@@ -4,7 +4,7 @@ Vx.controller 'UsersCtrl', ['$scope', 'userStore', 'currentUserStore', 'inviteSt
     $scope.users           = []
     $scope.currentUser     = null
     $scope.showInvitesForm = false
-    $scope.invite          = { wait: true, emails: null }
+    $scope.invite          = { emails: null }
     $scope.wait            = true
 
     userStore.all()

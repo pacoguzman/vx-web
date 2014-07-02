@@ -120,6 +120,7 @@ class Build < ActiveRecord::Base
       branch:           branch,
       pull_request_id:  pull_request_id,
       cache_url_prefix: cache_url_prefix,
+      project_host:     URI(project.http_url).host
     )
   end
 
