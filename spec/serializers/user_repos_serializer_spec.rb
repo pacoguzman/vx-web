@@ -8,7 +8,7 @@ describe UserReposSerializer do
     dont_allow(repo).same_name_projects?
 
     s = described_class.new([repo], scope: OpenStruct.new(default_company: repo.company))
-    expect(s.same_name_projects).to eq ['repo']
+    expect(s.same_name_projects.map(&:name)).to eq ['repo']
     expect(s.to_json).to be
   end
 

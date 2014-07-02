@@ -51,23 +51,21 @@ describe Build do
     project = create :project, company: create(:company)
     expect{
       create :build, project: project
-    }.to change(SockdNotifyConsumer.messages, :count).by(1)
-    msg = SockdNotifyConsumer.messages.last
+    }.to change(SockdNotifyConsumer.messages, :count).by(2)
+    msg = SockdNotifyConsumer.messages.select{ |m| m[:_event] == 'build:created' }.first
     expect(msg.keys).to eq [:channel, :event, :_event, :payload]
     expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
-    expect(msg[:_event]).to eq "build:created"
     expect(msg[:payload]).to_not be_empty
   end
 
   it "should publish updated" do
     b.save!
     expect{
-      b.publish
-    }.to change(SockdNotifyConsumer.messages, :count).by(1)
-    msg = SockdNotifyConsumer.messages.last
+      b.publish_updated
+    }.to change(SockdNotifyConsumer.messages, :count).by(2)
+    msg = SockdNotifyConsumer.messages.select{ |m| m[:_event] == 'build:updated' }.first
     expect(msg.keys).to eq [:channel, :event, :_event, :payload]
     expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
-    expect(msg[:_event]).to eq "build:updated"
     expect(msg[:payload]).to_not be_empty
   end
 
@@ -91,13 +89,14 @@ describe Build do
     subject { b.to_builder_task job }
     it { should be }
     its(:name)                 { should eq "ci-worker-test-repo" }
-    its(:src)                  { should eq 'MyString' }
+    its(:src)                  { should eq 'git@example.com' }
     its(:sha)                  { should eq 'MyString' }
     its(:deploy_key)           { should be }
     its(:branch)               { should eq 'MyString' }
     its(:cache_url_prefix)     { should eq "http://test.host/f/cached_files/#{b.project.token}" }
     its(:build_id)             { should eq b.id }
     its(:job_id)               { should eq job.id }
+    its(:project_host)         { should eq 'example.com' }
   end
 
   context "duration" do

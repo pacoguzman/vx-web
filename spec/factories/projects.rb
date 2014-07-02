@@ -5,8 +5,8 @@ FactoryGirl.define do
     id            { SecureRandom.uuid }
     company
     name          "ci-worker-test-repo"
-    http_url      "MyString"
-    clone_url     "MyString"
+    http_url      "http://example.com"
+    clone_url     "git@example.com"
     description   ""
     token         'token'
     deploy_key    'deploy key'

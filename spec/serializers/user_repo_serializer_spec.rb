@@ -18,7 +18,7 @@ describe UserRepoSerializer do
     scope = struct.new([])
     expect(described_class.new user_repo, scope: scope).to_not be_same_name_projects
 
-    scope = struct.new([user_repo.full_name])
+    scope = struct.new([OpenStruct.new(name: user_repo.full_name, id: 1)])
     expect(described_class.new user_repo, scope: scope).to be_same_name_projects
   end
 
@@ -27,7 +27,7 @@ describe UserRepoSerializer do
 
     it { should eq [:id, :full_name, :html_url, :subscribed,
                     :disabled, :settings_url, :provider_title,
-                    :description] }
+                    :description, :project_id] }
   end
 
   context "disabled" do

@@ -9,14 +9,14 @@ class UserReposSerializer < ActiveModel::ArraySerializer
   def same_name_projects
     @same_name_projects ||= begin
       query = %{
-        SELECT name
+        SELECT id, name
           FROM projects
           WHERE
             projects.name IN (#{user_repo_names})
             AND
             projects.company_id = '#{company_id}'
       }.squish
-      Project.connection.select_all(query).map{|i| i["name"] }
+      Project.find_by_sql query
     end
   end
 
