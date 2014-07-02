@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
           if synced_repos.any?
             identity.user_repos.where("id NOT IN (?)", synced_repos.map(&:id))
           else
-            identity.user_repos.all
+            identity.user_repos
           end
 
         collection.each do |user_repo|
