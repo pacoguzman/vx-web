@@ -1,0 +1,24 @@
+%table.table.table-hover.builds-list{'ng-show' => "displayAs == 'table'"}
+  %thead
+    %tr
+      %td No
+      %td
+      %td Author
+      %td Branch
+      %td Message
+      %td Created
+  %tbody
+    %tr.build{'ng-repeat' => "build in builds | orderBy:'number':true | limitTo: 30", 'ng-click' => "go(build)" }
+      %td
+        {{ build.number }}
+      %td
+        .app-task-status{ 'task' => 'build' }
+      %td
+        {{ build.branch }}
+      %td
+        {{ build.author }}
+      %td
+        {{ build.short_message }}
+      %td
+        {{ build.created_at | fromNow }}
+

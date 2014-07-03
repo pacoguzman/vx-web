@@ -22,12 +22,46 @@
         .ibox-title
           %h5 Recent project activity
 
+          .ibox-tools
+            %a{ 'ng-show' => 'displayAs == "feed"', 'ng-click' => 'setDisplayAs("table")' }
+              %i.fa.fa-table
+              table
+            %a{ 'ng-show' => "displayAs == 'table'", 'ng-click' => "setDisplayAs('feed')" }
+              %i.fa.fa-navicon
+              feed
+
         .ibox-content
           %div
 
-            .chat-activity-list
+            %table.table.table-hover.builds-list{'ng-show' => "displayAs == 'table'"}
+              %thead
+                %tr
+                  %td No
+                  %td
+                  %td Branch
+                  %td Author
+                  %td Message
+                  %td Created
+              %tbody
+                %tr.build{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "go(build)" }
+                  %td
+                    {{ build.number }}
+                  %td
+                    .app-task-status{ 'task' => 'build' }
+                  %td
+                    {{ build.branch }}
+                  %td
+                    {{ build.author }}
+                  %td
+                    {{ build.short_message }}
+                  %td
+                    %span.text-muted
+                      {{ build.created_at | fromNow }}
 
-              .chat-element{'ng-repeat' => "build in builds | orderBy:'number':true | limitTo: 30", 'ng-click' => "go(build)", style: "cursor: pointer" }
+
+            .chat-activity-list{'ng-show' => "displayAs == 'feed'"}
+
+              .chat-element{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "go(build)", style: "cursor: pointer" }
                 .pull-left
                   %img.img-circle{ 'ng-src' => "{{ build.author_avatar }}" }
 
@@ -50,3 +84,6 @@
                   %small.text-muted
                     %i.fa.fa-clock-o
                     %span {{ build.created_at | fromNow }}
+          %div
+            %button.btn.btn-block.btn-outline.btn-primary{'ng-click' => 'loadMoreBuilds()', 'ng-disabled' => "wait" }
+              Load more

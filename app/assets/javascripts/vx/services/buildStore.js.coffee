@@ -1,5 +1,5 @@
 Vx.service 'buildStore',
-  ($http, $q, cacheStore, eventSource) ->
+  ($http, $q, cacheStore, eventSource, $rootScope) ->
 
     cache      = cacheStore()
     collection = cache.collection
@@ -30,8 +30,14 @@ Vx.service 'buildStore',
         item(buildId).update re.data, re.data.project_id
         re.data
 
+    loadMore = (projectId, fromNumber) ->
+      $http.get("/api/projects/#{projectId}/builds?from=#{fromNumber}").then (re) ->
+        collection(projectId).get().then (c) ->
+          c.push.apply(c, re.data)
+
     all:     all
     one:     one
     create:  create
     restart: restart
+    loadMore: loadMore
 

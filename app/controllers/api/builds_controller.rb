@@ -4,7 +4,8 @@ class ::Api::BuildsController < ::Api::BaseController
   skip_before_filter :authorize_user, only: [:status_for_gitlab]
 
   def index
-    respond_with(@builds = project.builds.limit(20))
+    builds = project.builds.from_number(params[:from]).limit(30)
+    respond_with(builds)
   end
 
   def show
