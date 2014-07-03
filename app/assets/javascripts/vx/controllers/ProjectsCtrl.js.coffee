@@ -6,6 +6,8 @@ Vx.controller 'ProjectsCtrl', ['$scope', 'projectStore', '$location',
 
     projects.all().then (projects) ->
       $scope.projects = projects
+      if projects.length == 0
+        $location.path("/ui/user_repos")
 
     $scope.projectAvatar = (project) ->
       switch
