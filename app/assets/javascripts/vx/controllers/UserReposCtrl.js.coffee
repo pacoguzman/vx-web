@@ -13,9 +13,11 @@ Vx.controller 'UserRepoCtrl', ['$scope', 'userRepoStore', '$timeout',
 Vx.controller 'UserReposCtrl', ['$scope', 'userRepoStore',
   ($scope, userRepos) ->
 
-    $scope.wait  = true
-    $scope.repos = []
-    $scope.query = null
+    $scope.wait           = true
+    $scope.repos          = []
+    $scope.query          = null
+    $scope.reposLimit     = 30
+    $scope.onlySubscribed = false
 
     userRepos.all()
       .then (repos) ->
@@ -23,8 +25,17 @@ Vx.controller 'UserReposCtrl', ['$scope', 'userRepoStore',
       .finally ->
         $scope.wait = false
 
+    $scope.subscribeFilter = (repo) ->
+      if $scope.onlySubscribed
+        repo.subscribed && !repo.disabled
+      else
+        true
+
     $scope.sync = () ->
       $scope.wait = true
       userRepos.sync().finally ->
         $scope.wait = false
+
+    $scope.loadMore = () ->
+      $scope.reposLimit += 30
 ]

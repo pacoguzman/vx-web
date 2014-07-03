@@ -7,12 +7,17 @@ Vx.controller 'BuildsCtrl', [ '$scope', 'buildStore', 'projectStore', '$routePar
     $scope.builds    = []
     $scope.displayAs = storage.get("vx.builds.display_as") || 'feed'
 
+    truncateBuilds = () ->
+      if $scope.builds.length > 30
+        $scope.builds.length = 30
+
     projectStore.one(projectId).then (project) ->
       $scope.project = project
 
     buildStore.all($routeParams.projectId)
       .then (builds) ->
         $scope.builds = builds
+        truncateBuilds()
       .finally ->
         $scope.wait = false
 

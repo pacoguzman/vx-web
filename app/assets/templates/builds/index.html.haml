@@ -23,12 +23,13 @@
           %h5 Recent project activity
 
           .ibox-tools
-            %a{ 'ng-show' => 'displayAs == "feed"', 'ng-click' => 'setDisplayAs("table")' }
-              %i.fa.fa-table
-              table
-            %a{ 'ng-show' => "displayAs == 'table'", 'ng-click' => "setDisplayAs('feed')" }
+
+            %label.label.label-pointer{ 'ng-show' => 'displayAs == "feed"', 'ng-click' => 'setDisplayAs("table")' }
               %i.fa.fa-navicon
               feed
+            %label.label.label-pointer{ 'ng-show' => "displayAs == 'table'", 'ng-click' => "setDisplayAs('feed')" }
+              %i.fa.fa-table
+              table
 
         .ibox-content
           %div
@@ -79,7 +80,7 @@
                   to branch
                   {{ build.branch }}
 
-                  %p.m-b.m-t-xs {{ build.short_message }}
+                  %p.m-b.m-t-xs.task-message {{ build.message }}
 
                   %small.text-muted
                     %i.fa.fa-clock-o

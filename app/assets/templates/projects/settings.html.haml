@@ -47,7 +47,7 @@
             %i.fa.fa-trash-o
             Remove Selected
       .mail-box
-        .col-lg-12{ 'ng-hide' => "cachedFiles.length > 0" }
+        .wrapper{ 'ng-hide' => "cachedFiles.length > 0" }
           %p.m-l-xs.m-b-lg No files found.
 
         %table.table.table-hover.table-mail{'ng-show' => 'cachedFiles.length > 0'}
