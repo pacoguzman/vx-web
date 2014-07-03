@@ -23,8 +23,8 @@
                       Sync Now
           .row
             .col-md-8
-              %ul.list-group
-                %li.list-group-item{'ng-repeat' => "repo in repos | filter:query | limitTo: 50", 'ng-controller' => "UserRepoCtrl" }
+              %ul.list-group.user-repos-list
+                %li.list-group-item.user-repo{'ng-repeat' => "repo in repos | filter:query | limitTo: 50", 'ng-controller' => "UserRepoCtrl" }
                   .pull-right
                     .ui-switch.ui-switch-xs{ value: "repo.subscribed", 'disabled' => "repo.disabled || repo.wait || wait" }
 

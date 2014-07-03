@@ -1,5 +1,7 @@
-.user-repo-toggle[disabled]  {
-  i.fa {
-    color: #c2c2c2;
+.user-repos-list {
+  .user-repo {
+    input[disabled] + label {
+      cursor: default;
+    }
   }
 }
