@@ -76,9 +76,9 @@ describe Api::BuildsController do
       expect(response.body).to eq '{}'
     end
 
-    it "should be not found if sha invalid" do
+    it "should be not found if build with sha not found" do
       request.env['HTTP_X_VEXOR_PROJECT_TOKEN'] = project.token
-      get :status_for_gitlab, id: 'invalid'
+      get :status_for_gitlab, id: '3205261774800570a7f9b5f8687672c21847caaf'
       should be_not_found
       expect(response.body).to eq '{}'
     end

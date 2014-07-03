@@ -21,19 +21,15 @@ BuildNotifier = Struct.new(:message) do
   end
 
   def delivery_email_notifications
-    if subscribed_emails.any? && build.notify?
-      ::BuildsMailer.status_email(build, subscribed_emails).deliver
+    if build.notify?
+      project_subscriptions.each do |sub|
+        ::BuildsMailer.status_email(build, sub).deliver
+      end
     end
   end
 
-  def subscribed_emails
-    project.subscriptions
-           .active
-           .joins(:user)
-           .select("users.email AS user_email, users.name AS user_name")
-           .map do |s|
-             "\"#{s.user_name}\" <#{s.user_email}>"
-           end
+  def project_subscriptions
+    project.subscriptions.active.joins(:user)
   end
 
   def description

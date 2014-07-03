@@ -214,8 +214,6 @@ end
 #
 # Table name: jobs
 #
-#  id          :integer          not null, primary key
-#  build_id    :integer          not null
 #  number      :integer          not null
 #  status      :integer          not null
 #  matrix      :hstore
@@ -225,5 +223,7 @@ end
 #  updated_at  :datetime
 #  source      :text             not null
 #  kind        :string(255)      not null
+#  build_id    :uuid             not null
+#  id          :uuid             not null, primary key
 #
 

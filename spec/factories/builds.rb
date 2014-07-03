@@ -6,7 +6,7 @@ FactoryGirl.define do
     project
     number   1
     branch   "MyString"
-    sha      "MyString"
+    sha      "91405d6c13b48904694f67f7abc29ef08a825728"
     author   "MyString"
     message  "MyString"
     source({ script: "true" }.to_yaml)

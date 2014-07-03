@@ -90,7 +90,7 @@ describe Build do
     it { should be }
     its(:name)                 { should eq "ci-worker-test-repo" }
     its(:src)                  { should eq 'git@example.com' }
-    its(:sha)                  { should eq 'MyString' }
+    its(:sha)                  { should eq '91405d6c13b48904694f67f7abc29ef08a825728' }
     its(:deploy_key)           { should be }
     its(:branch)               { should eq 'MyString' }
     its(:cache_url_prefix)     { should eq "http://test.host/f/cached_files/#{b.project.token}" }
@@ -595,9 +595,7 @@ end
 #
 # Table name: builds
 #
-#  id              :integer          not null, primary key
 #  number          :integer          not null
-#  project_id      :integer          not null
 #  sha             :string(255)      not null
 #  branch          :string(255)      not null
 #  pull_request_id :integer
@@ -613,5 +611,7 @@ end
 #  branch_label    :string(255)
 #  source          :text             not null
 #  token           :string(255)      not null
+#  project_id      :uuid             not null
+#  id              :uuid             not null, primary key
 #
 

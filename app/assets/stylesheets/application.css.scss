@@ -13,19 +13,7 @@ span.ajax-loader {
   content: url(asset-path("ajax-loader.gif"));
 }
 
-dl.task {
-  dt {
-    float: left;
-    width: 7em;
-  }
-
-  dd {
-    margin-left: 7em;
-    display: block;
-  }
-
-  .task-message {
-    white-space: pre;
-  }
+.task-message {
+  white-space: pre;
 }
 

@@ -83,8 +83,6 @@ end
 #
 # Table name: user_identities
 #
-#  id         :integer          not null, primary key
-#  user_id    :integer          not null
 #  provider   :string(255)      not null
 #  token      :string(255)      not null
 #  uid        :string(255)      not null
@@ -93,5 +91,7 @@ end
 #  updated_at :datetime
 #  url        :string(255)      not null
 #  version    :string(255)
+#  user_id    :uuid             not null
+#  id         :uuid             not null, primary key
 #
 

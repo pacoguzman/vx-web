@@ -143,7 +143,6 @@ end
 #
 # Table name: user_repos
 #
-#  id                 :integer          not null, primary key
 #  organization_login :string(255)
 #  full_name          :string(255)      not null
 #  is_private         :boolean          not null
@@ -153,8 +152,9 @@ end
 #  description        :text
 #  created_at         :datetime
 #  updated_at         :datetime
-#  identity_id        :integer          not null
 #  external_id        :integer          not null
 #  company_id         :uuid             not null
+#  identity_id        :uuid             not null
+#  id                 :uuid             not null, primary key
 #
 

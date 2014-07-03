@@ -166,19 +166,16 @@ end
 #
 # Table name: projects
 #
-#  id                     :integer          not null, primary key
-#  name                   :string(255)      not null
-#  http_url               :string(255)      not null
-#  clone_url              :string(255)      not null
-#  description            :text
-#  deploy_key             :text             not null
-#  token                  :string(255)      not null
-#  created_at             :datetime
-#  updated_at             :datetime
-#  user_repo_id           :integer
-#  last_build_id          :integer
-#  last_build_status_name :string(255)
-#  last_build_at          :datetime
-#  company_id             :uuid             not null
+#  name         :string(255)      not null
+#  http_url     :string(255)      not null
+#  clone_url    :string(255)      not null
+#  description  :text
+#  deploy_key   :text             not null
+#  token        :string(255)      not null
+#  created_at   :datetime
+#  updated_at   :datetime
+#  company_id   :uuid             not null
+#  id           :uuid             not null, primary key
+#  user_repo_id :uuid             not null
 #
 
