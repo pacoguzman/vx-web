@@ -3,15 +3,19 @@
  *= require theme/style
  *= require theme/animate
  *= require style_override
- *= require app_task_output
- *= require app_sidebar
- *= require user_repos
+ *= require task_output
  *= require projects
+ *= require user_repos
+ *= require app_sidebar
  *= require ui_switch
  */
 
 span.ajax-loader {
   content: url(asset-path("ajax-loader.gif"));
+}
+
+div.ajax-loader-b {
+  content: url(asset-path("gif-load.gif"));
 }
 
 .task-message {

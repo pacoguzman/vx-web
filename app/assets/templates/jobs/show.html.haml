@@ -23,4 +23,6 @@
 
 
 .row
-  .app-task-output{ collection: "logs" }
+  .task-output{ 'ng-show' => "waitLogs" }
+    .ajax-loader-b
+  .app-task-output.task-output{ collection: "logs", 'ng-hide' => 'waitLogs' }

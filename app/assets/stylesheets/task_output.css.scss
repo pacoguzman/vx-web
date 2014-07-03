@@ -1,4 +1,4 @@
-.app-task-output {
+.task-output {
   font-family: Consolas, "Liberation Mono", Menlo, Monaco, monospace !important;
   font-size: 12px !important;
   line-height: 16px;
@@ -8,9 +8,13 @@
   word-wrap: break-word;
   counter-reset: line-numbers;
   min-height: 1em;
+
+  .ajax-loader-b {
+    margin-left: 2em;
+  }
 }
 
-.app-task-output p {
+.task-output p {
   display: block;
   margin: 0;
   white-space: pre-wrap;
@@ -46,7 +50,7 @@
   }
 }
 
-.app-task-output a {
+.task-output a {
   text-decoration: none !important;
   color: #666 !important;
 
