@@ -1,21 +1,5 @@
-.build {
-  .row {
+.builds-list {
+  .build {
+    cursor: pointer;
   }
 }
-
-.builds {
-  .tasks-table {
-    margin-top: 2em;
-  }
-
-  .build-info {
-    margin-left: .5em;
-  }
-
-  .project-cached-files, .project-url, .project-pull-requests, .project-branches, .project-builds{
-    margin-right: 1em;
-    padding-right: 1em;
-    border-right: 1px solid #ddd;
-  }
-}
-

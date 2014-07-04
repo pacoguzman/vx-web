@@ -15,7 +15,7 @@ class Users::SessionController < ApplicationController
   end
 
   def show
-    render layout: "application"
+    render layout: "theme"
   end
 
   def become

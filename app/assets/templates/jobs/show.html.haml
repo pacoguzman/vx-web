@@ -1,52 +1,28 @@
-.job
-  .row.task-attributes{ 'ng-show' => 'job' }
-    .col-xs-5
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-md-6
+    %h2 Job \#{{ job.number }}
+    %ol.breadcrumb
+      %li
+        %a{ href: "/ui" } Projects
+      %li
+        %a{ href: "/ui/projects/{{ project.id }}/builds" } {{ project.name }}
+      %li
+        %a{ href: "/ui/builds/{{ build.id }}" } Build \#{{ build.number }}
 
-      %dl.task-attribute.dl-horizontal
-        %dt Job
-        %dd.app-task-status{ task: "job" }
-          {{ task.number }}
+.row.wrapper.border-bottom.white-bg{ style: "padding-top: 1em; padding-bottom: .5em; background-color: #f3f6fb" }
+  .col-md-6
+    %ul.list-inline{ style: "margin-left:-1.2em" }
+      %li{ style: "padding-right: 1em" }
+        %span.app-task-status{ task: "job" }
+      %li{ style: "padding-right: 1em" }
+        %small duration
+        %small.app-task-duration{ task: "job" }
+      %li{ style: "padding-right: 1em" }
+        %i.fa.fa-clock-o
+        %small {{ job.created_at | fromNow }}
 
-      %dl.task-attribute.dl-horizontal
-        %dt Status
-        %dd {{ job.status }}
 
-      %dl.task-attribute.dl-horizontal
-        %dt Finished At
-        %dd.app-task-finished{ task: "job" }
-
-      %dl.task-attribute.dl-horizontal
-        %dt Duration
-        %dd.app-task-duration{ task: 'job' }
-
-    .col-xs-5
-
-      %dl.task-attribute.dl-horizontal
-        %dt Commit
-        %dd.app-build-http-url{ build: 'build', branch: 'true' }
-
-      %dl.task-attribute.dl-horizontal
-        %dt Author
-        %dd
-          %img{ src: "{{ build.author_avatar }}" }
-          %a{'ng-href' => "mailto:{{build.author_email}}"}
-            {{ build.author }}
-
-      %dl.task-attribute.dl-horizontal
-        %dt Message
-        %dd {{ build.message }}
-
-      %dl.task-attribute.dl-horizontal
-        %dt Config
-        %dd{ 'ng-repeat' => "(key, value) in job.matrix" }
-          {{ key }} {{ value }}
-
-    .col-xs-2
-      .pull-right
-        %a{'ng-href' => "{{job.text_logs_url}}", title: "Download Text Log", target: "_blank" }
-          %i.fa.fa-bars.fa-2x
-
-  .app-task-output{ collection: "logs", 'ng-show' => 'logs.length != undefined' }
-
-  .ajax-loader{ 'ng-hide' => 'logs.length != undefined' }
-
+.row
+  .task-output{ 'ng-show' => "waitLogs" }
+    .ajax-loader-b
+  .app-task-output.task-output{ collection: "logs", 'ng-hide' => 'waitLogs' }

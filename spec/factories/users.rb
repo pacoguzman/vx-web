@@ -1,6 +1,18 @@
+require 'securerandom'
+
 FactoryGirl.define do
+
+  sequence :email do |n|
+    "email#{n}@example.com"
+  end
+
+  sequence :name do |n|
+    "name#{n}"
+  end
+
   factory :user do
-    email 'user@example.com'
-    name  'name'
+    id    { SecureRandom.uuid }
+    email
+    name
   end
 end

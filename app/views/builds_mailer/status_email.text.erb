@@ -13,3 +13,6 @@ View the changeset: <%= @build.http_url %>
 
 View the full build log and details: <%= @build.public_url %>
 
+---
+Unsubscribe from <%= @project.name %>
+<%= users_unsubscribe_user_from_project_url(@project, @subscription) %>

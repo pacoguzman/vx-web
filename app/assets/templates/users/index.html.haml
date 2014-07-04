@@ -1,42 +1,54 @@
-.users
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-md-6
+    %h2 Users
 
-  %p.create-invites{ 'ng-hide' => "showInvitesForm" }
-    %a.btn.btn-sm.btn-default{ 'href' => "javascript://", 'ng-click' => "toggleInvitesForm()" } Create Invites
+  .col-md-6
+    .title-action{ style: "padding-top: 22px" }
+      %a.btn.btn-primary{ 'ng-hide' => "showInvitesForm", 'ng-click' => 'toggleInvitesForm()' }
+        %i.fa.fa-plus
+        Create invites
 
-  .well{ 'ng-show' => "showInvitesForm" }
-    %form{ role: "form", 'ng-submit' => "createInvites()", name: "form", novalidate: true }
-      .form-group
-        %span.help-block
-          Invite email addresses separated by space
-        %textarea.form-control{ name: "emails", 'ng-model' => "invite.emails", 'required' => true, placeholder: "user1@example.com user2@example.com user3@example.com" }
-      %p{ 'ng-hide' => "invite.wait" }
-        %input.btn.btn-sm.btn-success{ type: "submit", value: "Create Invites", 'ng-disabled' => "form.$invalid" }
-        or
-        %a{ href: "javascript://", 'ng-click' => "toggleInvitesForm()" } Cancel
-      %p{ 'ng-show' => 'invite.wait' }
-        %span.ajax-loader-inline
+.wrapper.wrapper-content.animated.fadeInDown{ 'ng-show' => "showInvitesForm" }
+  .row
+    .col-lg-12
+      .ibox
+        .ibox-content
+          %h3.m-b-lg
+            Email addresses
+            %small separated by space
+          %form{ role: "form", 'ng-submit' => "createInvites()", name: "form", novalidate: true }
+            .form-group.m-b-lg
+              %textarea.form-control{ name: "emails", 'ng-model' => "invite.emails", 'required' => true, 'autofocus' => true }
+            %p
+              %button.btn.btn-primary{ type: "submit", 'ng-disabled' => "form.$invalid || invite.wait" }
+                %i.fa.fa-plus
+                Create Invites
+              or
+              %a{ href: "javascript://", 'ng-click' => "toggleInvitesForm()" } Cancel
 
-  .ajax-loader{ 'ng-show' => "wait" }
+.wrapper.wrapper-content.animated.fadeInRight{ 'ng-show' => 'users.length > 0' }
+  .row
+    .col-md-6{ 'ng-repeat' => "user in users | orderBy:'projects_count':true" }
+      .contact-box
+        %a
+          .col-sm-3
+            .text-center
+              %img.img-circle.m-t-xs.img-responsive{ 'ng-src' => "{{ user.avatar }}" }
 
-  %table.table.table-hover{ 'ng-show' => "users.length > 0" }
-    %thead
-      %tr
-        %th
-        %th Name
-        %th Email
-        %th Projects
-        %th Role
-        %th
-    %tbody
-      %tr{ 'ng-repeat' => "user in users | orderBy:'active_projects':true" }
-        %td
-          %img{ 'ng-src' => "{{ user.avatar_url }}" }
-        %td {{ user.name }}
-        %td {{ user.email }}
-        %td {{ user.active_projects }}
-        %td
-          %select.form-control.input-sm{ 'ng-model' => 'user.role', 'ng-change' => 'update(user)', 'ng-options' => 'role for role in user.available_roles', 'ng-disabled' => 'disableEdit(user)' }
-        %td
-          %a.btn.btn-sm.btn-default{ 'href' => 'javascript://', 'ng-hide' => 'disableEdit(user)', 'ng-click' => 'destroy(user)' }
-            %i.fa.fa-remove
-            Destroy
+          .col-sm-9
+            %a.pull-right{href: "javascript://", 'ng-click' => 'destroy(user)', 'ng-if' => '!cannotEdit(user)' }
+              %i.fa.fa-trash-o
+
+            %h3
+              %strong {{ user.name }}
+            %p {{ user.email }}
+            %p Projects: {{ user.projects_count }}
+            .dropdown
+              %button.btn.btn-xs.btn-default.btn-outline.dropdown-toggle{ 'ng-disabled' => 'cannotEdit(user)' }
+                {{ user.role }}
+                %span.caret
+              %ul.dropdown-menu.animated.fadeInRight
+                %li{ 'ng-repeat' => 'role in user.roles' }
+                  %a{ href: "javascript://", 'ng-click' => "updateRole(user, role)" } {{ role }}
+
+          .clearfix

@@ -26,11 +26,19 @@ describe Job do
     subject { job.to_perform_job_message }
     it { should be }
 
-    context "with image" do
-      before do
-        job.update!(source: ({ "image" => %w{ one } }).to_yaml)
-      end
-      its(:image) { should eq 'one' }
+    it "should be create PerformJob" do
+      expect(subject).to be
+    end
+
+    it "should assign image" do
+      job.update!(source: ({ "image" => %w{ one } }).to_yaml)
+      expect(subject.image).to eq 'one'
+    end
+
+    it "should assign timeouts" do
+      job.update!(source: ({ "vexor" => { "timeout" => "10", "read_timeout" => "20" } }).to_yaml)
+      expect(subject.job_timeout).to eq 10
+      expect(subject.job_read_timeout).to eq 20
     end
   end
 
@@ -49,67 +57,99 @@ describe Job do
     b = create :build
     expect{
       create :job, build: b
-    }.to change(ServerSideEventsConsumer.messages, :count).by(1)
-    msg = ServerSideEventsConsumer.messages.last
+    }.to change(SockdNotifyConsumer.messages, :count).by(1)
+    msg = SockdNotifyConsumer.messages.last
     expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
-    expect(msg[:event_name]).to eq "job:created"
+    expect(msg[:_event]).to eq "job:created"
+  end
+
+  context "#create_job_history!" do
+    let(:now) { Time.current }
+    let(:b)   { create :build }
+    it "should create job_history instance if job finished" do
+      jobs = ["passed","failed","errored"].map do |n|
+        create(:job, build: b, number: n, status: n, started_at: now - 180.seconds, finished_at: now - 90.seconds)
+      end
+
+      jobs.each do |job|
+        expect{ job.create_job_history! }.to change(JobHistory, :count).by(1)
+
+        job_history = JobHistory.find_by!(job_number: job.number)
+        expect(job_history.company).to      eq(job.company)
+        expect(job_history.build_number).to eq(job.build.number)
+        expect(job_history.job_number).to   eq(job.number)
+        expect(job_history.duration).to     eq(90)
+      end
+    end
+
+    it "cannot create job history instance unless job finished" do
+      jobs = [0,6].map do |n|
+        create(:job, build: b, number: n, status: n, started_at: now - 180.seconds, finished_at: now - 90.seconds)
+      end
+      jobs.each do |job|
+        expect{ job.create_job_history! }.to_not change(JobHistory, :count)
+      end
+    end
   end
 
   context "(state machine)" do
-    let!(:job) { create :job, status: status }
-
     context "after transition to started" do
-      let(:status) { "initialized" }
+      let!(:job) { create :job, status: status }
+      let(:status) { "status" }
       subject { job.start }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
 
     context "after transition to cancelled" do
+      let!(:job) { create :job, status: status }
       let(:status) { "initialized" }
       subject { job.cancel }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
 
     context "after transition to passed" do
+      let!(:job) { create :job, status: status }
       let(:status) { "started" }
       subject { job.pass }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
 
     context "after transition to failed" do
+      let!(:job) { create :job, status: status }
       let(:status) { "started" }
       subject { job.decline }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
 
     context "after transition to errored" do
+      let!(:job) { create :job, status: status }
       let(:status) { "started" }
       subject { job.error }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
   end
@@ -146,10 +186,10 @@ describe Job do
       its(:finished_at) { should be_nil }
       its(:status_name) { should eq :initialized }
 
-      it "should delivery message to ServerSideEventsConsumer" do
+      it "should delivery message to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(1)
+        }.to change(SockdNotifyConsumer.messages, :count).by(1)
       end
     end
   end
@@ -174,8 +214,6 @@ end
 #
 # Table name: jobs
 #
-#  id          :integer          not null, primary key
-#  build_id    :integer          not null
 #  number      :integer          not null
 #  status      :integer          not null
 #  matrix      :hstore
@@ -184,6 +222,8 @@ end
 #  created_at  :datetime
 #  updated_at  :datetime
 #  source      :text             not null
-#  kind        :string(255)
+#  kind        :string(255)      not null
+#  build_id    :uuid             not null
+#  id          :uuid             not null, primary key
 #
 

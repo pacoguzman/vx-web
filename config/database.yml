@@ -6,12 +6,12 @@ default: &default
 
 development:
   <<: *default
-  database: ci_web_development
+  database: vxweb_development
 
 production:
   <<: *default
-  database: ci_web_development
+  database: vxweb_development
 
 test:
   <<: *default
-  database: ci_web_test
+  database: vxweb_test

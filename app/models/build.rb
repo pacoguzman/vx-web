@@ -6,7 +6,7 @@ class Build < ActiveRecord::Base
   include ::PublicUrl::Build
 
   belongs_to :project, class_name: "::Project", touch: true
-  has_many :jobs, class_name: "::Job", dependent: :destroy
+  has_many :jobs, class_name: "::Job", dependent: :destroy, inverse_of: :build
 
   validates :project_id, :number, :sha, :branch, :source, :token, presence: true
   validates :number, uniqueness: { scope: [:project_id] }
@@ -59,10 +59,7 @@ class Build < ActiveRecord::Base
     return unless [:started, :passed, :failed, :errored, :deploying].include?(to)
 
     self.delivery_to_notifier
-
-    self.publish
-    self.update_last_build_on_project
-    self.project.publish
+    self.publish_updated
   end
 
   def status_name
@@ -125,11 +122,14 @@ class Build < ActiveRecord::Base
       src:              project.clone_url,
       sha:              sha,
       build_id:         id,
-      job_id:           job.number,
+      build_number:     number,
+      job_id:           job.id,
+      job_number:       job.number,
       deploy_key:       project.deploy_key,
       branch:           branch,
       pull_request_id:  pull_request_id,
-      cache_url_prefix: cache_url_prefix
+      cache_url_prefix: cache_url_prefix,
+      project_host:     URI(project.http_url).host
     )
   end
 
@@ -250,8 +250,14 @@ class Build < ActiveRecord::Base
     )
   end
 
-  def update_last_build_on_project
-    project.update_last_build
+  def publish_updated
+    publish
+    project.publish
+  end
+
+  def publish_created
+    publish :created
+    project.publish
   end
 
   def publish(name = nil)
@@ -276,19 +282,13 @@ class Build < ActiveRecord::Base
       self.token ||= SecureRandom.uuid
     end
 
-    def publish_created
-      publish :created
-    end
-
 end
 
 # == Schema Information
 #
 # Table name: builds
 #
-#  id              :integer          not null, primary key
 #  number          :integer          not null
-#  project_id      :integer          not null
 #  sha             :string(255)      not null
 #  branch          :string(255)      not null
 #  pull_request_id :integer
@@ -304,5 +304,7 @@ end
 #  branch_label    :string(255)
 #  source          :text             not null
 #  token           :string(255)      not null
+#  project_id      :uuid             not null
+#  id              :uuid             not null, primary key
 #
 

@@ -4,12 +4,8 @@ describe JobSerializer do
   let(:object) { create :job }
   let(:serializer) { described_class.new object }
 
-  context "as_json" do
-    subject { serializer.as_json.keys }
-
-    it { should eq [:id, :build_id, :project_id, :number, :natural_number, :status,
-                    :matrix, :started_at, :finished_at, :text_logs_url, :kind] }
-
+  it "should successfuly serialize job" do
+    expect(serializer.to_json).to be
   end
 
   context "#text_logs_url" do

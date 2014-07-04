@@ -17,13 +17,16 @@ class User < ActiveRecord::Base
     user_company.update(role: role)
   end
 
-  def default_company
-    companies.reorder("user_companies.default DESC").first
+  def default_company(reload = false)
+    if reload
+      @default_company = nil
+    end
+    @default_company ||= companies.reorder("user_companies.default DESC").first
   end
 
   def role(company)
     if company
-      user_companies.where(company_id: company.id).pluck(:role).first
+      user_companies.where(company: company).pluck(:role).first
     end
   end
 
@@ -41,9 +44,18 @@ class User < ActiveRecord::Base
         synced_repos = identity.sc.repos.map do |external_repo|
           UserRepo.find_or_create_by_sc company, identity, external_repo
         end
-        identity.user_repos.where("id NOT IN (?)", synced_repos.map(&:id)).each do |user_repo|
-          user_repo.destroy
+
+        collection =
+          if synced_repos.any?
+            identity.user_repos.where("id NOT IN (?)", synced_repos.map(&:id))
+          else
+            identity.user_repos.to_a
+          end
+
+        collection.each do |user_repo|
+          user_repo.destroy unless user_repo.project
         end
+
         synced_repos
       end
     end
@@ -55,6 +67,11 @@ class User < ActiveRecord::Base
 
   def add_to_company(company, role = 'developer')
     user_company = user_companies.find_or_initialize_by(company_id: company.id)
+
+    if user_company.persisted? and user_company.role == role
+      return true
+    end
+
     user_company.role = role
     if user_company.save
       user_company.default!
@@ -76,6 +93,15 @@ class User < ActiveRecord::Base
     end
   end
 
+  def update_with_company(company, params)
+    transaction do
+      if role = params.delete(:role)
+        add_to_company(company, role).or_rollback_transaction
+      end
+      update(params).or_rollback_transaction
+    end
+  end
+
   def set_default_company(company)
     user_companies.where(company_id: company.id).map(&:default!)
     touch
@@ -87,10 +113,11 @@ end
 #
 # Table name: users
 #
-#  id         :integer          not null, primary key
-#  email      :string(255)      not null
-#  name       :string(255)      not null
-#  created_at :datetime
-#  updated_at :datetime
+#  email       :string(255)      not null
+#  name        :string(255)      not null
+#  created_at  :datetime
+#  updated_at  :datetime
+#  back_office :boolean          default(FALSE)
+#  id          :uuid             not null, primary key
 #
 

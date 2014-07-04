@@ -23,7 +23,7 @@ describe Api::BranchesController do
     it { should be_success }
     it "returns the last build of the branch" do
       subject.body.should include("branch\":\"MyString")
-      subject.body.should include("id\":#{build2.id}")
+      subject.body.should include("id\":\"#{build2.id}\"")
     end
     it "returns only one build" do
       ActiveSupport::JSON.decode(subject.body).size.should == 1 # one build

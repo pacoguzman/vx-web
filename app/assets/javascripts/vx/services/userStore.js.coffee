@@ -11,10 +11,16 @@ Vx.service 'userStore', ($http, $q, cacheStore) ->
         response.data
 
   update: (user) ->
+
+    attrs =
+      name:  user.name,
+      email: user.email
+    attrs.role = user.role if user.role
+
     $http
       method: 'PATCH'
       url: "#{ API_PATH }/#{ user.id }",
-      data: { user: { role: user.role } }
+      data: { user: attrs }
 
   destroy: (user) ->
     $http.delete("#{ API_PATH }/#{ user.id }").success (response) ->

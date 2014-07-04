@@ -23,9 +23,9 @@ Vx.config ($routeProvider, $locationProvider) ->
     templateUrl: "branches/index.html",
     controller: "BranchesCtrl"
     ).
-    when(p + '/projects/:projectId/cached_files',
-      templateUrl: "cached_files/index.html",
-      controller: "CachedFilesCtrl"
+    when(p + '/projects/:projectId/settings',
+      templateUrl: "projects/settings.html",
+      controller: "ProjectSettingsCtrl"
     ).
     when(p + '/user_repos',
       templateUrl: "user_repos/index.html",
@@ -39,8 +39,8 @@ Vx.config ($routeProvider, $locationProvider) ->
       templateUrl: 'billing/index.html',
       controller: 'BillingCtrl'
     ).
-    when(p + "/profile/user",
-      templateUrl: "profile/user.html",
+    when(p + "/profile",
+      templateUrl: "user/profile.html",
       controller: "UserProfileCtrl"
     ).
     when(p + "/profile/identities",

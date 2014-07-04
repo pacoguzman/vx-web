@@ -54,30 +54,25 @@ describe BuildNotifier do
     end
   end
 
-  context "#subscribed_emails" do
-    let(:user) { b.project.user_repo.user }
-    let!(:sub) { create :project_subscription, user: user, project: b.project }
-    subject { notifier.subscribed_emails }
-
-    it { should eq ["\"name\" <#{ user.email }>"] }
+  it "should find project_subscriptions" do
+    user = b.project.user
+    sub  = create :project_subscription, user: user, project: b.project
+    expect(notifier.project_subscriptions).to eq [sub]
   end
 
-  context "#delivery_email_notifications" do
-    subject { notifier.delivery_email_notifications }
 
-    before do
-      mock(notifier).subscribed_emails.twice { ["example@example.com"] }
-      mock(notifier.build).notify? { true }
-    end
+  it "should delivery email notifications" do
+    user = b.project.user
+    create :project_subscription, user: user, project: b.project
 
-    it { should be_a(Mail::Message) }
+    mock(notifier.build).notify? { true }
 
-    it "should delivery email" do
-      expect {
-        subject
-      }.to change(ActionMailer::Base.deliveries, :size).by(1)
-      expect(ActionMailer::Base.deliveries.first.subject).to eq "[Passed] ci-worker-test-repo#1 (MyString - MyString)"
-    end
+    expect {
+      rs = notifier.delivery_email_notifications
+      expect(rs).to be
+    }.to change(ActionMailer::Base.deliveries, :size).by(1)
+
+    expect(ActionMailer::Base.deliveries.first.subject).to eq "[Passed] ci-worker-test-repo#1 (MyString - 91405d6c1)"
   end
 
   context "#description" do

@@ -51,23 +51,21 @@ describe Build do
     project = create :project, company: create(:company)
     expect{
       create :build, project: project
-    }.to change(ServerSideEventsConsumer.messages, :count).by(1)
-    msg = ServerSideEventsConsumer.messages.last
-    expect(msg.keys).to eq [:channel, :event, :event_name, :payload]
+    }.to change(SockdNotifyConsumer.messages, :count).by(2)
+    msg = SockdNotifyConsumer.messages.select{ |m| m[:_event] == 'build:created' }.first
+    expect(msg.keys).to eq [:channel, :event, :_event, :payload]
     expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
-    expect(msg[:event_name]).to eq "build:created"
     expect(msg[:payload]).to_not be_empty
   end
 
   it "should publish updated" do
     b.save!
     expect{
-      b.publish
-    }.to change(ServerSideEventsConsumer.messages, :count).by(1)
-    msg = ServerSideEventsConsumer.messages.last
-    expect(msg.keys).to eq [:channel, :event, :event_name, :payload]
+      b.publish_updated
+    }.to change(SockdNotifyConsumer.messages, :count).by(2)
+    msg = SockdNotifyConsumer.messages.select{ |m| m[:_event] == 'build:updated' }.first
+    expect(msg.keys).to eq [:channel, :event, :_event, :payload]
     expect(msg[:channel]).to eq 'company/00000000-0000-0000-0000-000000000000'
-    expect(msg[:event_name]).to eq "build:updated"
     expect(msg[:payload]).to_not be_empty
   end
 
@@ -91,13 +89,14 @@ describe Build do
     subject { b.to_builder_task job }
     it { should be }
     its(:name)                 { should eq "ci-worker-test-repo" }
-    its(:src)                  { should eq 'MyString' }
-    its(:sha)                  { should eq 'MyString' }
+    its(:src)                  { should eq 'git@example.com' }
+    its(:sha)                  { should eq '91405d6c13b48904694f67f7abc29ef08a825728' }
     its(:deploy_key)           { should be }
     its(:branch)               { should eq 'MyString' }
     its(:cache_url_prefix)     { should eq "http://test.host/f/cached_files/#{b.project.token}" }
     its(:build_id)             { should eq b.id }
-    its(:job_id)               { should eq job.number }
+    its(:job_id)               { should eq job.id }
+    its(:project_host)         { should eq 'example.com' }
   end
 
   context "duration" do
@@ -137,16 +136,10 @@ describe Build do
         expect(msg["status"]).to eq "started"
       end
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
-      end
-
-      it "should update last_build on project" do
-        expect{
-          subject
-        }.to change{ b.project.reload.last_build_id }.to(b.id)
+        }.to change(SockdNotifyConsumer.messages, :count).by(2)
       end
     end
 
@@ -162,10 +155,10 @@ describe Build do
         expect(msg["status"]).to eq "deploying"
       end
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
+        }.to change(SockdNotifyConsumer.messages, :count).by(2)
       end
     end
 
@@ -181,10 +174,10 @@ describe Build do
         expect(msg["status"]).to eq "passed"
       end
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
+        }.to change(SockdNotifyConsumer.messages, :count).by(2)
       end
     end
 
@@ -200,10 +193,10 @@ describe Build do
         expect(msg["status"]).to eq "failed"
       end
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
+        }.to change(SockdNotifyConsumer.messages, :count).by(2)
       end
     end
 
@@ -219,10 +212,10 @@ describe Build do
         expect(msg["status"]).to eq "errored"
       end
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(2)
+        }.to change(SockdNotifyConsumer.messages, :count).by(2)
       end
     end
   end
@@ -420,19 +413,19 @@ describe Build do
       its(:finished_at) { should be_nil }
       its(:status_name) { should eq :initialized }
 
-      it "should delivery messages to ServerSideEventsConsumer" do
+      it "should delivery messages to SockdNotifyConsumer" do
         expect{
           subject
-        }.to change(ServerSideEventsConsumer.messages, :count).by(3)
-        build_m = ServerSideEventsConsumer.messages.pop
-        job2_m  = ServerSideEventsConsumer.messages.pop
+        }.to change(SockdNotifyConsumer.messages, :count).by(3)
+        build_m = SockdNotifyConsumer.messages.pop
+        job2_m  = SockdNotifyConsumer.messages.pop
 
         expect(job2_m[:channel]).to eq "company/00000000-0000-0000-0000-000000000000"
-        expect(job2_m[:event_name]).to eq "job:updated"
+        expect(job2_m[:_event]).to eq "job:updated"
         expect(job2_m[:payload][:id]).to eq job2.id
 
         expect(job2_m[:channel]).to eq "company/00000000-0000-0000-0000-000000000000"
-        expect(build_m[:event_name]).to eq "build:updated"
+        expect(build_m[:_event]).to eq "build:updated"
       end
 
       it "should delivery message to JobsConsumer" do
@@ -595,15 +588,14 @@ describe Build do
       end
     end
   end
+
 end
 
 # == Schema Information
 #
 # Table name: builds
 #
-#  id              :integer          not null, primary key
 #  number          :integer          not null
-#  project_id      :integer          not null
 #  sha             :string(255)      not null
 #  branch          :string(255)      not null
 #  pull_request_id :integer
@@ -619,5 +611,7 @@ end
 #  branch_label    :string(255)
 #  source          :text             not null
 #  token           :string(255)      not null
+#  project_id      :uuid             not null
+#  id              :uuid             not null, primary key
 #
 

@@ -13,15 +13,8 @@ describe User do
 
     subject { user.sync_repos(company) }
 
-    before do
-      any_instance_of(Vx::ServiceConnector::Github) do |g|
-        mock(g).repos { [external_repo] }
-      end
-    end
-
-    it { should be }
-
     it "should create missing user_repos" do
+      mock_repos
       user_repo.destroy
       expect {
         subject
@@ -29,18 +22,55 @@ describe User do
     end
 
     it "should remove unupdated user_repos" do
+      mock_repos
       user_repo.update! external_id: -1
 
       expect(subject).to be
       expect{user_repo.reload}.to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    it "should remove if identity return empty array" do
+      mock_repos []
+      user_repo
+
+      expect(subject).to be
+      expect{user_repo.reload}.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "should keep repos with projects" do
+      mock_repos
+      user_repo.update! external_id: -1
+      create(:project, user_repo: user_repo, company: user_repo.company)
+
+      expect(subject).to be
+      expect{user_repo.reload}.to be
+    end
+
     it "should update existing user_repos" do
+      mock_repos
       user_repo.update! description: "..."
       expect(subject).to be
       expect(user_repo.reload.description).to eq 'description'
     end
 
+    def mock_repos(list = nil)
+      list ||=  [external_repo]
+
+      any_instance_of(Vx::ServiceConnector::Github) do |g|
+        mock(g).repos { list }
+      end
+    end
+  end
+
+  context "update_with_company" do
+    let(:company) { create :company }
+    let(:user)    { create :user }
+    it "should update user and its role in company" do
+      expect(user).to_not be_admin(company)
+      expect(user.update_with_company(company, role: 'admin', name: "NewName")).to be
+      expect(user).to be_admin(company)
+      expect(user.name).to eq 'NewName'
+    end
   end
 
   context "default_company" do
@@ -63,13 +93,13 @@ describe User do
 
     it "should crate user_company and set is default" do
       expect(user.add_to_company c1).to be
-      expect(user.default_company).to eq c1
+      expect(user.default_company true).to eq c1
 
       expect(user.add_to_company c2).to be
-      expect(user.default_company).to eq c2
+      expect(user.default_company true).to eq c2
 
       expect(user.add_to_company c2).to be
-      expect(user.default_company).to eq c2
+      expect(user.default_company true).to eq c2
     end
 
     it "should create with developer role by default" do
@@ -125,10 +155,11 @@ end
 #
 # Table name: users
 #
-#  id         :integer          not null, primary key
-#  email      :string(255)      not null
-#  name       :string(255)      not null
-#  created_at :datetime
-#  updated_at :datetime
+#  email       :string(255)      not null
+#  name        :string(255)      not null
+#  created_at  :datetime
+#  updated_at  :datetime
+#  back_office :boolean          default(FALSE)
+#  id          :uuid             not null, primary key
 #
 

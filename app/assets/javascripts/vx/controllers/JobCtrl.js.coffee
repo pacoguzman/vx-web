@@ -1,18 +1,29 @@
-Vx.controller 'JobCtrl',
-  ($scope, appMenu, projectStore, buildStore, jobStore, jobLogStore, $routeParams) ->
+Vx.controller 'JobCtrl', ['$scope', 'projectStore', 'buildStore', 'jobStore', 'jobLogStore', '$routeParams',
+  ($scope, projectStore, buildStore, jobStore, jobLogStore, $routeParams) ->
 
-    $scope.job = jobStore.one($routeParams.jobId)
+    $scope.job     = null
+    $scope.build   = null
+    $scope.project = null
+    $scope.logs    = null
+    $scope.matrix = { keys: [], values: [] }
 
-    $scope.build = $scope.job.then (job) ->
-      buildStore.one(job.build_id)
+    $scope.waitLogs = true
 
-    $scope.project = $scope.job.then (job) ->
-      projectStore.one(job.project_id)
+    jobStore.one($routeParams.jobId).then (job) ->
+      $scope.job = job
 
-    $scope.logs = $scope.job.then (job) ->
-      jobLogStore.all(job.id)
+      $scope.matrix.keys   = _.keys(job.matrix)
+      $scope.matrix.values = _.values(job.matrix)
 
-    appMenu.define $scope.job, $scope.build, $scope.project, (j,b,p) ->
-      appMenu.add p.name, "/ui/projects/#{p.id}/builds"
-      appMenu.add "Build #{b.number}", "/ui/builds/#{b.id}"
-      appMenu.add "Job #{j.number}", "/ui/jobs/#{j.id}"
+
+      buildStore.one(job.build_id).then (build) ->
+        $scope.build = build
+
+      projectStore.one(job.project_id).then (project) ->
+        $scope.project = project
+
+      jobLogStore.all(job.id).then (logs) ->
+        $scope.logs = logs
+        $scope.waitLogs = false
+
+]

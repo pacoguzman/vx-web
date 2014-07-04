@@ -1,6 +1,9 @@
 VxWeb::Application.routes.draw do
 
-  namespace :api do
+  UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+  SHA_RE = /\b([a-f0-9]{40})\b/
+
+  namespace :api, constraints: { id: UUID_RE } do
     resources :invites, only: [:create]
 
     resources :users, only: [:index, :update, :destroy] do
@@ -15,22 +18,26 @@ VxWeb::Application.routes.draw do
 
     resources :projects do
       resources :builds, only: [:index, :create]
-      resources :cached_files, only: [:index]
+      resources :cached_files, only: [:index] do
+        collection do
+          post :mass_destroy
+        end
+      end
       resource :subscription, only: [:create, :destroy], controller: "project_subscriptions"
       resources :pull_requests, only: [:index]
       resources :branches, only: [:index]
       member do
-        get "key"
+        get "key.:format", action: :key
       end
     end
 
     resources :builds, only: [:show] do
       member do
         post :restart
+        get :status_for_gitlab, constraints: { id: SHA_RE }
       end
       collection do
         get :queued
-        get "sha/:sha", action: :sha, as: :sha
       end
       resources :jobs, only: [:index]
     end
@@ -49,10 +56,6 @@ VxWeb::Application.routes.draw do
       end
     end
 
-    resources :cached_files, only: [:destroy]
-    resources :status, only: [:show], id: /(jobs)/
-    resources :events, show: [:index]
-
     resources :companies, only: [] do
       get :usage, on: :collection
       member do
@@ -69,6 +72,12 @@ VxWeb::Application.routes.draw do
     resource :session, only: [:destroy, :show], controller: "session"
     resource :invite,  only: [:new]
     resource :signup,  only: [:show, :new, :create], controller: "signup"
+
+    scope "/projects/:project_id" do
+      get "/unsubscribe/:id", to: "project_subscriptions#unsubscribe",
+        constraints: { project_id: UUID_RE, id: UUID_RE },
+        as: "unsubscribe_user_from_project"
+    end
   end
 
   put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload", as: :upload_cached_file
@@ -76,8 +85,6 @@ VxWeb::Application.routes.draw do
 
   post '/callbacks/:_service/:_token', to: 'repo_callbacks#create', _service: /(github|gitlab)/,
     as: 'repo_callback'
-
-  get "builds/sha/:sha" => "builds#sha"
 
   scope constraints: ->(req){ req.format == Mime::HTML } do
     get "/",         to: redirect("/ui")

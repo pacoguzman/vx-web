@@ -1,22 +1,41 @@
-Vx.controller 'UserReposCtrl', ['$scope', 'appMenu', 'userRepoStore'
-  ($scope, menu, userRepos) ->
+Vx.controller 'UserRepoCtrl', ['$scope', 'userRepoStore', '$timeout',
+  ($scope, userRepos, $timeout) ->
 
-    menu.define ->
-      menu.add 'Manage Projects', '/ui/user_repos'
+    $scope.changeSubscription = (newVal, oldVal) ->
+      if oldVal != newVal
+        repo = $scope.repo
+        userRepos.updateSubscribtion(repo).catch (e) ->
+          repo.subscribed = !repo.subscribed
 
-    $scope.inProgress = false
-    $scope.repos      = userRepos.all()
-    $scope.query      = null
-    $scope.processing = {}
+    $scope.$watch 'repo.subscribed', $scope.changeSubscription
+]
 
-    $scope.changeSubscription = (repo) ->
-      repo.wait = true
-      userRepos.toggleSubscribtion(repo).finally ->
-        repo.wait = false
+Vx.controller 'UserReposCtrl', ['$scope', 'userRepoStore',
+  ($scope, userRepos) ->
 
-    $scope.syncUserRepos = () ->
-      $scope.inProgress = true
+    $scope.wait           = true
+    $scope.repos          = []
+    $scope.query          = null
+    $scope.reposLimit     = 30
+    $scope.onlySubscribed = false
+
+    userRepos.all()
+      .then (repos) ->
+        $scope.repos = repos
+      .finally ->
+        $scope.wait = false
+
+    $scope.subscribeFilter = (repo) ->
+      if $scope.onlySubscribed
+        repo.subscribed && !repo.disabled
+      else
+        true
+
+    $scope.sync = () ->
+      $scope.wait = true
       userRepos.sync().finally ->
-        $scope.inProgress = false
+        $scope.wait = false
 
+    $scope.loadMore = () ->
+      $scope.reposLimit += 30
 ]

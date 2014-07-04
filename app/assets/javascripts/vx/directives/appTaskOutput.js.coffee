@@ -1,5 +1,5 @@
 angular.module('Vx').
-  directive "appTaskOutput", ($window) ->
+  directive "appTaskOutput", ['$window', ($window) ->
 
     restrict: 'EC'
     replace: true
@@ -63,3 +63,6 @@ angular.module('Vx').
         logOutput.process()
 
       scope.$watch('collection.length', updateLines)
+
+  ]
+

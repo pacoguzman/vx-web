@@ -1,24 +1,47 @@
-.user-repos
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-lg-12
+    %h2 Add Project
 
-  .user-repos-sync.pull-right
-    %a{ class: "btn btn-sm btn-primary", "ng-class" => "inProgress ? 'disabled' : ''", "ng-click" => "syncUserRepos()" }
-      Sync Now
+.wrapper.wrapper-content.animated.fadeInRight
+  .row
+    .col-lg-12
+      .ibox
+        .ibox-content
+          .row
+            .col-sm-8
+              .pull-right
+                %label.label{ 'style' => "cursor: pointer"}
+                  %input{ type: "checkbox", 'ng-model' => 'onlySubscribed' }
+                  Show only subscribed
+              %small
+                Show {{ [(repos|filter:subscribeFilter|filter:query).length, reposLimit] | min }} of {{ repos.length }} repositories
 
-  .user-repos-search
-    %input.form-control{ autofocus: true, type: :search, placeholder: "Type to search...", 'ng-model' => 'query' }
+          %div.search-form.m-b-lg
+            .row
+              .col-sm-8
+                %input.form-control.input-lg{ type: "search", placeholder: "Type to search project...", 'ng-model' => "query" }
+              .col-sm-4
+                .pull-right
+                  %a.btn.btn-primary.btn-lg{ 'ng-disabled' => 'wait', 'ng-click' => 'sync()', style: "width: 7em" }
+                    %span{'ng-show' => "wait"}
+                      Wait...
+                    %span{'ng-hide' => 'wait'}
+                      Sync Now
 
-  .user-repos-show{ 'ng-show' => 'repos.length > 0' }
-    %small Show 30 of {{ repos.length }} repositories
+          .row{ 'ng-show' => "repos.length > 0" }
+            .col-md-8
+              %ul.list-group.user-repos-list
+                %li.list-group-item.user-repo{'ng-repeat' => "repo in repos | filter:subscribeFilter | filter:query | limitTo: reposLimit", 'ng-controller' => "UserRepoCtrl" }
+                  .pull-right
+                    .ui-switch.ui-switch-xs{ value: "repo.subscribed", 'disabled' => "repo.disabled || repo.wait || wait" }
 
-  .user-repos-list
+                  %a{ 'ng-href' => "{{ repo.html_url }}", style: "padding-right: 1em;", title: "Go to {{ repo.provider_title }}" }
+                    %i.fa.fa-git
 
-    .ajax-loader{ 'ng-hide' => 'repos.length != undefined' }
+                  %a{ 'ng-show' => 'repo.project_id', href: "/ui/projects/{{ repo.project_id }}/builds"}
+                    %strong{ style: 'font-weight: 600' } {{ repo.full_name }}
+                  %span{ style: "color:#676C6A", 'ng-hide' => 'repo.project_id' }
+                    %strong{ style: 'font-weight: 600' } {{ repo.full_name }}
 
-    .user-repo{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30", 'ng-class' => "repo.wait ? 'in-progress' : ''" }
-
-      %a.octocat{ href: '{{repo.settings_url}}', title: "View on {{repo.provider_title}}", "target" => "blank" }
-        %i.fa.fa-wrench
-
-      %label
-        %input{ type: 'checkbox', 'ng-disabled' => 'repo.disabled || repo.wait', 'ng-model' => 'repo.subscribed', 'ng-change' => "changeSubscription(repo)" }
-          %span {{repo.full_name}}
+              %button.btn.btn-block.btn-outline.btn-primary{'ng-click' => 'loadMore()', 'ng-disabled' => "wait", 'ng-hide' => "reposLimit >= (repos|filter:subscribeFilter|filter:query).length" }
+                Load more

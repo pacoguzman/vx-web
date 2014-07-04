@@ -3,10 +3,12 @@ class BuildsMailer < ActionMailer::Base
 
   default from: "\"Vexor CI\" <no-reply@#{Rails.configuration.x.hostname.host}>"
 
-  def status_email(build, recipients)
-    @build   = build
-    @project = build.project
-    mail(to: recipients, subject: build_subject(build))
+  def status_email(build, subscription)
+    @subscription = subscription
+    @user         = subscription.user
+    @build        = build
+    @project      = build.project
+    mail(to: @user.email, subject: build_subject(build))
   end
 
   def build_subject(build)

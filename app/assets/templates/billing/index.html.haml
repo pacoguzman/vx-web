@@ -1,35 +1,43 @@
-.panel.panel-default
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-md-6
+    %h2 Billing
 
-  .panel-heading Usage Statistics
-  .panel-body{ 'ng-show' => "wait" }
-
-
-  %table.table{ 'ng-show' => 'companyUsage' }
-    %thead
-      %tr
-        %th Period
-        %th Job count
-        %th Minutes
-        %th Amount
-    %tbody
-      %tr
-        %td Today
-        %td {{ companyUsage.today.job_count | number }}
-        %td {{ companyUsage.today.minutes | number }}
-        %td {{ companyUsage.today.amount | currency }}
-      %tr
-        %td Yesterday
-        %td {{ companyUsage.yesterday.job_count | number }}
-        %td {{ companyUsage.yesterday.minutes | number }}
-        %td {{ companyUsage.yesterday.amount | currency }}
-      %tr
-        %td Last 7 days
-        %td {{ companyUsage.last_7_days.job_count | number }}
-        %td {{ companyUsage.last_7_days.minutes | number }}
-        %td {{ companyUsage.last_7_days.amount | currency }}
-      %tr
-        %td This month
-        %td {{ companyUsage.this_month.job_count | number }}
-        %td {{ companyUsage.this_month.minutes | number }}
-        %td {{ companyUsage.this_month.amount | currency }}
-
+.row
+  .col-lg-12
+    .wrapper.wrapper-content.animated.fadeInDown
+      .ibox-content.p-xl
+        %h3 Usage Statistics
+        .table-responsive.m-t
+          %table.table.invoice-table
+            %thead
+              %tr
+                %th Period
+                %th Job Count
+                %th Minutes
+                %th Amount
+            %tbody
+              %tr
+                %td Today
+                %td {{ companyUsage.today.job_count | number }}
+                %td {{ companyUsage.today.minutes | number }}
+                %td {{ companyUsage.today.amount | currency }}
+              %tr
+                %td Yesterday
+                %td {{ companyUsage.yesterday.job_count | number }}
+                %td {{ companyUsage.yesterday.minutes | number }}
+                %td {{ companyUsage.yesterday.amount | currency }}
+              %tr
+                %td This week
+                %td {{ companyUsage.this_week.job_count | number }}
+                %td {{ companyUsage.this_week.minutes | number }}
+                %td {{ companyUsage.this_week.amount | currency }}
+              %tr
+                %td This month
+                %td {{ companyUsage.this_month.job_count | number }}
+                %td {{ companyUsage.this_month.minutes | number }}
+                %td {{ companyUsage.this_month.amount | currency }}
+              %tr
+                %td Last month
+                %td {{ companyUsage.last_month.job_count | number }}
+                %td {{ companyUsage.last_month.minutes | number }}
+                %td {{ companyUsage.last_month.amount | currency }}

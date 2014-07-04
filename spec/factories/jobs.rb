@@ -1,7 +1,8 @@
-# Read about factories at https://github.com/thoughtbot/factory_girl
+require 'securerandom'
 
 FactoryGirl.define do
   factory :job do
+    id     { SecureRandom.uuid }
     build
     number 1
     status "initialized"

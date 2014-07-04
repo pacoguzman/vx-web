@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Api::BuildsController do
   let(:project) { create :project }
   let(:user)    { project.user_repo.user }
-  let(:build)   { create :build, project: project }
+  let(:b)       { create :build, project: project }
 
   subject { response }
 
@@ -13,7 +13,7 @@ describe Api::BuildsController do
 
   context "GET /index" do
     before do
-      build
+      b
       get :index, project_id: project.id, format: :json
     end
 
@@ -22,7 +22,7 @@ describe Api::BuildsController do
   end
 
   context "GET /show" do
-    before { get :show, id: build.id, format: :json }
+    before { get :show, id: b.id, format: :json }
 
     it { should be_success }
     its(:body) { should_not be_blank }
@@ -48,23 +48,16 @@ describe Api::BuildsController do
     end
   end
 
-  context "GET /sha/show (commit SHA1)" do
-    before { get :sha, sha: build.sha, format: :json }
-
-    it { should be_success }
-    its(:body) { should_not be_blank }
-  end
-
   context "POST /restart" do
     before do
       any_instance_of(Build) do |b|
         mock(b).restart { ret }
       end
-      post :restart, id: build.id, format: :json
+      post :restart, id: b.id, format: :json
     end
 
     context "when success" do
-      let(:ret) { build }
+      let(:ret) { b }
 
       it { should be_success }
       its(:body) { should_not be_blank }
@@ -75,6 +68,39 @@ describe Api::BuildsController do
 
       its(:response_code) { should eq 422 }
       its(:body) { should be_blank }
+    end
+  end
+
+  context "GET /status_for_gitlab" do
+
+    it "should be success if project and build found" do
+      request.env['HTTP_X_VEXOR_PROJECT_TOKEN'] = project.token
+      get :status_for_gitlab, id: b.sha
+      should be_success
+      expect(response.body).to eq({
+        status: :pending,
+        location: b.public_url
+      }.to_json)
+    end
+
+    it "should be not found if token missing" do
+      get :status_for_gitlab, id: b.sha
+      should be_not_found
+      expect(response.body).to eq '{}'
+    end
+
+    it "should be not found if token invalid" do
+      request.env['HTTP_X_VEXOR_PROJECT_TOKEN'] = 'invalid'
+      get :status_for_gitlab, id: b.sha
+      should be_not_found
+      expect(response.body).to eq '{}'
+    end
+
+    it "should be not found if build with sha not found" do
+      request.env['HTTP_X_VEXOR_PROJECT_TOKEN'] = project.token
+      get :status_for_gitlab, id: '3205261774800570a7f9b5f8687672c21847caaf'
+      should be_not_found
+      expect(response.body).to eq '{}'
     end
   end
 

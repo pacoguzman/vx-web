@@ -1,74 +1,7 @@
-.user-repos {
-  min-height: 40em;
-
-  .user-repos-sync {
-    a {
-      position: relative;
-    }
-
-    a.disabled::after {
-      content: url(asset-path("ajax-loader.gif"));
-      position: absolute;
-      left: -3em;
-    }
-  }
-
-  .user-repos-show {
-    margin-top: 1em;
-  }
-
-  .user-repos-search {
-    width: 30em;
-    input {
-      border: 1px solid #eee;
-    }
-  }
-
-  .user-repos-list {
-    margin-top: 1em;
-  }
-
+.user-repos-list {
   .user-repo {
-    margin: .1em 0 .1em -4em;
-    padding: .2em 0 .2em 4em;
-    max-width: 40em;
-
-    label {
-      display: inline-block;
-      font-weight: normal;
+    input[disabled] + label {
+      cursor: default;
     }
-
-    input[type=checkbox] {
-      display: inline-block;
-      margin-top: -0.1em;
-      margin-right: .4em;
-    }
-
-    .octocat {
-      display: none;
-      margin-right: 0;
-      color: #333;
-      &:hover {
-        text-decoration: none;
-      }
-    }
-
-    &:hover {
-      .octocat {
-        display: block;
-        position: absolute;
-        margin-left: -2em;
-        margin-top: .1em;
-      }
-    }
-
-    &.in-progress .octocat {
-      display: block;
-      position: absolute;
-      margin-left: -2em;
-      margin-top: .34em;
-      content: url(asset-path("ajax-loader.gif"));
-    }
-
   }
 }

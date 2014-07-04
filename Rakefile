@@ -27,6 +27,12 @@ namespace :karma do
   task run: :templates do
     karma = File.expand_path("~/node_modules/karma/bin/karma")
     karma = File.expand_path("node_modules/karma/bin/karma") unless File.exists?(karma)
-    exec "sh -c 'cd app/assets/javascripts && #{karma} start --single-run --color' "
+    exec "sh -c 'cd app/assets/javascripts && #{karma} start --single-run --color'"
+  end
+
+  task start: :templates do
+    karma = File.expand_path("~/node_modules/karma/bin/karma")
+    karma = File.expand_path("node_modules/karma/bin/karma") unless File.exists?(karma)
+    exec "sh -c 'cd app/assets/javascripts && #{karma} start --color'"
   end
 end

@@ -8,6 +8,21 @@ describe Api::CachedFilesController do
     FileUtils.rm_rf "#{Rails.root}/private/test"
   end
 
+  context "POST /mass_destroy" do
+    let(:content)  { File.open Rails.root.join("spec/fixtures/upload_test.tgz") }
+
+    it "should destroy files" do
+      FileUtils.cp "#{Rails.root}/spec/fixtures/upload.tgz", "#{Rails.root}/spec/fixtures/upload_test.tgz"
+      file = project.cached_files.create! file: content, file_name: "main/foo.tgz"
+
+      sign_in create(:user), project.company
+      post :mass_destroy, project_id: project.id, ids: file.id
+
+      should be_success
+      expect{ file.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
   context "PUT /upload" do
     before { upload }
 

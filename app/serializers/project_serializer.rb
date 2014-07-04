@@ -1,18 +1,33 @@
 class ProjectSerializer < ActiveModel::Serializer
-  cached
 
-  attributes :id, :name, :http_url, :description, :status, :last_build_created_at,
-    :provider_title
+  attributes :id, :name, :http_url, :description, :last_build_at, :created_at,
+    :source, :token
 
-  def status
-    object.last_build_status_name || :unknown
+  has_one :last_build
+  has_one :owner
+
+  def last_build_at
+    if b = last_build
+      b.created_at
+    end
   end
 
-  def provider_title
-    object.user_repo.try(:provider_title)
+  def last_build
+    @last_build ||= begin
+      if scope && scope.respond_to?(:last_builds)
+        scope.last_builds.to_a.find{|b| b.project_id == object.id }
+      else
+        object.last_build
+      end
+    end
   end
 
-  def last_build_created_at
-    object.last_build_at
+  def owner
+    object.user
   end
+
+  def source
+    object.identity && object.identity.provider.capitalize
+  end
+
 end
