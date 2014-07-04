@@ -1,6 +1,9 @@
 VxWeb::Application.routes.draw do
 
-  namespace :api do
+  UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+  SHA_RE = /\b([a-f0-9]{40})\b/
+
+  namespace :api, constraints: { id: UUID_RE } do
     resources :invites, only: [:create]
 
     resources :users, only: [:index, :update, :destroy] do
@@ -31,7 +34,7 @@ VxWeb::Application.routes.draw do
     resources :builds, only: [:show] do
       member do
         post :restart
-        get :status_for_gitlab
+        get :status_for_gitlab, constraints: { id: SHA_RE }
       end
       collection do
         get :queued
@@ -69,6 +72,12 @@ VxWeb::Application.routes.draw do
     resource :session, only: [:destroy, :show], controller: "session"
     resource :invite,  only: [:new]
     resource :signup,  only: [:show, :new, :create], controller: "signup"
+
+    scope "/projects/:project_id" do
+      get "/unsubscribe/:id", to: "project_subscriptions#unsubscribe",
+        constraints: { project_id: UUID_RE, id: UUID_RE },
+        as: "unsubscribe_user_from_project"
+    end
   end
 
   put "/f/cached_files/:token/*file_name.:file_ext", to: "api/cached_files#upload", as: :upload_cached_file

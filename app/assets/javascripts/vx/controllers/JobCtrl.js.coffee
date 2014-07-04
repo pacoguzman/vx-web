@@ -7,6 +7,8 @@ Vx.controller 'JobCtrl', ['$scope', 'projectStore', 'buildStore', 'jobStore', 'j
     $scope.logs    = null
     $scope.matrix = { keys: [], values: [] }
 
+    $scope.waitLogs = true
+
     jobStore.one($routeParams.jobId).then (job) ->
       $scope.job = job
 
@@ -16,9 +18,12 @@ Vx.controller 'JobCtrl', ['$scope', 'projectStore', 'buildStore', 'jobStore', 'j
 
       buildStore.one(job.build_id).then (build) ->
         $scope.build = build
+
       projectStore.one(job.project_id).then (project) ->
         $scope.project = project
+
       jobLogStore.all(job.id).then (logs) ->
         $scope.logs = logs
+        $scope.waitLogs = false
 
 ]

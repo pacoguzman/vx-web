@@ -36,3 +36,8 @@
                 %td {{ companyUsage.this_month.job_count | number }}
                 %td {{ companyUsage.this_month.minutes | number }}
                 %td {{ companyUsage.this_month.amount | currency }}
+              %tr
+                %td Last month
+                %td {{ companyUsage.last_month.job_count | number }}
+                %td {{ companyUsage.last_month.minutes | number }}
+                %td {{ companyUsage.last_month.amount | currency }}

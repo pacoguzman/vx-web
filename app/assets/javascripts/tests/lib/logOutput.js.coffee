@@ -54,6 +54,11 @@ describe "VxLib.LogOutput", ->
     logOutput.process()
     expect(record).toEqual [['append', ''], ['replace', 'line2']]
 
+  it "should skip blank string after last \\r", ->
+    collection.push "\rfoo\r"
+    logOutput.process()
+    expect(record).toEqual ['newline', ['append', ""], ['replace', 'foo']]
+
   it "should skip if not changed", ->
     logOutput.process()
     expect(record).toEqual []

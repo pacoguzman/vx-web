@@ -34,7 +34,8 @@ describe CompanyUsage do
         today:        { job_count: 1, minutes: 10, amount: 0.10 },
         yesterday:    { job_count: 1, minutes: 60, amount: 0.60 },
         this_week:    { job_count: 2, minutes: 70, amount: 0.70 },
-        this_month:   { job_count: 3, minutes: 310, amount: 3.10 }
+        this_month:   { job_count: 3, minutes: 310, amount: 3.10 },
+        last_month:   { job_count: 0, minutes: 0, amount:  0.0 }
       }
       expect(company_usage.calculate).to eq(expected_result)
     end
@@ -46,7 +47,8 @@ describe CompanyUsage do
         today:        { job_count: 0, minutes: 0, amount: 0 },
         yesterday:    { job_count: 0, minutes: 0, amount: 0 },
         this_week:    { job_count: 0, minutes: 0, amount: 0 },
-        this_month:   { job_count: 0, minutes: 0, amount: 0 }
+        this_month:   { job_count: 0, minutes: 0, amount: 0 },
+        last_month:   { job_count: 0, minutes: 0, amount: 0 }
       }
 
       expect(company_usage.calculate).to eq(expected_result)
@@ -61,7 +63,8 @@ describe CompanyUsage do
         today:        { job_count: 0, minutes: 0, amount: 0.0 },
         yesterday:    { job_count: 0, minutes: 0, amount: 0.0 },
         this_week:    { job_count: 0, minutes: 0, amount: 0.0 },
-        this_month:   { job_count: 0, minutes: 0, amount: 0.0 }
+        this_month:   { job_count: 0, minutes: 0, amount: 0.0 },
+        last_month:   { job_count: 0, minutes: 0, amount: 0.0 }
       }.to_json
 
       expect(company_usage.to_json).to eq(expected_result)

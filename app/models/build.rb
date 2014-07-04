@@ -281,9 +281,7 @@ end
 #
 # Table name: builds
 #
-#  id              :integer          not null, primary key
 #  number          :integer          not null
-#  project_id      :integer          not null
 #  sha             :string(255)      not null
 #  branch          :string(255)      not null
 #  pull_request_id :integer
@@ -299,5 +297,7 @@ end
 #  branch_label    :string(255)
 #  source          :text             not null
 #  token           :string(255)      not null
+#  project_id      :uuid             not null
+#  id              :uuid             not null, primary key
 #
 

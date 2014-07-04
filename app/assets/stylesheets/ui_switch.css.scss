@@ -122,3 +122,52 @@ input.cmn-toggle-round-flat:disabled + label {
   }
 }
 
+.ui-switch-xs {
+  input.cmn-toggle-round-flat + label {
+    padding: 0px;
+    width:  50px;
+    height: 20px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-radius: 10px;
+    background-color: #bbb;
+  }
+
+  input.cmn-toggle-round-flat + label:before {
+    top: 1px;
+    left: 1px;
+    bottom: 1px;
+    right: 1px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+  }
+
+  input.cmn-toggle-round-flat + label:after {
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    width: 17px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-radius: 10px;
+    background-color: #bbb;
+  }
+
+  input.cmn-toggle-round-flat:checked + label:after {
+    margin-left: 29px;
+  }
+
+  input.cmn-toggle-round-flat:checked + label {
+    background-color: #18a78a;
+  }
+  input.cmn-toggle-round-flat:checked + label:after {
+    background-color: #18a78a;
+  }
+}
+

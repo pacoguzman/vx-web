@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
           if synced_repos.any?
             identity.user_repos.where("id NOT IN (?)", synced_repos.map(&:id))
           else
-            identity.user_repos
+            identity.user_repos.to_a
           end
 
         collection.each do |user_repo|
@@ -113,11 +113,11 @@ end
 #
 # Table name: users
 #
-#  id          :integer          not null, primary key
 #  email       :string(255)      not null
 #  name        :string(255)      not null
 #  created_at  :datetime
 #  updated_at  :datetime
 #  back_office :boolean          default(FALSE)
+#  id          :uuid             not null, primary key
 #
 

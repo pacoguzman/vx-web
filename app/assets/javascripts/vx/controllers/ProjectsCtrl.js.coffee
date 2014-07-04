@@ -5,8 +5,10 @@ Vx.controller 'ProjectsCtrl', ['$scope', 'projectStore', 'buildStore', '$locatio
     $scope.projects = []
     $scope.builds = []
 
-    projects.all().then (projects) ->
-      $scope.projects = projects
+    projects.all().then (items) ->
+      $scope.projects = items
+      if items.length == 0
+        $location.path("/ui/user_repos")
 
     builds.queued().then (builds) ->
       $scope.builds = builds
@@ -31,6 +33,10 @@ Vx.controller 'ProjectsCtrl', ['$scope', 'projectStore', 'buildStore', '$locatio
           "commited to"
         else
           "creates"
+
+    $scope.projectCssClass = (project) ->
+      if project.last_build
+        "project-with-builds"
 
     $scope.projectLastActionAt = (project) ->
       switch

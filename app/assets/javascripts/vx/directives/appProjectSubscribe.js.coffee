@@ -10,7 +10,7 @@ angular.module('Vx').
       }
 
       template: """
-      <a ng-click="subscribe()" class="btn btn-default">
+      <a ng-click="subscribe()" class="btn btn-white">
         <i class="fa fa-eye" style="font-size: 1.2em"></i>
         {{title}}
       </button>
@@ -48,9 +48,9 @@ angular.module('Vx').
           if scope.project
             scope.subscribed = scope.subscriptions.indexOf(scope.project.id) != -1
             if scope.subscribed
-              elem.removeClass("btn-default").removeClass("btn-outline").addClass("btn-primary")
+              elem.removeClass("btn-white").addClass("btn-primary")
             else
-              elem.addClass("btn-default").addClass("btn-outline").removeClass("btn-primary")
+              elem.addClass("btn-white").removeClass("btn-primary")
 
         scope.$watch("subscriptions", updateSubscribed, true)
         scope.$watch("project", updateSubscribed)

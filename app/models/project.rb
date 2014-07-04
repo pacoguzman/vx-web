@@ -10,7 +10,15 @@ class Project < ActiveRecord::Base
   has_one :identity, through: :user_repo
   has_one :user, through: :user_repo
 
-  has_many :builds, dependent: :destroy, class_name: "::Build"
+  has_many :builds, dependent: :destroy, class_name: "::Build" do
+    def from_number(number)
+      if number
+        where("builds.number < ?", number)
+      else
+        self
+      end
+    end
+  end
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
   has_many :cached_files, dependent: :destroy, inverse_of: :project
 
@@ -172,19 +180,16 @@ end
 #
 # Table name: projects
 #
-#  id                     :integer          not null, primary key
-#  name                   :string(255)      not null
-#  http_url               :string(255)      not null
-#  clone_url              :string(255)      not null
-#  description            :text
-#  deploy_key             :text             not null
-#  token                  :string(255)      not null
-#  created_at             :datetime
-#  updated_at             :datetime
-#  user_repo_id           :integer
-#  last_build_id          :integer
-#  last_build_status_name :string(255)
-#  last_build_at          :datetime
-#  company_id             :uuid             not null
+#  name         :string(255)      not null
+#  http_url     :string(255)      not null
+#  clone_url    :string(255)      not null
+#  description  :text
+#  deploy_key   :text             not null
+#  token        :string(255)      not null
+#  created_at   :datetime
+#  updated_at   :datetime
+#  company_id   :uuid             not null
+#  id           :uuid             not null, primary key
+#  user_repo_id :uuid             not null
 #
 

@@ -7,8 +7,14 @@
     .col-lg-12
       .ibox
         .ibox-content
-          %small
-            Show {{ [(repos|filter:query).length, 30] | min }} of {{ repos.length }} repositories
+          .row
+            .col-sm-8
+              .pull-right
+                %label.label{ 'style' => "cursor: pointer"}
+                  %input{ type: "checkbox", 'ng-model' => 'onlySubscribed' }
+                  Show only subscribed
+              %small
+                Show {{ [(repos|filter:subscribeFilter|filter:query).length, reposLimit] | min }} of {{ repos.length }} repositories
 
           %div.search-form.m-b-lg
             .row
@@ -22,21 +28,20 @@
                     %span{'ng-hide' => 'wait'}
                       Sync Now
 
-          .m-t-lg
-            %div{ 'ng-repeat' => "repo in repos | filter:query | limitTo: 30", 'ng-controller' => "UserRepoCtrl" }
-              .hr-line-dashed
-              .search-result
+          .row{ 'ng-show' => "repos.length > 0" }
+            .col-md-8
+              %ul.list-group.user-repos-list
+                %li.list-group-item.user-repo{'ng-repeat' => "repo in repos | filter:subscribeFilter | filter:query | limitTo: reposLimit", 'ng-controller' => "UserRepoCtrl" }
+                  .pull-right
+                    .ui-switch.ui-switch-xs{ value: "repo.subscribed", 'disabled' => "repo.disabled || repo.wait || wait" }
 
-                .pull-right
-                  .ui-switch.ui-switch-md{ value: "repo.subscribed", 'disabled' => "repo.disabled || repo.wait || wait" }
+                  %a{ 'ng-href' => "{{ repo.html_url }}", style: "padding-right: 1em;", title: "Go to {{ repo.provider_title }}" }
+                    %i.fa.fa-git
 
-                %h3
                   %a{ 'ng-show' => 'repo.project_id', href: "/ui/projects/{{ repo.project_id }}/builds"}
-                    {{ repo.full_name }}
+                    %strong{ style: 'font-weight: 600' } {{ repo.full_name }}
                   %span{ style: "color:#676C6A", 'ng-hide' => 'repo.project_id' }
-                    {{ repo.full_name }}
-                %a.search-link{ href: "{{ repo.html_url }}"}
-                  %i.fa.fa-external-link
-                  {{ repo.html_url }}
-                %p {{ repo.description || "[no description given]" }}
+                    %strong{ style: 'font-weight: 600' } {{ repo.full_name }}
 
+              %button.btn.btn-block.btn-outline.btn-primary{'ng-click' => 'loadMore()', 'ng-disabled' => "wait", 'ng-hide' => "reposLimit >= (repos|filter:subscribeFilter|filter:query).length" }
+                Load more

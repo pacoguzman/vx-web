@@ -50,9 +50,9 @@
         .ibox-content
           %div
 
-            .feed-activity-list
+            .feed-activity-list.projects-list
 
-              .feed-element{'ng-repeat' => "project in projects | orderBy:projectOrderBy:true", 'ng-click' => "go(project)", style: "cursor: pointer;"}
+              .feed-element{'ng-repeat' => "project in projects | orderBy:projectOrderBy:true", 'ng-click' => "go(project)", 'ng-class' => "projectCssClass(project)" }
                 %a.pull-left
                   %img.img-circle{ 'ng-src' => "{{ projectAvatar(project) }}" }
 

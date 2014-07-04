@@ -16,8 +16,8 @@ end
 # Table name: job_logs
 #
 #  id     :integer          not null, primary key
-#  job_id :integer
 #  tm     :integer
 #  data   :text
+#  job_id :uuid             not null
 #
 

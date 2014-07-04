@@ -64,7 +64,10 @@ class root.VxLib.LogOutput
       if line == "\n"
         fragments.push line
       else
-        for chunk in line.split(/(\r)/)
+        chunks = line.split(/(\r)/)
+        if chunks.slice(-1)[0] == ""
+          chunks.pop()
+        for chunk in chunks
           fragments.push chunk
     fragments
 
