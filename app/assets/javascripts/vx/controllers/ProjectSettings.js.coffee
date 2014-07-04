@@ -1,17 +1,14 @@
-Vx.controller 'ProjectSettingsCtrl', ['$scope', 'projectStore', 'cachedFilesStore', '$routeParams', '$location',
-  ($scope, projectStore, cachedFilesStore, $routeParams, $location) ->
+Vx.controller 'ProjectSettingsCtrl', ['$scope', 'cachedFileModel', 'project', '$location',
+  ($scope, cachedFileModel, project, $location) ->
 
-    $scope.project                = null
-
-    projectStore.one($routeParams.projectId).then (project) ->
-      $scope.project = project
+    $scope.project = project
 
     ########################################################################
 
     $scope.cachedFiles            = []
     $scope.allCachedFilesSelected = false
 
-    cachedFilesStore.all($routeParams.projectId)
+    cachedFileModel.all(project.id)
       .then (files) ->
         $scope.cachedFiles = files
 
@@ -26,5 +23,5 @@ Vx.controller 'ProjectSettingsCtrl', ['$scope', 'projectStore', 'cachedFilesStor
 
     $scope.destroySelectedCachedFiles = () ->
       files = _.filter($scope.cachedFiles, (it) -> it.selected)
-      cachedFilesStore.destroy files
-  ]
+      cachedFileModel.destroy files
+]

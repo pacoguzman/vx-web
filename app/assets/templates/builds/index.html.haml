@@ -87,6 +87,6 @@
                     duration
                     %span.app-task-duration{ task: "build" }
 
-          %div
+          %div{ 'ng-hide' => 'noMore' }
             %button.btn.btn-block.btn-outline.btn-primary{'ng-click' => 'loadMoreBuilds()', 'ng-disabled' => "wait" }
               Load more

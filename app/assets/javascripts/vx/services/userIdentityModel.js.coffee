@@ -1,4 +1,4 @@
-Vx.service 'userIdentitiesStore', [ "$http",
+Vx.service 'userIdentityModel', [ "$http",
   ($http) ->
 
     req = (identity, method, url) ->
@@ -14,7 +14,7 @@ Vx.service 'userIdentitiesStore', [ "$http",
         data: data
       )
 
-    updateGitlab = (identity) ->
+    updateGitlab: (identity) ->
       identity.wait = true
       req(identity, "PATCH", "/api/user_identities/gitlab/#{identity.id}")
         .success (data) ->
@@ -26,7 +26,7 @@ Vx.service 'userIdentitiesStore', [ "$http",
           identity.password = null
           identity.wait = false
 
-    createGitlab = (identity, collection) ->
+    createGitlab: (identity, collection) ->
       identity.wait = true
       req(identity, "POST", "/api/user_identities/gitlab")
         .success (data) ->
@@ -38,7 +38,7 @@ Vx.service 'userIdentitiesStore', [ "$http",
           identity.password = null
           identity.wait = false
 
-    destroyGitlab = (identity, collection) ->
+    destroyGitlab: (identity, collection) ->
       identity.wait = true
       $http.delete("/api/user_identities/gitlab/#{identity.id}")
         .success (data) ->
@@ -47,9 +47,4 @@ Vx.service 'userIdentitiesStore', [ "$http",
             collection.splice(idx, 1)
         .finally ->
           identity.wait = false
-
-    gitlab:
-      update: updateGitlab
-      create: createGitlab
-      destroy: destroyGitlab
   ]

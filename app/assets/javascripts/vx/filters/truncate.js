@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('Vx').
   filter('truncate', function () {
       return function (text, length, end) {

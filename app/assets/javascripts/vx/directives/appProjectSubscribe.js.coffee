@@ -1,6 +1,6 @@
 angular.module('Vx').
-  directive "appProjectSubscribe", ['currentUserStore', 'projectStore',
-    (currentUserStore, projectStore) ->
+  directive "appProjectSubscribe", ['currentUserModel', 'projectModel',
+    (currentUser, projectModel) ->
 
       restrict: 'EC'
       replace: true
@@ -29,13 +29,13 @@ angular.module('Vx').
 
         subscribeToProject = () ->
           scope.subscriptions.push scope.project.id
-          projectStore.subscribe scope.project.id
+          projectModel.subscribe scope.project.id
 
         unsubscribeFromProject = () ->
           idx = scope.subscriptions.indexOf(scope.project.id)
           if  idx != -1
             scope.subscriptions.splice(idx, 1)
-            projectStore.unsubscribe scope.project.id
+            projectModel.unsubscribe scope.project.id
 
         scope.subscribe = () ->
           if scope.project.id
@@ -55,7 +55,7 @@ angular.module('Vx').
         scope.$watch("subscriptions", updateSubscribed, true)
         scope.$watch("project", updateSubscribed)
 
-        currentUserStore.get().then (me) ->
+        currentUser.get().then (me) ->
           scope.subscriptions = me.project_subscriptions
 
   ]

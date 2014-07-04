@@ -1,10 +1,10 @@
-Vx.controller 'BillingCtrl', ['$scope', 'companyStore',
-  ($scope, companyStore) ->
+Vx.controller 'BillingCtrl', ['$scope', 'companyModel',
+  ($scope, companyModel) ->
 
     $scope.companyUsage = null
     $scope.wait = true
 
-    companyStore.usage()
+    companyModel.usage()
       .then (usage) ->
         $scope.companyUsage = usage
       .finally ->

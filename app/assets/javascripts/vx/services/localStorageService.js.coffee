@@ -1,5 +1,5 @@
-angular.module('Vx').
-  factory "localStorage", ['$window', ($window) ->
+Vx.service "localStorageService", ['$window',
+  ($window) ->
 
     storage =
       try
@@ -17,4 +17,4 @@ angular.module('Vx').
     set: (key, value) ->
       if exists()
         storage.setItem(key, value)
-  ]
+]

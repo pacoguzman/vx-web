@@ -5,19 +5,39 @@ Vx.config ($routeProvider, $locationProvider) ->
   $routeProvider.
     when(p + '/jobs/:jobId',
       templateUrl: "jobs/show.html",
-      controller: "JobCtrl"
+      controller: "JobCtrl",
+      resolve:
+        job: ['jobModel', '$route',
+          (job, $route) ->
+            job.one($route.current.params.jobId)
+        ]
     ).
     when(p + '/builds/:buildId',
       templateUrl: "builds/show.html",
-      controller: "BuildCtrl"
+      controller: "BuildCtrl",
+      resolve:
+        build: ['buildModel', '$route'
+          (build, $route) ->
+            build.one($route.current.params.buildId)
+        ]
     ).
     when(p + '/projects/:projectId/builds',
       templateUrl: "builds/index.html",
       controller: "BuildsCtrl"
+      resolve:
+        project: ['projectModel', '$route',
+          (project, $route) ->
+            project.one($route.current.params.projectId)
+        ]
     ).
     when(p + '/projects/:projectId/settings',
       templateUrl: "projects/settings.html",
       controller: "ProjectSettingsCtrl"
+      resolve:
+        project: ['projectModel', '$route',
+          (project, $route) ->
+            project.one($route.current.params.projectId)
+        ]
     ).
     when(p + '/user_repos',
       templateUrl: "user_repos/index.html",

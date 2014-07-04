@@ -6,7 +6,7 @@
   .row.projects-list
     .col-md-6{ 'ng-repeat' => "project in projects | orderBy:projectOrderBy:true" }
       .contact-box
-        %a{ 'ng-href' => '{{ projectGotoUrl(project) }}' }
+        %a{ 'ng-href' => '/ui/projects/{{ project.id }}/builds' }
           .col-lg-12.project
 
             %h3

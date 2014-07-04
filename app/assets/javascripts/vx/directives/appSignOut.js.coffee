@@ -1,6 +1,6 @@
 angular.module('Vx').
-  directive "appSignOut", ['currentUserStore', '$window',
-    (currentUserStore, $window) ->
+  directive "appSignOut", ['currentUserModel', '$window',
+    (currentUser, $window) ->
 
       restrict: 'EC'
       replace: false
@@ -8,6 +8,6 @@ angular.module('Vx').
 
       link: (scope, elem) ->
         elem.bind 'click', (e) ->
-          currentUserStore.signOut().then ->
+          currentUser.signOut().then ->
             $window.location = '/ui'
   ]

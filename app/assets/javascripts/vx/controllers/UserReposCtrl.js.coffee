@@ -1,16 +1,16 @@
-Vx.controller 'UserRepoCtrl', ['$scope', 'userRepoStore', '$timeout',
-  ($scope, userRepos, $timeout) ->
+Vx.controller 'UserRepoCtrl', ['$scope', 'userRepoModel',
+  ($scope, repos) ->
 
     $scope.changeSubscription = (newVal, oldVal) ->
       if oldVal != newVal
         repo = $scope.repo
-        userRepos.updateSubscribtion(repo).catch (e) ->
+        repos.toggle(repo).catch (e) ->
           repo.subscribed = !repo.subscribed
 
     $scope.$watch 'repo.subscribed', $scope.changeSubscription
 ]
 
-Vx.controller 'UserReposCtrl', ['$scope', 'userRepoStore',
+Vx.controller 'UserReposCtrl', ['$scope', 'userRepoModel',
   ($scope, userRepos) ->
 
     $scope.wait           = true
