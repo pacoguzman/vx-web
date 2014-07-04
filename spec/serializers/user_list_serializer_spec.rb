@@ -10,7 +10,6 @@ describe UserListSerializer do
   end
 
   it "should sucessfuly serialize" do
-    puts company.inspect
     expect(serializer.to_json).to_not be_empty
   end
 

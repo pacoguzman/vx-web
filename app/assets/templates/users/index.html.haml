@@ -26,29 +26,24 @@
               or
               %a{ href: "javascript://", 'ng-click' => "toggleInvitesForm()" } Cancel
 
-.wrapper.wrapper-content.animated.fadeInRight{ 'ng-show' => 'users.length > 0' }
-  .row
-    .col-md-6{ 'ng-repeat' => "user in users | orderBy:'projects_count':true" }
-      .contact-box
-        %a
-          .col-sm-3
-            .text-center
-              %img.img-circle.m-t-xs.img-responsive{ 'ng-src' => "{{ user.avatar }}" }
-
-          .col-sm-9
-            %a.pull-right{href: "javascript://", 'ng-click' => 'destroy(user)', 'ng-if' => '!cannotEdit(user)' }
-              %i.fa.fa-trash-o
-
-            %h3
-              %strong {{ user.name }}
-            %p {{ user.email }}
-            %p Projects: {{ user.projects_count }}
-            .dropdown
-              %button.btn.btn-xs.btn-default.btn-outline.dropdown-toggle{ 'ng-disabled' => 'cannotEdit(user)' }
-                {{ user.role }}
-                %span.caret
-              %ul.dropdown-menu.animated.fadeInRight
-                %li{ 'ng-repeat' => 'role in user.roles' }
-                  %a{ href: "javascript://", 'ng-click' => "updateRole(user, role)" } {{ role }}
-
-          .clearfix
+.row.animated.fadeInDown.white-bg{ 'ng-show' => 'users.length > 0' }
+  .col-lg-12.users-list
+    %table.table
+      %tr{ 'ng-repeat' => "user in users | orderBy:'projects_count':true" }
+        %td
+          %img.img-circle.m-t-xs.img-responsive{ 'ng-src' => "{{ user.avatar }}" }
+        %td {{ user.name }}
+        %td {{ user.email }}
+        %td {{ user.projects_count }}
+        %td
+          .dropdown
+            %button.btn.btn-sm.btn-white.dropdown-toggle{ 'ng-disabled' => 'cannotEdit(user)' }
+              {{ user.role }}
+              %span.caret
+            %ul.dropdown-menu
+              %li{ 'ng-repeat' => 'role in user.roles' }
+                %a{ href: "javascript://", 'ng-click' => "updateRole(user, role)" } {{ role }}
+        %td
+          %a.btn.btn-sm.btn-white.user-destroy{href: "javascript://", 'ng-click' => 'destroy(user)', 'ng-if' => '!cannotEdit(user)' }
+            %i.fa.fa-trash-o
+            Remove

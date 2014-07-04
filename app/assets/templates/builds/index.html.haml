@@ -24,40 +24,39 @@
 
           .ibox-tools
 
-            %label.label.label-pointer{ 'ng-show' => 'displayAs == "feed"', 'ng-click' => 'setDisplayAs("table")' }
+            %label.label.pointer{ 'ng-show' => 'displayAs == "feed"', 'ng-click' => 'setDisplayAs("table")' }
               %i.fa.fa-navicon
               feed
-            %label.label.label-pointer{ 'ng-show' => "displayAs == 'table'", 'ng-click' => "setDisplayAs('feed')" }
+            %label.label.pointer{ 'ng-show' => "displayAs == 'table'", 'ng-click' => "setDisplayAs('feed')" }
               %i.fa.fa-table
               table
 
         .ibox-content
-          %div
 
-            %table.table.table-hover.builds-list{'ng-show' => "displayAs == 'table'"}
-              %thead
-                %tr
-                  %td No
-                  %td
-                  %td Branch
-                  %td Author
-                  %td Message
-                  %td Created
-              %tbody
-                %tr.build{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "go(build)" }
-                  %td
-                    {{ build.number }}
-                  %td
-                    .app-task-status{ 'task' => 'build' }
-                  %td
-                    {{ build.branch }}
-                  %td
-                    {{ build.author }}
-                  %td
-                    {{ build.short_message }}
-                  %td
-                    %span.text-muted
-                      {{ build.created_at | fromNow }}
+          %table.table.table-hover.builds-list{'ng-show' => "displayAs == 'table'"}
+            %thead
+              %tr
+                %td No
+                %td
+                %td Branch
+                %td Author
+                %td Message
+                %td Created
+            %tbody
+              %tr.build{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "go(build)" }
+                %td
+                  {{ build.number }}
+                %td
+                  .app-task-status{ 'task' => 'build' }
+                %td
+                  {{ build.branch }}
+                %td
+                  {{ build.author }}
+                %td
+                  {{ build.short_message }}
+                %td
+                  %span.text-muted
+                    {{ build.created_at | fromNow }}
 
 
             .chat-activity-list{'ng-show' => "displayAs == 'feed'"}
@@ -84,7 +83,10 @@
 
                   %small.text-muted
                     %i.fa.fa-clock-o
-                    %span {{ build.created_at | fromNow }}
+                    %span {{ build.created_at | fromNow }},
+                    duration
+                    %span.app-task-duration{ task: "build" }
+
           %div
             %button.btn.btn-block.btn-outline.btn-primary{'ng-click' => 'loadMoreBuilds()', 'ng-disabled' => "wait" }
               Load more

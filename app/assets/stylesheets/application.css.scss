@@ -6,6 +6,7 @@
  *= require task_output
  *= require projects
  *= require builds
+ *= require users
  *= require user_repos
  *= require app_sidebar
  *= require ui_switch
@@ -23,7 +24,7 @@ div.ajax-loader-b {
   white-space: pre;
 }
 
-.label-pointer {
+.pointer {
   cursor: pointer;
 }
 

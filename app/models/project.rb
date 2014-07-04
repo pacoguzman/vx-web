@@ -19,6 +19,7 @@ class Project < ActiveRecord::Base
       end
     end
   end
+
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
   has_many :cached_files, dependent: :destroy, inverse_of: :project
 
@@ -76,8 +77,8 @@ class Project < ActiveRecord::Base
     @public_deploy_key ||= SSHKey.new(deploy_key, comment: deploy_key_name).try(:ssh_public_key)
   end
 
-  def last_build
-    builds.first
+  def last_builds
+    builds.limit(10)
   end
 
   def subscribed_by?(user)

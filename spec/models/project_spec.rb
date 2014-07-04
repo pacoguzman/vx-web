@@ -68,21 +68,10 @@ describe Project do
   end
 
   context "#last_build" do
-    let(:project) { create :project }
-    subject { project.last_build }
-
-    context "with builds" do
-      before do
-        create :build, status: 0, project: project, number: 1
-        create :build, status: 2, project: project, number: 2
-        create :build, status: 3, project: project, number: 3
-        create :build, status: 4, project: project, number: 4
-      end
-      its(:number) { should eq 4 }
-    end
-
-    context "without builds" do
-      it { should be_nil }
+    it "should return last 10 builds" do
+      project = create(:project)
+      20.times{|n| create :build, status: 0, project: project, number: (n + 1) }
+      expect(project.last_builds.map(&:number)).to eq [20, 19, 18, 17, 16, 15, 14, 13, 12, 11]
     end
   end
 

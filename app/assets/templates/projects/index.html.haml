@@ -2,30 +2,25 @@
   .col-md-9
     %h2 Dashboard
 
-.wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => "projects.length > 0" }
-  .row
-    .col-lg-12
-      .ibox
-        .ibox-title
-          %h5 Projects activity
+.wrapper.wrapper-content.animated.fadeInRight{ 'ng-show' => 'projects.length > 0' }
+  .row.projects-list
+    .col-md-6{ 'ng-repeat' => "project in projects | orderBy:projectOrderBy:true" }
+      .contact-box
+        %a{ 'ng-href' => '{{ projectGotoUrl(project) }}' }
+          .col-lg-12.project
 
-        .ibox-content
-          %div
+            %h3
+              {{ project.name }}
 
-            .feed-activity-list.projects-list
+            .hr-line-dashed
 
-              .feed-element{'ng-repeat' => "project in projects | orderBy:projectOrderBy:true", 'ng-click' => "go(project)", 'ng-class' => "projectCssClass(project)" }
-                %a.pull-left
-                  %img.img-circle{ 'ng-src' => "{{ projectAvatar(project) }}" }
+            %p
+              %small {{ projectEventName(project) }}
+            %p
+              %small.text-muted
+                %i.fa.fa-clock-o
+                {{ projectLastActionAt(project) | fromNow }}
 
-                .media-body
-                  %span.pull-right.app-task-status{ 'task' => 'project.last_build', 'ng-show' => "project.last_build" }
+            .app-last-builds-chart.project-chart{ project: "project" }
 
-                  %strong {{ projectAuthor(project) }}
-                  {{ projectLastAction(project) }}
-                  %a{ href: "/ui/projects/{{ project.id }}/builds" }
-                    {{ project.name }}
-                  %br
-                  %small.text-muted
-                    %i.fa.fa-clock-o
-                    {{ projectLastActionAt(project) | fromNow }}
+          .clearfix

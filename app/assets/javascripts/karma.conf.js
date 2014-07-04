@@ -15,6 +15,7 @@ module.exports = function(config) {
     files: [
       "lib/underscore-1.5.2.js",
       "lib/moment-2.2.1.js",
+      "lib/d3.v3-3.4.9.js",
       "lib/ansiparse.js",
       "lib/angular-1.2.11.js",
       "lib/angular-mocks-1.2.11.js",
