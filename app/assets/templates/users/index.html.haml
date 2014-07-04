@@ -1,4 +1,4 @@
-.row.wrapper.border-bottom.white-bg.page-heading
+.row.wrapper.white-bg.page-heading
   .col-md-6
     %h2 Users
 
@@ -29,6 +29,14 @@
 .row.animated.fadeInDown.white-bg{ 'ng-show' => 'users.length > 0' }
   .col-lg-12.users-list
     %table.table
+      %thead
+        %tr
+          %th
+          %th Name
+          %th Email
+          %th Added projects
+          %th Role
+          %th
       %tr{ 'ng-repeat' => "user in users | orderBy:'projects_count':true" }
         %td
           %img.img-circle.m-t-xs.img-responsive{ 'ng-src' => "{{ user.avatar }}" }
@@ -43,7 +51,7 @@
             %ul.dropdown-menu
               %li{ 'ng-repeat' => 'role in user.roles' }
                 %a{ href: "javascript://", 'ng-click' => "updateRole(user, role)" } {{ role }}
-        %td
+        %td.text-right
           %a.btn.btn-sm.btn-white.user-destroy{href: "javascript://", 'ng-click' => 'destroy(user)', 'ng-if' => '!cannotEdit(user)' }
             %i.fa.fa-trash-o
             Remove

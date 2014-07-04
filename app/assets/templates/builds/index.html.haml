@@ -36,25 +36,25 @@
           %table.table.table-hover.builds-list{'ng-show' => "displayAs == 'table'"}
             %thead
               %tr
-                %td No
-                %td
-                %td Branch
-                %td Author
-                %td Message
-                %td Created
+                %th No
+                %th
+                %th Branch
+                %th Author
+                %th Message
+                %th Created
             %tbody
               %tr.build{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "go(build)" }
                 %td
                   {{ build.number }}
                 %td
                   .app-task-status{ 'task' => 'build' }
-                %td
+                %td.no-wrap
                   {{ build.branch }}
-                %td
+                %td.no-wrap
                   {{ build.author }}
                 %td
                   {{ build.short_message }}
-                %td
+                %td.no-wrap
                   %span.text-muted
                     {{ build.created_at | fromNow }}
 
