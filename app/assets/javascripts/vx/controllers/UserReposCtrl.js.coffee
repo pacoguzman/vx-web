@@ -27,7 +27,7 @@ Vx.controller 'UserReposCtrl', ['$scope', 'userRepoStore',
 
     $scope.subscribeFilter = (repo) ->
       if $scope.onlySubscribed
-        repo.subscribed && !repo.disabled
+        repo.mark
       else
         true
 
@@ -38,4 +38,10 @@ Vx.controller 'UserReposCtrl', ['$scope', 'userRepoStore',
 
     $scope.loadMore = () ->
       $scope.reposLimit += 30
+
+    markSubscribed = (newVal, oldVal) ->
+      _.each $scope.repos, (repo) ->
+        repo.mark = newVal && repo.subscribed && !repo.disabled
+
+    $scope.$watch('onlySubscribed', markSubscribed)
 ]
