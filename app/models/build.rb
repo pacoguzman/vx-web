@@ -210,6 +210,36 @@ class Build < ActiveRecord::Base
     end
   end
 
+  def rebuild
+    if finished?
+      transaction do
+        Project.lock(true).find_by(id: project_id)
+
+        new_attributes = attributes.dup
+        new_attributes.merge!(
+          number:      nil,
+          status:      0,
+          started_at:  nil,
+          finished_at: nil,
+          created_at:  nil,
+          updated_at:  nil,
+          token:       nil,
+          id:          nil
+        )
+        new_build = Build.new new_attributes
+
+        (
+          new_build.save                &&
+          new_build.create_regular_jobs &&
+          new_build.create_deploy_jobs  &&
+          new_build.publish_perform_job_messages
+        ).or_rollback_transaction
+
+        new_build
+      end
+    end
+  end
+
   def restart
     if finished?
       transaction do

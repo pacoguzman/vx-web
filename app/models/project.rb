@@ -45,6 +45,12 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def rebuild(branch = nil)
+    branch ||= 'master'
+    build = builds.where(branch: branch).finished.first
+    build && build.rebuild
+  end
+
   def to_s
     name
   end

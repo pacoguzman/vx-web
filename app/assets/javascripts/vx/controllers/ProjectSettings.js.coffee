@@ -2,12 +2,9 @@ Vx.controller 'ProjectSettingsCtrl', ['$scope', 'projectStore', 'cachedFilesStor
   ($scope, projectStore, cachedFilesStore, $routeParams, $location) ->
 
     $scope.project                = null
-    $scope.pubKey                 = null
 
     projectStore.one($routeParams.projectId).then (project) ->
       $scope.project = project
-      $scope.pubKey  = "#{$location.protocol()}://#{$location.host()}/api/projects/#{project.id}/key.txt"
-
 
     ########################################################################
 

@@ -2,7 +2,7 @@
   .col-md-9
     %h2 Dashboard
 
-.wrapper.wrapper-content.animated.fadeInRight{ 'ng-show' => 'projects.length > 0' }
+.wrapper.wrapper-content.animated.fadeInDown{ 'ng-show' => 'projects.length > 0' }
   .row.projects-list
     .col-md-6{ 'ng-repeat' => "project in projects | orderBy:projectOrderBy:true" }
       .contact-box

@@ -25,7 +25,8 @@ VxWeb::Application.routes.draw do
       end
       resource :subscription, only: [:create, :destroy], controller: "project_subscriptions"
       member do
-        get "key.:format", action: :key
+        get "key.:format", action: :key, as: 'public_key'
+        post :rebuild
       end
     end
 

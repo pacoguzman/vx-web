@@ -1,7 +1,7 @@
 class ProjectSerializer < ActiveModel::Serializer
 
   attributes :id, :name, :http_url, :description, :last_build_at, :created_at,
-    :source, :token
+    :source, :token, :rebuild_url, :public_key_url
 
   has_one  :owner
   has_many :last_builds, serializer: ::LastBuildSerializer
@@ -20,6 +20,14 @@ class ProjectSerializer < ActiveModel::Serializer
         object.last_builds
       end
     end
+  end
+
+  def rebuild_url
+    rebuild_api_project_url(object.token)
+  end
+
+  def public_key_url
+    public_key_api_project_url(object, :txt)
   end
 
   def owner
