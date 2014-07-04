@@ -67,8 +67,8 @@ describe Job do
     let(:now) { Time.current }
     let(:b)   { create :build }
     it "should create job_history instance if job finished" do
-      jobs = ["passed","failed","errored"].map do |n|
-        create(:job, build: b, number: n, status: n, started_at: now - 180.seconds, finished_at: now - 90.seconds)
+      jobs = [["passed", 3],["failed", 4],["errored", 5]].map do |n|
+        create(:job, build: b, number: n.last, status: n.first, started_at: now - 180.seconds, finished_at: now - 90.seconds)
       end
 
       jobs.each do |job|
@@ -83,8 +83,8 @@ describe Job do
     end
 
     it "cannot create job history instance unless job finished" do
-      jobs = [0,6].map do |n|
-        create(:job, build: b, number: n, status: n, started_at: now - 180.seconds, finished_at: now - 90.seconds)
+      jobs = [["initialized",0],["cancelled",6]].map do |n|
+        create(:job, build: b, number: n.last, status: n.first, started_at: now - 180.seconds, finished_at: now - 90.seconds)
       end
       jobs.each do |job|
         expect{ job.create_job_history! }.to_not change(JobHistory, :count)
@@ -95,7 +95,7 @@ describe Job do
   context "(state machine)" do
     context "after transition to started" do
       let!(:job) { create :job, status: status }
-      let(:status) { "status" }
+      let(:status) { "initialized" }
       subject { job.start }
 
       it "should delivery messages to SockdNotifyConsumer" do

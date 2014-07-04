@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe BuildsMailer do
-  let(:b)    { create(:build, status: 3, number: 1) }
+  let(:b)    { create(:build, status: "passed", number: 1) }
   let(:sub)  { create :project_subscription, project: b.project  }
   let(:mail) { described_class.status_email(b, sub) }
 

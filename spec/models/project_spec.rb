@@ -234,22 +234,22 @@ describe Project do
 
     expect(project.status_for_gitlab 'sha').to be_nil
 
-    b.update_attribute :status, 0
+    b.update_attribute :status, "initialized"
     expect(project.status_for_gitlab(b.sha)[:status]).to eq :pending
 
-    b.update_attribute :status, 2
+    b.update_attribute :status, "started"
     expect(project.status_for_gitlab(b.sha)[:status]).to eq :running
 
-    b.update_attribute :status, 3
+    b.update_attribute :status, "passed"
     expect(project.status_for_gitlab(b.sha)[:status]).to eq :success
 
-    b.update_attribute :status, 4
+    b.update_attribute :status, "failed"
     expect(project.status_for_gitlab(b.sha)[:status]).to eq :failed
 
-    b.update_attribute :status, 5
+    b.update_attribute :status, "errored"
     expect(project.status_for_gitlab(b.sha)[:status]).to eq :failed
 
-    b.update_attribute :status, 6
+    b.update_attribute :status, "deploying"
     expect(project.status_for_gitlab(b.sha)[:status]).to eq :running
   end
 
