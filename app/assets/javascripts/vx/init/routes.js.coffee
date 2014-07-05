@@ -31,12 +31,22 @@ Vx.config ($routeProvider, $locationProvider) ->
         ]
     ).
     when(p + '/projects/:projectId/pull_requests',
-    templateUrl: "pull_requests/index.html",
-    controller: "PullRequestsCtrl"
+      templateUrl: "pull_requests/index.html",
+      controller: "PullRequestsCtrl",
+      resolve:
+        project: ['projectModel', '$route',
+          (project, $route) ->
+            project.one($route.current.params.projectId)
+        ]
     ).
     when(p + '/projects/:projectId/branches',
-    templateUrl: "branches/index.html",
-    controller: "BranchesCtrl"
+      templateUrl: "branches/index.html",
+      controller: "BranchesCtrl",
+      resolve:
+        project: ['projectModel', '$route',
+          (project, $route) ->
+            project.one($route.current.params.projectId)
+        ]
     ).
     when(p + '/projects/:projectId/settings',
       templateUrl: "projects/settings.html",
