@@ -34,4 +34,7 @@ Vx.controller 'ProjectsCtrl', ['$scope', 'projectModel', 'buildModel', '$locatio
       else
         project.created_at
 
+    $scope.goBuild = (build) ->
+      $location.path("/ui/builds/#{build.id}")
+
 ]
