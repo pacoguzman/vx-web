@@ -65,14 +65,17 @@ class User < ActiveRecord::Base
     identities(true).to_a.select{|i| not i.ignored? }
   end
 
-  def add_to_company(company, role = 'developer')
+  def add_to_company(company, options = {})
+    role = (options[:role] || 'developer').to_s
+
     user_company = user_companies.find_or_initialize_by(company_id: company.id)
 
-    if user_company.persisted? and user_company.role == role
-      return true
+    if options[:override]
+      user_company.role = role
+    else
+      user_company.role ||= role
     end
 
-    user_company.role = role
     if user_company.save
       user_company.default!
       user_company
@@ -96,7 +99,7 @@ class User < ActiveRecord::Base
   def update_with_company(company, params)
     transaction do
       if role = params.delete(:role)
-        add_to_company(company, role).or_rollback_transaction
+        add_to_company(company, role: role, override: true).or_rollback_transaction
       end
       update(params).or_rollback_transaction
     end

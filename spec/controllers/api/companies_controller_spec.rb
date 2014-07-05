@@ -26,7 +26,7 @@ describe Api::CompaniesController do
   describe 'GET usage' do
     it 'returns current company usage' do
       company = create(:company)
-      user.add_to_company(company, 'admin')
+      user.add_to_company(company, role: :admin)
       sign_in(user)
 
       get :usage
@@ -43,7 +43,7 @@ describe Api::CompaniesController do
 
     it 'returns status 403 if user is not an admin' do
       company = create(:company)
-      user.add_to_company(company, 'developer')
+      user.add_to_company(company, role: :developer)
       sign_in(user)
 
       get :usage
@@ -53,7 +53,7 @@ describe Api::CompaniesController do
 
     it 'returns status 403 if user is not signed in' do
       company = create(:company)
-      user.add_to_company(company, 'admin')
+      user.add_to_company(company, role: :admin)
 
       get :usage
 

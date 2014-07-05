@@ -40,7 +40,7 @@ class Users::GithubController < ApplicationController
       github  = UserSession::Github.new request.env["omniauth.auth"]
       user    = github.create(email, trust_email: true)
 
-      if user.valid? and user.add_to_company(company, invite.role)
+      if user.valid? and user.add_to_company(company, role: invite.role)
         invite.destroy
         session[:user_id] = user.id
         redirect_to_saved_location_or_root

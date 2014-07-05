@@ -108,21 +108,24 @@ describe User do
     end
 
     it "should create with admin role" do
-      expect(user.add_to_company c1, 'admin').to be
+      expect(user.add_to_company c1, role: :admin).to be
       expect(user).to be_admin(c1)
     end
 
     it 'does not create another user_company if association already exists' do
-      user.add_to_company(c1, 'admin')
-      user.add_to_company(c1, 'admin')
+      user.add_to_company(c1, role: :admin)
+      user.add_to_company(c1, role: :admin)
 
       expect(user.companies).to eq([c1])
     end
 
-    it 'overrides role if company already exists' do
-      user.add_to_company(c1, 'admin')
-      user.add_to_company(c1, 'developer')
+    it 'can overrides role' do
+      user.add_to_company(c1, role: :admin)
+      user.add_to_company(c1, role: :developer)
 
+      expect(user.role(c1)).to eq('admin')
+
+      user.add_to_company(c1, role: :developer, override: true)
       expect(user.role(c1)).to eq('developer')
     end
   end
