@@ -11,7 +11,7 @@ describe Api::InvitesController do
 
     context "successfuly" do
       before do
-        user.add_to_company(company, "admin")
+        user.add_to_company(company, role: :admin)
         post :create, invite: { emails: "user1@example.com user2@example.com" }
       end
       it { should be_success }

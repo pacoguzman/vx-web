@@ -35,9 +35,9 @@ module.exports = function(config) {
       "vx/filters/*.js",
       "vx/services/*.js.coffee",
 
-      "vx/tests/support/*.js.coffee",
+      "vx/tests/unit/support/*.js.coffee",
       "vx/tests/mock/*.js.coffee",
-      "vx/tests/**/*.js.coffee"
+      "vx/tests/unit/**/*.js.coffee",
     ],
 
 
