@@ -1,25 +1,24 @@
-Vx.controller 'BuildsCtrl', [ '$scope', 'buildStore', 'projectStore', '$routeParams', '$location', 'localStorage'
-  ($scope, buildStore, projectStore, $routeParams, $location, storage) ->
+Vx.controller 'BuildsCtrl', [ '$scope', 'buildModel', 'project', '$location', 'localStorageService'
+  ($scope, buildModel, project, $location, storage) ->
 
-    projectId        = $routeParams.projectId
     $scope.wait      = true
-    $scope.project   = null
+    $scope.project   = project
     $scope.builds    = []
     $scope.displayAs = storage.get("vx.builds.display_as") || 'feed'
+    $scope.noMore    = false
 
     truncateBuilds = () ->
       if $scope.builds.length > 30
         $scope.builds.length = 30
 
-    projectStore.one(projectId).then (project) ->
-      $scope.project = project
-
-    buildStore.all($routeParams.projectId)
+    buildModel.all(project.id)
       .then (builds) ->
         $scope.builds = builds
         truncateBuilds()
       .finally ->
         $scope.wait = false
+
+    ###########################################################################
 
     $scope.go = (build) ->
       $location.path("/ui/builds/#{build.id}")
@@ -30,7 +29,9 @@ Vx.controller 'BuildsCtrl', [ '$scope', 'buildStore', 'projectStore', '$routePar
 
     $scope.loadMoreBuilds = () ->
       $scope.wait = true
-      lastBuild = _.last($scope.builds)
-      buildStore.loadMore(projectId, lastBuild.number).finally () ->
-        $scope.wait = false
+      buildModel.loadMore(project.id)
+        .then (re) ->
+          $scope.noMore = re.length == 0
+        .finally () ->
+          $scope.wait = false
 ]

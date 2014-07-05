@@ -21,6 +21,7 @@ module.exports = function(config) {
     files: [
       "lib/underscore-1.6.0.js",
       "lib/moment-2.6.0.js",
+      "lib/d3.v3-3.4.9.js",
       "lib/ansiparse.js",
       "lib/angular-1.2.16.js",
       "lib/angular-mocks-1.2.16.js",
@@ -35,8 +36,9 @@ module.exports = function(config) {
       "vx/factories/*.js.coffee",
       "vx/services/*.js.coffee",
 
-      "tests/support/*.js.coffee",
-      "tests/**/*.js.coffee"
+      "vx/tests/support/*.js.coffee",
+      "vx/tests/mock/*.js.coffee",
+      "vx/tests/**/*.js.coffee"
     ],
 
 

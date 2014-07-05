@@ -19,6 +19,7 @@ class Project < ActiveRecord::Base
       end
     end
   end
+
   has_many :subscriptions, dependent: :destroy, class_name: "::ProjectSubscription"
   has_many :cached_files, dependent: :destroy, inverse_of: :project
 
@@ -48,6 +49,12 @@ class Project < ActiveRecord::Base
     # http://stackoverflow.com/questions/9795660/postgresql-distinct-on-without-ordering
     subquery = builds.select("DISTINCT ON (branch) *").reorder(:branch, number: :desc)
     builds.from("(#{subquery.to_sql}) builds")
+  end
+
+  def rebuild(branch = nil)
+    branch ||= 'master'
+    build = builds.where(branch: branch).finished.first
+    build && build.rebuild
   end
 
   def to_s
@@ -82,8 +89,8 @@ class Project < ActiveRecord::Base
     @public_deploy_key ||= SSHKey.new(deploy_key, comment: deploy_key_name).try(:ssh_public_key)
   end
 
-  def last_build
-    builds.first
+  def last_builds
+    builds.limit(10)
   end
 
   def subscribed_by?(user)

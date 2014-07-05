@@ -91,7 +91,7 @@ describe User do
     let(:c1)   { create :company, id: uuid_for(1), name: "c1" }
     let(:c2)   { create :company, id: uuid_for(2), name: "c2" }
 
-    it "should crate user_company and set is default" do
+    it "should create user_company and set is default" do
       expect(user.add_to_company c1).to be
       expect(user.default_company true).to eq c1
 

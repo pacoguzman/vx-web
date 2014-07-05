@@ -589,6 +589,58 @@ describe Build do
     end
   end
 
+  context "rebuild" do
+    let(:b) { create :build, status: 3, source: {
+      "rvm" => %w{ 2.0 2.1},
+      "deploy" => { "shell" => "true" }
+    }.to_yaml }
+
+    it "should allow to rebuild only finished builds" do
+      b.status = 2
+      expect(b.rebuild).to be_nil
+    end
+
+    it "should create a new build with same attributes" do
+      new_build = b.rebuild
+      expect(new_build).to be_persisted
+      expect(new_build.status).to eq 0
+      expect(new_build.number).to eq(b.number + 1)
+      %i[
+        pull_request_id sha branch author message author_email
+        http_url branch_label source project_id
+      ].each do |attr|
+        expect(new_build.public_send(attr)).to eq b.public_send(attr)
+      end
+    end
+
+    it "should create new jobs for new build" do
+      new_build = b.rebuild
+
+      expect(new_build.jobs.regular).to have(2).items
+      expect(new_build.jobs.deploy).to have(1).item
+      expect(new_build.jobs.map(&:status).uniq).to eq [0]
+    end
+
+    it "should publish PerformJob messages" do
+      new_build = nil
+      expect {
+        new_build = b.rebuild
+      }.to change(JobsConsumer.messages, :count).from(0).to(2)
+      expect(JobsConsumer.messages.map(&:job_id).sort).to eq new_build.jobs.regular.map(&:id).sort
+    end
+
+    it "should notify sockd about new build" do
+      b
+      Vx::Consumer::Testing.clear
+      new_build = nil
+      expect {
+        new_build = b.rebuild
+      }.to change(SockdNotifyConsumer.messages, :count).from(0).to(5)
+      msgs = SockdNotifyConsumer.messages
+      expect(msgs.map{|i| i[:_event] }.sort).to eq ["build:created", "job:created", "job:created", "job:created", "project:updated"]
+    end
+  end
+
 end
 
 # == Schema Information

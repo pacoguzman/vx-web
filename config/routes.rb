@@ -27,7 +27,8 @@ VxWeb::Application.routes.draw do
       resources :pull_requests, only: [:index]
       resources :branches, only: [:index]
       member do
-        get "key.:format", action: :key
+        get "key.:format", action: :key, as: 'public_key'
+        post :rebuild
       end
     end
 

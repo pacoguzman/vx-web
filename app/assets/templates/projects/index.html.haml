@@ -2,7 +2,7 @@
   .col-md-9
     %h2 Dashboard
 
-.wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => 'builds && builds.length === 0 && projects && projects.length > 0' }
+.wrapper.wrapper-content.animated.fadeInDown{ 'ng-show' => 'builds && builds.length === 0 && projects && projects.length > 0' }
   .row
     .col-lg-12
       .ibox
@@ -10,60 +10,52 @@
           %h5 No pending jobs - Please get your hands dirty
 
 
-.wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => "builds.length > 0" }
-  .row
-    .col-lg-12
-      .ibox
-        .ibox-title
-          %h5 Projects queued activity
+.wrapper.wrapper-content.animated.fadeInDown{ 'ng-show' => 'builds.length > 0' }
+  .row.projects-list
+    .col-md-6{ 'ng-repeat' => "build in builds | orderBy:'updated_at':true | limitTo:30" }
+      .contact-box
+        %a{ 'ng-href' => '/ui/projects/{{ build.project_id }}/builds' }
+          .col-lg-12.project
 
-        .ibox-content
-          %div
+            %h3
+              {{ build.project_name }}
 
-            .feed-activity-list
+            .hr-line-dashed
 
-              .feed-element{'ng-repeat' => "build in builds | orderBy:'updated_at':true | limitTo:30", 'ng-click' => "goBuild(build)", style: "cursor: pointer;"}
-                %a.pull-left
-                  %img.img-circle{ 'ng-src' => "{{ build.author_avatar }}" }
+            %p
+              %small
+                commited to
+                %a{ href: "/ui/projects/{{ build.project_id }}/builds" }
+                  {{ build.project_name }}
+                on {{ build.branch }}
+            %p
+              %small.text-muted
+                %i.fa.fa-clock-o
+                {{ build.updated_at | fromNow }}
 
-                .media-body
-                  %span.pull-right.app-task-status{ 'task' => 'build', 'ng-show' => "build" }
+            //.app-last-builds-chart.project-chart{ project: "project" }
 
-                  %strong {{ build.author }}
-                  commited to
-                  %a{ href: "/ui/projects/{{ build.project_id }}/builds" }
-                    {{ build.project_name }}
-                  on {{ build.branch }}
-                  %br
-                  %small.text-muted
-                    %i.fa.fa-clock-o
-                    {{ build.updated_at | fromNow }}
+          .clearfix
 
+.wrapper.wrapper-content.animated.fadeInDown{ 'ng-show' => 'projects.length > 0' }
+  .row.projects-list
+    .col-md-6{ 'ng-repeat' => "project in projects | orderBy:projectOrderBy:true" }
+      .contact-box
+        %a{ 'ng-href' => '/ui/projects/{{ project.id }}/builds' }
+          .col-lg-12.project
 
-.wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => "projects.length > 0" }
-  .row
-    .col-lg-12
-      .ibox
-        .ibox-title
-          %h5 Projects activity
+            %h3
+              {{ project.name }}
 
-        .ibox-content
-          %div
+            .hr-line-dashed
 
-            .feed-activity-list.projects-list
+            %p
+              %small {{ projectEventName(project) }}
+            %p
+              %small.text-muted
+                %i.fa.fa-clock-o
+                {{ projectLastActionAt(project) | fromNow }}
 
-              .feed-element{'ng-repeat' => "project in projects | orderBy:projectOrderBy:true", 'ng-click' => "go(project)", 'ng-class' => "projectCssClass(project)" }
-                %a.pull-left
-                  %img.img-circle{ 'ng-src' => "{{ projectAvatar(project) }}" }
+            .app-last-builds-chart.project-chart{ project: "project" }
 
-                .media-body
-                  %span.pull-right.app-task-status{ 'task' => 'project.last_build', 'ng-show' => "project.last_build" }
-
-                  %strong {{ projectAuthor(project) }}
-                  {{ projectLastAction(project) }}
-                  %a{ href: "/ui/projects/{{ project.id }}/builds" }
-                    {{ project.name }}
-                  %br
-                  %small.text-muted
-                    %i.fa.fa-clock-o
-                    {{ projectLastActionAt(project) | fromNow }}
+          .clearfix

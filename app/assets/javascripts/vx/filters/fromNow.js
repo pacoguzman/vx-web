@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('Vx').
   filter('fromNow', function () {
       return function (tm) {

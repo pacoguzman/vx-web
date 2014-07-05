@@ -1,7 +1,7 @@
-Vx.controller 'JobCtrl', ['$scope', 'projectStore', 'buildStore', 'jobStore', 'jobLogStore', '$routeParams',
-  ($scope, projectStore, buildStore, jobStore, jobLogStore, $routeParams) ->
+Vx.controller 'JobCtrl', ['$scope', 'projectModel', 'buildModel', 'jobModel', 'jobLogModel', 'job',
+  ($scope, projectModel, buildModel, jobModel, jobLogModel, job) ->
 
-    $scope.job     = null
+    $scope.job     = job
     $scope.build   = null
     $scope.project = null
     $scope.logs    = null
@@ -9,21 +9,17 @@ Vx.controller 'JobCtrl', ['$scope', 'projectStore', 'buildStore', 'jobStore', 'j
 
     $scope.waitLogs = true
 
-    jobStore.one($routeParams.jobId).then (job) ->
-      $scope.job = job
+    $scope.matrix.keys   = _.keys(job.matrix)
+    $scope.matrix.values = _.values(job.matrix)
 
-      $scope.matrix.keys   = _.keys(job.matrix)
-      $scope.matrix.values = _.values(job.matrix)
+    buildModel.one(job.build_id).then (build) ->
+      $scope.build = build
 
+    projectModel.one(job.project_id).then (project) ->
+      $scope.project = project
 
-      buildStore.one(job.build_id).then (build) ->
-        $scope.build = build
-
-      projectStore.one(job.project_id).then (project) ->
-        $scope.project = project
-
-      jobLogStore.all(job.id).then (logs) ->
-        $scope.logs = logs
-        $scope.waitLogs = false
+    jobLogModel.all(job.id).then (logs) ->
+      $scope.logs = logs
+      $scope.waitLogs = false
 
 ]
