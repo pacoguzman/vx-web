@@ -48,7 +48,7 @@
 
         .ibox-content
 
-          %p{ 'ng-show' => "builds.length == 0" }
+          %p{ 'ng-hide' => "builds.length > 0 || wait" }
             No builds found
 
           %div{ 'ng-show' => "builds.length > 0" }
