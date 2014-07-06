@@ -17,6 +17,12 @@ VxWeb::Application.routes.draw do
     end
 
     resources :projects do
+      member do
+        get "key.:format", action: :key, as: 'public_key'
+        get :branches
+        post :rebuild
+      end
+
       resources :builds, only: [:index, :create]
       resources :cached_files, only: [:index] do
         collection do
@@ -24,10 +30,6 @@ VxWeb::Application.routes.draw do
         end
       end
       resource :subscription, only: [:create, :destroy], controller: "project_subscriptions"
-      member do
-        get "key.:format", action: :key, as: 'public_key'
-        post :rebuild
-      end
     end
 
     resources :builds, only: [:show] do

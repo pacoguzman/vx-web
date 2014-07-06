@@ -5,15 +5,23 @@ Vx.service "buildModel", ['$http', 'cacheService', 'eventSource',
 
     eventSource.subscribe "build:created", (payload) ->
       cache.unshift("all:#{payload.project_id}", payload)
+      cache.unshift("all:#{payload.project_id}:branch:#{payload.branch}", payload)
 
     eventSource.subscribe "build:updated", (payload) ->
       cache.updateAll("all:#{payload.project_id}", payload)
+      cache.updateAll("all:#{payload.project_id}:branch:#{payload.branch}", payload)
       cache.updateOne("one:#{payload.id}", payload)
 
+    all = (projectId, branch) ->
+      url = "/api/projects/#{projectId}/builds"
+      key = "all:#{projectId}"
 
-    all = (projectId) ->
-      cache.fetch "all:#{projectId}", () ->
-        $http.get("/api/projects/#{projectId}/builds").then (re) ->
+      if branch
+        url = "#{url}?branch=#{branch}"
+        key = "#{key}:branch:#{branch}"
+
+      cache.fetch key, () ->
+        $http.get(url).then (re) ->
           re.data
 
     ###########################################################################
@@ -31,10 +39,16 @@ Vx.service "buildModel", ['$http', 'cacheService', 'eventSource',
         cache.updateOne("one:#{build.id}", re.data)
         re.data
 
-    loadMore: (projectId) ->
-      all(projectId).then (builds) ->
+    loadMore: (projectId, branch) ->
+      all(projectId, branch).then (builds) ->
         lastBuild = _.last(builds)
-        $http.get("/api/projects/#{projectId}/builds?from=#{lastBuild.number}").then (re) ->
+        url = "/api/projects/#{projectId}/builds?from=#{lastBuild.number}"
+        if branch
+          url = "#{url}&branch=#{branch}"
+
+        $http.get(url).then (re) ->
           cache.push("all:#{projectId}", re.data)
+          if branch
+            cache.push("all:#{projectId}:branch:#{branch}", re.data)
           re.data
 ]

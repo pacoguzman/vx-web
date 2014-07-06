@@ -5,6 +5,7 @@ class ::Api::BuildsController < ::Api::BaseController
 
   def index
     builds = project.builds.from_number(params[:from]).limit(30)
+    builds = builds.where(branch_label: branch) if branch
     respond_with(builds)
   end
 
@@ -40,6 +41,10 @@ class ::Api::BuildsController < ::Api::BaseController
 
     def build
       @build ||= ::Build.find params[:id]
+    end
+
+    def branch
+      params[:branch]
     end
 
 end

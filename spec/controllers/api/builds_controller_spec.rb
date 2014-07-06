@@ -12,13 +12,19 @@ describe Api::BuildsController do
   end
 
   context "GET /index" do
-    before do
-      b
+    it "should return builds list" do
+      create :build, project: project
       get :index, project_id: project.id, format: :json
+      should be_success
+      expect(response.body).to_not be_blank
     end
 
-    it { should be_success }
-    its(:body) { should_not be_blank }
+    it "should return builds in specifed branch" do
+      create :build, project: project, branch_label: "foo"
+      get :index, project_id: project.id, format: :json, branch: "foo"
+      should be_success
+      expect(response.body).to_not be_blank
+    end
   end
 
   context "GET /show" do

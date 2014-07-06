@@ -28,7 +28,7 @@
                     %span{'ng-hide' => 'wait'}
                       Sync Now
 
-          .row{ 'ng-show' => "repos.length > 0" }
+          .row.animated.fadeInDown{ 'ng-show' => "repos.length > 0" }
             .col-md-8
               %ul.list-group.user-repos-list
                 %li.list-group-item.user-repo{'ng-repeat' => "repo in repos | filter:subscribeFilter | filter:query | limitTo: reposLimit", 'ng-controller' => "UserRepoCtrl" }

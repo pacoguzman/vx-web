@@ -22,14 +22,30 @@
         .ibox-title
           %h5 Recent project activity
 
-          .ibox-tools
+          %span{ style: "display: inline-block; margin-left: 5em" }
 
-            %label.label.pointer{ 'ng-show' => 'displayAs == "feed"', 'ng-click' => 'setDisplayAs("table")' }
-              %i.fa.fa-navicon
-              feed
-            %label.label.pointer{ 'ng-show' => "displayAs == 'table'", 'ng-click' => "setDisplayAs('feed')" }
-              %i.fa.fa-table
-              table
+          .text-muted.btn.btn-xs.btn-white{ 'ng-show' => 'displayAs == "feed"', 'ng-click' => 'setDisplayAs("table")' }
+            %i.fa.fa-navicon
+            feed
+          .text-muted.btn.btn-xs.btn-white{ 'ng-show' => "displayAs == 'table'", 'ng-click' => "setDisplayAs('feed')" }
+            %i.fa.fa-table
+            table
+
+          .dropdown{ style: "display: inline-block" }
+            .text-muted.btn.btn-xs.btn-white.dropdown-toggle
+              %span.caret
+              %span{ 'ng-show' => "selectedBranch" }
+                {{ selectedBranch }}
+              %span{ 'ng-hide' => "selectedBranch" }
+                all branches
+            %ul.dropdown-menu{ style: "max-height: 30em; overflow-y: scroll" }
+              %li
+                %a{ href: "javascript://", 'ng-click' => "selectBranch(null)" }
+                  all branches
+              %li{ 'ng-repeat' => "branch in branches" }
+                %a{ href: "javascript://", 'ng-click' => "selectBranch(branch)" }
+                  {{ branch }}
+
 
         .ibox-content
 

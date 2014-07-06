@@ -17,3 +17,8 @@ body.mini-navbar .nav-header {
   -o-transition-duration: 0.1s;
   transition-duration: 0.1s;
 }
+
+.animated {
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+}

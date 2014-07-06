@@ -1,24 +1,45 @@
-Vx.controller 'BuildsCtrl', [ '$scope', 'buildModel', 'project', '$location', 'localStorageService'
-  ($scope, buildModel, project, $location, storage) ->
+Vx.controller 'BuildsCtrl', [ '$scope', 'buildModel', 'projectModel', 'project', '$location', 'localStorageService'
+  ($scope, buildModel, projectModel, project, $location, storage) ->
 
-    $scope.wait      = true
-    $scope.project   = project
-    $scope.builds    = []
-    $scope.displayAs = storage.get("vx.builds.display_as") || 'feed'
-    $scope.noMore    = false
+    $scope.wait           = true
+    $scope.project        = project
+    $scope.builds         = []
+    $scope.displayAs      = storage.get("vx:builds:display:as") || 'table'
+    $scope.noMore         = false
+    $scope.branches       = []
+    $scope.selectedBranch = storage.get("vx:builds:branch:#{project.id}") || null
 
     truncateBuilds = () ->
       if $scope.builds.length > 30
         $scope.builds.length = 30
+      else
+        $scope.noMore = $scope.builds.length < 29
 
-    buildModel.all(project.id)
-      .then (builds) ->
-        $scope.builds = builds
-        truncateBuilds()
-      .finally ->
-        $scope.wait = false
+    loadBuilds = () ->
+      buildModel.all(project.id, $scope.selectedBranch)
+        .then (builds) ->
+          $scope.builds = builds
+          truncateBuilds()
+        .finally ->
+          $scope.wait = false
+
+    projectModel.branches(project.id).then (branches) ->
+      $scope.branches = branches
+
+    updateSelectedBranch = (newVal) ->
+      if newVal
+        storage.set("vx:builds:branch:#{project.id}", newVal)
+      else
+        storage.del("vx:builds:branch:#{project.id}")
+      $scope.selectedBranch = newVal
+      loadBuilds()
+
+    $scope.$watch "selectedBranch", updateSelectedBranch
 
     ###########################################################################
+
+    $scope.selectBranch = (branch) ->
+      $scope.selectedBranch = branch
 
     $scope.go = (build) ->
       $location.path("/ui/builds/#{build.id}")
@@ -29,7 +50,7 @@ Vx.controller 'BuildsCtrl', [ '$scope', 'buildModel', 'project', '$location', 'l
 
     $scope.loadMoreBuilds = () ->
       $scope.wait = true
-      buildModel.loadMore(project.id)
+      buildModel.loadMore(project.id, $scope.selectedBranch)
         .then (re) ->
           $scope.noMore = re.length == 0
         .finally () ->
