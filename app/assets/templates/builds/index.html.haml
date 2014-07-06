@@ -51,30 +51,32 @@
           %p{ 'ng-show' => "builds.length == 0" }
             No builds found
 
-          %table.table.table-hover.builds-list{'ng-show' => "displayAs == 'table'", 'ng-show' => "builds.length > 0" }
-            %thead
-              %tr
-                %th No
-                %th
-                %th Branch
-                %th Author
-                %th Message
-                %th Created
-            %tbody
-              %tr.build{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "go(build)" }
-                %td
-                  {{ build.number }}
-                %td
-                  .app-task-status{ 'task' => 'build' }
-                %td.no-wrap
-                  {{ build.branch }}
-                %td.no-wrap
-                  {{ build.author }}
-                %td
-                  {{ build.short_message }}
-                %td.no-wrap
-                  %span.text-muted
-                    {{ build.created_at | fromNow }}
+          %div{ 'ng-show' => "builds.length > 0" }
+
+            %table.table.table-hover.builds-list{'ng-show' => "displayAs == 'table'" }
+              %thead
+                %tr
+                  %th No
+                  %th
+                  %th Branch
+                  %th Author
+                  %th Message
+                  %th Created
+              %tbody
+                %tr.build{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "go(build)" }
+                  %td
+                    {{ build.number }}
+                  %td
+                    .app-task-status{ 'task' => 'build' }
+                  %td.no-wrap
+                    {{ build.branch }}
+                  %td.no-wrap
+                    {{ build.author }}
+                  %td
+                    {{ build.short_message }}
+                  %td.no-wrap
+                    %span.text-muted
+                      {{ build.created_at | fromNow }}
 
 
             .chat-activity-list{'ng-show' => "displayAs == 'feed'"}
