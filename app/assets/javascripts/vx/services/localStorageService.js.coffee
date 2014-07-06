@@ -17,4 +17,8 @@ Vx.service "localStorageService", ['$window',
     set: (key, value) ->
       if exists()
         storage.setItem(key, value)
+
+    del: (key) ->
+      if exists()
+        storage.removeItem(key)
 ]

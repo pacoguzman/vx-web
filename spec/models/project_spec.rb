@@ -269,6 +269,16 @@ describe Project do
     end
   end
 
+  context "#branches" do
+    it "should return branch names" do
+      project = create(:project)
+      create :build, project: project, number: 1, branch_label: "foo"
+      create :build, project: project, number: 2, branch_label: "bar"
+
+      expect(project.branches).to eq %w{ bar foo }
+    end
+  end
+
 end
 
 # == Schema Information

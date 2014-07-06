@@ -1,3 +1,11 @@
+html, body, #wrapper {
+  height: 100%;
+}
+
+#page-wrapper {
+  min-height: 100%;
+}
+
 .nav-header {
   background-color: #233646;
   background-image: none;
@@ -9,4 +17,16 @@ body.boxed-layout {
 
 body.mini-navbar .nav-header {
   margin-bottom: 2em;
+}
+
+.navbar-static-side, #page-wrapper {
+  -webkit-transition-duration: 0.1s;
+  -moz-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+}
+
+.animated {
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
 }

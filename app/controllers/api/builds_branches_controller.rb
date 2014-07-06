@@ -1,4 +1,4 @@
-class ::Api::BranchesController < ::Api::BaseController
+class ::Api::BuildsBranchesController < ::Api::BaseController
 
   respond_to :json
 

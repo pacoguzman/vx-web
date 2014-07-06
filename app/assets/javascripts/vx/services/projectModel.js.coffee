@@ -2,6 +2,7 @@ Vx.service 'projectModel', ['$http', 'cacheService', 'eventSource',
   ($http, cacheService, eventSource) ->
 
     cache = cacheService("project")
+    branchesCache = cacheService("project:branches")
 
     all = () ->
       cache.fetch "all", () ->
@@ -27,4 +28,9 @@ Vx.service 'projectModel', ['$http', 'cacheService', 'eventSource',
     unsubscribe: (id) ->
       $http.delete("/api/projects/#{id}/subscription").then (re) ->
         re.data
+
+    branches: (id) ->
+      branchesCache.fetch id, () ->
+        $http.get("/api/projects/#{id}/branches").then (re) ->
+          re.data
 ]

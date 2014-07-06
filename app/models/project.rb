@@ -107,6 +107,10 @@ class Project < ActiveRecord::Base
     subscription.update subscribe: false
   end
 
+  def branches
+    builds.group(:branch_label).reorder(:branch_label).pluck(:branch_label)
+  end
+
   def new_build_from_payload(payload)
     return unless sc
 

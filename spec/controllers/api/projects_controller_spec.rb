@@ -76,4 +76,17 @@ describe Api::ProjectsController do
 
   end
 
+  context "GET /branches" do
+    before do
+      create :build, project: project, branch_label: "foo"
+    end
+
+    it "should return list of branches" do
+      get :branches, id: project.id
+      should be_success
+      expect(response.body).to eq %w{foo}.to_json
+    end
+
+  end
+
 end
