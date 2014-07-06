@@ -1,3 +1,11 @@
+html, body, #wrapper {
+  height: 100%;
+}
+
+#page-wrapper {
+  min-height: 100%;
+}
+
 .nav-header {
   background-color: #233646;
   background-image: none;
