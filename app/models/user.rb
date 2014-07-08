@@ -42,7 +42,12 @@ class User < ActiveRecord::Base
     transaction do
       active_identities.map do |identity|
         synced_repos = identity.sc.repos.map do |external_repo|
-          UserRepo.find_or_create_by_sc company, identity, external_repo
+          UserRepo.find_or_create_by_sc(
+            company,
+            identity,
+            external_repo,
+            remove_full_name_duplicate: true
+          )
         end
 
         collection =

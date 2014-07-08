@@ -53,6 +53,12 @@ describe User do
       expect(user_repo.reload.description).to eq 'description'
     end
 
+    it "should successfuly remove full_name duplicate" do
+      mock_repos
+      user_repo.update! external_id: -1, full_name: external_repo.full_name
+      expect { subject }.to_not change(user.user_repos, :count)
+    end
+
     def mock_repos(list = nil)
       list ||=  [external_repo]
 
