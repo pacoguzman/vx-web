@@ -32,7 +32,11 @@ class CompanyUsage
 
     result = JobHistory.connection.select_one(query)
     result = result.map { |key, value| { key.to_sym => value.to_i } }.reduce(:merge)
-    result[:amount] = result[:minutes].to_f / 100.0
+    result[:amount] = amount(result[:minutes])
     result
+  end
+
+  def amount(minutes)
+    ((minutes * 15) / 1000.0).round(2)
   end
 end
