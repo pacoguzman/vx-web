@@ -26,6 +26,8 @@ div.ajax-loader {
 
 .task-message {
   white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pointer {
