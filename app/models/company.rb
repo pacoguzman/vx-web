@@ -7,6 +7,7 @@ class Company < ActiveRecord::Base
   has_many :user_companies, dependent: :destroy
   has_many :users, through: :user_companies
   has_many :invites, dependent: :destroy
+  has_many :invoices, dependent: :destroy
 
   default_scope ->{ order("companies.name ASC") }
 

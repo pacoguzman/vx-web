@@ -60,6 +60,8 @@ VxWeb::Application.routes.draw do
         post :default
       end
     end
+
+    resources :invoices, only: [:index]
   end
 
   namespace :users do
