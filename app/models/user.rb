@@ -42,14 +42,19 @@ class User < ActiveRecord::Base
     transaction do
       active_identities.map do |identity|
         synced_repos = identity.sc.repos.map do |external_repo|
-          UserRepo.find_or_create_by_sc company, identity, external_repo
+          UserRepo.find_or_create_by_sc(
+            company,
+            identity,
+            external_repo,
+            remove_full_name_duplicate: true
+          )
         end
 
         collection =
           if synced_repos.any?
-            identity.user_repos.where("id NOT IN (?)", synced_repos.map(&:id))
+            identity.user_repos.where(company: company).where("id NOT IN (?)", synced_repos.map(&:id))
           else
-            identity.user_repos.to_a
+            identity.user_repos.where(company: company).to_a
           end
 
         collection.each do |user_repo|

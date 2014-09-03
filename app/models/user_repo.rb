@@ -32,7 +32,8 @@ class UserRepo < ActiveRecord::Base
   }
 
   class << self
-    def find_or_create_by_sc(company, identity, model)
+    def find_or_create_by_sc(company, identity, model, options = {})
+
       repo = find_or_initialize_by(
         external_id: model.id,
         identity:    identity,
@@ -45,6 +46,15 @@ class UserRepo < ActiveRecord::Base
         html_url:     model.html_url,
         description:  model.description
       )
+
+      if options[:remove_full_name_duplicate] && repo.new_record?
+        where(
+          company:   company,
+          identity:  identity,
+          full_name: model.full_name
+        ).map(&:destroy)
+      end
+
       repo.save && repo
     end
   end

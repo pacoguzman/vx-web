@@ -22,19 +22,27 @@ describe User do
     end
 
     it "should remove unupdated user_repos" do
+      other_company = create :company, id: uuid_for(1), name: "Other Company"
+      other_user_repo = create :user_repo, company: other_company, identity: identity, external_id: -1
+
       mock_repos
       user_repo.update! external_id: -1
 
       expect(subject).to be
       expect{user_repo.reload}.to raise_error(ActiveRecord::RecordNotFound)
+      expect(other_user_repo.reload).to be
     end
 
     it "should remove if identity return empty array" do
+      other_company = create :company, id: uuid_for(1), name: "Other Company"
+      other_user_repo = create :user_repo, company: other_company, identity: identity, external_id: -1
+
       mock_repos []
       user_repo
 
       expect(subject).to be
       expect{user_repo.reload}.to raise_error(ActiveRecord::RecordNotFound)
+      expect(other_user_repo.reload).to be
     end
 
     it "should keep repos with projects" do
@@ -51,6 +59,12 @@ describe User do
       user_repo.update! description: "..."
       expect(subject).to be
       expect(user_repo.reload.description).to eq 'description'
+    end
+
+    it "should successfuly remove full_name duplicate" do
+      mock_repos
+      user_repo.update! external_id: -1, full_name: external_repo.full_name
+      expect { subject }.to_not change(user.user_repos, :count)
     end
 
     def mock_repos(list = nil)

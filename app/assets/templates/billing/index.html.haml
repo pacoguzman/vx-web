@@ -41,3 +41,57 @@
                 %td {{ companyUsage.last_month.job_count | number }}
                 %td {{ companyUsage.last_month.minutes | number }}
                 %td {{ companyUsage.last_month.amount | currency }}
+
+.row{ 'ng-show' => "payInvoice != null" }
+  .col-lg-12
+    .wrapper.wrapper-content.animated.fadeInDown
+      .ibox
+        .ibox-title
+          %h5
+            Pay {{ payInvoice.amount | currency }}
+
+        .ibox-content
+          .row
+            .col-md-6
+              %form
+                .form-group
+                  %label.control-label Name
+                  %input.form-control{ 'ng-model' => "payInvoice.name" }
+
+                .form-group
+                  %label.control-label Credit card number
+                  %input.form-control{ 'ng-model' => "payInvoice.card" }
+
+                .form-group
+                  %label.control-label CVV
+                  %input.form-control{ 'ng-model' => "payInvoice.cvv", style: "width: 4em" }
+
+                .form-group
+                  %label.control-label Expiration (MM/YY)
+                  %input.form-control{ 'ng-model' => "payInvoice.expired", style: "width: 6em" }
+
+          %p
+            %button.btn.btn-primary{ type: "submit" }
+              Pay {{ payInvoice.amount | currency }}
+            or
+            %a{ href: "javascript://", 'ng-click' => "cancelPayInvoice()" } Cancel
+
+.row{ 'ng-show' => "invoices.length > 0 && payInvoice == null" }
+  .col-lg-12
+    .wrapper.wrapper-content.animated.fadeInDown
+      .ibox-content.p-xl
+        %h3 Invoices
+        .table-responsive.m-t
+          %table.table.invoice-table
+            %thead
+              %th Date
+              %th Amount
+              %th
+
+            %tbody
+              %tr{ 'ng-repeat' => "invoice in invoices | orderBy:'created_at':true" }
+                %td {{ invoice.created_at | date: "dd MMMM yyyy" }}
+                %td {{ invoice.amount | currency  }}
+                %td
+                  %a.btn.btn-xs.btn-primary{ href: "javascript://", 'ng-click' => "pay(invoice)" }
+                    Pay

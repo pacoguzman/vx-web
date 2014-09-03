@@ -31,29 +31,35 @@ describe UserRepo do
     let(:company)  { repo.company }
     let(:identity) { repo.identity }
     let(:model)    { Vx::ServiceConnector::Model.test_repo }
-    subject { described_class.find_or_create_by_sc company, identity, model }
 
-    it { should be }
-
-    context "when repo is not exists" do
-      before { repo.update! external_id: -1 }
-
-      it "should create a new user_repo" do
-        identity
-        expect{
-          subject
-        }.to change(described_class, :count).by(1)
-      end
+    def find_or_create_by_sc(options = {})
+      described_class.find_or_create_by_sc company, identity, model, options
     end
 
-    context "when already exists with same external_id" do
-      it "should return existing repo" do
-        repo.update! external_id: model.id
-        expect {
-          subject
-        }.to_not change(described_class, :count)
-        expect(subject).to eq repo
-      end
+    it "should create a new user_repo" do
+      repo.update! external_id: -1
+      expect{
+        find_or_create_by_sc
+      }.to change(described_class, :count).by(1)
+    end
+
+    it "should update existing user_repo" do
+      repo.update! external_id: model.id
+      new_repo = nil
+      expect {
+        new_repo = find_or_create_by_sc
+      }.to_not change(described_class, :count)
+      expect(new_repo).to eq repo
+    end
+
+    it "should remove duplicates by full_name" do
+      repo.update! external_id: -1, full_name: model.full_name
+      new_repo = nil
+      expect {
+        new_repo = find_or_create_by_sc remove_full_name_duplicate: true
+      }.to_not change(described_class, :count)
+      expect(new_repo.full_name).to eq model.full_name
+      expect{ repo.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
   end
