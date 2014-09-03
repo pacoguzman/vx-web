@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Api::BranchesController do
+describe Api::BuildsBranchesController do
   let(:project) { create :project }
   let(:user)    { project.user_repo.user }
   let(:build)   { create :build, project: project }
