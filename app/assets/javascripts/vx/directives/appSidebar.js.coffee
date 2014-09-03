@@ -1,6 +1,6 @@
 angular.module('Vx').
-  directive "appSidebar", ['currentUserStore', '$location', '$window',
-    (currentUserStore, $location, $window) ->
+  directive "appSidebar", ['currentUserModel', '$location', '$window',
+    (currentUser, $location, $window) ->
 
       restrict: 'EC'
       replace: true
@@ -75,15 +75,17 @@ angular.module('Vx').
 
         scope.setCompany = (company) ->
           if scope.currentCompany.id != company.id
-            currentUserStore.setDefaultCompany(company.id).then ->
+            currentUser.setDefaultCompany(company.id).then ->
               $window.location = '/ui'
 
-        currentUserStore.get().then (me) ->
+        currentUser.get().then (me) ->
           scope.user = me
           scope.currentCompany = _.find(me.companies, (it) -> it.id == me.current_company)
 
-        scope.$on "$routeChangeSuccess", (ev, cur, prev) ->
-          switch cur.$$route.controller
+        scope.$on "$routeChangeSuccess", (ev, next, current) ->
+          return unless next
+
+          switch next.$$route.controller
             when 'ProjectsCtrl', 'BuildsCtrl', 'BuildCtrl', 'ProjectSettingsCtrl'
               scope.active = 'Dashboard'
             when 'UserReposCtrl'

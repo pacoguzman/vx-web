@@ -10,20 +10,32 @@ describe ProjectSerializer do
     it { should be }
   end
 
-  it "should find last_build in object" do
+  it "should find last_builds in object" do
     b = create :build, project: object
 
     s = described_class.new object
-    mock(object).last_build { b }
-    expect(s.as_json[:last_build][:id]).to eq b.id
+    mock(object).last_builds { [b] }
+    expect(s.as_json[:last_builds].map{|i| i[:id] }).to eq [b.id]
   end
 
-  it "should find last_build in scope" do
+  it "should use last_builds from scope" do
     b = create :build, project: object
 
-    s = described_class.new object, scope: OpenStruct.new(last_builds: [b])
-    dont_allow(object).last_build
-    expect(s.as_json[:last_build][:id]).to eq b.id
+    scope = OpenStruct.new(
+      last_builds: {
+        object.id => [b]
+      }
+    )
+    s = described_class.new object, scope: scope
+    dont_allow(object).last_builds
+    expect(s.as_json[:last_builds].map{|i| i[:id] }).to eq [b.id]
+  end
+
+  it "should successfuly serialize if id in scope.last_builds not found" do
+    scope = OpenStruct.new(last_builds: {})
+    s = described_class.new object, scope: scope
+    dont_allow(object).last_builds
+    expect(s.as_json[:last_builds].map{|i| i[:id] }).to eq []
   end
 
   def json(s)

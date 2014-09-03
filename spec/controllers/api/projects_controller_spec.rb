@@ -38,4 +38,58 @@ describe Api::ProjectsController do
     end
   end
 
+  context "POST /rebuild" do
+
+    before do
+      create(:build, status: 3, project: project, branch: "foo")
+    end
+
+    def rebuild(token = nil)
+      post :rebuild, id: (token || project.token), branch: 'foo'
+    end
+
+    it "should create new build" do
+      expect {
+        rebuild
+      }.to change(project.builds, :count).by(1)
+      should be_success
+    end
+
+    it "should return 201 status" do
+      rebuild
+      expect(response.status).to eq 201
+    end
+
+    it "should return json response" do
+      rebuild
+      expect(response.body).to_not be_empty
+      expect(response.content_type).to eq 'application/json'
+    end
+
+    it "should return 404 if project id not found" do
+      rebuild uuid_for(0)
+      should be_not_found
+    end
+
+    it "should return 422 if build is not created" do
+      project.builds.update_all status: 0
+      rebuild
+      expect(response.status).to eq 422
+    end
+
+  end
+
+  context "GET /branches" do
+    before do
+      create :build, project: project, branch_label: "foo"
+    end
+
+    it "should return list of branches" do
+      get :branches, id: project.id
+      should be_success
+      expect(response.body).to eq %w{foo}.to_json
+    end
+
+  end
+
 end

@@ -22,19 +22,27 @@ describe User do
     end
 
     it "should remove unupdated user_repos" do
+      other_company = create :company, id: uuid_for(1), name: "Other Company"
+      other_user_repo = create :user_repo, company: other_company, identity: identity, external_id: -1
+
       mock_repos
       user_repo.update! external_id: -1
 
       expect(subject).to be
       expect{user_repo.reload}.to raise_error(ActiveRecord::RecordNotFound)
+      expect(other_user_repo.reload).to be
     end
 
     it "should remove if identity return empty array" do
+      other_company = create :company, id: uuid_for(1), name: "Other Company"
+      other_user_repo = create :user_repo, company: other_company, identity: identity, external_id: -1
+
       mock_repos []
       user_repo
 
       expect(subject).to be
       expect{user_repo.reload}.to raise_error(ActiveRecord::RecordNotFound)
+      expect(other_user_repo.reload).to be
     end
 
     it "should keep repos with projects" do
@@ -51,6 +59,12 @@ describe User do
       user_repo.update! description: "..."
       expect(subject).to be
       expect(user_repo.reload.description).to eq 'description'
+    end
+
+    it "should successfuly remove full_name duplicate" do
+      mock_repos
+      user_repo.update! external_id: -1, full_name: external_repo.full_name
+      expect { subject }.to_not change(user.user_repos, :count)
     end
 
     def mock_repos(list = nil)
@@ -91,7 +105,7 @@ describe User do
     let(:c1)   { create :company, id: uuid_for(1), name: "c1" }
     let(:c2)   { create :company, id: uuid_for(2), name: "c2" }
 
-    it "should crate user_company and set is default" do
+    it "should create user_company and set is default" do
       expect(user.add_to_company c1).to be
       expect(user.default_company true).to eq c1
 
@@ -108,21 +122,24 @@ describe User do
     end
 
     it "should create with admin role" do
-      expect(user.add_to_company c1, 'admin').to be
+      expect(user.add_to_company c1, role: :admin).to be
       expect(user).to be_admin(c1)
     end
 
     it 'does not create another user_company if association already exists' do
-      user.add_to_company(c1, 'admin')
-      user.add_to_company(c1, 'admin')
+      user.add_to_company(c1, role: :admin)
+      user.add_to_company(c1, role: :admin)
 
       expect(user.companies).to eq([c1])
     end
 
-    it 'overrides role if company already exists' do
-      user.add_to_company(c1, 'admin')
-      user.add_to_company(c1, 'developer')
+    it 'can overrides role' do
+      user.add_to_company(c1, role: :admin)
+      user.add_to_company(c1, role: :developer)
 
+      expect(user.role(c1)).to eq('admin')
+
+      user.add_to_company(c1, role: :developer, override: true)
       expect(user.role(c1)).to eq('developer')
     end
   end

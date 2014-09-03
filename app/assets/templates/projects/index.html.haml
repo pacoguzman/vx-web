@@ -2,68 +2,98 @@
   .col-md-9
     %h2 Dashboard
 
-.wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => 'builds && builds.length === 0 && projects && projects.length > 0' }
+.wrapper.wrapper-content.animated.fadeInDown{ 'ng-show' => 'builds && builds.length === 0 && projects && projects.length > 0' }
   .row
     .col-lg-12
       .ibox
         .ibox-title
           %h5 No pending jobs - Please get your hands dirty
 
-
-.wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => "builds.length > 0" }
+.wrapper.wrapper-content.animated.fadeInRight{ 'ng-show' => "builds.length > 0" }
   .row
     .col-lg-12
       .ibox
         .ibox-title
-          %h5 Projects queued activity
+          %h5 Recent project activity
+
+          .ibox-tools
 
         .ibox-content
-          %div
 
-            .feed-activity-list
+          %table.table.table-hover.builds-list{'ng-show' => true}
+            %thead
+              %tr
+                %th No
+                %th
+                %th Branch
+                %th Author
+                %th Message
+                %th Created
+            %tbody
+              %tr.build{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "goBuild(build)" }
+                %td
+                  {{ build.number }}
+                %td
+                  .app-task-status{ 'task' => 'build' }
+                %td.no-wrap
+                  {{ build.branch }}
+                %td.no-wrap
+                  {{ build.author }}
+                %td
+                  {{ build.short_message }}
+                %td.no-wrap
+                  %span.text-muted
+                    {{ build.created_at | fromNow }}
 
-              .feed-element{'ng-repeat' => "build in builds | orderBy:'updated_at':true | limitTo:30", 'ng-click' => "goBuild(build)", style: "cursor: pointer;"}
-                %a.pull-left
+
+            .chat-activity-list{'ng-show' => false}
+
+              .chat-element{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "goBuild(build)", style: "cursor: pointer" }
+                .pull-left
                   %img.img-circle{ 'ng-src' => "{{ build.author_avatar }}" }
 
                 .media-body
-                  %span.pull-right.app-task-status{ 'task' => 'build', 'ng-show' => "build" }
+                  .pull-right
+                    %span.pull-right.app-task-status{ 'task' => 'build' }
 
-                  %strong {{ build.author }}
-                  commited to
-                  %a{ href: "/ui/projects/{{ build.project_id }}/builds" }
-                    {{ build.project_name }}
-                  on {{ build.branch }}
-                  %br
+                  %strong
+                    {{ build.author }}
+
+                  commited
+                  %a{ href: "{{ build.http_url }}" }
+                    %i.fa.fa-external-link
+                    {{ build.sha | truncate:6:"" }}
+                  to branch
+                  {{ build.branch }}
+
+                  %p.m-b.m-t-xs.task-message {{ build.message }}
+
                   %small.text-muted
                     %i.fa.fa-clock-o
-                    {{ build.updated_at | fromNow }}
+                    %span {{ build.created_at | fromNow }},
+                    duration
+                    %span.app-task-duration{ task: "build" }
 
 
-.wrapper.wrapper-content.animated.fadeIn{ 'ng-show' => "projects.length > 0" }
-  .row
-    .col-lg-12
-      .ibox
-        .ibox-title
-          %h5 Projects activity
+.wrapper.wrapper-content.animated.fadeInDown{ 'ng-show' => 'projects.length > 0' }
+  .row.projects-list
+    .col-md-6{ 'ng-repeat' => "project in projects | orderBy:projectOrderBy:true" }
+      .contact-box
+        %a{ 'ng-href' => '/ui/projects/{{ project.id }}/builds' }
+          .col-lg-12.project
 
-        .ibox-content
-          %div
+            %h3
+              {{ project.name }}
 
-            .feed-activity-list.projects-list
+            .hr-line-dashed
 
-              .feed-element{'ng-repeat' => "project in projects | orderBy:projectOrderBy:true", 'ng-click' => "go(project)", 'ng-class' => "projectCssClass(project)" }
-                %a.pull-left
-                  %img.img-circle{ 'ng-src' => "{{ projectAvatar(project) }}" }
+            %p
+              %small {{ projectEventName(project) }}
+            %p
+              %small.text-muted
+                %i.fa.fa-clock-o
+                {{ projectLastActionAt(project) | fromNow }}
 
-                .media-body
-                  %span.pull-right.app-task-status{ 'task' => 'project.last_build', 'ng-show' => "project.last_build" }
+            .app-last-builds-chart.project-chart{ project: "project" }
 
-                  %strong {{ projectAuthor(project) }}
-                  {{ projectLastAction(project) }}
-                  %a{ href: "/ui/projects/{{ project.id }}/builds" }
-                    {{ project.name }}
-                  %br
-                  %small.text-muted
-                    %i.fa.fa-clock-o
-                    {{ projectLastActionAt(project) | fromNow }}
+          .clearfix

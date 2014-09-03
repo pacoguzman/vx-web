@@ -1,5 +1,5 @@
 angular.module('Vx').
-  directive 'appSidebarControl', ['$window', 'localStorage',
+  directive 'appSidebarControl', ['$window', 'localStorageService',
     ($window, localStorage) ->
       restrict: 'EC'
 

@@ -1,27 +1,30 @@
-Vx.service 'eventSource', [ '$rootScope', "currentUserStore"
-  ($scope, currentUserStore) ->
+Vx.service 'eventSource', [ '$rootScope', "currentUserModel", '$window'
+  ($scope, currentUser, $window) ->
 
     $bus = $scope.$new()
 
-    currentUserStore.get().then (me) ->
+    if $window.SockJS
 
-      url    = me.stream
-      sock   = new SockJS(url)
+      currentUser.get().then (me) ->
 
-      sock.onopen = () ->
-        console.log(" --> Open SockJS connection to #{url}");
-        sock.send("subscribe: company/#{me.current_company}")
+        url  = me.stream
+        sock = new $window.SockJS(url)
 
-      sock.onclose = () ->
-        console.log(" --> Closed SockJS connection")
+        if sock
+          sock.onopen = () ->
+            console.log(" --> Open SockJS connection to #{url}");
+            sock.send("subscribe: company/#{me.current_company}")
 
-      sock.onmessage = (e) ->
+          sock.onclose = () ->
+            console.log(" --> Closed SockJS connection")
 
-        switch e.type
-          when 'message'
-            data = JSON.parse(e.data)
-            event = data._event
-            $bus.$broadcast(event, data.payload)
+          sock.onmessage = (e) ->
+
+            switch e.type
+              when 'message'
+                data = JSON.parse(e.data)
+                event = data._event
+                $bus.$broadcast(event, data.payload)
 
     subscribe: (name, callback) ->
       $bus.$on name, (e, data) ->

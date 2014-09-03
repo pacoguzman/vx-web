@@ -1,4 +1,4 @@
-Vx.controller 'ProjectsCtrl', ['$scope', 'projectStore', 'buildStore', '$location',
+Vx.controller 'ProjectsCtrl', ['$scope', 'projectModel', 'buildModel', '$location',
 
   ($scope, projects, builds, $location) ->
 
@@ -13,47 +13,26 @@ Vx.controller 'ProjectsCtrl', ['$scope', 'projectStore', 'buildStore', '$locatio
     builds.queued().then (builds) ->
       $scope.builds = builds
 
-    $scope.projectAvatar = (project) ->
-      switch
-        when project.last_build
-          project.last_build.author_avatar
-        when project.owner
-          project.owner.avatar
-
     $scope.projectAuthor = (project) ->
-      switch
-        when project.last_build
-          project.last_build.author
-        when project.owner
-          project.owner.name
+      if project.last_build_at
+        project.last_builds[0].author
+      else
+        project.owner.name
 
-    $scope.projectLastAction = (project) ->
-      switch
-        when project.last_build
-          "commited to"
-        else
-          "creates"
-
-    $scope.projectCssClass = (project) ->
-      if project.last_build
-        "project-with-builds"
+    $scope.projectEventName = (project) ->
+      if project.last_build_at
+        "#{project.last_builds[0].author} commited"
+      else
+        "created by #{project.owner.name}"
 
     $scope.projectLastActionAt = (project) ->
-      switch
-        when project.last_build
-          project.last_build_at
-        else
-          project.created_at
+      project.last_build_at || project.created_at
 
     $scope.projectOrderBy = (project) ->
-      if project.last_build
-        project.last_build.created_at
+      if project.last_build_at
+        project.last_build_at
       else
         project.created_at
-
-    $scope.go = (project) ->
-      if project.last_build
-        $location.path("/ui/builds/#{project.last_build.id}")
 
     $scope.goBuild = (build) ->
       $location.path("/ui/builds/#{build.id}")

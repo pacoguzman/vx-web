@@ -26,7 +26,7 @@ describe Api::UsersController do
 
     context "successfuly" do
       before do
-        user.add_to_company company, 'admin'
+        user.add_to_company company, role: :admin
         get :index
       end
       it { should be_success }
@@ -45,18 +45,18 @@ describe Api::UsersController do
     before { sign_in user }
     context "successfuly" do
       before do
-        user.add_to_company company, 'admin'
-        patch :update, id: user.id, user: { role: "admin" }
+        user.add_to_company company, role: :admin
+        patch :update, id: user.id, user: { role: "developer" }
       end
       it { should be_success }
       it "should update user role" do
-        expect(user).to be_admin(company)
+        expect(user).to be_developer(company)
       end
     end
 
     context "failed" do
       it "when role invalid" do
-        user.add_to_company company, 'admin'
+        user.add_to_company company, role: :admin
         patch :update, id: user.id, user: { role: "invalid" }
         expect(response.status).to eq 422
       end
@@ -73,8 +73,8 @@ describe Api::UsersController do
     context 'successfully' do
       it 'returns status 200' do
         another_user = create(:user, email: 'another.user@example.com', id: uuid_for(1))
-        another_user.add_to_company(company, 'admin')
-        user.add_to_company(company, 'admin')
+        another_user.add_to_company(company, role: :admin)
+        user.add_to_company(company, role: :admin)
         sign_in(user)
 
         delete :destroy, id: another_user
@@ -84,8 +84,8 @@ describe Api::UsersController do
 
       it 'deletes user from company' do
         another_user = create(:user, email: 'another.user@example.com', id: uuid_for(1))
-        another_user.add_to_company(company, 'admin')
-        user.add_to_company(company, 'admin')
+        another_user.add_to_company(company, role: :admin)
+        user.add_to_company(company, role: :admin)
         sign_in(user)
 
         delete :destroy, id: another_user
@@ -96,7 +96,7 @@ describe Api::UsersController do
 
     context 'when failed' do
       it 'returns status 403 if user is not an admin' do
-        user.add_to_company(company, 'developer')
+        user.add_to_company(company, role: :developer)
         sign_in(user)
 
         delete :destroy, id: user
@@ -105,7 +105,7 @@ describe Api::UsersController do
       end
 
       it 'returns status 405 if it is current user' do
-        user.add_to_company(company, 'admin')
+        user.add_to_company(company, role: :admin)
         sign_in(user)
 
         delete :destroy, id: user
@@ -114,7 +114,7 @@ describe Api::UsersController do
       end
 
       it 'does not allow to delete current user from current company' do
-        user.add_to_company(company, 'admin')
+        user.add_to_company(company, role: :admin)
         sign_in(user)
 
         delete :destroy, id: user

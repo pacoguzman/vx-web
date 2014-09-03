@@ -68,21 +68,10 @@ describe Project do
   end
 
   context "#last_build" do
-    let(:project) { create :project }
-    subject { project.last_build }
-
-    context "with builds" do
-      before do
-        create :build, status: "initialized", project: project, number: 1
-        create :build, status: "started",     project: project, number: 2
-        create :build, status: "passed",      project: project, number: 3
-        create :build, status: "failed",      project: project, number: 4
-      end
-      its(:number) { should eq 4 }
-    end
-
-    context "without builds" do
-      it { should be_nil }
+    it "should return last 10 builds" do
+      project = create(:project)
+      20.times{|n| create :build, status: 'initialized', project: project, number: (n + 1) }
+      expect(project.last_builds.map(&:number)).to eq [20, 19, 18, 17, 16, 15, 14, 13, 12, 11]
     end
   end
 
@@ -228,29 +217,66 @@ describe Project do
     it { subject.size.should eq 233 }
   end
 
-  it "should return status for gitlab" do
-    project = create :project
-    b = create(:build, project: project)
+  context "status_for_gitlab" do
+    it "should return status for gitlab" do
+      project = create :project
+      b = create(:build, project: project)
 
-    expect(project.status_for_gitlab 'sha').to be_nil
+      expect(project.status_for_gitlab 'sha').to be_nil
 
-    b.update_attribute :status, "initialized"
-    expect(project.status_for_gitlab(b.sha)[:status]).to eq :pending
+      b.update_attribute :status, "initialized"
+      expect(project.status_for_gitlab(b.sha)[:status]).to eq :pending
 
-    b.update_attribute :status, "started"
-    expect(project.status_for_gitlab(b.sha)[:status]).to eq :running
+      b.update_attribute :status, "started"
+      expect(project.status_for_gitlab(b.sha)[:status]).to eq :running
 
-    b.update_attribute :status, "passed"
-    expect(project.status_for_gitlab(b.sha)[:status]).to eq :success
+      b.update_attribute :status, "passed"
+      expect(project.status_for_gitlab(b.sha)[:status]).to eq :success
 
-    b.update_attribute :status, "failed"
-    expect(project.status_for_gitlab(b.sha)[:status]).to eq :failed
+      b.update_attribute :status, "failed"
+      expect(project.status_for_gitlab(b.sha)[:status]).to eq :failed
 
-    b.update_attribute :status, "errored"
-    expect(project.status_for_gitlab(b.sha)[:status]).to eq :failed
+      b.update_attribute :status, "errored"
+      expect(project.status_for_gitlab(b.sha)[:status]).to eq :failed
 
-    b.update_attribute :status, "deploying"
-    expect(project.status_for_gitlab(b.sha)[:status]).to eq :running
+      b.update_attribute :status, "deploying"
+      expect(project.status_for_gitlab(b.sha)[:status]).to eq :running
+    end
+  end
+
+  context "rebuild" do
+    it "should create new build by default in master branch" do
+      project = create(:project)
+      create(:build, project: project, status: 3, branch: "master")
+      expect {
+        project.rebuild
+      }.to change(project.builds, :size).by(1)
+    end
+
+    it "should create new build for specified branch" do
+      project = create(:project)
+      create(:build, project: project, status: 3, branch: "foo")
+      expect {
+        project.rebuild "foo"
+      }.to change(project.builds.where(branch: "foo"), :size).by(1)
+    end
+
+    it "should be nil if no builds found" do
+      project = create(:project)
+      expect {
+        project.rebuild
+      }.to_not change(project.builds, :size)
+    end
+  end
+
+  context "#branches" do
+    it "should return branch names" do
+      project = create(:project)
+      create :build, project: project, number: 1, branch_label: "foo"
+      create :build, project: project, number: 2, branch_label: "bar"
+
+      expect(project.branches).to eq %w{ bar foo }
+    end
   end
 
 end

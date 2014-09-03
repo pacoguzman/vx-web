@@ -32,11 +32,11 @@ describe CompanyUsage do
 
       company_usage = CompanyUsage.new(company)
       expected_result = {
-        today:        { job_count: 1, minutes: 10, amount: 0.10 },
-        yesterday:    { job_count: 1, minutes: 60, amount: 0.60 },
-        this_week:    { job_count: 2, minutes: 70, amount: 0.70 },
-        this_month:   { job_count: 3, minutes: 310, amount: 3.10 },
-        last_month:   { job_count: 0, minutes: 0, amount:  0.0 }
+        today:        { job_count: 1, minutes: 10,  amount: 0.15 },
+        yesterday:    { job_count: 1, minutes: 60,  amount: 0.9  },
+        this_week:    { job_count: 2, minutes: 70,  amount: 1.05 },
+        this_month:   { job_count: 3, minutes: 310, amount: 4.65 },
+        last_month:   { job_count: 0, minutes: 0,   amount: 0.0  }
       }
       expect(company_usage.calculate).to eq(expected_result)
     end

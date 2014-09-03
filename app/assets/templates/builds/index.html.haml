@@ -21,47 +21,69 @@
         Settings
       %a.app-project-subscribe{ project: "project", title: "Watch" }
 
-.wrapper.wrapper-content.animated.fadeInRight{ 'ng-show' => "builds.length > 0" }
+.wrapper.wrapper-content.animated.fadeInRight
   .row
     .col-lg-12
       .ibox
         .ibox-title
           %h5 Recent project activity
 
-          .ibox-tools
+          .pull-right
+            .dropdown{ style: "display: inline-block" }
+              .text-muted.btn.btn-xs.btn-white.dropdown-toggle
+                %span.caret
+                %span{ 'ng-show' => "selectedBranch" }
+                  branch
+                  {{ selectedBranch }}
+                %span{ 'ng-hide' => "selectedBranch" }
+                  all branches
+              %ul.dropdown-menu{ style: "max-height: 30em; overflow-y: scroll" }
+                %li
+                  %a{ href: "javascript://", 'ng-click' => "selectBranch(null)" }
+                    all branches
+                %li{ 'ng-repeat' => "branch in branches" }
+                  %a{ href: "javascript://", 'ng-click' => "selectBranch(branch)" }
+                    {{ branch }}
 
-            %label.label.label-pointer{ 'ng-show' => 'displayAs == "feed"', 'ng-click' => 'setDisplayAs("table")' }
+            .text-muted.btn.btn-xs.btn-white{ 'ng-show' => 'displayAs == "feed"', 'ng-click' => 'setDisplayAs("table")', style: "width: 6em" }
               %i.fa.fa-navicon
               feed
-            %label.label.label-pointer{ 'ng-show' => "displayAs == 'table'", 'ng-click' => "setDisplayAs('feed')" }
+            .text-muted.btn.btn-xs.btn-white{ 'ng-show' => "displayAs == 'table'", 'ng-click' => "setDisplayAs('feed')", style: "width: 6em" }
               %i.fa.fa-table
               table
 
         .ibox-content
-          %div
 
-            %table.table.table-hover.builds-list{'ng-show' => "displayAs == 'table'"}
+
+          .ajax-loader{ 'ng-show' => 'wait' }
+
+          %p{ 'ng-hide' => "builds.length > 0 || wait" }
+            No builds found
+
+          %div{ 'ng-show' => "builds.length > 0" }
+
+            %table.table.table-hover.builds-list{'ng-show' => "displayAs == 'table'" }
               %thead
                 %tr
-                  %td No
-                  %td
-                  %td Branch
-                  %td Author
-                  %td Message
-                  %td Created
+                  %th No
+                  %th
+                  %th Branch
+                  %th Author
+                  %th Message
+                  %th Created
               %tbody
                 %tr.build{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "go(build)" }
                   %td
                     {{ build.number }}
                   %td
                     .app-task-status{ 'task' => 'build' }
-                  %td
+                  %td.no-wrap
                     {{ build.branch }}
-                  %td
+                  %td.no-wrap
                     {{ build.author }}
                   %td
                     {{ build.short_message }}
-                  %td
+                  %td.no-wrap
                     %span.text-muted
                       {{ build.created_at | fromNow }}
 
@@ -90,7 +112,10 @@
 
                   %small.text-muted
                     %i.fa.fa-clock-o
-                    %span {{ build.created_at | fromNow }}
-          %div
+                    %span {{ build.created_at | fromNow }},
+                    duration
+                    %span.app-task-duration{ task: "build" }
+
+          %div{ 'ng-hide' => 'noMore || builds.length == 0' }
             %button.btn.btn-block.btn-outline.btn-primary{'ng-click' => 'loadMoreBuilds()', 'ng-disabled' => "wait" }
               Load more

@@ -1,0 +1,26 @@
+.users-list {
+  td {
+    vertical-align: middle !important;
+  }
+
+  td img {
+    width: 24px;
+    height: 24px;
+  }
+
+  tr:first-child {
+    td {
+      border-top: none;
+    }
+  }
+
+  .user-destroy {
+    visibility: hidden;
+  }
+
+  tr:hover {
+    .user-destroy {
+      visibility: visible;
+    }
+  }
+}

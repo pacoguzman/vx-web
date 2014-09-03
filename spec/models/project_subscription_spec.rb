@@ -58,11 +58,11 @@ end
 #
 # Table name: project_subscriptions
 #
-#  id         :integer          not null, primary key
 #  subscribe  :boolean          default(TRUE), not null
 #  created_at :datetime
 #  updated_at :datetime
 #  user_id    :uuid             not null
 #  project_id :uuid             not null
+#  id         :uuid             not null, primary key
 #
 
