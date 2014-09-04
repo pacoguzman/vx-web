@@ -590,20 +590,19 @@ describe Build do
   end
 
   context "rebuild" do
-    let(:b) { create :build, status: 3, source: {
-      "rvm" => %w{ 2.0 2.1},
-      "deploy" => { "shell" => "true" }
-    }.to_yaml }
+    let(:b) do
+      create :build, status: 'passed', source: { "rvm" => %w{ 2.0 2.1 }, "deploy" => { "shell" => "true" } }.to_yaml
+    end
 
     it "should allow to rebuild only finished builds" do
-      b.status = 2
+      b.status = 'started'
       expect(b.rebuild).to be_nil
     end
 
     it "should create a new build with same attributes" do
       new_build = b.rebuild
       expect(new_build).to be_persisted
-      expect(new_build.status).to eq 0
+      expect(new_build.status).to eq 'initialized'
       expect(new_build.number).to eq(b.number + 1)
       %i[
         pull_request_id sha branch author message author_email
@@ -616,9 +615,9 @@ describe Build do
     it "should create new jobs for new build" do
       new_build = b.rebuild
 
-      expect(new_build.jobs.regular).to have(2).items
-      expect(new_build.jobs.deploy).to have(1).item
-      expect(new_build.jobs.map(&:status).uniq).to eq [0]
+      expect(new_build.jobs.regular.size).to eq(2)
+      expect(new_build.jobs.deploy.size).to eq(1)
+      expect(new_build.jobs.map(&:status).uniq).to eq ['initialized']
     end
 
     it "should publish PerformJob messages" do

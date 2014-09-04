@@ -227,7 +227,7 @@ class Build < ActiveRecord::Base
         new_attributes = attributes.dup
         new_attributes.merge!(
           number:      nil,
-          status:      0,
+          status:      'initialized',
           started_at:  nil,
           finished_at: nil,
           created_at:  nil,

@@ -247,7 +247,7 @@ describe Project do
   context "rebuild" do
     it "should create new build by default in master branch" do
       project = create(:project)
-      create(:build, project: project, status: 3, branch: "master")
+      create(:build, project: project, status: 'passed', branch: "master")
       expect {
         project.rebuild
       }.to change(project.builds, :size).by(1)
@@ -255,7 +255,7 @@ describe Project do
 
     it "should create new build for specified branch" do
       project = create(:project)
-      create(:build, project: project, status: 3, branch: "foo")
+      create(:build, project: project, status: 'passed', branch: "foo")
       expect {
         project.rebuild "foo"
       }.to change(project.builds.where(branch: "foo"), :size).by(1)

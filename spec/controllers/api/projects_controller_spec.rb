@@ -41,7 +41,7 @@ describe Api::ProjectsController do
   context "POST /rebuild" do
 
     before do
-      create(:build, status: 3, project: project, branch: "foo")
+      create(:build, status: 'passed', project: project, branch: "foo")
     end
 
     def rebuild(token = nil)
