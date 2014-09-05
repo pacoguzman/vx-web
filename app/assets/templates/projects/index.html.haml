@@ -20,59 +20,34 @@
 
         .ibox-content
 
-          %table.table.table-hover.builds-list{'ng-show' => true}
-            %thead
-              %tr
-                %th No
-                %th
-                %th Branch
-                %th Author
-                %th Message
-                %th Created
-            %tbody
-              %tr.build{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "goBuild(build)" }
-                %td
-                  {{ build.number }}
-                %td
-                  .app-task-status{ 'task' => 'build' }
-                %td.no-wrap
-                  {{ build.branch }}
-                %td.no-wrap
+          .chat-activity-list{'ng-show' => false}
+
+            .chat-element{'ng-repeat' => "build in builds | orderBy:'updated_at':true", 'ng-click' => "goBuild(build)", style: "cursor: pointer" }
+              .pull-left
+                %img.img-circle{ 'ng-src' => "{{ build.author_avatar }}" }
+
+              .media-body
+                .pull-right
+                  %span.pull-right.app-task-status{ 'task' => 'build' }
+
+                %strong
                   {{ build.author }}
-                %td
-                  {{ build.short_message }}
-                %td.no-wrap
-                  %span.text-muted
-                    {{ build.created_at | fromNow }}
 
+                commited
+                %a{ href: "{{ build.http_url }}" }
+                  %i.fa.fa-external-link
+                  {{ build.sha | truncate:6:"" }}
+                to branch
+                {{ build.branch }}
+                on {{ build.project_name }}
 
-            .chat-activity-list{'ng-show' => false}
+                %p.m-b.m-t-xs.task-message {{ build.short_message }}
 
-              .chat-element{'ng-repeat' => "build in builds | orderBy:'number':true", 'ng-click' => "goBuild(build)", style: "cursor: pointer" }
-                .pull-left
-                  %img.img-circle{ 'ng-src' => "{{ build.author_avatar }}" }
-
-                .media-body
-                  .pull-right
-                    %span.pull-right.app-task-status{ 'task' => 'build' }
-
-                  %strong
-                    {{ build.author }}
-
-                  commited
-                  %a{ href: "{{ build.http_url }}" }
-                    %i.fa.fa-external-link
-                    {{ build.sha | truncate:6:"" }}
-                  to branch
-                  {{ build.branch }}
-
-                  %p.m-b.m-t-xs.task-message {{ build.message }}
-
-                  %small.text-muted
-                    %i.fa.fa-clock-o
-                    %span {{ build.created_at | fromNow }},
-                    duration
-                    %span.app-task-duration{ task: "build" }
+                %small.text-muted
+                  %i.fa.fa-clock-o
+                  %span {{ build.created_at | fromNow }},
+                  duration
+                  %span.app-task-duration{ task: "build" }
 
 
 .wrapper.wrapper-content.animated.fadeInDown{ 'ng-show' => 'projects.length > 0' }
