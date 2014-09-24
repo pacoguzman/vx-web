@@ -40,5 +40,7 @@
         .ng-view
 
     = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js'
+    - if Rails.configuration.x.braintree.enabled
+      = javascript_include_tag '//js.braintreegateway.com/v2/braintree.js'
     = javascript_include_tag 'lib'
     = javascript_include_tag 'application'

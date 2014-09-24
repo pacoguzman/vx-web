@@ -1,6 +1,6 @@
 class CurrentUserSerializer < UserSerializer
 
-  attributes :stream, :role, :project_subscriptions, :current_company
+  attributes :stream, :role, :project_subscriptions, :current_company, :braintree_token
 
   has_many :identities
   has_many :companies
@@ -28,6 +28,13 @@ class CurrentUserSerializer < UserSerializer
       "http://localhost:8081/echo"
     else
       "/mount/echo"
+    end
+  end
+
+  def braintree_token
+    if object.admin?(object.default_company) and  Rails.configuration.x.braintree.enabled
+      Braintree::ClientToken.generate(
+      )
     end
   end
 

@@ -46,33 +46,29 @@
   .col-lg-12
     .wrapper.wrapper-content.animated.fadeInDown
       .ibox
-        .ibox-title
-          %h5
-            Pay {{ payInvoice.amount | currency }}
-
         .ibox-content
           .row
             .col-md-6
-              %form
+              %form{ novalidate: true, name: "form", role: 'form' }
                 .form-group
-                  %label.control-label Name
-                  %input.form-control{ 'ng-model' => "payInvoice.name" }
+                  %label.control-label Name on card
+                  %input.form-control{ 'ng-model' => "payInvoice.name", required: true }
 
                 .form-group
                   %label.control-label Credit card number
-                  %input.form-control{ 'ng-model' => "payInvoice.card" }
+                  %input.form-control{ 'ng-model' => "payInvoice.card", required: true }
 
                 .form-group
                   %label.control-label CVV
-                  %input.form-control{ 'ng-model' => "payInvoice.cvv", style: "width: 4em" }
+                  %input.form-control{ 'ng-model' => "payInvoice.cvv", style: "width: 4em", required: true }
 
                 .form-group
                   %label.control-label Expiration (MM/YY)
-                  %input.form-control{ 'ng-model' => "payInvoice.expired", style: "width: 6em" }
+                  %input.form-control{ 'ng-model' => "payInvoice.expired", style: "width: 6em", required: true }
 
           %p
-            %button.btn.btn-primary{ type: "submit" }
-              Pay {{ payInvoice.amount | currency }}
+            %button.btn.btn-primary{ type: "submit", 'ng-click' => 'makePayment()', 'ng-disabled' => 'form.$invalid' }
+              Pay {{ payInvoice.amount / 100.0 | currency }}
             or
             %a{ href: "javascript://", 'ng-click' => "cancelPayInvoice()" } Cancel
 
@@ -86,12 +82,14 @@
             %thead
               %th Date
               %th Amount
+              %th Status
               %th
 
             %tbody
               %tr{ 'ng-repeat' => "invoice in invoices | orderBy:'created_at':true" }
-                %td {{ invoice.created_at | date: "dd MMMM yyyy" }}
-                %td {{ invoice.amount | currency  }}
+                %td {{ invoice.created_at | date: "MMMM yyyy" }}
+                %td {{ invoice.amount / 100.0 | currency  }}
+                %td {{ invoice.status_name }}
                 %td
-                  %a.btn.btn-xs.btn-primary{ href: "javascript://", 'ng-click' => "pay(invoice)" }
+                  %a.btn.btn-xs.btn-primary{ href: "javascript://", 'ng-click' => "pay(invoice)", 'ng-show' => "invoice.status_name == 'pending'" }
                     Pay

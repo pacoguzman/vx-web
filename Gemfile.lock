@@ -1,11 +1,3 @@
-PATH
-  remote: ../vx-service_connector
-  specs:
-    vx-service_connector (0.2.6)
-      activesupport (~> 4.0)
-      faraday (~> 0.9.0)
-      octokit (= 2.2.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -44,6 +36,8 @@ GEM
       rake
     arel (4.0.2)
     beefcake (0.5.0)
+    braintree (2.35.0)
+      builder (>= 2.0.0)
     builder (3.1.4)
     bunny (1.3.1)
       amq-protocol (>= 1.9.2)
@@ -208,6 +202,10 @@ GEM
       airbrake
     vx-message (0.6.2)
       beefcake (= 0.5.0)
+    vx-service_connector (0.2.5)
+      activesupport (~> 4.0)
+      faraday (~> 0.9.0)
+      octokit (= 2.2.0)
     webmock (1.13.0)
       addressable (>= 2.2.7)
       crack (>= 0.3.2)
@@ -218,6 +216,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   annotate
+  braintree
   carrierwave
   coffee-rails (~> 4.0.0)
   dalli
@@ -241,5 +240,5 @@ DEPENDENCIES
   vx-consumer (= 0.1.8)
   vx-instrumentation (= 0.1.3)
   vx-message (= 0.6.2)
-  vx-service_connector!
+  vx-service_connector (= 0.2.5)
   webmock
