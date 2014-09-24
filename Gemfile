@@ -30,7 +30,7 @@ group :assets do
 end
 
 group :development, :test do
-  gem 'debugger'
+  gem 'byebug'
   gem 'pry-rails'
   gem 'rspec-rails'
   gem 'rspec-its', :require => false
