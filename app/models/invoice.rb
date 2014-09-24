@@ -3,6 +3,31 @@ class Invoice < ActiveRecord::Base
   validates :amount, :company_id, presence: true
 
   default_scope ->{ order("invoices.created_at DESC") }
+
+  state_machine :status, initial: :pending do
+
+    state :pending,   value: 0
+    state :waiting,   value: 1
+    state :paid,      value: 2
+    state :broken,    value: 3
+    state :cancelled, value: 4
+
+    event :delivery do
+      transition :pending => :waiting
+    end
+
+    event :pay do
+      transition :waiting => :paid
+    end
+
+    event :decline do
+      transition :waiting => :broken
+    end
+
+    event :cancel do
+      transition any => :cancelled
+    end
+  end
 end
 
 # == Schema Information
