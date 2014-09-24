@@ -32,7 +32,7 @@ class CurrentUserSerializer < UserSerializer
   end
 
   def braintree_token
-    if object.admin?(object.default_company) and  Rails.configuration.x.braintree.enabled
+    if object.admin?(object.default_company) and  Rails.configuration.x.braintree
       Braintree::ClientToken.generate(
       )
     end
