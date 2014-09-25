@@ -61,7 +61,11 @@ VxWeb::Application.routes.draw do
       end
     end
 
-    resources :invoices, only: [:index]
+    resources :invoices, only: [:index] do
+      member do
+        post :pay
+      end
+    end
   end
 
   namespace :users do
