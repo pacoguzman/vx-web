@@ -5,6 +5,7 @@ VxWeb::Application.routes.draw do
 
   namespace :api, constraints: { id: UUID_RE } do
     resources :invites, only: [:create]
+    resource :credit_card, only: [:show, :create]
 
     resources :users, only: [:index, :update, :destroy] do
       collection do
@@ -61,11 +62,7 @@ VxWeb::Application.routes.draw do
       end
     end
 
-    resources :invoices, only: [:index] do
-      member do
-        post :pay
-      end
-    end
+    resources :invoices, only: [:index]
   end
 
   namespace :users do

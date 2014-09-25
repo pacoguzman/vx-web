@@ -24,15 +24,6 @@ class User < ActiveRecord::Base
     @default_company ||= companies.reorder("user_companies.default DESC").first
   end
 
-  def customer_params
-    {
-      id:         default_company.try(:id),
-      email:      email,
-      company:    default_company.try(:name),
-      first_name: default_company.try(:name)
-    }
-  end
-
   def role(company)
     if company
       user_companies.where(company: company).pluck(:role).first

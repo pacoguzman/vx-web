@@ -4,18 +4,6 @@ describe User do
   let(:user) { User.new }
   subject { user }
 
-  it "should create customer_params" do
-    user    = create :user
-    company = create :company
-    user.add_to_company company
-    expect(user.customer_params).to eq(
-      company: 'MyString',
-      email: user.email,
-      id: "00000000-0000-0000-0000-000000000000",
-      first_name: 'MyString'
-    )
-  end
-
   context "sync_repos" do
     let(:user_repo)     { create :user_repo, external_id: external_repo.id }
     let(:company)       { user_repo.company }
