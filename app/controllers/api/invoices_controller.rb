@@ -10,17 +10,8 @@ class ::Api::InvoicesController < ::Api::BaseController
   end
 
   def pay
-    result = Braintree::Transaction.sale(
-      amount: invoice.amount_string,
-      order_id: invoice.id,
-      payment_method_nonce: params[:nonce],
-      customer: {
-        company: current_company.name,
-        email: current_user.email,
-      }
-    )
+    result = invoice.make_payment(params[:nonce], current_user.customer_params)
     if result.success?
-      invoice.pay!
       respond_with(invoice, location: '')
     else
       render json: {
