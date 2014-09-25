@@ -17,7 +17,7 @@ class Invoice < ActiveRecord::Base
     end
 
     event :pay do
-      transition :waiting => :paid
+      transition :pending => :paid
     end
 
     event :decline do
@@ -27,6 +27,10 @@ class Invoice < ActiveRecord::Base
     event :cancel do
       transition any => :cancelled
     end
+  end
+
+  def amount_string
+    (amount.to_f / 100.0).to_s
   end
 end
 

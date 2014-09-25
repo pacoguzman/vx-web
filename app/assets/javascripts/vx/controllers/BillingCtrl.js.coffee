@@ -1,10 +1,10 @@
-Vx.controller 'BillingCtrl', ['$scope', 'companyModel', 'invoiceModel', '$window', 'currentUserModel'
-  ($scope, companyModel, invoiceModel, $window, currentUserModel) ->
+Vx.controller 'BillingCtrl', ['$scope', 'companyModel', 'invoiceModel',
+  ($scope, companyModel, invoiceModel) ->
 
-    $scope.companyUsage = null
-    $scope.invoices     = []
-    $scope.payInvoice   = null
-    $scope.wait         = true
+    $scope.companyUsage   = null
+    $scope.invoices       = []
+    $scope.payment        = null
+    $scope.wait           = true
 
     companyModel.usage()
       .then (usage) ->
@@ -15,29 +15,20 @@ Vx.controller 'BillingCtrl', ['$scope', 'companyModel', 'invoiceModel', '$window
     invoiceModel.all().then (re) ->
       $scope.invoices = re
 
-    braintreeCallback = (err, nonce) ->
-      console.log err
-      console.log nonce
+    $scope.payInvoice = (invoice) ->
+      $scope.payment = invoice
 
-    $scope.pay =  (invoice) ->
-      $scope.payInvoice = invoice
-
-    $scope.cancelPayInvoice = () ->
-      $scope.payInvoice = null
+    $scope.cancelPayment = () ->
+      $scope.payment = null
 
     $scope.makePayment = () ->
-      if $window.braintree
-        currentUserModel.get().then (me) ->
-          client = new $window.braintree.api.Client(clientToken: me.braintree_token)
-          p = $scope.payInvoice
-          client.tokenizeCard(
-            {
-              number: p.card,
-              expirationDate: p.expired,
-              cardholderName: p.name,
-              cvv: p.cvv
-            },
-            braintreeCallback
-          )
+      invoiceModel.pay($scope.payment)
+        .then (re) ->
+          oldInvoice = _.findWhere $scope.invoices, id: re.data.id
+          if oldInvoice
+            angular.extend oldInvoice, re.data
+          $scope.payment.success = true
+        .catch (err) ->
+          $scope.payment.errors = err
 ]
 
