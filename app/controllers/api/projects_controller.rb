@@ -22,6 +22,14 @@ class ::Api::ProjectsController < ::Api::BaseController
     end
   end
 
+  def build_head
+    if new_build = project.build_head_commit
+      respond_with(new_build, location: [:api, new_build])
+    else
+      head 422
+    end
+  end
+
   def rebuild
     project = Project.find_by! token: params[:id]
 

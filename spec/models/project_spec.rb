@@ -3,6 +3,18 @@ require 'spec_helper'
 describe Project do
   let(:project) { Project.new }
 
+  it "should start build for head commit" do
+    p       = create :project
+    payload = Vx::ServiceConnector::Model::Payload.new
+    pb      = 'perform build'
+    build   = 'build'
+
+    mock(p).payload_for_head_commit{ payload }
+    mock(p).create_perform_build(payload) { pb }
+    mock(pb).process { build }
+    expect(p.build_head_commit).to eq build
+  end
+
   context ".find_by_token" do
     let(:token)   { project.token   }
     let(:project) { create :project }
