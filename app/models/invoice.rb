@@ -1,32 +1,38 @@
 class Invoice < ActiveRecord::Base
+  include AASM
+
   belongs_to :company
   validates :amount, :company_id, presence: true
 
   default_scope ->{ order("invoices.created_at DESC") }
 
-  state_machine :status, initial: :pending do
-
-    state :pending,   value: 0
+  aasm column: :status do
+    state :pending,   value: 0, initial: true
     state :waiting,   value: 1
     state :paid,      value: 2
     state :broken,    value: 3
     state :cancelled, value: 4
 
     event :delivery do
-      transition :pending => :waiting
+      transitions from: :pending, to: :waiting
     end
 
     event :pay do
-      transition :pending => :paid
+      transitions from: :pending, to: :paid
     end
 
     event :decline do
-      transition :waiting => :broken
+      transitions from: :waiting, to: :broken
     end
 
     event :cancel do
-      transition any => :cancelled
+      # :any => :cancelled
+      transitions from: [:pending, :waiting, :paid, :broken, :cancelled], to: :cancelled
     end
+  end
+
+  def status_name
+    status.to_sym
   end
 
   def amount_string
