@@ -57,8 +57,25 @@
 
           .ajax-loader{ 'ng-show' => 'wait' }
 
-          %p{ 'ng-hide' => "builds.length > 0 || wait" }
-            No builds found
+          .alert.alert-success{ 'ng-hide' => "builds.length > 0 || wait" }
+            %p There are no commits here.
+
+            %p Possible reasons:
+
+            %ul
+              %li
+                There are no commits in repository. Push your commits to the repo and they will appear here
+              %li
+                There are some commits but CI config file is absent.
+                Check out config
+                %a{ href: "https://vexor.io/help", "target" => "_blank" } manual
+              %li
+                There are some commits but there weren't any callback.
+                %a{ 'ng-click' => 'buildHeadCommit()', href: "javascript://", 'ng-hide' => 'buildHeadCommitWait' }
+                  Create build
+                %strong{ 'ng-show' => 'buildHeadCommitWait' }
+                  Pelase wait...
+                for the HEAD commit
 
           %div{ 'ng-show' => "builds.length > 0" }
 

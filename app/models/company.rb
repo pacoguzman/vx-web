@@ -18,6 +18,10 @@ class Company < ActiveRecord::Base
   def channel
     @channel ||= "company/#{id}"
   end
+
+  def credit_card
+    @credit_card ||= CreditCard.new(self)
+  end
 end
 
 # == Schema Information

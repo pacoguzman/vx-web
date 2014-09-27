@@ -38,6 +38,19 @@ describe Api::ProjectsController do
     end
   end
 
+  context "POST /build_head" do
+    it "should return 201 status" do
+      build_head
+      expect(response.status).to eq 201
+    end
+
+    def build_head
+      mock(controller).project { project }
+      mock(project).build_head_commit { create :build, project: project }
+      post :build_head, id: project.id, format: "json"
+    end
+  end
+
   context "POST /rebuild" do
 
     before do
