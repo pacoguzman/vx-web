@@ -1,4 +1,4 @@
-puts "[PATCH] ActiveRecord::ConnectionAdapters::PostgreSQLAdapter#supports_extensions? always be true"
+puts " --> [PATCH] ActiveRecord::ConnectionAdapters::PostgreSQLAdapter#supports_extensions? always be true"
 
 module ActiveRecord
   module ConnectionAdapters

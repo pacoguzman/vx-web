@@ -57,6 +57,22 @@ class Project < ActiveRecord::Base
     build && build.rebuild
   end
 
+  def build_head_commit
+    if payload = payload_for_head_commit
+      create_perform_build(payload).process
+    end
+  end
+
+  def create_perform_build(payload)
+    PerformBuild.new(
+      payload.to_hash.merge("project_id" => self.id)
+    )
+  end
+
+  def payload_for_head_commit
+    identity.sc.commits(sc_model).last
+  end
+
   def to_s
     name
   end

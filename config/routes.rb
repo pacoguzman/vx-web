@@ -5,6 +5,7 @@ VxWeb::Application.routes.draw do
 
   namespace :api, constraints: { id: UUID_RE } do
     resources :invites, only: [:create]
+    resource :credit_card, only: [:show, :create]
 
     resources :users, only: [:index, :update, :destroy] do
       collection do
@@ -21,6 +22,7 @@ VxWeb::Application.routes.draw do
         get "key.:format", action: :key, as: 'public_key'
         get :branches
         post :rebuild
+        post :build_head
       end
 
       resources :builds, only: [:index, :create]

@@ -20,6 +20,7 @@ gem 'vx-instrumentation',   '0.1.3'
 
 gem 'dalli'
 gem 'dotenv'
+gem 'braintree'
 
 group :assets do
   gem 'sass-rails', '~> 4.0.0'

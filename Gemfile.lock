@@ -20,10 +20,10 @@ GIT
 
 GIT
   remote: git://github.com/pacoguzman/vx-service_connector.git
-  revision: 311cb283ead6b5b85d7e8038ff1f0a1d3ca6e4cb
+  revision: a637e3deb0594ce20ad652ef54b41c06ca1b47fb
   branch: bebanjo
   specs:
-    vx-service_connector (0.2.5)
+    vx-service_connector (0.2.6)
       activesupport (~> 4.0)
       faraday (~> 0.9.0)
       octokit (= 2.2.0)
@@ -66,6 +66,8 @@ GEM
       rake
     arel (4.0.2)
     beefcake (0.5.0)
+    braintree (2.35.0)
+      builder (>= 2.0.0)
     builder (3.1.4)
     bunny (1.3.1)
       amq-protocol (>= 1.9.2)
@@ -114,7 +116,7 @@ GEM
     hashr (0.0.22)
     hike (1.2.3)
     httpauth (0.2.0)
-    i18n (0.6.9)
+    i18n (0.6.11)
     json (1.8.1)
     jwt (0.1.8)
       multi_json (>= 1.5)
@@ -190,7 +192,7 @@ GEM
       sass (~> 3.2.0)
       sprockets (~> 2.8, <= 2.11.0)
       sprockets-rails (~> 2.0)
-    sawyer (0.5.4)
+    sawyer (0.5.5)
       addressable (~> 2.3.5)
       faraday (~> 0.8, < 0.10)
     slop (3.4.6)
@@ -212,7 +214,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.39)
+    tzinfo (0.3.41)
     uglifier (2.2.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
@@ -237,6 +239,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   annotate
+  braintree
   byebug
   carrierwave
   coffee-rails (~> 4.0.0)

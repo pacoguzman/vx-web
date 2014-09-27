@@ -8,6 +8,7 @@ Vx.controller 'BuildsCtrl', [ '$scope', 'buildModel', 'projectModel', 'project',
     $scope.noMore         = false
     $scope.branches       = []
     $scope.selectedBranch = storage.get("vx:builds:branch:#{project.id}") || null
+    $scope.buildHeadCommitWait = false
 
     truncateBuilds = () ->
       if $scope.builds.length > 30
@@ -37,6 +38,12 @@ Vx.controller 'BuildsCtrl', [ '$scope', 'buildModel', 'projectModel', 'project',
     $scope.$watch "selectedBranch", updateSelectedBranch
 
     ###########################################################################
+
+    $scope.buildHeadCommit = () ->
+      $scope.buildHeadCommitWait = true
+      projectModel.buildHeadCommit($scope.project.id)
+        .finally () ->
+          $scope.buildHeadCommitWait = false
 
     $scope.selectBranch = (branch) ->
       $scope.selectedBranch = branch

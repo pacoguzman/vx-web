@@ -21,6 +21,10 @@ Vx.service 'projectModel', ['$http', 'cacheService', 'eventSource',
       all().then (re) ->
         _.find re, (it) -> it.id == id
 
+    buildHeadCommit: (id) ->
+      $http.post("/api/projects/#{id}/build_head").then (re) ->
+        re.data
+
     subscribe: (id) ->
       $http.post("/api/projects/#{id}/subscription").then (re) ->
         re.data
