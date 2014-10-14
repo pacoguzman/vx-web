@@ -1,9 +1,9 @@
 GIT
   remote: git://github.com/pacoguzman/vx-builder.git
-  revision: fc2c5db3cfafba3fc8affcb838ffe0462f5074f5
+  revision: 46987e51b63ab02096d4f9a73b15477b734b47a9
   branch: bebanjo
   specs:
-    vx-builder (0.5.7)
+    vx-builder (0.5.19)
       hashr
       vx-common (= 0.4.0)
       vx-message
@@ -20,10 +20,10 @@ GIT
 
 GIT
   remote: git://github.com/pacoguzman/vx-service_connector.git
-  revision: 8adec4bab38a2352886e99884ba394dee2258264
+  revision: 5570e569278f539f93ebbb0ecb4f66b1e4190ceb
   branch: bebanjo
   specs:
-    vx-service_connector (0.2.8)
+    vx-service_connector (0.2.12)
       activesupport (~> 4.0)
       faraday (~> 0.9.0)
       octokit (= 2.2.0)
