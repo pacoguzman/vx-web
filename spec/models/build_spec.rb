@@ -245,14 +245,14 @@ describe Build do
     [0,2].each do |s|
       context "when status is #{s}" do
         before { b.status = s }
-        it { should be_false }
+        it { should be(false) }
       end
     end
 
     [3,4,5].each do |s|
       context "when status is #{s}" do
         before { b.status = s }
-        it { should be_true }
+        it { should be(true) }
       end
     end
   end
@@ -272,7 +272,7 @@ describe Build do
         b.status = 4
       end
 
-      it { should be_true }
+      it { should be(true) }
     end
 
     context "when status is same" do
@@ -282,7 +282,7 @@ describe Build do
         b.status = 3
       end
 
-      it { should be_false }
+      it { should be(false) }
     end
 
     context "when prev build is nil" do
@@ -292,7 +292,7 @@ describe Build do
         b.status = 3
       end
 
-      it { should be_true }
+      it { should be(true) }
     end
   end
 
@@ -376,21 +376,21 @@ describe Build do
       before do
         b.decline
       end
-      it { should be_true }
+      it { should be(true) }
     end
 
     context "when status errored" do
       before do
         b.error
       end
-      it { should be_true }
+      it { should be(true) }
     end
 
     context "when status passed" do
       before do
         b.pass
       end
-      it { should be_true }
+      it { should be(true) }
     end
   end
 
@@ -463,7 +463,7 @@ describe Build do
       b.source = {"rvm" => %w{ 1.9 2.0 }}.to_yaml
     end
     it { should be }
-    it { should have(2).item }
+    it { subject.size.should eq(2) }
   end
 
   context "to_deploy.build" do
@@ -472,7 +472,7 @@ describe Build do
       b.source = {"deploy" => { "shell" => "/bin/true", "branch" => "master" } }.to_yaml
     end
     it { should be }
-    it { should have(1).item }
+    it { subject.size.should eq(1) }
 
     context "when branch is not matched" do
       before do
@@ -534,7 +534,7 @@ describe Build do
       before do
         b.create_regular_jobs
       end
-      it { should have(2).item }
+      it { subject.size.should eq(2) }
 
       it "should have true matrices" do
         expect(subject.map(&:matrix)).to eq [{"rvm"=>"1.9"}, {"rvm"=>"2.0"}]
@@ -569,7 +569,7 @@ describe Build do
       before do
         b.create_deploy_jobs
       end
-      it { should have(1).item }
+      it { subject.size.should eq(1) }
 
       it "should have matrixes" do
         expect(subject.map(&:matrix)).to eq [{}]
@@ -616,8 +616,8 @@ describe Build do
     it "should create new jobs for new build" do
       new_build = b.rebuild
 
-      expect(new_build.jobs.regular).to have(2).items
-      expect(new_build.jobs.deploy).to have(1).item
+      expect(new_build.jobs.regular.size).to eq(2)
+      expect(new_build.jobs.deploy.size).to eq(1)
       expect(new_build.jobs.map(&:status).uniq).to eq [0]
     end
 
@@ -666,4 +666,3 @@ end
 #  project_id      :uuid             not null
 #  id              :uuid             not null, primary key
 #
-

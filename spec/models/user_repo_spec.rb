@@ -80,7 +80,7 @@ describe UserRepo do
         expect{ subject }.to change(repo, :subscribed).to(false)
       end
       it "should return true value" do
-        expect(subject).to be_true
+        expect(subject).to be(true)
       end
     end
 
@@ -108,7 +108,7 @@ describe UserRepo do
         end
 
         it "should return true value" do
-          expect(subject).to be_true
+          expect(subject).to be(true)
         end
       end
 
@@ -157,7 +157,7 @@ describe UserRepo do
       end
 
       it "should return true value" do
-        expect(subject).to be_true
+        expect(subject).to be(true)
       end
 
       it "should change 'subscribed' to true" do
@@ -176,7 +176,7 @@ describe UserRepo do
 
       it "should create a new github project" do
         expect{ subject }.to change(repo, :project).from(nil)
-        expect(repo.project.persisted?).to be_true
+        expect(repo.project.persisted?).to be(true)
       end
 
       it "should change 'subscribed' to true" do
@@ -243,4 +243,3 @@ end
 #  identity_id        :uuid             not null
 #  id                 :uuid             not null, primary key
 #
-

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.0.8'
+gem 'rails', '4.0.10'
 gem 'pg'
 
 gem 'haml-rails'
@@ -32,6 +32,7 @@ group :development, :test do
   gem 'byebug'
   gem 'pry-rails'
   gem 'rspec-rails'
+  gem 'rspec-its', :require => false
   gem 'factory_girl_rails'
 end
 

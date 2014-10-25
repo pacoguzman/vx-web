@@ -51,7 +51,7 @@ describe User do
       create(:project, user_repo: user_repo, company: user_repo.company)
 
       expect(subject).to be
-      expect{user_repo.reload}.to be
+      expect(user_repo.reload).to be
     end
 
     it "should update existing user_repos" do
@@ -179,4 +179,3 @@ end
 #  back_office :boolean          default(FALSE)
 #  id          :uuid             not null, primary key
 #
-
