@@ -17,6 +17,9 @@ matrix:
       rvm: 2.1.3
     - env: PROJECT=frontend
       rvm: 2.2.0
+  allowed_failures:
+    - env: PROJECT=backend
+      rvm: 2.2.0
 
 before_script:
 - mkdir -p log
