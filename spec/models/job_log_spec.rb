@@ -7,7 +7,7 @@ describe JobLog do
   context "default_scope" do
     subject { described_class.all }
     before { create :job_log }
-    it { subject.size.should eq 1 }
+    it { subject.size.should eq(1) }
   end
 end
 
@@ -20,4 +20,3 @@ end
 #  data   :text
 #  job_id :uuid             not null
 #
-

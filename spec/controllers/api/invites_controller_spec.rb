@@ -17,11 +17,11 @@ describe Api::InvitesController do
       it { should be_success }
 
       it "should create invites" do
-        expect(company.invites.size).to eq 2
+        expect(company.invites.size).to eq(2)
       end
 
       it "should delivery emails" do
-        expect(UserMailer.deliveries.size).to eq 2
+        expect(UserMailer.deliveries.size).to eq(2)
       end
     end
 

@@ -159,14 +159,14 @@ describe Job do
     ["initialized", "started"].each do |s|
       context "when status is #{s}" do
         before { job.status = s }
-        it { should be(false) }
+        it { should eq(false) }
       end
     end
 
     ["passed", "failed", "errored"].each do |s|
       context "when status is #{s}" do
         before { job.status = s }
-        it { should be(true) }
+        it { should eq(true) }
       end
     end
   end
@@ -226,4 +226,3 @@ end
 #  build_id    :uuid             not null
 #  id          :uuid             not null, primary key
 #
-

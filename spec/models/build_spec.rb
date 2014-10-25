@@ -463,7 +463,7 @@ describe Build do
       b.source = {"rvm" => %w{ 1.9 2.0 }}.to_yaml
     end
     it { should be }
-    it { subject.size.should eq 2 }
+    it { subject.size.should eq(2) }
   end
 
   context "to_deploy.build" do
@@ -472,7 +472,7 @@ describe Build do
       b.source = {"deploy" => { "shell" => "/bin/true", "branch" => "master" } }.to_yaml
     end
     it { should be }
-    it { subject.size.should eq 1 }
+    it { subject.size.should eq(1) }
 
     context "when branch is not matched" do
       before do
@@ -534,7 +534,7 @@ describe Build do
       before do
         b.create_regular_jobs
       end
-      it { subject.size.should eq 2 }
+      it { subject.size.should eq(2) }
 
       it "should have true matrices" do
         expect(subject.map(&:matrix)).to eq [{"rvm"=>"1.9"}, {"rvm"=>"2.0"}]
@@ -569,7 +569,7 @@ describe Build do
       before do
         b.create_deploy_jobs
       end
-      it { subject.size.should eq 1 }
+      it { subject.size.should eq(1) }
 
       it "should have matrixes" do
         expect(subject.map(&:matrix)).to eq [{}]
@@ -665,4 +665,3 @@ end
 #  project_id      :uuid             not null
 #  id              :uuid             not null, primary key
 #
-

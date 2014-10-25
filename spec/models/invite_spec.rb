@@ -20,7 +20,7 @@ describe Invite do
 
     context "successfuly" do
       it "should be" do
-        expect(subject.size).to eq 2
+        expect(subject.size).to eq(2)
       end
 
       it "should create invites" do
@@ -56,4 +56,3 @@ end
 #  id         :uuid             not null, primary key
 #  role       :string(255)      default("developer"), not null
 #
-

@@ -226,7 +226,7 @@ describe Project do
     before do
       project.generate_deploy_key
     end
-    it { subject.size.should eq 233 }
+    it { subject.size.should eq(233) }
   end
 
   context "status_for_gitlab" do
@@ -309,4 +309,3 @@ end
 #  id           :uuid             not null, primary key
 #  user_repo_id :uuid             not null
 #
-

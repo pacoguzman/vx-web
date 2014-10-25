@@ -179,4 +179,3 @@ end
 #  back_office :boolean          default(FALSE)
 #  id          :uuid             not null, primary key
 #
-
