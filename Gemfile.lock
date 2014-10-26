@@ -1,31 +1,37 @@
 GIT
   remote: git://github.com/pacoguzman/vx-builder.git
-  revision: dcceece47e018236c0542dfe7128034950023c33
+  revision: 90121a97834cf8ad27f1a5b95941f11bbcc20ffc
   branch: bebanjo
   specs:
     vx-builder (0.5.20)
       hashr
-      vx-common (= 0.4.0)
-      vx-message
 
 GIT
   remote: git://github.com/pacoguzman/vx-common.git
-  revision: 00cc775940b33a4a7fa76e61c649687994584290
+  revision: c6ea255328e25f5baae688219aaa11278a88a2b0
   branch: bebanjo
   specs:
     vx-common (0.4.0)
-      airbrake (~> 3.1.14)
+      airbrake (~> 4.1.0)
       vx-common-rack-builder (= 0.0.2)
       vx-common-spawn (> 0.0.7)
 
 GIT
+  remote: git://github.com/pacoguzman/vx-message.git
+  revision: 9b9afe2ee95ab84a6ba56a7b7d47f4db554bd272
+  specs:
+    vx-message (0.6.2)
+      beefcake (= 1.0.0)
+
+GIT
   remote: git://github.com/pacoguzman/vx-service_connector.git
-  revision: 5570e569278f539f93ebbb0ecb4f66b1e4190ceb
+  revision: 3f52e628ba2659c09ff502e2710b605d4a35d370
   branch: bebanjo
   specs:
-    vx-service_connector (0.2.12)
+    vx-service_connector (0.2.17)
       activesupport (~> 4.0)
       faraday (~> 0.9.0)
+      oauth
       octokit (= 2.2.0)
 
 GEM
@@ -58,7 +64,7 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
     addressable (2.3.6)
-    airbrake (3.1.17)
+    airbrake (4.1.0)
       builder
       multi_json
     amq-protocol (1.9.2)
@@ -66,7 +72,7 @@ GEM
       activerecord (>= 2.3.0)
       rake (>= 0.8.7)
     arel (4.0.2)
-    beefcake (0.5.0)
+    beefcake (1.0.0)
     braintree (2.36.0)
       builder (>= 2.0.0)
     builder (3.1.4)
@@ -130,6 +136,7 @@ GEM
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     net-ssh (2.9.1)
+    oauth (0.4.7)
     oauth2 (1.0.0)
       faraday (>= 0.8, < 0.10)
       jwt (~> 1.0)
@@ -231,11 +238,8 @@ GEM
     vx-consumer (0.1.8)
       bunny (= 1.3.1)
       vx-common-rack-builder (>= 0.0.2)
-    vx-instrumentation (0.1.3)
+    vx-instrumentation (0.1.4)
       activesupport (~> 4.0)
-      airbrake
-    vx-message (0.6.2)
-      beefcake (= 0.5.0)
     webmock (1.20.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -271,7 +275,7 @@ DEPENDENCIES
   vx-builder!
   vx-common!
   vx-consumer (= 0.1.8)
-  vx-instrumentation (= 0.1.3)
-  vx-message (= 0.6.2)
+  vx-instrumentation (= 0.1.4)
+  vx-message!
   vx-service_connector!
   webmock

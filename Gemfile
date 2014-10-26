@@ -11,12 +11,14 @@ gem 'active_model_serializers'
 gem 'carrierwave'
 gem 'sshkey'
 
-gem 'vx-message',           '0.6.2'
+# vx-builder dependencies
+gem 'vx-message',           :github => 'pacoguzman/vx-message'
+gem 'vx-common',            :github => 'pacoguzman/vx-common', :branch => 'bebanjo'
+
 gem 'vx-builder',           :github => 'pacoguzman/vx-builder',           :branch => 'bebanjo'
-gem 'vx-common',            :github => 'pacoguzman/vx-common',            :branch => 'bebanjo'
 gem 'vx-service_connector', :github => 'pacoguzman/vx-service_connector', :branch => 'bebanjo'
 gem 'vx-consumer',          '0.1.8'
-gem 'vx-instrumentation',   '0.1.3'
+gem 'vx-instrumentation',   '0.1.4'
 
 gem 'dalli'
 gem 'dotenv'
