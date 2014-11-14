@@ -17,7 +17,7 @@ gem 'vx-common',            :github => 'pacoguzman/vx-common', :branch => 'beban
 
 gem 'vx-builder',           :github => 'pacoguzman/vx-builder',           :branch => 'bebanjo'
 gem 'vx-service_connector', :github => 'pacoguzman/vx-service_connector', :branch => 'bebanjo'
-gem 'vx-consumer',          '0.1.8'
+gem 'vx-consumer',          :github => 'pacoguzman/vx-consumer'
 gem 'vx-instrumentation',   '0.1.4'
 
 gem 'dalli'

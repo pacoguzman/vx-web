@@ -17,6 +17,14 @@ GIT
       vx-common-spawn (> 0.0.7)
 
 GIT
+  remote: git://github.com/pacoguzman/vx-consumer.git
+  revision: d625a8f39f3afe471af3896b7154a3e68730972c
+  specs:
+    vx-consumer (0.2.0.pre0)
+      bunny (= 1.6.3)
+      vx-common-rack-builder (>= 0.0.2)
+
+GIT
   remote: git://github.com/pacoguzman/vx-message.git
   revision: 9b9afe2ee95ab84a6ba56a7b7d47f4db554bd272
   specs:
@@ -25,10 +33,10 @@ GIT
 
 GIT
   remote: git://github.com/pacoguzman/vx-service_connector.git
-  revision: 3f52e628ba2659c09ff502e2710b605d4a35d370
+  revision: 586c99126fa7cf8bb9ac9652e13a0cec444635eb
   branch: bebanjo
   specs:
-    vx-service_connector (0.2.17)
+    vx-service_connector (0.3.0)
       activesupport (~> 4.0)
       faraday (~> 0.9.0)
       oauth
@@ -76,7 +84,7 @@ GEM
     braintree (2.36.0)
       builder (>= 2.0.0)
     builder (3.1.4)
-    bunny (1.3.1)
+    bunny (1.6.3)
       amq-protocol (>= 1.9.2)
     byebug (3.5.1)
       columnize (~> 0.8)
@@ -235,9 +243,6 @@ GEM
     vx-common-rack-builder (0.0.2)
     vx-common-spawn (0.0.8)
       net-ssh (~> 2.6)
-    vx-consumer (0.1.8)
-      bunny (= 1.3.1)
-      vx-common-rack-builder (>= 0.0.2)
     vx-instrumentation (0.1.4)
       activesupport (~> 4.0)
     webmock (1.20.0)
@@ -274,7 +279,7 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   vx-builder!
   vx-common!
-  vx-consumer (= 0.1.8)
+  vx-consumer!
   vx-instrumentation (= 0.1.4)
   vx-message!
   vx-service_connector!
