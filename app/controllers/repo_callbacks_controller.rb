@@ -23,7 +23,7 @@ class RepoCallbacksController < ApplicationController
     end
 
     def process?
-      if project && payload && !payload.ignore?
+      if project && payload && payload.perform?
         yield
       else
         Rails.logger.warn "Cannot process payload"
