@@ -42,6 +42,7 @@ group :test do
   gem 'rr'
   gem 'webmock'
   gem 'timecop'
+  gem 'nokogiri'
 end
 
 group :development do

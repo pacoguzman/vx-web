@@ -1,0 +1,23 @@
+<%= content_for :json_ld do %>
+  <%= JSON.generate(@json_ld).html_safe if @json_ld %>
+<% end %>
+
+<h1>Build Update for <%= @project %></h1>
+
+<p>Build: #<%= @build.number %></p>
+<p>Status: <%= @build.human_status_name %></p>
+
+<p></p>
+
+<p>Duration: <%= build_duration(@build) %></p>
+<p>Commit: <%= @build.short_sha %> (<%= @build.branch_label %>)</p>
+<p>Author: <%= @build.author %></p>
+<p>Message: <%= @build.message %></p>
+
+<p></p>
+
+<p>View the <%= link_to 'changeset', @build.http_url %></p>
+<p>View the full <%= link_to 'build', @build.public_url %> log and details.</p>
+
+<p>Unsubscribe from <%= link_to @project.name, users_unsubscribe_user_from_project_url(@project, @subscription) %></p>
+
