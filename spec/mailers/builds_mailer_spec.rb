@@ -44,6 +44,6 @@ describe BuildsMailer do
   end
 
   def extract_jsonld(body)
-    JSON.parse Nokogiri.parse(body.raw_source).at_css('head script[type="application/ld+json"]').content
+    JSON.parse Nokogiri.parse(body.raw_source).at_css('body script[type="application/ld+json"]').content
   end
 end

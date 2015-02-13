@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-
-  <%= content_tag :script, :type => 'application/ld+json' do %>
-    <%= yield :json_ld if content_for? :json_ld %>
-  <% end %>
 </head>
 <body>
+<%= content_tag :script, :type => 'application/ld+json' do %>
+  <%= yield :json_ld if content_for? :json_ld %>
+<% end %>
+
 <%= yield %>
 </body>
