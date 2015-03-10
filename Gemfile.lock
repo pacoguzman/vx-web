@@ -1,9 +1,9 @@
 GIT
   remote: git://github.com/pacoguzman/vx-builder.git
-  revision: a2fb7716cd1a82b6ccb3f66ef6fbd6fccc608fa2
+  revision: abf11fbbfbad910f8883d2525ab8f22ec3397d8c
   branch: bebanjo
   specs:
-    vx-builder (0.5.45)
+    vx-builder (0.5.50)
       hashr
 
 GIT
