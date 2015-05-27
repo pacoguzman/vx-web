@@ -6,7 +6,7 @@ class JobStatusConsumer
   queue    'vx.web.jobs.status'
   ack
 
-  model    Vx::Message::JobStatus
+  model    Vx::Lib::Message::JobStatus
 
   def perform(message)
     JobUpdater.new(message).perform

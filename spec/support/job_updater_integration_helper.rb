@@ -38,7 +38,7 @@ module JobUpdaterIntegrationHelper
   end
 
   def message(job, status, tm = nil)
-    Vx::Message::JobStatus.test_message(
+    Vx::Lib::Message::JobStatus.test_message(
       company_id:   job.company.id,
       project_id:   job.project.id,
       build_id:     job.build_id,

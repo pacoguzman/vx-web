@@ -9,7 +9,7 @@ describe JobUpdater do
     job_id: uuid_for(3)
   } }
   let(:message)  {
-    Vx::Message::JobStatus.test_message(
+    Vx::Lib::Message::JobStatus.test_message(
       message_attributes
     )
   }

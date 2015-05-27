@@ -3,7 +3,7 @@ require 'spec_helper'
 describe JobLogsUpdater do
   let(:build)   { create :build }
   let(:job)     { create :job, build: build }
-  let(:message) { Vx::Message::JobLog.test_message job_id: job.id }
+  let(:message) { Vx::Lib::Message::JobLog.test_message job_id: job.id }
   let(:updater) { described_class.new message }
   subject { updater }
 

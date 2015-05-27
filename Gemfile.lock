@@ -7,6 +7,19 @@ GIT
       hashr
 
 GIT
+  remote: git://github.com/pacoguzman/vx-common-rack-builder.git
+  revision: dd15ff1e50255113ec2856b275e975d3e450e449
+  specs:
+    vx-lib-rack-builder (0.0.3)
+
+GIT
+  remote: git://github.com/pacoguzman/vx-common-spawn.git
+  revision: abfa7792c175361924ce96d99c8fbb612e243607
+  specs:
+    vx-common-spawn (0.0.8)
+      net-ssh (~> 2.6)
+
+GIT
   remote: git://github.com/pacoguzman/vx-common.git
   revision: c6ea255328e25f5baae688219aaa11278a88a2b0
   branch: bebanjo
@@ -25,10 +38,18 @@ GIT
       vx-common-rack-builder (>= 0.0.2)
 
 GIT
-  remote: git://github.com/pacoguzman/vx-message.git
-  revision: 9b9afe2ee95ab84a6ba56a7b7d47f4db554bd272
+  remote: git://github.com/pacoguzman/vx-instrumentation.git
+  revision: c0163b33549877f33860a70dbf4b60c15866c0b9
+  tag: v0.1.4
   specs:
-    vx-message (0.6.2)
+    vx-instrumentation (0.1.4)
+      activesupport (~> 4.0)
+
+GIT
+  remote: git://github.com/pacoguzman/vx-message.git
+  revision: 66f81a50b3a24897cd38f14d6456e024e6a5cd7c
+  specs:
+    vx-lib-message (0.6.4)
       beefcake (= 1.0.0)
 
 GIT
@@ -144,7 +165,7 @@ GEM
     multi_json (1.10.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
-    net-ssh (2.9.1)
+    net-ssh (2.9.2)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     oauth (0.4.7)
@@ -244,10 +265,6 @@ GEM
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
     vx-common-rack-builder (0.0.2)
-    vx-common-spawn (0.0.8)
-      net-ssh (~> 2.6)
-    vx-instrumentation (0.1.4)
-      activesupport (~> 4.0)
     webmock (1.20.4)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -283,8 +300,10 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   vx-builder!
   vx-common!
+  vx-common-spawn!
   vx-consumer!
-  vx-instrumentation (= 0.1.4)
-  vx-message!
+  vx-instrumentation!
+  vx-lib-message!
+  vx-lib-rack-builder!
   vx-service_connector!
   webmock

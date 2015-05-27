@@ -94,7 +94,7 @@ class Job < ActiveRecord::Base
 
   def to_perform_job_message
     script = to_script_builder
-    ::Vx::Message::PerformJob.new(
+    ::Vx::Lib::Message::PerformJob.new(
       company_id:      company.id,
       company_name:    company.name,
 

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe BuildNotifier do
   let(:status) { 3 }
-  let(:b)      { create :build, status: status, number: 1 }
+  let(:b)      { create :build, status: status, number: 1, http_url: "http://github.com/vexor/vx-test-repo" }
   let(:attrs)  { JSON.parse(b.attributes.to_json) }
   let(:notifier) { described_class.new attrs }
   subject { notifier }

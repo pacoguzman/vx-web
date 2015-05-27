@@ -6,7 +6,7 @@ class JobLogsConsumer
   queue    'vx.web.jobs.log'
   ack
 
-  model Vx::Message::JobLog
+  model Vx::Lib::Message::JobLog
 
   def perform(message)
     JobLogsUpdater.new(message).perform

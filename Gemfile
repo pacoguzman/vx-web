@@ -12,13 +12,16 @@ gem 'carrierwave'
 gem 'sshkey'
 
 # vx-builder dependencies
-gem 'vx-message',           :github => 'pacoguzman/vx-message'
+gem 'vx-lib-message',       :github => 'pacoguzman/vx-message'
 gem 'vx-common',            :github => 'pacoguzman/vx-common', :branch => 'bebanjo'
 
 gem 'vx-builder',           :github => 'pacoguzman/vx-builder',           :branch => 'bebanjo'
 gem 'vx-service_connector', :github => 'pacoguzman/vx-service_connector', :branch => 'bebanjo'
 gem 'vx-consumer',          :github => 'pacoguzman/vx-consumer'
-gem 'vx-instrumentation',   '0.1.4'
+gem 'vx-instrumentation',   :github => 'pacoguzman/vx-instrumentation',   :tag => 'v0.1.4'
+
+gem 'vx-common-spawn',     :github => 'pacoguzman/vx-common-spawn'
+gem 'vx-lib-rack-builder', :github => 'pacoguzman/vx-common-rack-builder'
 
 gem 'dalli'
 gem 'dotenv'
